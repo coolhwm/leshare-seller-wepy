@@ -1,0 +1,14 @@
+
+    <view class="wetoast {{reveal ? 'wetoast_show' : ''}}">
+        <view class="wetoast__mask"/>
+        <view class="wetoast__bd" animation="{{animationData}}">
+            <block  wx:if="{{img}}">
+                <view class="wetoast__bd__img {{imgClassName || ''}}">
+                    <image class="wetoast__bd__img_desc" src="{{img}}" mode="{{imgMode || 'scaleToFill'}}"/>
+                </view>
+            </block>
+            <block  wx:if="{{title}}">
+                <view class="wetoast__bd__title {{titleClassName || ''}}">{{title}}</view>
+            </block>
+        </view>
+    </view>

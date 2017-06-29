@@ -1,0 +1,1 @@
+.mylist:odd{color:red}.mylist:even{color:green}

@@ -1,0 +1,186 @@
+<style lang="css">
+    .wetoast {
+        display: none;
+    }
+    .wetoast_show {
+        display: block;
+    }
+    .wetoast__mask {
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+    }
+    .wetoast__bd {
+        opacity: 0;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        z-index: 5000;
+        min-width: 8.4em;
+        min-height: 8.4em;
+        max-width: 70%;
+        top: 140px;
+        left: 50%;
+        padding: 15px;
+        box-sizing: border-box;
+        transform: translateX(-50%);
+        background: rgba(40, 40, 40, 0.75);
+        border-radius: 5px;
+        color: #FFFFFF;
+        word-wrap: break-word;
+        word-break: break-all;
+        align-items: center;
+        justify-content: space-around;
+    }
+    .wetoast__bd__img {
+        margin-top: 3px;
+    }
+    .wetoast__bd__img_desc {
+        width: 55px;
+        height: 55px;
+        vertical-align: middle;
+    }
+    .wetoast__bd__title {
+        margin: 3px 0;
+        font-size: 1.2em;
+    }
+</style>
+<template>
+    <view class="wetoast {{reveal ? 'wetoast_show' : ''}}">
+        <view class="wetoast__mask"></view>
+        <view class="wetoast__bd" animation="{{animationData}}">
+            <block wx:if="{{img}}">
+                <view class="wetoast__bd__img {{imgClassName || ''}}">
+                    <image class="wetoast__bd__img_desc" src="{{img}}" mode="{{imgMode || 'scaleToFill'}}"></image>
+                </view>
+            </block>
+            <block wx:if="{{title}}">
+                <view class="wetoast__bd__title {{titleClassName || ''}}">{{title}}</view>
+            </block>
+        </view>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy';
+
+    export default class Panel extends wepy.component {
+
+        data = {
+            reveal: false,
+            img: '',
+            animationData: '',
+            imgClassName: '',
+            imgMode: 'scaleToFill',
+            title: '载入中...',
+            titleClassName: ''
+        };
+
+	methods = {};
+
+        onLoad () {
+            this.hasPromise = (typeof Promise !== undefined);
+        }
+
+        show (data = {}) {
+            this.reveal = true;
+            for (let k in data) {
+                this[k] = data[k];
+            }
+            this.$apply();
+
+            clearTimeout(this.__timeout);
+
+            setTimeout(()=>{
+                let animation = wx.createAnimation();
+                animation.opacity(1).step();
+                this.animationData = animation.export();
+                this.reveal = true;
+                this.$apply();
+            },30);
+
+
+            if (data.duration === 0) {
+                // success callback after toast showed
+                if (this.hasPromise) {
+                    return new Promise((resolve, reject) => {
+                        setTimeout (() => {
+                            resolve(data);
+                        }, 430);
+                    });
+                }  else {
+                    setTimeout (() => {
+                        return (typeof data.success === 'function') ? data.success(data) : data;
+                    }, 430);
+                }
+            } else {
+                if (this.hasPromise) {
+                    return new Promise((resolve, reject) => {
+                        this.__timeout = setTimeout (() => {
+                            this.toast();
+                            resolve(data);
+                        }, (data.duration || 1500) + 400);
+                    });
+                } else {
+                    this.__timeout = setTimeout(() => {
+                        this.toast();
+
+                        // success callback
+                        typeof data.success === 'function' && data.success(data);
+                    }, (data.duration || 1500) + 400);
+                }
+            }
+        };
+
+        toast (data) {
+            let err = false;
+            try {
+                if (!data) {
+                    this.hide();
+                } else {
+                    this.show(data);
+                }
+            } catch (e) {
+                err = e;
+            }
+
+            if (this.hasPromise) {
+                return new Promise((resolve, reject) => {
+                    if (!err) {
+                        resolve(data);
+                    } else
+                        reject(data);
+                });
+            } else {
+                if (err) {
+                    typeof data.fail === 'function' && data.fail(data);
+                } else {
+                    typeof data.success === 'function' && data.success(data);
+                }
+            }
+        };
+
+        hide () {
+            clearTimeout(this.__timeout);
+            this.reveal = false;
+            
+            let animation = wx.createAnimation();
+            animation.opacity(0).step();
+            this.animationData = animation.export();
+            
+            this.$apply();
+
+            if (this.hasPromise) {
+                return new Promise((resolve, reject) => {
+                    resolve();
+                });
+            } else {
+                if (typeof data.success === 'function') {
+                    return data.success(data);
+                }
+            }
+        }
+    }
+</script>

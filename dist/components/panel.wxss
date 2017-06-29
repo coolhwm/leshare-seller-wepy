@@ -1,0 +1,1 @@
+.panel{width:100%;margin-top:20rpx;text-align:left;font-size:12px;padding-top:20rpx;padding-left:50rpx;padding-bottom:20rpx;border:1px solid #ccc}.panel .title{padding-bottom:20rpx;font-size:14px;font-weight:bold}.panel .info{padding:15rpx}.panel .testcounter{margin-top:15rpx;position:absolute}.panel .counterview{margin-left:120rpx}
