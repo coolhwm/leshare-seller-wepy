@@ -7,18 +7,42 @@
     <view class="order-header-container row-between">
       <view class="order-shop-info-container">
         <image class="icon" src="/images/icons/shop-gray.png"/>
-        <text class="shop-info-name">连江海蜇店</text>
+        <text class="shop-info-name">{{item.shopName}}</text>
         <image class="icon" src="/images/icons/more-gray.png"/>
       </view>
-      <text class="order-status-complete}}">已完成</text>
+      <text class="order-status-complete">{{item.statusText}}</text>
+    </view>
+
+    <view class="order-goods-list-container">
+      <block wx:for="{{item.orderGoodsInfos}}" wx:for-index="$OrderItem$index" wx:for-item="$OrderItem$item" wx:key="$OrderItem$goodsId">
+        
+  <view class="order-goods-container row-between">
+    <!--商品图片-->
+    <image class="order-goods-image" src="{{$OrderItem$item.imageUrl}}"/>
+
+    <!--商品说明-->
+    <view class="order-goods-title-container column">
+      <text>{{$OrderItem$item.goodsName}}</text>
+      <text class="muted">{{$OrderItem$item.skuText}}</text>
+    </view>
+
+    <!--商品购买信息-->
+    <view class="order-goods-buy-container column">
+      <text>￥{{$OrderItem$item.goodsPrice}}</text>
+      <text class="muted">x{{$OrderItem$item.count}}</text>
+    </view>
+  </view>
+
+        <view class="order-goods-hr"/>
+      </block>
     </view>
 
     <!--汇总信息-->
     <view class="order-footer-container row-end">
-      <text class="footer-count">共1件商品</text>
+      <text class="footer-count">共{{item.orderGoodsInfos.length}}件商品</text>
       <text>合计:</text>
-      <text class="text-price-xl">￥130.00</text>
-      <text>(含运费￥10)</text>
+      <text class="text-price-xl">￥{{item.finalPrice}}</text>
+      <text>(含运费￥{{item.postFee}})</text>
     </view>
 
     <!--操作栏-->
