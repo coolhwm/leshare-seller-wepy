@@ -1,0 +1,31 @@
+
+  <!--订单列表-->
+  <block wx:for="{{orders}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+    
+  <view class="order-item-container column">
+    <!--基本信息-->
+    <view class="order-header-container row-between">
+      <view class="order-shop-info-container">
+        <image class="icon" src="/images/icons/shop-gray.png"/>
+        <text class="shop-info-name">连江海蜇店</text>
+        <image class="icon" src="/images/icons/more-gray.png"/>
+      </view>
+      <text class="order-status-complete}}">已完成</text>
+    </view>
+
+    <!--汇总信息-->
+    <view class="order-footer-container row-end">
+      <text class="footer-count">共1件商品</text>
+      <text>合计:</text>
+      <text class="text-price-xl">￥130.00</text>
+      <text>(含运费￥10)</text>
+    </view>
+
+    <!--操作栏-->
+    <view class="order-action-bar row-end">
+      <view class="zan-btn zan-btn--small">取消订单</view>
+      <view class="zan-btn zan-btn--small zan-btn--primary">确认付款</view>
+    </view>
+  </view>
+
+  </block>

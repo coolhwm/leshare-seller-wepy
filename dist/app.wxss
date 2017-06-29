@@ -1,1 +1,123 @@
-.container{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:space-between;box-sizing:border-box}
+@charset "UTF-8";
+/******字体颜色变量******/
+/******字体大小变量******/
+/******边框样式******/
+/*有赞样式文件*/
+/******字体颜色变量******/
+/******字体大小变量******/
+/******边框样式******/
+.zan-btn {
+  color: #333;
+  background-color: #fff;
+  margin-bottom: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-radius: 6px;
+  border: 1px solid #e5e5e5;
+  font-size: 16px;
+  line-height: 45px;
+  height: 45px;
+  box-sizing: border-box;
+  text-decoration: none;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.zan-btn::after {
+  display: none;
+}
+
+.zan-btn--primary {
+  color: #1296DB;
+  background-color: #fff;
+  border-color: #1296DB;
+}
+
+.zan-btn--warn {
+  color: #fff;
+  background-color: #f85;
+  border-color: #f85;
+}
+
+.zan-btn--danger {
+  color: #e33;
+  background-color: #fff;
+  border-color: #e33;
+}
+
+.zan-btn--small {
+  display: inline-block;
+  height: 30px;
+  line-height: 29px;
+  font-size: 13px;
+  margin-left: 0px;
+  margin-right: 5px;
+  margin-bottom: 0;
+}
+
+.zan-btn--mini {
+  display: inline-block;
+  line-height: 21px;
+  height: 22px;
+  font-size: 10px;
+  margin-right: 5px;
+  margin-left: 0px;
+  margin-bottom: 0;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.zan-btn--large {
+  border-radius: 0;
+  margin-bottom: 0;
+  border: none;
+  line-height: 50px;
+  height: 50px;
+}
+
+/******通用样式******/
+text, view {
+  font-family: MicroSoft Yahei;
+  font-size: 28rpx;
+  color: #262626;
+}
+
+/******FELX 布局样式******/
+.row, .row-between, .row-end {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.row-between {
+  justify-content: space-between;
+}
+
+.row-end {
+  justify-content: flex-end;
+}
+
+.column {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/******图片样式******/
+.icon {
+  height: 40rpx;
+  width: 40rpx;
+  vertical-align: middle;
+}
+
+/******间隔******/
+.hr {
+  width: 100%;
+  height: 6rpx;
+}
+
+/*业务样式-字体*/
+.text-price-xl {
+  font-size: 32rpx;
+  color: #FF6200;
+}

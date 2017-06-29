@@ -16,7 +16,7 @@ module.exports = {
       compress: true
     },
     sass: {
-      outputStyle: 'compressed'
+      outputStyle: 'expanded'
     },
     babel: {
       sourceMap: true,
