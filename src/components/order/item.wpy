@@ -7,21 +7,21 @@
         <text class="shop-info-name">{{order.shopName}}</text>
         <image class="icon" src="/images/icons/more-gray.png"/>
       </view>
-      <text class="order-status-complete">{{order.statusText}}</text>
+      <text class="sm primary">{{order.statusText}}</text>
     </view>
 
     <view class="order-goods-list-container">
       <repeat for="{{order.orderGoodsInfos}}" key="goodsId" index="index" item="item">
         <OrderGoods :goods="item"></OrderGoods>
-        <view class="order-goods-hr" />
+        <view class="hr" />
       </repeat>
     </view>
 
     <!--汇总信息-->
     <view class="order-footer-container row-end">
-      <text class="footer-count">共{{order.orderGoodsInfos.length}}件商品</text>
+      <text class="mr20">共{{order.orderGoodsInfos.length}}件商品</text>
       <text>合计:</text>
-      <text class="text-price-xl">￥{{order.finalPrice}}</text>
+      <text class="major xl mr20">￥{{order.finalPrice}}</text>
       <text>(含运费￥{{order.postFee}})</text>
     </view>
 
@@ -50,23 +50,13 @@
 </script>
 
 <style lang="scss">
-  @import "../../styles/base";
+  @import "../../styles/variable";
 
   .order-item-container {
     border-top: $border;
     border-bottom: $border;
     background-color: #FFF;
     margin-bottom: 10rpx;
-  }
-
-  .order-status-complete {
-    font-size: $text-sm;
-    color: $color-primary;
-  }
-
-  .order-status-cancel {
-    font-size: $text-sm;
-    color: $color-muted;
   }
 
   /*顶栏*/
@@ -89,20 +79,10 @@
     margin-right: 20rpx;
   }
 
-  /*价格*/
-  .text-price-xl {
-    margin-right: 20rpx;
-  }
-
-  /* 数量 */
-  .footer-count {
-    margin-right: 20rpx;
-  }
-
   /* 操作栏 */
   .order-action-bar {
     border-top: $border;
     height: 90rpx;
-    padding-right: 20rpx;
+    padding-right: 10rpx;
   }
 </style>

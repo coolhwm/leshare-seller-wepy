@@ -10,7 +10,7 @@
         <text class="shop-info-name">{{item.shopName}}</text>
         <image class="icon" src="/images/icons/more-gray.png"/>
       </view>
-      <text class="order-status-complete">{{item.statusText}}</text>
+      <text class="sm primary">{{item.statusText}}</text>
     </view>
 
     <view class="order-goods-list-container">
@@ -33,15 +33,15 @@
     </view>
   </view>
 
-        <view class="order-goods-hr"/>
+        <view class="hr"/>
       </block>
     </view>
 
     <!--汇总信息-->
     <view class="order-footer-container row-end">
-      <text class="footer-count">共{{item.orderGoodsInfos.length}}件商品</text>
+      <text class="mr20">共{{item.orderGoodsInfos.length}}件商品</text>
       <text>合计:</text>
-      <text class="text-price-xl">￥{{item.finalPrice}}</text>
+      <text class="major xl mr20">￥{{item.finalPrice}}</text>
       <text>(含运费￥{{item.postFee}})</text>
     </view>
 
@@ -53,3 +53,4 @@
   </view>
 
   </block>
+  <view class="tab-border"/>

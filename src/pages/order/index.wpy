@@ -4,6 +4,7 @@
   <repeat for="{{orders}}" key="index" index="index" item="item">
     <OrderItem :order="item"></OrderItem>
   </repeat>
+  <view class="tab-border" />
 </template>
 
 <style lang="scss">

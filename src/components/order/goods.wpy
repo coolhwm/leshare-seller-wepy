@@ -30,7 +30,7 @@
 </script>
 
 <style lang="scss">
-  @import "../../styles/base";
+  @import "../../styles/variable";
 
   .order-goods-container{
     background-color: $color-bg-item;

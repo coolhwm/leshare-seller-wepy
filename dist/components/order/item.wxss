@@ -3,21 +3,12 @@
 /******字体颜色变量******/
 /******字体大小变量******/
 /******边框样式******/
+/******背景样式******/
 .order-item-container {
   border-top: 1px solid #EDEDED;
   border-bottom: 1px solid #EDEDED;
   background-color: #FFF;
   margin-bottom: 10rpx;
-}
-
-.order-status-complete {
-  font-size: 26rpx;
-  color: #1296DB;
-}
-
-.order-status-cancel {
-  font-size: 26rpx;
-  color: #A3A3A3;
 }
 
 /*顶栏*/
@@ -40,19 +31,9 @@
   margin-right: 20rpx;
 }
 
-/*价格*/
-.text-price-xl {
-  margin-right: 20rpx;
-}
-
-/* 数量 */
-.footer-count {
-  margin-right: 20rpx;
-}
-
 /* 操作栏 */
 .order-action-bar {
   border-top: 1px solid #EDEDED;
   height: 90rpx;
-  padding-right: 20rpx;
+  padding-right: 10rpx;
 }

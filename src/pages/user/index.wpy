@@ -1,0 +1,20 @@
+<template>
+  <view class="tab-border" />
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class UserIndex extends wepy.page {
+    config = {};
+    components = {};
+    methods = {};
+    events = {};
+    onLoad () {};
+    data = {};
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>
