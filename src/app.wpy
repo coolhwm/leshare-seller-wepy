@@ -60,5 +60,3 @@ export default class extends wepy.app {
   }
 }
 </script>
-
-

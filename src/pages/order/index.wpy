@@ -1,5 +1,6 @@
 <!--订单列表页面-->
 <template>
+  <ZanTab :tab="tab" handler="onTabChange" />
   <!--订单列表-->
   <repeat for="{{orders}}" key="index" index="index" item="item">
     <OrderItem :order="item"></OrderItem>
@@ -13,17 +14,44 @@
 <script>
   import wepy from 'wepy'
   import OrderItem from '../../components/order/item'
+  import ZanTab from '../../components/zanui/tab'
 
   export default class OrderIndex extends wepy.page {
     config = {};
     components = {
-      OrderItem: OrderItem
+      OrderItem: OrderItem,
+      ZanTab: ZanTab
     };
     methods = {};
-    events = {};
-    onLoad () {};
+    events = {
+      'tab-change': (data) => {
+      }
+    };
+    onLoad () {
+      console.info('页面加载!')
+    };
     // 页面数据
     data = {
+      tab: {
+        list: [{
+          id: 'all',
+          title: '全部'
+        }, {
+          id: 'topay',
+          title: '待付款'
+        }, {
+          id: 'tosend',
+          title: '待发货'
+        }, {
+          id: 'send',
+          title: '待收货'
+        }, {
+          id: 'sign',
+          title: '已完成'
+        }],
+        selectedId: 'all',
+        scroll: false
+      },
       orders: [
         {
           'orderId': 1769,

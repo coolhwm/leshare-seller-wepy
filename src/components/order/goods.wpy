@@ -26,6 +26,10 @@
     data = {};
     methods = {};
     events = {};
+    onLoad() {
+      console.info('goods', this.props)
+      console.info('组件加载！')
+    }
   }
 </script>
 
