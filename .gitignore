@@ -1,2 +1,7 @@
 node_modules/*
 .idea/*
+/.editorconfig
+/.eslintignore
+/.npmignore
+/.wepycache
+/package-lock.json
