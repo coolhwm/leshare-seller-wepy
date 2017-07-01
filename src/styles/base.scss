@@ -24,12 +24,15 @@ text, view {
   color: $color-normal;
 }
 
+text.white{color:#FFF}
 text.muted{color: $color-muted}
 text.primary{color: $color-primary}
 text.major{color: $color-major}
 
 text.xl{font-size: $text-xl}
 text.sm{font-size: $text-sm}
+
+view.bg-white{background-color: white}
 
 /******FELX 布局样式******/
 .row {
@@ -41,6 +44,10 @@ text.sm{font-size: $text-sm}
   @extend .row;
   justify-content: space-between;
 }
+.row-around {
+  @extend .row;
+  justify-content: space-around;
+}
 .row-end {
   @extend .row;
   justify-content: flex-end;
@@ -50,6 +57,21 @@ text.sm{font-size: $text-sm}
   justify-content: center;
   flex-direction: column;
 }
+.column-center{
+  @extend .column;
+  align-items: center;
+}
+.column-around{
+  @extend .column;
+  align-items: center;
+  justify-content: space-around;
+}
+.column-between{
+  @extend .column;
+  align-items: center;
+  justify-content: space-between;
+}
+
 
 /******图片样式******/
 .icon {

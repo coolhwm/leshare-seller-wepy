@@ -49,6 +49,10 @@ text, view {
   color: #262626;
 }
 
+text.white {
+  color: #FFF;
+}
+
 text.muted {
   color: #A3A3A3;
 }
@@ -69,8 +73,12 @@ text.sm {
   font-size: 26rpx;
 }
 
+view.bg-white {
+  background-color: white;
+}
+
 /******FELX 布局样式******/
-.row, .row-between, .row-end {
+.row, .row-between, .row-around, .row-end {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -80,14 +88,32 @@ text.sm {
   justify-content: space-between;
 }
 
+.row-around {
+  justify-content: space-around;
+}
+
 .row-end {
   justify-content: flex-end;
 }
 
-.column {
+.column, .column-center, .column-around, .column-between {
   display: flex;
   justify-content: center;
   flex-direction: column;
+}
+
+.column-center {
+  align-items: center;
+}
+
+.column-around {
+  align-items: center;
+  justify-content: space-around;
+}
+
+.column-between {
+  align-items: center;
+  justify-content: space-between;
 }
 
 /******图片样式******/

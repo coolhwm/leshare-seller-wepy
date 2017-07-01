@@ -17,7 +17,9 @@
   import ZanTab from '../../components/zanui/tab'
 
   export default class OrderIndex extends wepy.page {
-    config = {};
+    config = {
+      navigationBarTitleText: '订单管理'
+    };
     components = {
       OrderItem: OrderItem,
       ZanTab: ZanTab

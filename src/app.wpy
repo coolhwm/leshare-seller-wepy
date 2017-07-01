@@ -22,14 +22,14 @@ export default class extends wepy.app {
 
   config = {
     pages: [
-      'pages/order/index',
       'pages/home/index',
+      'pages/order/index',
       'pages/user/index'
     ],
     window: {
       backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#1296db',
-      navigationBarTitleText: '乐享商家助手'
+      navigationBarTextStyle: 'white',
+      navigationBarBackgroundColor: '#1296db'
     },
     tabBar: {
       color: '#666666',

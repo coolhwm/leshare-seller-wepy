@@ -6,7 +6,9 @@
   import wepy from 'wepy'
 
   export default class UserIndex extends wepy.page {
-    config = {};
+    config = {
+      navigationBarTitleText: '我的信息'
+    };
     components = {};
     methods = {};
     events = {};

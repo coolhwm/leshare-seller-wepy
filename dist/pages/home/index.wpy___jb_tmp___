@@ -78,8 +78,6 @@
       </view>
     </view>
 
-    <view class="hr"></view>
-
     <view class="row-around">
       <view class="operation-row column-center">
         <image src="/images/home/coupon.png"/>
@@ -116,7 +114,7 @@
 <style lang="scss">
   @import "../../styles/variable";
   .today-box{
-    background-color: $color-primary;
+    background: linear-gradient(to right, #48bbfd, #0991ff);
     padding: 40rpx 0;
 
     /*字体颜色*/
@@ -142,7 +140,7 @@
   }
 
   .count-box{
-    padding: 20rpx 0;
+    padding: 30rpx 0;
     text{font-size: $text-lg}
     border-bottom: $border;
 
@@ -164,9 +162,9 @@
 
   .operation-box{
     background-color: #FFFCFC;
+    margin-top: 20rpx;
     margin-bottom: 20rpx;
-    padding-top:35rpx;
-    padding-bottom: 35rpx;
+    border-top: $border;
     border-bottom: $border;
 
     image{
@@ -174,16 +172,11 @@
       width: 90rpx;
     }
 
-    .hr{
-      height: 40rpx;
-      width: 100%;
-    }
-
     .operation-row{
-      text{
-        color: $color-weak;
-        margin-top: 10rpx;
-      }
+      padding-top:35rpx;
+      padding-bottom: 35rpx;
+
+      text{color: $color-weak}
     }
   }
 

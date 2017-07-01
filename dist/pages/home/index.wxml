@@ -1,2 +1,99 @@
 
+
+  <!--今日统计区域-->
+  <view class="today-box">
+    <view class="column-center">
+      <text class="xl">今日付款金额(元)</text>
+      <text class="today-price-text">1.80</text>
+    </view>
+
+    <view class="today-kpi-box row-around">
+      <view class="column-center">
+        <text>浏览人数</text>
+        <text class="lg mt20">3</text>
+      </view>
+      <view class="vr"/>
+      <view class="column-center">
+        <text>付款订单数</text>
+        <text class="lg mt20">3</text>
+      </view>
+      <view class="vr"/>
+      <view class="column-center">
+        <text>付款件数</text>
+        <text class="lg mt20">3</text>
+      </view>
+    </view>
+  </view>
+
+  <!--其他统计区域-->
+  <view>
+    <view class="count-box row-around bg-white">
+      <view class="count-item column-center">
+        <text class="count-value">0</text>
+        <text class="muted">订单数</text>
+      </view>
+      <view class="vr"/>
+      <view class="count-item column-center">
+        <text class="count-value">0</text>
+        <text class="muted">待发货</text>
+      </view>
+      <view class="vr"/>
+      <view class="count-item column-center">
+        <text class="count-value">0</text>
+        <text class="muted">维权订单</text>
+      </view>
+    </view>
+    <view class="count-box row-around bg-white">
+      <view class="count-item column-center">
+        <text class="count-value">0</text>
+        <text class="muted">今日订单数</text>
+      </view>
+      <view class="vr"/>
+      <view class="count-item column-center">
+        <text class="count-value">0</text>
+        <text class="muted">今日浏览量</text>
+      </view>
+      <view class="vr"/>
+      <view class="count-item column-center">
+        <text class="count-value">0</text>
+        <text class="muted">今日用户数</text>
+      </view>
+    </view>
+  </view>
+
+  <!--操作区域-->
+  <view class="operation-box">
+    <view class="operation-row row-around">
+      <view class="column-center">
+        <image src="/images/home/shop.png"/>
+        <text>店铺管理</text>
+      </view>
+      <view class="column-center">
+        <image src="/images/home/cart.png"/>
+        <text>商品管理</text>
+      </view>
+      <view class="column-center">
+        <image src="/images/home/order.png"/>
+        <text>订单管理</text>
+      </view>
+    </view>
+
+    <view class="hr"/>
+
+    <view class="row-around">
+      <view class="operation-row column-center">
+        <image src="/images/home/coupon.png"/>
+        <text>营销管理</text>
+      </view>
+      <view class="operation-row column-center">
+        <image src="/images/home/chart.png"/>
+        <text>信息统计</text>
+      </view>
+      <view class="operation-row column-center">
+        <image src="/images/home/more.png"/>
+        <text>更多配置</text>
+      </view>
+    </view>
+  </view>
+
   <view class="tab-border"/>

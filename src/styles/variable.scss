@@ -2,6 +2,7 @@
 $color-major: #FF6200;
 $color-primary: #1296DB;
 $color-muted: #A3A3A3;
+$color-weak: #626E7A;
 $color-normal: #262626;
 $color-danger: #e33;
 $color-warn: #f85;
@@ -16,7 +17,8 @@ $text-xs: 24rpx;
 
 
 /******边框样式******/
-$border: 1px solid #EDEDED;
+$color-border: #EDEDED;
+$border: 1px solid $color-border;
 
 /******背景样式******/
 $color-bg-body: #F5F5F5;
