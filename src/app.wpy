@@ -1,6 +1,7 @@
 <style lang="scss" >
   @import "./styles/base";
   @import "./styles/zent";
+  @import "./styles/weui.wxss";
 </style>
 
 <script>
@@ -22,6 +23,7 @@ export default class extends wepy.app {
 
   config = {
     pages: [
+      'pages/home/login',
       'pages/home/index',
       'pages/order/index',
       'pages/user/index'

@@ -24,6 +24,15 @@ text, view {
   color: $color-normal;
 }
 
+form text,view{
+  font-family: 宋体;
+  font-size: $text-form;
+}
+
+button[type="primary"]{
+  background-color: $color-primary;
+}
+
 text.white{color:#FFF}
 text.muted{color: $color-muted}
 text.primary{color: $color-primary}

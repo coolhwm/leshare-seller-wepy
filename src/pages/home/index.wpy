@@ -115,6 +115,8 @@
 
 <style lang="scss">
   @import "../../styles/variable";
+
+  /*今日区域*/
   .today-box{
     background-color: $color-primary;
     padding: 40rpx 0;
@@ -122,14 +124,12 @@
     /*字体颜色*/
     text{color: white;}
 
-    /*今日付款金额*/
     .today-price-text{
       font-size: 80rpx;
       margin-top: 40rpx;
       margin-bottom: 40rpx;
     }
 
-    /*竖线*/
     .vr{
       width:1px;
       height: 30rpx;
@@ -141,6 +141,7 @@
     }
   }
 
+  /*统计区域*/
   .count-box{
     padding: 20rpx 0;
     text{font-size: $text-lg}
@@ -162,6 +163,7 @@
     }
   }
 
+  /*操作区域*/
   .operation-box{
     background-color: #FFFCFC;
     margin-bottom: 20rpx;

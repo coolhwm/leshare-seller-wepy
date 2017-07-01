@@ -3,6 +3,11 @@
 /******字体大小变量******/
 /******边框样式******/
 /******背景样式******/
+/******weui fix******/
+.form .weui-vcode-btn {
+  color: #1296DB;
+}
+
 /******全局页面******/
 page {
   height: 100%;
@@ -47,6 +52,15 @@ text, view {
   font-family: MicroSoft Yahei;
   font-size: 28rpx;
   color: #262626;
+}
+
+form text, view {
+  font-family: 宋体;
+  font-size: 17px;
+}
+
+button[type="primary"] {
+  background-color: #1296DB;
 }
 
 text.white {

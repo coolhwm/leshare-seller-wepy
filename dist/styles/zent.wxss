@@ -4,6 +4,11 @@
 /******字体大小变量******/
 /******边框样式******/
 /******背景样式******/
+/******weui fix******/
+.form .weui-vcode-btn {
+  color: #1296DB;
+}
+
 .zan-btn {
   color: #333;
   background-color: #fff;

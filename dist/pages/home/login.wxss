@@ -7,3 +7,18 @@
 .form .weui-vcode-btn {
   color: #1296DB;
 }
+
+.brand {
+  padding-top: 60rpx;
+  padding-bottom: 60rpx;
+}
+
+.brand image {
+  height: 64px;
+  width: 64px;
+}
+
+.brand text {
+  margin-top: 15rpx;
+  font-size: 17px;
+}
