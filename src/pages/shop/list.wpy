@@ -1,0 +1,20 @@
+<template>
+  shop
+</template>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class ShopList extends wepy.page {
+    config = {};
+    components = {};
+    methods = {};
+    events = {};
+    onLoad () {};
+    data = {};
+  }
+</script>
