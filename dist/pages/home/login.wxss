@@ -1,3 +1,5 @@
+@import "./../../components/weui/vcode.wxss";
+@import "./../../components/weui/tips.wxss";
 @charset "UTF-8";
 /******字体颜色变量******/
 /******字体大小变量******/

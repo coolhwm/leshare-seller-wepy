@@ -31,59 +31,67 @@ var auth = function (_base) {
   }
 
   _createClass(auth, null, [{
-    key: 'sms',
+    key: 'login',
     value: function () {
-      var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(phone) {
-        var reg, url, ERROR_WAIT, data, result, errorCode;
+      var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(phone, code) {
+        var url, dara;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                if (!(phone === null || phone === '')) {
-                  _context.next = 2;
-                  break;
-                }
-
-                return _context.abrupt('return', '电话号码不能为空');
-
-              case 2:
-                reg = /^1[34578]\d{9}$/;
-
-                if (reg.test(phone)) {
-                  _context.next = 5;
-                  break;
-                }
-
-                return _context.abrupt('return', '电话号码格式错误');
-
-              case 5:
-                url = this.baseUrl + '/auth/sms_code?phone=' + phone;
-                ERROR_WAIT = 10003;
-                _context.prev = 7;
-                _context.next = 10;
+                url = this.baseUrl + '/auth/login?phone=' + phone + '&sms_code=' + code;
+                _context.next = 3;
                 return this.get(url);
 
-              case 10:
-                data = _context.sent;
-                result = data.result;
-                return _context.abrupt('return', result === 'SUCCESS' ? result : '服务器错误');
+              case 3:
+                dara = _context.sent;
+                return _context.abrupt('return', dara.login_code);
 
-              case 15:
-                _context.prev = 15;
-                _context.t0 = _context['catch'](7);
-                errorCode = _context.t0.serverCode;
-                return _context.abrupt('return', errorCode === ERROR_WAIT ? '请求过于频繁' : '服务器错误');
-
-              case 19:
+              case 5:
               case 'end':
                 return _context.stop();
             }
           }
-        }, _callee, this, [[7, 15]]);
+        }, _callee, this);
       }));
 
-      function sms(_x) {
+      function login(_x, _x2) {
         return _ref.apply(this, arguments);
+      }
+
+      return login;
+    }()
+    /**
+     * 短信验证码
+     */
+
+  }, {
+    key: 'sms',
+    value: function () {
+      var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(phone) {
+        var url, data;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                url = this.baseUrl + '/auth/sms_code?phone=' + phone;
+                _context2.next = 3;
+                return this.get(url);
+
+              case 3:
+                data = _context2.sent;
+                return _context2.abrupt('return', data.result);
+
+              case 5:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function sms(_x3) {
+        return _ref2.apply(this, arguments);
       }
 
       return sms;
@@ -94,4 +102,4 @@ var auth = function (_base) {
 }(_base3.default);
 
 exports.default = auth;
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImF1dGguanMiXSwibmFtZXMiOlsiYXV0aCIsInBob25lIiwicmVnIiwidGVzdCIsInVybCIsImJhc2VVcmwiLCJFUlJPUl9XQUlUIiwiZ2V0IiwiZGF0YSIsInJlc3VsdCIsImVycm9yQ29kZSIsInNlcnZlckNvZGUiXSwibWFwcGluZ3MiOiI7Ozs7Ozs7OztBQUFBOzs7Ozs7Ozs7Ozs7OztJQUVxQkEsSTs7Ozs7Ozs7Ozs7OzRFQUNEQyxLOzs7Ozs7c0JBQ1pBLFVBQVUsSUFBVixJQUFrQkEsVUFBVSxFOzs7OztpREFDdkIsVTs7O0FBRUhDLG1CLEdBQU0saUI7O29CQUNQQSxJQUFJQyxJQUFKLENBQVNGLEtBQVQsQzs7Ozs7aURBQ0ksVTs7O0FBRUhHLG1CLEdBQVMsS0FBS0MsTyw2QkFBK0JKLEs7QUFDN0NLLDBCLEdBQWEsSzs7O3VCQUVFLEtBQUtDLEdBQUwsQ0FBU0gsR0FBVCxDOzs7QUFBYkksb0I7QUFDQUMsc0IsR0FBU0QsS0FBS0MsTTtpREFDYkEsV0FBVyxTQUFYLEdBQXVCQSxNQUF2QixHQUFnQyxPOzs7OztBQUVqQ0MseUIsR0FBWSxZQUFFQyxVO2lEQUNiRCxjQUFjSixVQUFkLEdBQTJCLFFBQTNCLEdBQXNDLE87Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztrQkFqQjlCTixJIiwiZmlsZSI6ImF1dGguanMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgYmFzZSBmcm9tICcuL2Jhc2UnXG5cbmV4cG9ydCBkZWZhdWx0IGNsYXNzIGF1dGggZXh0ZW5kcyBiYXNlIHtcbiAgc3RhdGljIGFzeW5jIHNtcyAocGhvbmUpIHtcbiAgICBpZiAocGhvbmUgPT09IG51bGwgfHwgcGhvbmUgPT09ICcnKSB7XG4gICAgICByZXR1cm4gJ+eUteivneWPt+eggeS4jeiDveS4uuepuic7XG4gICAgfVxuICAgIGNvbnN0IHJlZyA9IC9eMVszNDU3OF1cXGR7OX0kLztcbiAgICBpZiAoIXJlZy50ZXN0KHBob25lKSkge1xuICAgICAgcmV0dXJuICfnlLXor53lj7fnoIHmoLzlvI/plJnor68nO1xuICAgIH1cbiAgICBjb25zdCB1cmwgPSBgJHt0aGlzLmJhc2VVcmx9L2F1dGgvc21zX2NvZGU/cGhvbmU9JHtwaG9uZX1gXG4gICAgY29uc3QgRVJST1JfV0FJVCA9IDEwMDAzO1xuICAgIHRyeSB7XG4gICAgICBjb25zdCBkYXRhID0gYXdhaXQgdGhpcy5nZXQodXJsKTtcbiAgICAgIGNvbnN0IHJlc3VsdCA9IGRhdGEucmVzdWx0O1xuICAgICAgcmV0dXJuIHJlc3VsdCA9PT0gJ1NVQ0NFU1MnID8gcmVzdWx0IDogJ+acjeWKoeWZqOmUmeivryc7XG4gICAgfSBjYXRjaCAoZSkge1xuICAgICAgY29uc3QgZXJyb3JDb2RlID0gZS5zZXJ2ZXJDb2RlO1xuICAgICAgcmV0dXJuIGVycm9yQ29kZSA9PT0gRVJST1JfV0FJVCA/ICfor7fmsYLov4fkuo7popHnuYEnIDogJ+acjeWKoeWZqOmUmeivryc7XG4gICAgfVxuICB9XG59XG4iXX0=
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImF1dGguanMiXSwibmFtZXMiOlsiYXV0aCIsInBob25lIiwiY29kZSIsInVybCIsImJhc2VVcmwiLCJnZXQiLCJkYXJhIiwibG9naW5fY29kZSIsImRhdGEiLCJyZXN1bHQiXSwibWFwcGluZ3MiOiI7Ozs7Ozs7OztBQUFBOzs7Ozs7Ozs7Ozs7OztJQUVxQkEsSTs7Ozs7Ozs7Ozs7OzRFQUNBQyxLLEVBQU9DLEk7Ozs7OztBQUNsQkMsbUIsR0FBUyxLQUFLQyxPLDBCQUE0QkgsSyxrQkFBa0JDLEk7O3VCQUMvQyxLQUFLRyxHQUFMLENBQVNGLEdBQVQsQzs7O0FBQWJHLG9CO2lEQUNDQSxLQUFLQyxVOzs7Ozs7Ozs7Ozs7Ozs7O0FBRWQ7Ozs7Ozs7OEVBR2tCTixLOzs7Ozs7QUFDVkUsbUIsR0FBUyxLQUFLQyxPLDZCQUErQkgsSzs7dUJBQ2hDLEtBQUtJLEdBQUwsQ0FBU0YsR0FBVCxDOzs7QUFBYkssb0I7a0RBQ0NBLEtBQUtDLE07Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztrQkFaS1QsSSIsImZpbGUiOiJhdXRoLmpzIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IGJhc2UgZnJvbSAnLi9iYXNlJ1xuXG5leHBvcnQgZGVmYXVsdCBjbGFzcyBhdXRoIGV4dGVuZHMgYmFzZSB7XG4gIHN0YXRpYyBhc3luYyBsb2dpbihwaG9uZSwgY29kZSkge1xuICAgIGNvbnN0IHVybCA9IGAke3RoaXMuYmFzZVVybH0vYXV0aC9sb2dpbj9waG9uZT0ke3Bob25lfSZzbXNfY29kZT0ke2NvZGV9YDtcbiAgICBjb25zdCBkYXJhID0gYXdhaXQgdGhpcy5nZXQodXJsKTtcbiAgICByZXR1cm4gZGFyYS5sb2dpbl9jb2RlO1xuICB9XG4gIC8qKlxuICAgKiDnn63kv6Hpqozor4HnoIFcbiAgICovXG4gIHN0YXRpYyBhc3luYyBzbXMgKHBob25lKSB7XG4gICAgY29uc3QgdXJsID0gYCR7dGhpcy5iYXNlVXJsfS9hdXRoL3Ntc19jb2RlP3Bob25lPSR7cGhvbmV9YFxuICAgIGNvbnN0IGRhdGEgPSBhd2FpdCB0aGlzLmdldCh1cmwpO1xuICAgIHJldHVybiBkYXRhLnJlc3VsdDtcbiAgfVxufVxuIl19

@@ -1,15 +1,17 @@
 import wepy from 'wepy'
+import Tips from './Tips';
 
 // HTTP工具类
 export default class http {
   static async request (method, url, data) {
-    const header = this.createAuthHeader()
+    const header = this.createAuthHeader();
     const param = {
       url: url,
       method: method,
       header: header,
       data: data
     }
+    Tips.loading();
     const res = await wepy.request(param);
     if (this.isSuccess(res)) {
       return res.data.data;
@@ -40,7 +42,7 @@ export default class http {
     const serverData = res.data;
     if (serverData) {
       error.serverCode = serverData.code;
-      error.serverMessage = serverData.message;
+      error.message = serverData.message;
     }
     return error;
   }

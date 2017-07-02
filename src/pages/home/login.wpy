@@ -5,7 +5,7 @@
       <text>乐享商家助手</text>
     </view>
     <view class="page__bd form">
-      <view class="weui-toptips weui-toptips_warn" wx:if="{{showTopTips}}">错误提示</view>
+      <Tips />
       <view class="weui-cells weui-cells_after-title">
         <view class="weui-cell weui-cell_input weui-cell_vcode">
           <view class="weui-cell__hd">
@@ -15,7 +15,8 @@
             <input class="weui-input" @input="onPhoneInput" maxlength="11" placeholder="请输入手机号" />
           </view>
           <view class="weui-cell__ft">
-            <view class="weui-vcode-btn {{isWaiting ? 'muted' : ''}}" @tap="onCodeTap">{{btnText}}</view>
+            <!--<view class="weui-vcode-btn {{isWaiting ? 'muted' : ''}}" @tap="onCodeTap">{{btnText}}</view>-->
+            <VCode  @tap.user="onCodeTap" />
           </view>
         </view>
         <view class="weui-cell weui-cell_input weui-cell_vcode">
@@ -31,66 +32,98 @@
 
 
       <view class="weui-btn-area">
-        <button class="weui-btn" type="primary" bindtap="showTopTips">确定</button>
+        <button class="weui-btn" type="primary" @tap="onConfirmTap">确定</button>
       </view>
     </view>
   </view>
 
 
 </template>
-
 <script>
   import wepy from 'wepy';
   import auth from '../../api/auth';
-  export default class OrderIndex extends wepy.page {
+  import FormTips from '../../components/weui/tips';
+  import VCode from '../../components/weui/vcode';
+  import Tips from '../../utils/Tips';
+  export default class Login extends wepy.page {
     data = {
       code: null,
-      phone: null,
-      waitSecond: 0,
-      interval: null
+      phone: null
     };
     methods = {
-      async onCodeTap() {
-        if (this.isWaiting) {
+      async onConfirmTap() {
+        if (!this.isValid()) {
           return;
         }
-        // 发送验证码
-        const result = await auth.sms(this.phone);
-        if (result !== 'SUCCESS') {
-          console.info(result);
-          return;
+        try {
+          const loginCode = await auth.login(this.phone, this.code);
+          await wepy.setStorage({key: 'login_code', data: loginCode});
+          this.$switch('/pages/home/index');
+        } catch (e) {
+          this.$invoke('Tips', 'show', e.message);
+        } finally {
+          Tips.loaded();
         }
-        // 设置定时器
-        this.waitSecond = 60;
-        this.interval = setInterval(() => {
-          this.waitSecond--;
-          if (this.waitSecond === 0) {
-            clearInterval(this.interval);
-          }
-          this.$apply();
-        }, 1000);
       },
       onCodeInput(event) {
         this.code = event.detail.value;
       },
       onPhoneInput(event) {
         this.phone = event.detail.value;
-      }
-    };
-    computed = {
-      isWaiting() {
-        return this.waitSecond > 0;
       },
-      btnText() {
-        return this.isWaiting > 0 ? `请等待${this.waitSecond}秒` : '获取验证码';
+      async onCodeTap() {
+        if (!this.isPhoneValid()) {
+          return;
+        }
+        // 发送验证码
+        try {
+          await auth.sms(this.phone);
+          this.$invoke('VCode', 'cd', 60);
+        } catch (e) {
+          this.$invoke('Tips', 'show', e.message);
+        } finally {
+          Tips.loaded();
+        }
       }
     };
     events = {};
     config = {
       navigationBarTitleText: '商家登录'
     };
-    components = {};
-    onLoad () {};
+    components = {
+      Tips: FormTips,
+      VCode: VCode
+    };
+    onLoad () {}
+
+    /**
+     * 校验表单提交
+     */
+    isValid() {
+      if (!this.isPhoneValid()) {
+        return false;
+      }
+      if (this.code === null) {
+        this.$invoke('Tips', 'show', '请输入验证码');
+        return false;
+      }
+      return true;
+    }
+    /**
+     * 校验电话号码
+     */
+    isPhoneValid() {
+      if (this.phone === null || this.phone === '') {
+        this.$invoke('Tips', 'show', '请输入手机号码');
+        return false;
+      }
+      const reg = /^1[34578]\d{9}$/;
+      if (!reg.test(this.phone)) {
+        this.$invoke('Tips', 'show', '电话号码格式错误');
+        return false;
+      }
+      return true;
+    }
   }
 </script>
 

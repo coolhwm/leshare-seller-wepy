@@ -5,7 +5,9 @@
       <text>乐享商家助手</text>
     </view>
     <view class="page__bd form">
-      <view class="weui-toptips weui-toptips_warn"  wx:if="{{showTopTips}}">错误提示</view>
+      
+  <view class="weui-toptips weui-toptips_warn"  wx:if="{{$Tips$display}}">{{$Tips$message}}</view>
+
       <view class="weui-cells weui-cells_after-title">
         <view class="weui-cell weui-cell_input weui-cell_vcode">
           <view class="weui-cell__hd">
@@ -15,7 +17,10 @@
             <input class="weui-input" bindinput="onPhoneInput" maxlength="11" placeholder="请输入手机号"/>
           </view>
           <view class="weui-cell__ft">
-            <view class="weui-vcode-btn {{isWaiting ? 'muted' : ''}}" bindtap="onCodeTap">{{btnText}}</view>
+            <!--<view class="weui-vcode-btn {{isWaiting ? 'muted' : ''}}" bindtap="onCodeTap">{{btnText}}</view>-->
+            
+  <view class="weui-vcode-btn {{$VCode$isWaiting ? 'muted' : ''}}" bindtap="$VCode$onCodeTap">{{$VCode$btnText}}</view>
+
           </view>
         </view>
         <view class="weui-cell weui-cell_input weui-cell_vcode">
@@ -31,7 +36,7 @@
 
 
       <view class="weui-btn-area">
-        <button class="weui-btn" type="primary" bindtap="showTopTips">确定</button>
+        <button class="weui-btn" type="primary" bindtap="onConfirmTap">确定</button>
       </view>
     </view>
   </view>
