@@ -3,11 +3,6 @@
 /******字体大小变量******/
 /******边框样式******/
 /******背景样式******/
-/******weui fix******/
-.form .weui-vcode-btn {
-  color: #1296DB;
-}
-
 /******全局页面******/
 page {
   height: 100%;
@@ -63,11 +58,15 @@ button[type="primary"] {
   background-color: #1296DB;
 }
 
+.button-hover[type="primary"] {
+  background-color: #1086c3;
+}
+
 text.white {
   color: #FFF;
 }
 
-text.muted {
+text.muted, input.muted, view.muted {
   color: #A3A3A3;
 }
 
@@ -132,8 +131,14 @@ view.bg-white {
 
 /******图片样式******/
 .icon {
-  height: 40rpx;
-  width: 40rpx;
+  height: 20px;
+  width: 20px;
+  vertical-align: middle;
+}
+
+.icon-xxl {
+  height: 60px;
+  width: 60px;
   vertical-align: middle;
 }
 
@@ -151,16 +156,20 @@ view.bg-white {
   bottom: 0;
 }
 
-/*有赞样式文件*/
-/******字体颜色变量******/
-/******字体大小变量******/
-/******边框样式******/
-/******背景样式******/
 /******weui fix******/
 .form .weui-vcode-btn {
   color: #1296DB;
 }
 
+.form .muted {
+  color: #A3A3A3;
+}
+
+/*有赞样式文件*/
+/******字体颜色变量******/
+/******字体大小变量******/
+/******边框样式******/
+/******背景样式******/
 .zan-btn {
   color: #333;
   background-color: #fff;

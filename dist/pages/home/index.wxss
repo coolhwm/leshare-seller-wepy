@@ -3,11 +3,6 @@
 /******字体大小变量******/
 /******边框样式******/
 /******背景样式******/
-/******weui fix******/
-.form .weui-vcode-btn {
-  color: #1296DB;
-}
-
 /*今日区域*/
 .today-box {
   background-color: #1296DB;

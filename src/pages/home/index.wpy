@@ -108,8 +108,8 @@
     components = {};
     methods = {};
     events = {};
-    onLoad () {};
     data = {};
+    onLoad () {};
   }
 </script>
 

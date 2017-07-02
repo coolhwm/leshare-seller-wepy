@@ -11,14 +11,17 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   constructor () {
     super()
-    this.use('requestfix')
+    // 注册中间件
+    this.use('requestfix');
+    this.use('promisify');
   }
 
   onLaunch() {
   }
 
   globalData = {
-    userInfo: null
+    userInfo: '123',
+    baseUrl: 'http://leshare.shop:9999/api/v1/seller'
   }
 
   config = {

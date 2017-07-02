@@ -1,7 +1,7 @@
 <template>
   <view class="page">
     <view class="brand column-center">
-      <image src="/images/home/shop-logo.png"/>
+      <image class="icon-xxl" src="/images/home/shop-logo.png"/>
       <text>乐享商家助手</text>
     </view>
     <view class="page__bd form">
@@ -12,10 +12,10 @@
             <view class="weui-label">手机号</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" placeholder="请输入手机号" />
+            <input class="weui-input"  placeholder="请输入手机号" />
           </view>
           <view class="weui-cell__ft">
-            <view class="weui-vcode-btn">获取验证码</view>
+            <view class="weui-vcode-btn" @tap="onCodeTap">{{btnText}}</view>
           </view>
         </view>
         <view class="weui-cell weui-cell_input weui-cell_vcode">
@@ -23,10 +23,7 @@
             <view class="weui-label">验证码</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" placeholder="请输入验证码" />
-          </view>
-          <view class="weui-cell__ft">
-            <image class="weui-vcode-img" src="../images/vcode.jpg" style="width: 108px"></image>
+            <input class="weui-input" maxlength="4"  @input="onCodeInput" placeholder="请输入验证码" />
           </view>
         </view>
       </view>
@@ -42,36 +39,48 @@
 
 </template>
 
+<script>
+  import wepy from 'wepy';
+  import auth from '../../api/auth';
+  export default class OrderIndex extends wepy.page {
+    data = {
+      code: null,
+      waiting: 0
+    };
+    methods = {
+      onCodeTap() {
+        console.info('tap');
+      },
+      onCodeInput(event) {
+        this.code = event.detail.value;
+      }
+    };
+    computed = {
+      btnText() {
+        return this.btnDisabled  ? `请等待${this.waiting}秒` : '获取验证码';
+      },
+      btnDisabled() {
+        return this.waiting > 0;
+      }
+    };
+    events = {};
+    config = {
+      navigationBarTitleText: '商家登录'
+    };
+    components = {};
+    onLoad () {};
+  }
+</script>
+
 <style lang="scss">
   @import "../../styles/variable";
   .brand{
     padding-top: 60rpx;
     padding-bottom: 60rpx;
-    background-color: whi;
-
-    image{
-      height: 64px;
-      width: 64px;
-    }
 
     text{
-      margin-top: 10rpx;
-      font-size: $text-xl;
+      margin-top: 15rpx;
+      font-size: $text-form;
     }
   }
 </style>
-
-<script>
-  import wepy from 'wepy'
-
-  export default class OrderIndex extends wepy.page {
-    config = {
-      navigationBarTitleText: '商家登录'
-    };
-    components = {};
-    methods = {};
-    events = {};
-    onLoad () {};
-    data = {};
-  }
-</script>

@@ -1,7 +1,7 @@
 <template>
   <view class="page">
     <view class="brand column-center">
-      <image src="/images/home/shop-logo.png"/>
+      <image class="icon-xxl" src="/images/home/shop-logo.png"/>
       <text>乐享商家助手</text>
     </view>
     <view class="page__bd form">
@@ -12,10 +12,10 @@
             <view class="weui-label">手机号</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" placeholder="请输入手机号" />
+            <input class="weui-input" @input="onPhoneInput" maxlength="11" placeholder="请输入手机号" />
           </view>
           <view class="weui-cell__ft">
-            <view class="weui-vcode-btn">获取验证码</view>
+            <view class="weui-vcode-btn {{isWaiting ? 'muted' : ''}}" @tap="onCodeTap">{{btnText}}</view>
           </view>
         </view>
         <view class="weui-cell weui-cell_input weui-cell_vcode">
@@ -23,7 +23,7 @@
             <view class="weui-label">验证码</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" placeholder="请输入验证码" />
+            <input class="weui-input" maxlength="4"  @input="onCodeInput" placeholder="请输入验证码" />
           </view>
         </view>
       </view>
@@ -39,36 +39,70 @@
 
 </template>
 
+<script>
+  import wepy from 'wepy';
+  import auth from '../../api/auth';
+  export default class OrderIndex extends wepy.page {
+    data = {
+      code: null,
+      phone: null,
+      waitSecond: 0,
+      interval: null
+    };
+    methods = {
+      async onCodeTap() {
+        if (this.isWaiting) {
+          return;
+        }
+        // 发送验证码
+        const result = await auth.sms(this.phone);
+        if (result !== 'SUCCESS') {
+          console.info(result);
+          return;
+        }
+        // 设置定时器
+        this.waitSecond = 60;
+        this.interval = setInterval(() => {
+          this.waitSecond--;
+          if (this.waitSecond === 0) {
+            clearInterval(this.interval);
+          }
+          this.$apply();
+        }, 1000);
+      },
+      onCodeInput(event) {
+        this.code = event.detail.value;
+      },
+      onPhoneInput(event) {
+        this.phone = event.detail.value;
+      }
+    };
+    computed = {
+      isWaiting() {
+        return this.waitSecond > 0;
+      },
+      btnText() {
+        return this.isWaiting > 0 ? `请等待${this.waitSecond}秒` : '获取验证码';
+      }
+    };
+    events = {};
+    config = {
+      navigationBarTitleText: '商家登录'
+    };
+    components = {};
+    onLoad () {};
+  }
+</script>
+
 <style lang="scss">
   @import "../../styles/variable";
   .brand{
     padding-top: 60rpx;
     padding-bottom: 60rpx;
 
-
-    image{
-      height: 64px;
-      width: 64px;
-    }
-
     text{
       margin-top: 15rpx;
-      font-size: 17px;
+      font-size: $text-form;
     }
   }
 </style>
-
-<script>
-  import wepy from 'wepy'
-
-  export default class OrderIndex extends wepy.page {
-    config = {
-      navigationBarTitleText: '商家登录'
-    };
-    components = {};
-    methods = {};
-    events = {};
-    onLoad () {};
-    data = {};
-  }
-</script>

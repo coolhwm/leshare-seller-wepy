@@ -32,9 +32,12 @@ form text,view{
 button[type="primary"]{
   background-color: $color-primary;
 }
+.button-hover[type="primary"]{
+  background-color: $color-primary-darken;
+}
 
 text.white{color:#FFF}
-text.muted{color: $color-muted}
+text.muted,input.muted,view.muted{color: $color-muted}
 text.primary{color: $color-primary}
 text.major{color: $color-major}
 
@@ -83,10 +86,17 @@ view.bg-white{background-color: white}
 
 
 /******图片样式******/
-.icon {
-  height: 40rpx;
-  width: 40rpx;
+@mixin icon-image($size){
+  height: $size;
+  width: $size;
   vertical-align: middle;
+}
+.icon {
+  @include icon-image(20px);
+}
+
+.icon-xxl{
+  @include icon-image(60px);
 }
 
 /******间隔******/
@@ -101,3 +111,14 @@ view.bg-white{background-color: white}
   background-color: #E6E8EB;
   bottom: 0;
 }
+
+/******weui fix******/
+.form{
+  .weui-vcode-btn {
+    color:$color-primary;
+  }
+  .muted{
+    color:$color-muted;
+  }
+}
+

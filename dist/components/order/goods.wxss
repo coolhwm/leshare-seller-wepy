@@ -3,11 +3,6 @@
 /******字体大小变量******/
 /******边框样式******/
 /******背景样式******/
-/******weui fix******/
-.form .weui-vcode-btn {
-  color: #1296DB;
-}
-
 .order-goods-container {
   background-color: #FAFAFA;
   padding: 10rpx 20rpx 15rpx 25rpx;
