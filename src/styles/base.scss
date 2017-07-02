@@ -38,10 +38,13 @@ button[type="primary"]{
 
 text.white{color:#FFF}
 text.muted,input.muted,view.muted{color: $color-muted}
+text.weak{color: $color-weak}
 text.primary{color: $color-primary}
 text.major{color: $color-major}
 
 text.xl{font-size: $text-xl}
+text.xxl{font-size: $text-xxl}
+text.lg{font-size: $text-lg}
 text.sm{font-size: $text-sm}
 
 view.bg-white{background-color: white}
@@ -51,6 +54,10 @@ view.bg-white{background-color: white}
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+.row-center{
+  @extend .row;
+  justify-content: center;
 }
 .row-between {
   @extend .row;
@@ -94,7 +101,9 @@ view.bg-white{background-color: white}
 .icon {
   @include icon-image(20px);
 }
-
+.icon-xl {
+  @include icon-image(50px);
+}
 .icon-xxl{
   @include icon-image(60px);
 }

@@ -1,20 +1,52 @@
 <template>
-  shop
+  <view class="column">
+    <view class="title-box row-between">
+      <text class="muted lg">我管理的店铺</text>
+      <text class="muted lg">创建</text>
+    </view>
+
+    <!--店铺列表-->
+    <view class="list-box column">
+      <repeat for="{{shops}}" key="index" index="index" item="item">
+        <ShopItem></ShopItem>
+      </repeat>
+    </view>
+  </view>
+
+  <!--占位符-->
+  <Placeholder :list="shops" message="您还没有创建店铺"/>
 </template>
 
-<style lang="scss">
-  @import "../../styles/variable";
-</style>
 
 <script>
-  import wepy from 'wepy'
+  import wepy from 'wepy';
+  import ShopItem from '../../components/shop/item';
+  import Placeholder from '../../components/utils/placeholder';
 
   export default class ShopList extends wepy.page {
-    config = {};
-    components = {};
+    config = {
+      navigationBarTitleText: '选择店铺'
+    };
+    components = {
+      ShopItem: ShopItem,
+      Placeholder: Placeholder
+    };
     methods = {};
     events = {};
     onLoad () {};
-    data = {};
+    data = {
+      shops: []
+    };
   }
 </script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  .title-box{
+    padding:15rpx 30rpx;
+  }
+  .list-box{
+    background: white;
+    border-bottom: $border;
+  }
+</style>

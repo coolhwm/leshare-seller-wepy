@@ -1,20 +1,38 @@
 <template>
+  <view class="item-box row">
+    <image class="shop-icon icon-xl" src="/images/home/shop-logo.png"/>
+    <text class="shop-title xxl">正宗安溪铁观音</text>
+  </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   export default class ShopItem extends wepy.component {
     props = {
-      order: {}
+      shop: {}
     };
     data = {};
     methods = {};
     events = {};
-    onLoad() {
-    }
   }
 </script>
 
 <style lang="scss">
   @import "../../styles/variable";
+
+  .item-box {
+    padding:20rpx 30rpx;
+    border-top: $border;
+
+    .shop-icon{
+      background-color: white;
+      border-radius: 5px;
+      border: $border;
+    }
+
+    .shop-title{
+      margin-left: 35rpx;
+    }
+  }
+
 </style>
