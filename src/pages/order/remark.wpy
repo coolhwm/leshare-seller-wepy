@@ -1,0 +1,43 @@
+<template>
+  <view class="weui-cells weui-cells_after-title">
+    <view class="weui-cell">
+      <view class="weui-cell__bd">
+        <textarea class="weui-textarea" id="remark" placeholder="请输入订单备注" style="height: 6.3em" maxlength="200" @input="input" />
+        <view class="weui-textarea-counter">{{input.remark ? input.remark.length : 0}}/200</view>
+      </view>
+    </view>
+  </view>
+  <text class="muted sm ml20">小提示：订单备注只有您自己可以看到。</text>
+  <!--操作栏-->
+  <ActionBar okText="保存" cancelText="返回" @tap.user="onSubmitTap" />
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import input from '../../mixins/input';
+  import ActionBar from '../../components/common/action_bar';
+
+  export default class OrderRemark extends wepy.page {
+    data = {};
+    onLoad () {};
+    methods = {
+      /**
+       * 提交表单
+       */
+      onSubmitTap() {
+      }
+    };
+    config = {
+      navigationBarTitleText: '订单备注'
+    };
+    components = {
+      ActionBar: ActionBar
+    };
+    mixins = [input];
+    events = {};
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>

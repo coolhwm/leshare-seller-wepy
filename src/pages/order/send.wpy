@@ -1,17 +1,17 @@
 <template>
-  <view class="container">
+  <view class="container" wx:if="{{init}}">
     <!--地址选择器-->
     <Address :address.sync="address" />
 
-    <!--表单-->
-    <view class="weui-cells weui-cells_after-title">
+    <!--发货表单-->
+    <view class="weui-cells weui-cells_after-title ">
       <view class="weui-cell weui-cell_switch">
         <view class="weui-cell__bd">物流发货</view>
         <view class="weui-cell__ft">
           <switch checked id="isMail" @change="input" />
         </view>
       </view>
-      <view class="weui-cell weui-cell_input">
+      <view class="weui-cell weui-cell_input" wx:if="{{input.isMail}}">
         <view class="weui-cell__hd">
           <view class="weui-label">快递公司</view>
         </view>
@@ -20,19 +20,29 @@
         </view>
         <view class="weui-cell__ft weui-cell__ft_in-access"></view>
       </view>
-      <view class="weui-cell weui-cell_input">
-        <view class="weui-cell__hd">
+      <view class="weui-cell weui-cell_input" wx:if="{{input.isMail}}">
+        <view class="weui-cell__hd" >
           <view class="weui-label">快递单号</view>
         </view>
         <view class="weui-cell__bd">
           <input class="weui-input" id="mailNo" @input="input" placeholder="请输入快递单号"/>
         </view>
         <view class="weui-cell__ft">
-          <!--<icon type="warn" size="23" color="#E64340"></icon>-->
         </view>
       </view>
+      <view class="weui-cell weui-cell_input row-center express-tips" wx:if="{{!input.isMail}}">
+        <text class="muted">无需发物流不用填写物流相关信息</text>
+      </view>
+    </view>
+
+    <!--订单信息-->
+    <view class="mt10">
+      <OrderItem :order.sync="order" action="0"></OrderItem>
     </view>
   </view>
+
+  <!--操作栏-->
+  <ActionBar @tap.user="onSubmitTap" />
 </template>
 
 <script>
@@ -41,11 +51,19 @@
   import input from '../../mixins/input';
   import Tips from '../../utils/Tips';
   import Address from '../../components/common/address';
+  import ActionBar from '../../components/common/action_bar';
+  import OrderItem from '../../components/order/item';
 
   export default class OrderSend extends wepy.page {
     data = {
-      order: {},
-      address: {}
+      order: {
+        orderGoodsInfos: []
+      },
+      address: {},
+      input: {
+        isMail: true
+      },
+      init: false
     };
     async onLoad () {
       const orderId = 1690;
@@ -55,12 +73,22 @@
         name: this.order.receiveName,
         phone: this.order.receivePhone
       }
+      this.init = true;
       this.$apply();
       Tips.loaded();
     };
+    methods = {
+      /**
+       * 提交表单
+       */
+      onSubmitTap() {
+      }
+    };
     mixins = [input];
     components = {
-      Address: Address
+      Address: Address,
+      OrderItem: OrderItem,
+      ActionBar: ActionBar
     };
     config = {
       navigationBarTitleText: '订单发货'
@@ -71,4 +99,8 @@
 
 <style lang="scss">
   @import "../../styles/variable";
+
+  .express-tips{
+    height: 177rpx;
+  }
 </style>

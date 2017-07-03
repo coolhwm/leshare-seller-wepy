@@ -33,7 +33,7 @@
     </view>
 
     <!--操作栏-->
-    <view class="order-action-bar row-end">
+    <view class="order-action-bar row-end" wx:if="{{action != 0}}">
       <view class="zan-btn zan-btn--small">订单备注</view>
       <view class="zan-btn zan-btn--small zan-btn--primary" wx:if="{{order.status == 1}}">订单关闭</view>
       <view class="zan-btn zan-btn--small zan-btn--primary" wx:if="{{order.status == 2}}">订单发货</view>
@@ -49,6 +49,9 @@
     props = {
       order: {
         orderGoodsInfos: []
+      },
+      action: {
+        default: true
       }
     };
     components = {
@@ -89,7 +92,6 @@
       color:$color-muted;
     }
   }
-
 
   /* 操作栏 */
   .order-action-bar {

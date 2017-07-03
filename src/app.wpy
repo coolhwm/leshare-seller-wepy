@@ -32,6 +32,8 @@ export default class extends wepy.app {
 
   config = {
     pages: [
+      'pages/order/close',
+      'pages/order/remark',
       'pages/order/send',
       'pages/home/index',
       'pages/order/index',

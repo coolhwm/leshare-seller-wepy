@@ -1,0 +1,58 @@
+<template>
+  <view class="action-bar row-center fixed-bottom">
+    <navigator class="action secondary-action row-center" open-type="navigateBack">
+      <text>{{cancelText}}</text>
+    </navigator>
+
+    <view class="action primary-acton row-center" @tap="tap">
+      <text>{{okText}}</text>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class ActionBar extends wepy.component {
+    props = {
+      address: {},
+      okText: {
+        default: '确定'
+      },
+      cancelText: {
+        default: '取消'
+      }
+    };
+    methods = {
+      tap() {
+        this.$emit('tap');
+      }
+    }
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  page{
+    padding-bottom: 120rpx;
+  }
+  .action-bar{
+    width: 100%;
+    height: 100rpx;
+
+    .action{
+      height: 100%;
+      width: 50%;
+      text{font-size: $text-xl;}
+    }
+
+    .primary-acton{
+      background-color: $color-primary;
+      text{color: #FFF;}
+    }
+
+    .secondary-action{
+      background-color: #FFF;
+      border-top: $border;
+    }
+  }
+</style>

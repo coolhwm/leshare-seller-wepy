@@ -50,7 +50,7 @@ text.xs{font-size: $text-xs}
 
 view.bg-white{background-color: white}
 
-/******FELX 布局样式******/
+/******布局样式******/
 .row {
   display: flex;
   flex-direction: row;
@@ -93,6 +93,10 @@ view.bg-white{background-color: white}
 }
 .container{
   @extend  .column;
+}
+.fixed-bottom{
+  position: fixed;
+  bottom: 0;
 }
 
 
