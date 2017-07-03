@@ -26,7 +26,45 @@
     <!--订单项目-->
     <OrderItem :order.sync="order" action="0"></OrderItem>
 
+    <!--订单详情-->
+    <view class="weui-cells weui-cells_after-title weui-cells-merge-top">
+      <view class="weui-cell">
+        <view class="weui-cell__bd">订单号</view>
+        <view class="weui-cell__ft">{{order.uuid}}</view>
+      </view>
+      <view class="weui-cell">
+        <view class="weui-cell__bd">支付方式</view>
+        <view class="weui-cell__ft">{{order.paymentText}}</view>
+      </view>
+      <view class="weui-cell">
+        <view class="weui-cell__bd">配送方式</view>
+        <view class="weui-cell__ft">{{order.deliveryText}}</view>
+      </view>
+      <view class="weui-cell">
+        <view class="weui-cell__bd">买家留言</view>
+        <view class="weui-cell__ft">{{order.message ? order.message : '无'}}</view>
+      </view>
+    </view>
 
+    <!--信息汇总-->
+    <view class="zan-panel summary-container mb20">
+      <view class="summary-line-container">
+        <text class="summary-title">商品金额</text>
+        <text class="summary-text">￥{{order.dealPrice}}</text>
+      </view>
+      <view class="summary-line-container">
+        <text class="summary-title">运费</text>
+        <text class="summary-text">+￥{{order.postFee}}</text>
+      </view>
+      <view class="summary-line-container" wx:if="{{order.couponPrice}}">
+        <text class="summary-title">优惠券</text>
+        <text class="summary-text">-￥{{order.couponPrice}}</text>
+      </view>
+      <view class="summary-final-container" wx:if="{{order.status != 1}}">
+        <text class="final-title">实付款：</text>
+        <text class="final-text">￥{{order.finalPrice}}</text>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -91,5 +129,93 @@
       margin-left: 20rpx;
     }
   }
+
+  /*跟踪-时间戳*/
+  .trace-info-timestape{
+    margin-top: 10rpx;
+  }
+
+  /*订单详情面板*/
+  .zan-panel__top{
+    border-top: none;
+    margin-top: 0;
+  }
+
+  /*订单详情面板*/
+  .zan-panel__top{
+    border-top: none;
+    margin-top: 0;
+  }
+
+  /*汇总栏*/
+  .summary-container{
+    padding: 10px 15px;
+  }
+  .summary-container text{
+    font-size: 30rpx;
+    color: #303030;
+  }
+  .summary-container .summary-text{
+    color: #FF6600;
+  }
+  .summary-line-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding:5rpx 0;
+  }
+  /*实付款*/
+  .summary-final-container{
+    float: right;
+    width: 100%;
+    margin-top: 20rpx;
+    padding-top: 20rpx;
+    border-top: 1px solid #DCDCDC;
+    text-align: right;
+  }
+  .summary-final-container .final-title{
+    color:#000311;
+    font-size: 30rpx;
+  }
+
+  .summary-final-container .final-text{
+    color:#ff6200;
+    font-size: 30rpx;
+  }
+  /*订单小计*/
+  .tarde-summary-container{
+    display:  flex;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+  .tarde-summary-text{
+    color:#000311;
+    margin-left: 20rpx;
+    font-size: 28rpx;
+  }
+  .tarde-summary-price{
+    color:#ff6200;
+    font-size: 28rpx;
+  }
+  .zan-panel {
+    background: #fff;
+    border-top: 1rpx solid #e5e5e5;
+    border-bottom: 1rpx solid #e5e5e5;
+    margin-top: 10rpx;
+    overflow: hidden;
+  }
+
+  .order-item-container{
+    margin-bottom: 0;
+  }
+
+  .weui-cells-merge-top{
+    margin-top: -1px;
+  }
+
+  .weui-cells-merge-top.weui-cells::after{
+    border-bottom: 0;
+  }
+
 
 </style>

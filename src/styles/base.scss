@@ -1,5 +1,7 @@
 @import "variable";
 
+
+
 /******全局页面******/
 page{
   height: 100%;
@@ -139,13 +141,4 @@ view.bg-white{background-color: white}
   bottom: 0;
 }
 
-/******weui fix******/
-.form{
-  .weui-vcode-btn {
-    color:$color-primary;
-  }
-  .muted{
-    color:$color-muted;
-  }
-}
 
