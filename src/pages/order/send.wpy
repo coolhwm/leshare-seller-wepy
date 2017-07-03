@@ -1,0 +1,20 @@
+<template>
+  2123123123
+</template>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class OrderSend extends wepy.page {
+    config = {};
+    components = {};
+    methods = {};
+    events = {};
+    onLoad () {};
+    data = {};
+  }
+</script>

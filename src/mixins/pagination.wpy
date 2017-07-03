@@ -1,0 +1,49 @@
+<script>
+  import wepy from 'wepy';
+  import Tips from '../utils/Tips';
+
+  /**
+   * 分页通用方法
+   */
+  export default class pagination extends wepy.mixin {
+    config = {};
+    components = {};
+    methods = {};
+    events = {};
+    data = {};
+
+    /**
+     * 下一页
+     */
+    async next () {
+      const param = this.params ? this.params() : {};
+      await this.page.next(param);
+      this.init = true;
+      this.$apply();
+      Tips.loaded();
+    }
+
+    /**
+     * 到达底部
+     */
+    async onReachBottom () {
+      await this.next();
+    };
+
+    /**
+     * 重新加载
+     */
+    async reload () {
+      this.page.reset();
+      await this.next();
+      wepy.stopPullDownRefresh();
+    }
+
+    /**
+     * 下拉刷新
+     */
+    async onPullDownRefresh () {
+      await this.reload();
+    }
+  }
+</script>

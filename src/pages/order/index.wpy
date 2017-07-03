@@ -9,36 +9,17 @@
     <view class="tab-border" />
   </view>
 </template>
-
 <style lang="scss">
 </style>
 
 <script>
   import wepy from 'wepy';
-  import ZanTab from '../../components/zanui/tab';
+  import pagination from '../../mixins/pagination';
   import order from '../../api/order';
-  import Tips from '../../utils/Tips';
+  import ZanTab from '../../components/zanui/tab';
   import OrderItem from '../../components/order/item';
 
   export default class OrderIndex extends wepy.page {
-    config = {
-      navigationBarTitleText: '订单管理'
-    };
-    components = {
-      ZanTab: ZanTab,
-      OrderItem: OrderItem
-    };
-    methods = {};
-    events = {
-      'tab-change': (data) => {
-      }
-    };
-    async onLoad () {
-      this.page = await order.page().next();
-      this.init = true;
-      this.$apply();
-      Tips.loaded();
-    };
     // 页面数据
     data = {
       init: false,
@@ -59,5 +40,31 @@
         scroll: false
       }
     };
+
+    async onLoad () {
+      this.page = order.page(this);
+      await this.next();
+    };
+    /**
+     * 获取分页参数
+     */
+    params() {
+      return { status: this.tab.selectedId };
+    }
+    methods = {};
+    config = {
+      navigationBarTitleText: '订单管理',
+      enablePullDownRefresh: true
+    };
+    components = {
+      ZanTab: ZanTab,
+      OrderItem: OrderItem
+    };
+    mixins = [pagination];
+    watch = {
+      tab() {
+        this.reload();
+      }
+    }
   }
 </script>

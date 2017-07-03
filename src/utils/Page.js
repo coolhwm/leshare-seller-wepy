@@ -18,6 +18,8 @@ export default class Pagination {
     this.params = [];
     // 是否底部
     this.reachBottom = false;
+    // 是否需要清除
+    this.toClear = false;
   }
 
   /**
@@ -36,31 +38,36 @@ export default class Pagination {
     if (data === null || data.length < 1) {
       this.reachBottom = true;
       return this;
-      // return this._export();
     }
 
     // 处理数据
     this._processData(data)
 
     // 设置数据
-    this.list = this.list.concat(data);
+    if (this.toClear) {
+      this.list = data;
+      this.toClear = false;
+    } else {
+      this.list = this.list.concat(data);
+    }
     this.start += this.count;
     // 加载完毕
     this.loading = false;
     if (data.length < this.count) {
       this.reachBottom = true;
     }
-    // 导出列表数据
     return this;
-    // return this._export();
-    // return http.get(this.url, param).then(data => {
-    // })
   }
 
   /**
    * 恢复到第一页
    */
   reset () {
+    this.toClear = true;
+    this.start = 0;
+  }
+  clear () {
+    this.toClear = false;
     this.start = 0;
     this.list = [];
   }
@@ -76,17 +83,6 @@ export default class Pagination {
           data[i] = result;
         }
       }
-    }
-  }
-
-  /**
-   * 导出数据（私有）
-   */
-  _export () {
-    return {
-      list: this.list,
-      start: this.start,
-      count: this.count
     }
   }
 }
