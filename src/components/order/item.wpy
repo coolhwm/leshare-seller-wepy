@@ -1,13 +1,20 @@
 <template>
   <view class="order-item-container column">
     <!--基本信息-->
-    <view class="order-header-container row-between">
-      <view class="order-shop-info-container">
-        <image class="icon" src="/images/icons/shop-gray.png"/>
-        <text class="shop-info-name">{{order.shopName}}</text>
-        <image class="icon" src="/images/icons/more-gray.png"/>
+    <view class="order-header-container colunm">
+
+      <view class="row-between">
+        <view class="user-info-container">
+          <image class="icon" src="/images/icons/idcard.png"/>
+          <text class="sm ml10">张三</text>
+        </view>
+        <text class="sm primary">{{order.statusText}}</text>
       </view>
-      <text class="sm primary">{{order.statusText}}</text>
+
+      <view class="order-info-container row-between">
+        <text>{{order.orderTime}}</text>
+        <text>{{order.uuid}}</text>
+      </view>
     </view>
 
     <view class="order-goods-list-container">
@@ -27,8 +34,10 @@
 
     <!--操作栏-->
     <view class="order-action-bar row-end">
-      <view class="zan-btn zan-btn--small">取消订单</view>
-      <view class="zan-btn zan-btn--small zan-btn--primary">确认付款</view>
+      <view class="zan-btn zan-btn--small">订单备注</view>
+      <view class="zan-btn zan-btn--small zan-btn--primary" wx:if="{{order.status == 1}}">订单关闭</view>
+      <view class="zan-btn zan-btn--small zan-btn--primary" wx:if="{{order.status == 2}}">订单发货</view>
+      <view class="zan-btn zan-btn--small zan-btn--primary" wx:if="{{order.status == 3}}">物流查询</view>
     </view>
   </view>
 </template>
@@ -38,7 +47,9 @@
   import OrderGoods from './goods'
   export default class OrderItem extends wepy.component {
     props = {
-      order: {}
+      order: {
+        orderGoodsInfos: []
+      }
     };
     components = {
       OrderGoods: OrderGoods
@@ -61,9 +72,7 @@
 
   /*顶栏*/
   .order-header-container {
-    padding-left: 25rpx;
-    padding-right: 20rpx;
-    height: 85rpx;
+    padding: 10rpx 25rpx 10rpx 20rpx;
   }
 
   /*底栏*/
@@ -73,11 +82,14 @@
     height: 70rpx;
   }
 
-  /*顶栏店铺名称*/
-  .shop-info-name {
-    margin-left: 10rpx;
-    margin-right: 20rpx;
+  /*顶栏订单信息*/
+  .order-info-container{
+    text{
+      font-size: $text-xs;
+      color:$color-muted;
+    }
   }
+
 
   /* 操作栏 */
   .order-action-bar {

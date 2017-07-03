@@ -1,5 +1,6 @@
 import wepy from 'wepy'
 import Tips from './Tips';
+const app = getApp();
 
 // HTTP工具类
 export default class http {
@@ -50,7 +51,14 @@ export default class http {
    * 构造权限头部
    */
   static createAuthHeader () {
-
+    console.info(wepy.$instance.globalData);
+    const loginCode = wepy.$instance.globalData.auth.loginCode;
+    const header = {};
+    if (loginCode) {
+      header['login_code'] = loginCode;
+      header['shop_id'] = 3;
+    }
+    return header;
   }
 
   static get (url, data) {

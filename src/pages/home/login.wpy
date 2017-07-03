@@ -59,6 +59,7 @@
           const loginCode = await auth.login(this.phone, this.code);
           await wepy.setStorage({key: 'login_code', data: loginCode});
           this.$switch('/pages/home/index');
+          wepy.$instance.globalData.auth.loginCode = loginCode;
         } catch (e) {
           this.$invoke('Tips', 'show', e.message);
         } finally {

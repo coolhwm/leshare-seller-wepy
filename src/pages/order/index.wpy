@@ -1,500 +1,63 @@
 <!--订单列表页面-->
 <template>
-  <ZanTab :tab="tab" handler="onTabChange" />
-  <!--订单列表-->
-  <repeat for="{{orders}}" key="index" index="index" item="item">
-    <OrderItem :order="item"></OrderItem>
-  </repeat>
-  <view class="tab-border" />
+  <view class="container" wx:if="{{init}}">
+    <ZanTab :tab="tab" handler="onTabChange" />
+    <!--订单列表-->
+    <repeat for="{{page.list}}" key="index" index="index" item="item">
+      <OrderItem :order="item"></OrderItem>
+    </repeat>
+    <view class="tab-border" />
+  </view>
 </template>
 
 <style lang="scss">
 </style>
 
 <script>
-  import wepy from 'wepy'
-  import OrderItem from '../../components/order/item'
-  import ZanTab from '../../components/zanui/tab'
+  import wepy from 'wepy';
+  import ZanTab from '../../components/zanui/tab';
+  import order from '../../api/order';
+  import Tips from '../../utils/Tips';
+  import OrderItem from '../../components/order/item';
 
   export default class OrderIndex extends wepy.page {
     config = {
       navigationBarTitleText: '订单管理'
     };
     components = {
-      OrderItem: OrderItem,
-      ZanTab: ZanTab
+      ZanTab: ZanTab,
+      OrderItem: OrderItem
     };
     methods = {};
     events = {
       'tab-change': (data) => {
       }
     };
-    onLoad () {
-      console.info('页面加载!')
+    async onLoad () {
+      this.page = await order.page().next();
+      this.init = true;
+      this.$apply();
+      Tips.loaded();
     };
     // 页面数据
     data = {
-      tab: {
-        list: [{
-          id: 'all',
-          title: '全部'
-        }, {
-          id: 'topay',
-          title: '待付款'
-        }, {
-          id: 'tosend',
-          title: '待发货'
-        }, {
-          id: 'send',
-          title: '待收货'
-        }, {
-          id: 'sign',
-          title: '已完成'
-        }],
-        selectedId: 'all',
-        scroll: false
+      init: false,
+      page: {
+        list: [
+          {orderGoodsInfos: []}
+        ]
       },
-      orders: [
-        {
-          'orderId': 1769,
-          'uuid': 'L20170628222922362720492',
-          'customerId': 10,
-          'status': 7,
-          'dealPrice': '69.99',
-          'finalPrice': '73.99',
-          'couponUsedId': 72,
-          'message': '',
-          'address': '广东省广州市天河区某巷某号',
-          'receiveName': '张三',
-          'receivePhone': '18888888888',
-          'shopId': 3,
-          'shopName': '连江海蜇专卖',
-          'paymentType': 1,
-          'orderTime': '2017-06-28 22:29:22',
-          'paymentTime': null,
-          'sendedTime': null,
-          'closeTime': '2017-06-28 22:30:32',
-          'updateTime': '2017-06-28 22:30:32',
-          'postFee': '5.00',
-          'deliveryType': 'CITY',
-          'couponPrice': '1.00',
-          'orderGoodsInfos': [
-            {
-              'goodsId': 276552,
-              'imageUrl': 'http://op09okwcw.bkt.clouddn.com/timg.jpg',
-              'goodsName': '太阳井CC烧鹅',
-              'goodsSku': '',
-              'goodsPrice': 69.99,
-              'count': 1,
-              'skuText': ''
-            }
-          ],
-          'orderRefunds': [],
-          'orderExpress': null,
-          'statusText': '交易关闭',
-          'isAction': false
-        },
-        {
-          'orderId': 1768,
-          'uuid': 'L20170628222628228819860',
-          'customerId': 10,
-          'status': 2,
-          'dealPrice': '0.01',
-          'finalPrice': '0.00',
-          'couponUsedId': 71,
-          'message': '',
-          'address': '广东省广州市天河区某巷某号',
-          'receiveName': '张三',
-          'receivePhone': '18888888888',
-          'shopId': 3,
-          'shopName': '连江海蜇专卖',
-          'paymentType': 1,
-          'orderTime': '2017-06-28 22:26:28',
-          'paymentTime': null,
-          'sendedTime': null,
-          'closeTime': null,
-          'updateTime': '2017-06-28 22:26:28',
-          'postFee': '0.00',
-          'deliveryType': 'SELF',
-          'couponPrice': '0.01',
-          'orderGoodsInfos': [
-            {
-              'goodsId': 2,
-              'imageUrl': 'http://op09okwcw.bkt.clouddn.com/timg.jpg',
-              'goodsName': '纳克萨玛斯BB烤鸭',
-              'goodsSku': '原味:初品:普通礼盒',
-              'goodsPrice': 0.01,
-              'count': 1,
-              'skuText': '原味,初品,普通礼盒'
-            }
-          ],
-          'orderRefunds': [],
-          'orderExpress': null,
-          'statusText': '等待卖家发货',
-          'isAction': false
-        },
-        {
-          'orderId': 1766,
-          'uuid': 'L20170628213023902283287',
-          'customerId': 10,
-          'status': 7,
-          'dealPrice': '0.01',
-          'finalPrice': '5.00',
-          'couponUsedId': 68,
-          'message': '',
-          'address': '广东省广州市天河区某巷某号',
-          'receiveName': '张三',
-          'receivePhone': '18888888888',
-          'shopId': 3,
-          'shopName': '连江海蜇专卖',
-          'paymentType': 1,
-          'orderTime': '2017-06-28 21:30:23',
-          'paymentTime': null,
-          'sendedTime': null,
-          'closeTime': '2017-06-28 22:18:55',
-          'updateTime': '2017-06-28 22:18:55',
-          'postFee': '5.00',
-          'deliveryType': 'CITY',
-          'couponPrice': '0.01',
-          'orderGoodsInfos': [
-            {
-              'goodsId': 2,
-              'imageUrl': 'http://op09okwcw.bkt.clouddn.com/timg.jpg',
-              'goodsName': '纳克萨玛斯BB烤鸭',
-              'goodsSku': '原味:初品:普通礼盒',
-              'goodsPrice': 0.01,
-              'count': 1,
-              'skuText': '原味,初品,普通礼盒'
-            }
-          ],
-          'orderRefunds': [],
-          'orderExpress': null,
-          'statusText': '交易关闭',
-          'isAction': false
-        },
-        {
-          'orderId': 1765,
-          'uuid': 'L20170628211337878636152',
-          'customerId': 10,
-          'status': 7,
-          'dealPrice': '0.01',
-          'finalPrice': '0.00',
-          'couponUsedId': 67,
-          'message': '',
-          'address': '广东省广州市天河区某巷某号',
-          'receiveName': '张三',
-          'receivePhone': '18888888888',
-          'shopId': 3,
-          'shopName': '连江海蜇专卖',
-          'paymentType': 1,
-          'orderTime': '2017-06-28 21:13:37',
-          'paymentTime': null,
-          'sendedTime': null,
-          'closeTime': '2017-06-28 21:14:06',
-          'updateTime': '2017-06-28 21:14:06',
-          'postFee': '0.00',
-          'deliveryType': 'SELF',
-          'couponPrice': '0.01',
-          'orderGoodsInfos': [
-            {
-              'goodsId': 2,
-              'imageUrl': 'http://op09okwcw.bkt.clouddn.com/timg.jpg',
-              'goodsName': '纳克萨玛斯BB烤鸭',
-              'goodsSku': '原味:初品:普通礼盒',
-              'goodsPrice': 0.01,
-              'count': 1,
-              'skuText': '原味,初品,普通礼盒'
-            }
-          ],
-          'orderRefunds': [],
-          'orderExpress': null,
-          'statusText': '交易关闭',
-          'isAction': false
-        },
-        {
-          'orderId': 1764,
-          'uuid': 'L20170628170823788685128',
-          'customerId': 10,
-          'status': 7,
-          'dealPrice': '0.01',
-          'finalPrice': '5.00',
-          'couponUsedId': 66,
-          'message': '',
-          'address': '广东省广州市天河区某巷某号',
-          'receiveName': '张三',
-          'receivePhone': '18888888888',
-          'shopId': 3,
-          'shopName': '连江海蜇专卖',
-          'paymentType': 1,
-          'orderTime': '2017-06-28 17:08:23',
-          'paymentTime': null,
-          'sendedTime': null,
-          'closeTime': '2017-06-28 17:08:58',
-          'updateTime': '2017-06-28 17:08:58',
-          'postFee': '5.00',
-          'deliveryType': 'CITY',
-          'couponPrice': '0.01',
-          'orderGoodsInfos': [
-            {
-              'goodsId': 2,
-              'imageUrl': 'http://op09okwcw.bkt.clouddn.com/timg.jpg',
-              'goodsName': '纳克萨玛斯BB烤鸭',
-              'goodsSku': '原味:初品:普通礼盒',
-              'goodsPrice': 0.01,
-              'count': 1,
-              'skuText': '原味,初品,普通礼盒'
-            }
-          ],
-          'orderRefunds': [],
-          'orderExpress': null,
-          'statusText': '交易关闭',
-          'isAction': false
-        },
-        {
-          'orderId': 1763,
-          'uuid': 'L20170628144158388428538',
-          'customerId': 10,
-          'status': 2,
-          'dealPrice': '0.01',
-          'finalPrice': '0.01',
-          'couponUsedId': 0,
-          'message': '测试',
-          'address': '广东省广州市天河区null某巷某号',
-          'receiveName': '张三',
-          'receivePhone': '18888888888',
-          'shopId': 3,
-          'shopName': '连江海蜇专卖',
-          'paymentType': 1,
-          'orderTime': '2017-06-28 14:41:58',
-          'paymentTime': '2017-06-28 14:43:02',
-          'sendedTime': null,
-          'closeTime': null,
-          'updateTime': '2017-06-28 14:43:33',
-          'postFee': '0.00',
-          'deliveryType': 'SELF',
-          'couponPrice': '0.00',
-          'orderGoodsInfos': [
-            {
-              'goodsId': 2,
-              'imageUrl': 'http://op09okwcw.bkt.clouddn.com/timg.jpg',
-              'goodsName': '纳克萨玛斯BB烤鸭',
-              'goodsSku': '五香:臻品:普通礼盒',
-              'goodsPrice': 0.01,
-              'count': 1,
-              'skuText': '五香,臻品,普通礼盒'
-            }
-          ],
-          'orderRefunds': [
-            {
-              'orderId': 1763,
-              'orderUuid': 'L20170628144158388428538',
-              'refundUuid': 'O20170628144320886128932',
-              'type': 0,
-              'orderStatus': 2,
-              'status': 2,
-              'goodsId': 0,
-              'cause': '不想买了',
-              'contactName': '张三',
-              'contactPhone': '18888888888',
-              'refundPrice': 0.01,
-              'createTime': '2017-06-28 14:43:20',
-              'updateTime': '2017-06-28 14:43:20',
-              'closeTime': '2017-06-28 14:43:33',
-              'finishTime': null,
-              'sellerDealtime': null,
-              'isAgree': 0,
-              'disagreeCause': null
-            }
-          ],
-          'orderExpress': null,
-          'statusText': '等待卖家发货',
-          'isAction': false
-        },
-        {
-          'orderId': 1762,
-          'uuid': 'L20170627204603391686291',
-          'customerId': 10,
-          'status': 7,
-          'dealPrice': '0.01',
-          'finalPrice': '0.00',
-          'couponUsedId': 12,
-          'message': '',
-          'address': '广东省广州市天河区某巷某号',
-          'receiveName': '张三',
-          'receivePhone': '18888888888',
-          'shopId': 3,
-          'shopName': '连江海蜇专卖',
-          'paymentType': 1,
-          'orderTime': '2017-06-27 20:46:03',
-          'paymentTime': null,
-          'sendedTime': null,
-          'closeTime': '2017-06-27 20:46:12',
-          'updateTime': '2017-06-27 20:46:12',
-          'postFee': '0.00',
-          'deliveryType': 'SELF',
-          'couponPrice': '0.01',
-          'orderGoodsInfos': [
-            {
-              'goodsId': 2,
-              'imageUrl': 'http://op09okwcw.bkt.clouddn.com/timg.jpg',
-              'goodsName': '纳克萨玛斯BB烤鸭',
-              'goodsSku': '原味:初品:普通礼盒',
-              'goodsPrice': 0.01,
-              'count': 1,
-              'skuText': '原味,初品,普通礼盒'
-            }
-          ],
-          'orderRefunds': [],
-          'orderExpress': null,
-          'statusText': '交易关闭',
-          'isAction': false
-        },
-        {
-          'orderId': 1755,
-          'uuid': 'L20170625161642512132389',
-          'customerId': 10,
-          'status': 7,
-          'dealPrice': '0.02',
-          'finalPrice': '5.02',
-          'couponUsedId': 0,
-          'message': '',
-          'address': '广东省广州市天河区某巷某号',
-          'receiveName': '张三',
-          'receivePhone': '18888888888',
-          'shopId': 3,
-          'shopName': '连江海蜇专卖',
-          'paymentType': 1,
-          'orderTime': '2017-06-25 16:16:42',
-          'paymentTime': null,
-          'sendedTime': null,
-          'closeTime': '2017-06-25 20:52:19',
-          'updateTime': '2017-06-25 20:52:19',
-          'postFee': '5.00',
-          'deliveryType': 'CITY',
-          'couponPrice': '0.00',
-          'orderGoodsInfos': [
-            {
-              'goodsId': 2,
-              'imageUrl': 'http://op09okwcw.bkt.clouddn.com/timg.jpg',
-              'goodsName': '纳克萨玛斯BB烤鸭',
-              'goodsSku': '五香:臻品:大红盒',
-              'goodsPrice': 0.02,
-              'count': 1,
-              'skuText': '五香,臻品,大红盒'
-            }
-          ],
-          'orderRefunds': [],
-          'orderExpress': null,
-          'statusText': '交易关闭',
-          'isAction': false
-        },
-        {
-          'orderId': 1754,
-          'uuid': 'L20170623234620393419057',
-          'customerId': 10,
-          'status': 7,
-          'dealPrice': '0.06',
-          'finalPrice': '5.06',
-          'couponUsedId': 0,
-          'message': '',
-          'address': '广东省广州市天河区某巷某号',
-          'receiveName': '张三',
-          'receivePhone': '18888888888',
-          'shopId': 3,
-          'shopName': '连江海蜇专卖',
-          'paymentType': 1,
-          'orderTime': '2017-06-23 23:46:20',
-          'paymentTime': null,
-          'sendedTime': null,
-          'closeTime': '2017-06-24 22:51:07',
-          'updateTime': '2017-06-24 22:51:07',
-          'postFee': '5.00',
-          'deliveryType': 'CITY',
-          'couponPrice': '0.00',
-          'orderGoodsInfos': [
-            {
-              'goodsId': 2,
-              'imageUrl': 'http://op09okwcw.bkt.clouddn.com/timg.jpg',
-              'goodsName': '纳克萨玛斯BB烤鸭',
-              'goodsSku': '五香:臻品:三角礼盒',
-              'goodsPrice': 0.03,
-              'count': 1,
-              'skuText': '五香,臻品,三角礼盒'
-            },
-            {
-              'goodsId': 2,
-              'imageUrl': 'http://op09okwcw.bkt.clouddn.com/timg.jpg',
-              'goodsName': '纳克萨玛斯BB烤鸭',
-              'goodsSku': '五香:臻品:大红盒',
-              'goodsPrice': 0.02,
-              'count': 1,
-              'skuText': '五香,臻品,大红盒'
-            },
-            {
-              'goodsId': 2,
-              'imageUrl': 'http://op09okwcw.bkt.clouddn.com/timg.jpg',
-              'goodsName': '纳克萨玛斯BB烤鸭',
-              'goodsSku': '五香:臻品:普通礼盒',
-              'goodsPrice': 0.01,
-              'count': 1,
-              'skuText': '五香,臻品,普通礼盒'
-            }
-          ],
-          'orderRefunds': [],
-          'orderExpress': null,
-          'statusText': '交易关闭',
-          'isAction': false
-        },
-        {
-          'orderId': 1753,
-          'uuid': 'L20170623234515597157113',
-          'customerId': 10,
-          'status': 7,
-          'dealPrice': '0.05',
-          'finalPrice': '5.05',
-          'couponUsedId': 0,
-          'message': '',
-          'address': '广东省广州市天河区某巷某号',
-          'receiveName': '张三',
-          'receivePhone': '18888888888',
-          'shopId': 3,
-          'shopName': '连江海蜇专卖',
-          'paymentType': 1,
-          'orderTime': '2017-06-23 23:45:15',
-          'paymentTime': null,
-          'sendedTime': null,
-          'closeTime': '2017-06-24 22:51:12',
-          'updateTime': '2017-06-24 22:51:12',
-          'postFee': '5.00',
-          'deliveryType': 'CITY',
-          'couponPrice': '0.00',
-          'orderGoodsInfos': [
-            {
-              'goodsId': 2,
-              'imageUrl': 'http://op09okwcw.bkt.clouddn.com/timg.jpg',
-              'goodsName': '纳克萨玛斯BB烤鸭',
-              'goodsSku': '五香:臻品:三角礼盒',
-              'goodsPrice': 0.03,
-              'count': 1,
-              'skuText': '五香,臻品,三角礼盒'
-            },
-            {
-              'goodsId': 2,
-              'imageUrl': 'http://op09okwcw.bkt.clouddn.com/timg.jpg',
-              'goodsName': '纳克萨玛斯BB烤鸭',
-              'goodsSku': '五香:臻品:大红盒',
-              'goodsPrice': 0.02,
-              'count': 1,
-              'skuText': '五香,臻品,大红盒'
-            }
-          ],
-          'orderRefunds': [],
-          'orderExpress': null,
-          'statusText': '交易关闭',
-          'isAction': false
-        }
-      ]
-
+      tab: {
+        list: [
+          {id: '0', title: '全部'},
+          {id: '1', title: '待付款'},
+          {id: '2', title: '待发货'},
+          {id: '3', title: '待收货'},
+          {id: '5', title: '维权中'}
+        ],
+        selectedId: '0',
+        scroll: false
+      }
     };
   }
 </script>

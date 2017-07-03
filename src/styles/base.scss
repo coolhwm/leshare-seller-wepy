@@ -9,7 +9,7 @@ page{
 /******外边距原子样式******/
 .mr10{margin-right: 10rpx}
 .mr20{margin-right: 20rpx}
-.ml20{margin-left: 20rpx}
+.ml10{margin-left: 10rpx}
 .ml20{margin-left: 20rpx}
 .mt10{margin-top: 10rpx}
 .mt20{margin-top: 20rpx}
@@ -46,6 +46,7 @@ text.xl{font-size: $text-xl}
 text.xxl{font-size: $text-xxl}
 text.lg{font-size: $text-lg}
 text.sm{font-size: $text-sm}
+text.xs{font-size: $text-xs}
 
 view.bg-white{background-color: white}
 
