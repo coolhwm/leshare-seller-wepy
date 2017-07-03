@@ -91,6 +91,9 @@ view.bg-white{background-color: white}
   align-items: center;
   justify-content: space-between;
 }
+.container{
+  @extend  .column;
+}
 
 
 /******图片样式******/
@@ -101,6 +104,9 @@ view.bg-white{background-color: white}
 }
 .icon {
   @include icon-image(20px);
+}
+.icon-lg {
+  @include icon-image(30px);
 }
 .icon-xl {
   @include icon-image(50px);

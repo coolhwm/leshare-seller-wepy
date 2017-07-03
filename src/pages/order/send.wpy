@@ -1,20 +1,74 @@
 <template>
-  2123123123
+  <view class="container">
+    <!--地址选择器-->
+    <Address :address.sync="address" />
+
+    <!--表单-->
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_switch">
+        <view class="weui-cell__bd">物流发货</view>
+        <view class="weui-cell__ft">
+          <switch checked id="isMail" @change="input" />
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">快递公司</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" placeholder="请选择快递公司" disabled/>
+        </view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+      </view>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">快递单号</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="mailNo" @input="input" placeholder="请输入快递单号"/>
+        </view>
+        <view class="weui-cell__ft">
+          <!--<icon type="warn" size="23" color="#E64340"></icon>-->
+        </view>
+      </view>
+    </view>
+  </view>
 </template>
+
+<script>
+  import wepy from 'wepy';
+  import order from '../../api/order';
+  import input from '../../mixins/input';
+  import Tips from '../../utils/Tips';
+  import Address from '../../components/common/address';
+
+  export default class OrderSend extends wepy.page {
+    data = {
+      order: {},
+      address: {}
+    };
+    async onLoad () {
+      const orderId = 1690;
+      this.order = await order.detail(orderId);
+      this.address = {
+        fullAddress: this.order.address,
+        name: this.order.receiveName,
+        phone: this.order.receivePhone
+      }
+      this.$apply();
+      Tips.loaded();
+    };
+    mixins = [input];
+    components = {
+      Address: Address
+    };
+    config = {
+      navigationBarTitleText: '订单发货'
+    };
+    events = {};
+  }
+</script>
 
 <style lang="scss">
   @import "../../styles/variable";
 </style>
-
-<script>
-  import wepy from 'wepy'
-
-  export default class OrderSend extends wepy.page {
-    config = {};
-    components = {};
-    methods = {};
-    events = {};
-    onLoad () {};
-    data = {};
-  }
-</script>

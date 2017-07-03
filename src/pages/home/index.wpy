@@ -46,17 +46,17 @@
     <view class="count-box row-around bg-white">
       <view class="count-item column-center">
         <text class="count-value">0</text>
-        <text class="muted">今日订单数</text>
+        <text class="muted">本月订单数</text>
       </view>
       <view class="vr"/>
       <view class="count-item column-center">
         <text class="count-value">0</text>
-        <text class="muted">今日浏览量</text>
+        <text class="muted">本月成交额</text>
       </view>
       <view class="vr"/>
       <view class="count-item column-center">
         <text class="count-value">0</text>
-        <text class="muted">今日用户数</text>
+        <text class="muted">本月浏览数</text>
       </view>
     </view>
   </view>

@@ -33,11 +33,10 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/order/send',
+      'pages/home/index',
       'pages/order/index',
-      'pages/order/send',
       'pages/home/login',
       'pages/shop/list',
-      'pages/home/index',
       'pages/user/index'
     ],
     window: {

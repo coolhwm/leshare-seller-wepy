@@ -1,0 +1,18 @@
+<script>
+  import wepy from 'wepy';
+
+  export default class input extends wepy.mixin {
+    data = {
+      input: { }
+    };
+
+    methods = {
+      /**
+       * 处理输入事件
+       */
+      input(e) {
+        this.input[e.currentTarget.id] = e.detail.value
+      }
+    };
+  }
+</script>

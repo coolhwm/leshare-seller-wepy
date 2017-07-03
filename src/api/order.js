@@ -90,7 +90,7 @@ export default class order extends base {
     this._processOrderPrice(detail);
     // 处理商品信息
     this._processOrderGoods(detail.orderGoodsInfos);
-
+    return detail;
   }
 
   /**
