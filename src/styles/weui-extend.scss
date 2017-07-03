@@ -1,0 +1,37 @@
+@import "weui.wxss";
+@import "variable";
+
+/******weui fix******/
+.form{
+  .weui-vcode-btn {
+    color:$color-primary;
+  }
+  .muted{
+    color:$color-muted;
+  }
+}
+
+%weui-cells-display{
+  view{
+    font-size: $text-nm;
+  }
+  .weui-cell__ft{
+    color: $color-normal;
+  }
+}
+.weui-cells-extend::after{
+  border-bottom: $border;
+}
+.weui-cells-extend {
+  @extend %weui-cells-display;
+  border-top: none;
+  .weui-cell::before,.weui-cells::after{
+    border-top: $border;
+  }
+}
+
+
+
+.weui-cells-merge-top{
+  @extend .weui-cells-extend;
+}
