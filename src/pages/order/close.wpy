@@ -1,20 +1,57 @@
 <template>
-  123
+  <view class="container" wx:if="{{init}}">
+    <view class="weui-cells">
+      <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+        <view class="weui-cell__bd">关闭理由</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access">选择订单关闭理由</view>
+      </navigator>
+    </view>
+    <!--订单信息-->
+    <view class="order-box">
+      <OrderItem :order.sync="order" action="0"></OrderItem>
+    </view>
+
+    <!--操作栏-->
+    <ActionBar okText="确定关闭" okType="primary" @tap.user="onSubmitTap" />
+  </view>
 </template>
+
+<script>
+  import wepy from 'wepy';
+  import order from '../../api/order';
+  import Tips from '../../utils/Tips';
+  import ActionBar from '../../components/common/action_bar';
+  import OrderItem from '../../components/order/item';
+
+  export default class OrderClose extends wepy.page {
+    data = {
+      order: {
+        orderGoodsInfos: []
+      },
+      init: false
+    };
+    async onLoad () {
+      const orderId = 1690;
+      this.order = await order.detail(orderId);
+      this.init = true;
+      this.$apply();
+      Tips.loaded();
+    };
+    components = {
+      ActionBar: ActionBar,
+      OrderItem: OrderItem
+    };
+    config = {
+      navigationBarTitleText: '关闭订单'
+    };
+    methods = {};
+    events = {};
+  }
+</script>
 
 <style lang="scss">
   @import "../../styles/variable";
-</style>
-
-<script>
-  import wepy from 'wepy'
-
-  export default class OrderClose extends wepy.page {
-    config = {};
-    components = {};
-    methods = {};
-    events = {};
-    onLoad () {};
-    data = {};
+  .order-box{
+    margin-top: 33rpx;
   }
-</script>
+</style>

@@ -4,7 +4,7 @@
       <text>{{cancelText}}</text>
     </navigator>
 
-    <view class="action primary-acton row-center" @tap="tap">
+    <view class="action {{okType}}-acton row-center" @tap="tap">
       <text>{{okText}}</text>
     </view>
   </view>
@@ -15,6 +15,9 @@
   export default class ActionBar extends wepy.component {
     props = {
       address: {},
+      okType: {
+        default: 'primary'
+      },
       okText: {
         default: '确定'
       },
@@ -47,6 +50,10 @@
 
     .primary-acton{
       background-color: $color-primary;
+      text{color: #FFF;}
+    }
+    .danger-acton{
+      background-color: $color-danger;
       text{color: #FFF;}
     }
 
