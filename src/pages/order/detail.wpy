@@ -1,0 +1,95 @@
+<template>
+  <view class="container">
+    <!--状态栏-->
+    <view class="order-status-bar row">
+      <image class="icon-lg" src="/images/icons/status-{{order.status}}.png" wx:if="{{order.status}}" />
+      <view class="status-box column">
+        <text class="xxl">{{order.statusText}}</text>
+        <!-- 订单文本描述/需要抽取到Service中 -->
+        <text class="muted mt10">{{order.statusDesc}}</text>
+      </view>
+    </view>
+    <!--物流栏-->
+    <block wx:if="{{order.isExpress}}">
+      <view class="order-trace-bar row" @tap="onOrderTrace">
+        <image class="icon" src="/images/icons/car.png" />
+        <view class="info-box column">
+          <text class="inline">{{express.text}}</text>
+          <text class="muted sm mt10" wx:if="{{express.timestape}}">{{express.timestape}}</text>
+        </view>
+        <image class="icon" wx:if="{{express.timestape}}" src="/images/icons/more-gray.png" />
+      </view>
+    </block>
+    <!--地址展现-->
+    <Address :address.sync="address" />
+
+    <!--订单项目-->
+    <OrderItem :order.sync="order" action="0"></OrderItem>
+
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import order from '../../api/order';
+  import express from '../../api/express';
+  import Address from '../../components/common/address';
+  import Tips from '../../utils/Tips';
+  import OrderItem from '../../components/order/item';
+  export default class OrderDetail extends wepy.page {
+    data = {
+      order: {
+        orderGoodsInfos: []
+      },
+      express: {},
+      address: {}
+    };
+    async onLoad () {
+      const orderId = 1767;
+      this.order = await order.detail(orderId);
+      this.address = this.order.receiveAddress;
+      this.express = express.createCurrentTrace(this.order.orderExpress);
+      this.init = true;
+      this.$apply();
+      Tips.loaded();
+    };
+    components = {
+      Address: Address,
+      OrderItem: OrderItem
+    };
+    methods = {};
+    events = {};
+    config = {
+      navigationBarTitleText: '订单详情'
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  /*状态栏*/
+  .order-status-bar{
+    background-color: #FFF;
+    height: 70rpx;
+    padding: 40rpx 30rpx;
+    border-bottom: $border;
+
+    .status-box{
+      margin-left: 30rpx;
+    }
+  }
+
+  /*物流状态预览栏*/
+  .order-trace-bar{
+    padding: 25rpx;
+    background-color: #FFF;
+    border-bottom: $border;
+
+    .info-box{
+      width: 600rpx;
+      margin-left: 20rpx;
+    }
+  }
+
+</style>

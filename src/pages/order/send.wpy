@@ -1,6 +1,6 @@
 <template>
   <view class="container" wx:if="{{init}}">
-    <!--地址选择器-->
+    <!--地址展现-->
     <Address :address.sync="address" />
 
     <!--发货表单-->
@@ -68,11 +68,7 @@
     async onLoad () {
       const orderId = 1690;
       this.order = await order.detail(orderId);
-      this.address = {
-        fullAddress: this.order.address,
-        name: this.order.receiveName,
-        phone: this.order.receivePhone
-      }
+      this.address = this.order.receiveAddress;
       this.init = true;
       this.$apply();
       Tips.loaded();

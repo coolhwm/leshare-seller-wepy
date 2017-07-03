@@ -48,6 +48,13 @@ text.lg{font-size: $text-lg}
 text.sm{font-size: $text-sm}
 text.xs{font-size: $text-xs}
 
+text.inline{
+  text-overflow: ellipsis;
+  word-break:keep-all;
+  white-space:nowrap;
+  overflow:hidden;
+}
+
 view.bg-white{background-color: white}
 
 /******布局样式******/

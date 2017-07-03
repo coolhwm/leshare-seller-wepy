@@ -25,14 +25,14 @@ export default class order extends base {
   };
 
   static statusDesc = {
-    '1': '请于24小时内付款，超时订单自动关闭',
-    '2': '您已完成付款，卖家准备发货中',
-    '3': '请您耐心等待，到货后请确认收货',
-    '4': '卖家已收到您的货款，请对本次交易进行评价',
-    '5': '您已发起退款申请，等待卖家处理',
-    '6': '交易已完成，卖家已收到您的货款',
-    '7': '本交易已取消，欢迎您下次光临',
-    '8': '货款已原路退回，请查收'
+    '1': '等待买家付款，超时订单自动关闭',
+    '2': '买家已付款，请您尽快发货',
+    '3': '您已发货，请耐心等待买家确认收货',
+    '4': '买家已确认收货，请核对收款情况',
+    '5': '买家发起退款申请，请您尽快处理',
+    '6': '交易已完成，您已收到买家货款',
+    '7': '本交易已取消',
+    '8': '您已退货成功'
   }
 
   /**
@@ -88,9 +88,22 @@ export default class order extends base {
     this._processOrderDetailDelivery(detail);
     // 处理订单价格
     this._processOrderPrice(detail);
+    // 处理地址信息
+    this._processOrderAddress(detail);
     // 处理商品信息
     this._processOrderGoods(detail.orderGoodsInfos);
     return detail;
+  }
+
+  /**
+   * 处理地址信息
+   */
+  static _processOrderAddress(detail) {
+    detail.receiveAddress = {
+      fullAddress: detail.address,
+      name: detail.receiveName,
+      phone: detail.receivePhone
+    }
   }
 
   /**
