@@ -12,7 +12,7 @@
       <view class="weui-cell weui-cell_switch">
         <view class="weui-cell__bd">物流发货</view>
         <view class="weui-cell__ft">
-          <switch checked id="isMail" @change="input" />
+          <switch checked="{{input.isMail}}" id="isMail" @change="input" />
         </view>
       </view>
       <view class="weui-cell weui-cell_input" wx:if="{{input.isMail}}">
@@ -95,19 +95,19 @@
         const expressType = this.company.type;
         const expressNo = this.input.mailNo;
         if (this.input.isMail) {
-          if (expressType == null || expressType == '') {
-            this.$invoke('Tips', 'show', '请选择快递公司');
+          if (this.isEmpty(expressType)) {
+            this.tips('请选择快递公司');
             return;
           }
-          if (expressNo == null || expressNo == '') {
-            this.$invoke('Tips', 'show', '请填写快递单号');
+          if (this.isEmpty(expressNo)) {
+            this.tips('请填写快递单号');
             return;
           }
         }
         await Tips.confirm('是否确认发货？');
         await order.send(orderId, expressNo, expressType);
-        await Tips.success('发货成功！');
         Event.emit(Event.ORDER_LIST_UPDATE);
+        await Tips.success('发货成功！');
         this.$switch('index');
       },
       // 进入选择物流页面

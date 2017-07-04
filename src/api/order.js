@@ -2,6 +2,11 @@ import base from './base';
 import Page from '../utils/Page';
 
 export default class order extends base {
+  static closeReacon = [
+    '无法联系上买家', '买家误拍或重拍', '买家无诚意完成交易',
+    '已通过银行线下汇款', '已通过同城见面交易', '已通过货到付款交易',
+    '已通过网上银行直接汇款', '已缺货无法交易'
+  ];
   static statusDict = {
     '0': '全部',
     '1': '等待买家付款',
@@ -67,6 +72,15 @@ export default class order extends base {
   static async note(orderId, sellerNote) {
     const url = `${this.baseUrl}/orders/${orderId}/note`;
     const param = {sellerNote};
+    return await this.put(url, param);
+  }
+
+  /**
+   * 关闭订单
+   */
+  static async close(orderId, note) {
+    const url = `${this.baseUrl}/orders/${orderId}/status/close`;
+    const param = {orderId, note};
     return await this.put(url, param);
   }
 

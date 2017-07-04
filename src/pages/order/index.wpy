@@ -6,10 +6,9 @@
 
     <!--订单列表-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <OrderItem :order="item" @send.user="send" @note.user="note"></OrderItem>
+      <OrderItem :order="item" @send.user="send" @note.user="note" @close.user="close"></OrderItem>
     </repeat>
     <view class="tab-border" />
-
     <!--占位符-->
     <Placeholder :show.sync="isPageEmpty" message="您还没有相关订单"/>
   </view>
@@ -27,7 +26,6 @@
   import Placeholder from '../../components/common/placeholder';
 
   export default class OrderIndex extends wepy.page {
-
     // 页面数据
     data = {
       init: false,
@@ -70,6 +68,10 @@
       // 进入备注页面
       note(orderId, sellerNote) {
         this.$navigate('remark', {orderId, sellerNote});
+      },
+      // 进入订单关闭页面
+      close(orderId) {
+        this.$navigate('close', {orderId});
       }
     };
     config = {

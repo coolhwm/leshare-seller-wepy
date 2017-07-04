@@ -32,10 +32,11 @@
       <text>(含运费￥{{order.postFee}})</text>
     </view>
 
-    <!--操作栏-->
+    <!--操作栏/可以抽取为组件-->
     <view class="order-action-bar row-end" wx:if="{{action != 0}}">
       <view class="zan-btn zan-btn--small" @tap="note({{order.orderId}}, {{order.sellerNote}})">订单备注</view>
-      <view class="zan-btn zan-btn--small zan-btn--primary" wx:if="{{order.status == 1}}">订单关闭</view>
+      <view class="zan-btn zan-btn--small" @tap="reprice"  wx:if="{{order.status == 1}}">订单改价</view>
+      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="close({{order.orderId}})" wx:if="{{order.status == 1}}">订单关闭</view>
       <view class="zan-btn zan-btn--small zan-btn--primary" @tap="send({{order.orderId}})" wx:if="{{order.status == 2}}">订单发货</view>
       <view class="zan-btn zan-btn--small zan-btn--primary" wx:if="{{order.status == 3}}">物流查询</view>
     </view>
@@ -60,6 +61,9 @@
       },
       note(orderId, sellerNote) {
         this.$emit('note', orderId, sellerNote);
+      },
+      close(orderId) {
+        this.$emit('close', orderId);
       }
     };
     components = {

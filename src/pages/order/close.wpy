@@ -1,10 +1,16 @@
 <template>
   <view class="container" wx:if="{{init}}">
     <view class="weui-cells">
-      <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
-        <view class="weui-cell__bd">关闭理由</view>
-        <view class="weui-cell__ft weui-cell__ft_in-access">选择订单关闭理由</view>
-      </navigator>
+      <view class="weui-cell weui-cell_select">
+        <view class="weui-cell__hd weui-cell__hd_in-select-after">
+          <view class="weui-label">关闭原因</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker @change="input" id="reasonIndex" value="{{input.reasonIndex}}" range="{{reasons}}">
+            <view class="weui-select weui-select_in-select-after">{{seletedReason}}</view>
+          </picker>
+        </view>
+      </view>
     </view>
     <!--订单信息-->
     <view class="order-box">
@@ -12,14 +18,16 @@
     </view>
 
     <!--操作栏-->
-    <ActionBar okText="确定关闭" okType="primary" @tap.user="onSubmitTap" />
+    <ActionBar okText="确定关闭" okType="primary" @tap.user="submit" />
   </view>
 </template>
 
 <script>
   import wepy from 'wepy';
   import order from '../../api/order';
+  import input from '../../mixins/input';
   import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
   import ActionBar from '../../components/common/action_bar';
   import OrderItem from '../../components/order/item';
 
@@ -28,24 +36,44 @@
       order: {
         orderGoodsInfos: []
       },
+      input: {
+        reasonIndex: 0
+      },
+      reasons: order.closeReacon,
       init: false
     };
-    async onLoad () {
-      const orderId = 1690;
+    async onLoad (options) {
+      const orderId = options.orderId;
       this.order = await order.detail(orderId);
       this.init = true;
       this.$apply();
       Tips.loaded();
     };
+    methods = {
+      // 确认提交
+      async submit() {
+        const orderId = this.order.orderId;
+        await Tips.confirm('您确认要关闭该订单？');
+        await order.close(orderId, this.seletedReason);
+        Event.emit(Event.ORDER_LIST_UPDATE);
+        await Tips.success('关闭成功');
+        this.$switch('index');
+      }
+    };
+    computed = {
+      // 已选择的文字
+      seletedReason() {
+        return this.reasons[this.input.reasonIndex];
+      }
+    };
     components = {
       ActionBar: ActionBar,
       OrderItem: OrderItem
     };
+    mixins = [input]
     config = {
       navigationBarTitleText: '关闭订单'
     };
-    methods = {};
-    events = {};
   }
 </script>
 

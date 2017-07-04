@@ -4,7 +4,7 @@
     data = {
       input: { }
     };
-    // 初始化
+    // 卸载页面
     onUnload() {
       const init = {
         input: {}
