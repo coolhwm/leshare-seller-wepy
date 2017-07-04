@@ -1,7 +1,7 @@
 @import "weui.wxss";
 @import "variable";
 
-/******weui fix******/
+//******weui fix******/
 .form{
   .weui-vcode-btn {
     color:$color-primary;
@@ -30,8 +30,10 @@
   }
 }
 
-
-
 .weui-cells-merge-top{
   @extend .weui-cells-extend;
+  border-bottom: $border;
+  &::after, &::before {
+    content: normal;
+  }
 }
