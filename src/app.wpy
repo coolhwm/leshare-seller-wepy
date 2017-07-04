@@ -17,7 +17,7 @@ export default class extends wepy.app {
   }
 
   async onLaunch() {
-    // 同步Logincode
+    // login_code
     const result = await wepy.getStorage({key: 'login_code'});
     const loginCode = result.data;
     if (loginCode !== '') {

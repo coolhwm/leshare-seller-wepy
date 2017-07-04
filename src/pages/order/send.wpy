@@ -65,8 +65,9 @@
       },
       init: false
     };
-    async onLoad () {
-      const orderId = 1690;
+
+    async onLoad (options) {
+      const orderId = options.orderId;
       this.order = await order.detail(orderId);
       this.address = this.order.receiveAddress;
       this.init = true;

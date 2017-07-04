@@ -51,7 +51,6 @@ export default class http {
    * 构造权限头部
    */
   static createAuthHeader () {
-    console.info(wepy.$instance.globalData);
     const loginCode = wepy.$instance.globalData.auth.loginCode;
     const header = {};
     if (loginCode) {

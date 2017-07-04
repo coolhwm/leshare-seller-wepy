@@ -4,7 +4,7 @@
     <ZanTab :tab="tab" handler="onTabChange" />
     <!--订单列表-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <OrderItem :order="item"></OrderItem>
+      <OrderItem :order="item" @send.user="send"></OrderItem>
     </repeat>
     <view class="tab-border" />
   </view>
@@ -40,7 +40,6 @@
         scroll: false
       }
     };
-
     async onLoad () {
       this.page = order.page(this);
       await this.next();
@@ -51,7 +50,11 @@
     params() {
       return { status: this.tab.selectedId };
     }
-    methods = {};
+    methods = {
+      send(orderId) {
+        this.$navigate('send', {orderId});
+      }
+    };
     config = {
       navigationBarTitleText: '订单管理',
       enablePullDownRefresh: true
