@@ -2,6 +2,14 @@
 import base from './base';
 
 export default class order extends base {
+
+  /**
+   * 查询快递公司列表
+   */
+  static async company() {
+    const url = `${this.publicUrl}/express/company`;
+    return await this.get(url);
+  }
   /**
    * 构造当前物流状态
    */

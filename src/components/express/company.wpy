@@ -1,0 +1,85 @@
+<template>
+  <view class="express-company-box container" wx:if="{{display}}">
+    <!--搜索栏-->
+    <SearchBar :inputVal="input" back="true" @back.user="back" />
+    <!--搜索结果-->
+    <view class="weui-cells searchbar-result">
+      <view url="" class="weui-cell" hover-class="weui-cell_active"  wx:item="item" wx:for="{{companies}}" wx:key="type" wx:if="{{item.display}}">
+        <view class="weui-cell__bd" @tap="selected({{item}})">
+          <view>{{item.name}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import express from '../../api/express';
+  import Tips from '../../utils/Tips';
+  import SearchBar from '../weui/search_bar';
+
+  export default class ExpressCompany extends wepy.component {
+    props = {
+      display: {
+        type: Boolean,
+        default: false
+      }
+    };
+    data = {
+      companies: [],
+      input: ''
+    };
+    async onLoad () {
+      const companies = await express.company();
+      companies.forEach(item => {
+        item.display = true;
+      });
+      this.companies = companies;
+      this.$apply();
+      Tips.loaded();
+    };
+    watch = {
+      input(value) {
+        console.info(value);
+        this.companies.forEach(company => {
+          company.display = value == null || value == '' ? true : company.name.indexOf(value) != -1;
+        });
+        this.$apply();
+      }
+    };
+    methods = {
+      selected(company, event) {
+        console.info(company);
+        this.$emit('selected', company);
+      },
+      back() {
+        this.$emit('back');
+      }
+    };
+    components = {
+      SearchBar: SearchBar
+    };
+    events = {};
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  .container{
+    z-index: 10000;
+  }
+  .express-company-box{
+    .weui-cell{
+      padding: 12px 15px 12px 35px;
+    }
+    .searchbar-result{
+      margin-top: 48px;
+      font-size: 14px;
+    }
+    .searchbar-result:before{
+      display: none;
+    }
+  }
+
+</style>

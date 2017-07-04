@@ -3,7 +3,6 @@
     <navigator class="action secondary-action row-center" open-type="navigateBack">
       <text>{{cancelText}}</text>
     </navigator>
-
     <view class="action {{okType}}-acton row-center" @tap="tap">
       <text>{{okText}}</text>
     </view>

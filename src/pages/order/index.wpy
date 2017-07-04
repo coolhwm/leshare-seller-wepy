@@ -20,6 +20,10 @@
   import OrderItem from '../../components/order/item';
 
   export default class OrderIndex extends wepy.page {
+    log(target, name, descriptor) {
+      console.info(`${target}, ${name}m ${descriptor}`);
+      return descriptor;
+    };
     // 页面数据
     data = {
       init: false,

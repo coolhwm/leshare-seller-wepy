@@ -1,5 +1,8 @@
 <template>
-  <view class="container" wx:if="{{init}}">
+
+  <ExpressCompany :display.sync="selectDisplay"  @back.user="back" @selected.user="selected" />
+
+  <view class="container" wx:if="{{panelDisplay}}">
     <!--地址展现-->
     <Address :address.sync="address" />
 
@@ -15,8 +18,8 @@
         <view class="weui-cell__hd">
           <view class="weui-label">快递公司</view>
         </view>
-        <view class="weui-cell__bd">
-          <input class="weui-input" placeholder="请选择快递公司" disabled/>
+        <view class="weui-cell__bd" @tap="select">
+          <input class="weui-input" placeholder="请选择快递公司" disabled value="{{company.name}}"/>
         </view>
         <view class="weui-cell__ft weui-cell__ft_in-access"></view>
       </view>
@@ -25,7 +28,7 @@
           <view class="weui-label">快递单号</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" id="mailNo" @input="input" placeholder="请输入快递单号"/>
+          <input class="weui-input" id="mailNo" @input="input" placeholder="请输入快递单号" value="{{input.mailNo}}"/>
         </view>
         <view class="weui-cell__ft">
         </view>
@@ -39,10 +42,10 @@
     <view class="mt10">
       <OrderItem :order.sync="order" action="0"></OrderItem>
     </view>
-  </view>
 
-  <!--操作栏-->
-  <ActionBar @tap.user="onSubmitTap" />
+    <!--操作栏-->
+    <ActionBar @tap.user="submit" />
+  </view>
 </template>
 
 <script>
@@ -53,9 +56,10 @@
   import Address from '../../components/common/address';
   import ActionBar from '../../components/common/action_bar';
   import OrderItem from '../../components/order/item';
+  import ExpressCompany from '../../components/express/company';
 
   export default class OrderSend extends wepy.page {
-    data = {
+    def = {
       order: {
         orderGoodsInfos: []
       },
@@ -63,34 +67,67 @@
       input: {
         isMail: true
       },
-      init: false
+      init: false,
+      selectDisplay: false,
+      company: {}
     };
-
+    data = {...this.def};
     async onLoad (options) {
-      const orderId = options.orderId;
+      // const orderId = options.orderId;
+      const orderId = 1763;
       this.order = await order.detail(orderId);
       this.address = this.order.receiveAddress;
       this.init = true;
       this.$apply();
       Tips.loaded();
     };
+    // 卸载清理
+    onUnload() {
+      Object.assign(this, this.def);
+    }
     methods = {
-      /**
-       * 提交表单
-       */
-      onSubmitTap() {
+      // 提交表单
+      submit() {
+      },
+      // 进入选择物流页面
+      select() {
+        this.selectDisplay = true;
+      },
+      // 物流页面返回
+      back() {
+        this.selectDisplay = false;
+      },
+      // 物流选择完毕
+      selected(company) {
+        this.selectDisplay = false;
+        this.company = company;
       }
     };
+    watch = {
+      // 无物清除信息
+      input(value) {
+        if (!value.isMail) {
+          this.company = {};
+          value.mailNo = null;
+        }
+      }
+    }
+    computed = {
+      // 计算主面板是否显示
+      panelDisplay() {
+        return this.init && !this.selectDisplay;
+      }
+    }
     mixins = [input];
     components = {
       Address: Address,
       OrderItem: OrderItem,
-      ActionBar: ActionBar
+      ActionBar: ActionBar,
+      ExpressCompany: ExpressCompany
     };
     config = {
       navigationBarTitleText: '订单发货'
     };
-    events = {};
   }
 </script>
 
