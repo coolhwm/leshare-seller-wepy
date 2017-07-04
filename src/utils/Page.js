@@ -36,7 +36,11 @@ export default class Pagination {
     const data = await http.get(this.url, param);
     // 底部判断
     if (data === null || data.length < 1) {
-      this.reachBottom = true;
+      if (this.toClear) {
+        this.clear();
+      } else {
+        this.reachBottom = true;
+      }
       return this;
     }
 

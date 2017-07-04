@@ -1,12 +1,17 @@
 <!--订单列表页面-->
 <template>
   <view class="container" wx:if="{{init}}">
+    <!--TAB 页-->
     <ZanTab :tab="tab" handler="onTabChange" />
+
     <!--订单列表-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
       <OrderItem :order="item" @send.user="send"></OrderItem>
     </repeat>
     <view class="tab-border" />
+
+    <!--占位符-->
+    <Placeholder :show.sync="isPageEmpty" message="您还没有相关订单"/>
   </view>
 </template>
 <style lang="scss">
@@ -16,14 +21,13 @@
   import wepy from 'wepy';
   import pagination from '../../mixins/pagination';
   import order from '../../api/order';
+  import Event from '../../utils/Event';
   import ZanTab from '../../components/zanui/tab';
   import OrderItem from '../../components/order/item';
+  import Placeholder from '../../components/common/placeholder';
 
   export default class OrderIndex extends wepy.page {
-    log(target, name, descriptor) {
-      console.info(`${target}, ${name}m ${descriptor}`);
-      return descriptor;
-    };
+
     // 页面数据
     data = {
       init: false,
@@ -46,15 +50,20 @@
     };
     async onLoad () {
       this.page = order.page(this);
+      this.orders = this.page.list;
       await this.next();
+      Event.listen(Event.ORDER_LIST_UPDATE, this.update.bind(this), this);
     };
-    /**
-     * 获取分页参数
-     */
+    // 获取分页参数
     params() {
       return { status: this.tab.selectedId };
     }
+    // 更新列表
+    update() {
+      this.reload();
+    };
     methods = {
+      // 进入发货页面
       send(orderId) {
         this.$navigate('send', {orderId});
       }
@@ -65,7 +74,8 @@
     };
     components = {
       ZanTab: ZanTab,
-      OrderItem: OrderItem
+      OrderItem: OrderItem,
+      Placeholder: Placeholder
     };
     mixins = [pagination];
     watch = {

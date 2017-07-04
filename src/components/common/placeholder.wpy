@@ -1,5 +1,5 @@
 <template>
-  <view class="empty-placeholder row-center" wx:if="{{list.length == 0}}">
+  <view class="empty-placeholder row-center" wx:if="{{show}}">
     <image class="icon-xl" src="/images/icons/empty.png" />
     <text >{{message}}</text>
   </view>
@@ -9,7 +9,10 @@
   import wepy from 'wepy'
   export default class Placeholder extends wepy.component {
     props = {
-      list: {},
+      show: {
+        type: Boolean,
+        default: false
+      },
       message: {default: '没有相关信息'}
     };
   }

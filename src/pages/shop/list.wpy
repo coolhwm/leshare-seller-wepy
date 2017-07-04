@@ -21,7 +21,7 @@
 <script>
   import wepy from 'wepy';
   import ShopItem from '../../components/shop/item';
-  import Placeholder from '../../components/utils/placeholder';
+  import Placeholder from '../../components/common/placeholder';
 
   export default class ShopList extends wepy.page {
     config = {
