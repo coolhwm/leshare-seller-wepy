@@ -130,6 +130,7 @@
   //汇总栏
   .summary-box{
     padding: 10px 15px;
+
     .final-box{
       float: right;
       width: 100%;

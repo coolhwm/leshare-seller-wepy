@@ -1,0 +1,71 @@
+<template>
+  <view class="title">
+    <text class="muted lg">订单原价（含运费）：￥0.70 </text>
+  </view>
+  <view class="weui-cells weui-cells_after-title ">
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd" >
+        <view class="weui-label">现价</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" id="modifyPrice" @input="input" placeholder="请输入需要修改订单价格"/>
+      </view>
+      <view class="weui-cell__ft">
+      </view>
+    </view>
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd" >
+        <view class="weui-label">现运费</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" id="modifyPost" @input="input" placeholder="请输入需要修改的运费"/>
+      </view>
+      <view class="weui-cell__ft">
+      </view>
+    </view>
+  </view>
+  <view class="weui-cells mt20">
+    <view class="weui-cell ">
+      <view class="weui-cell__hd" >
+        <view class="weui-label">现运费</view>
+      </view>
+      <view class="weui-cell__bd">
+        <text class="major xl">￥120.0</text>
+      </view>
+      <view class="weui-cell__ft">
+      </view>
+    </view>
+  </view>
+
+  <!--操作栏-->
+  <ActionBar @tap.user="onSubmitTap" />
+
+</template>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  .title{
+    padding: 20rpx;
+  }
+</style>
+
+<script>
+  import wepy from 'wepy';
+  import input from '../../mixins/input';
+  import ActionBar from '../../components/common/action_bar';
+
+  export default class OrderReprice extends wepy.page {
+    methods = {};
+    events = {};
+    async onLoad () {
+    };
+    data = {};
+    components = {
+      ActionBar: ActionBar
+    };
+    mixins = [input];
+    config = {
+      navigationBarTitleText: '订单改价'
+    };
+  }
+</script>
