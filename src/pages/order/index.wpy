@@ -6,7 +6,7 @@
 
     <!--订单列表-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <OrderItem :order="item" @send.user="send"></OrderItem>
+      <OrderItem :order="item" @send.user="send" @note.user="note"></OrderItem>
     </repeat>
     <view class="tab-border" />
 
@@ -66,6 +66,10 @@
       // 进入发货页面
       send(orderId) {
         this.$navigate('send', {orderId});
+      },
+      // 进入备注页面
+      note(orderId, sellerNote) {
+        this.$navigate('remark', {orderId, sellerNote});
       }
     };
     config = {

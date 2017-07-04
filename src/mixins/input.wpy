@@ -1,15 +1,30 @@
 <script>
   import wepy from 'wepy';
-
   export default class input extends wepy.mixin {
     data = {
       input: { }
     };
-
+    // 初始化
+    onUnload() {
+      const init = {
+        input: {}
+      };
+      Object.assign(this, init);
+    }
+    // 判断字符串是否为空
+    isEmpty(str) {
+      return str == '' || str == null || str == 'null';
+    }
+    // 判断字符串是否不为空
+    isNotEmpty() {
+      return !this.isEmpty();
+    }
+    // 提示错误（调用FormTips）
+    tips(message) {
+      this.$invoke('Tips', 'show', message);
+    }
     methods = {
-      /**
-       * 处理输入事件
-       */
+      // 处理输入事件
       input(e) {
         this.input[e.currentTarget.id] = e.detail.value
       }

@@ -22,7 +22,7 @@
           this.display = false;
           this.timeoutId = null;
           this.$apply();
-        }, 3000);
+        }, 1500);
       }
     }
   }

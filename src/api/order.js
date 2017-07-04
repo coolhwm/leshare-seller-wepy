@@ -59,7 +59,15 @@ export default class order extends base {
     const url = `${this.baseUrl}/orders/${orderId}/send`;
     const param = {expressNo, expressType};
     return await this.put(url, param);
+  }
 
+  /**
+   * 订单备注
+   */
+  static async note(orderId, sellerNote) {
+    const url = `${this.baseUrl}/orders/${orderId}/note`;
+    const param = {sellerNote};
+    return await this.put(url, param);
   }
 
   /** ********************* 数据处理方法 ********************* **/

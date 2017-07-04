@@ -6,7 +6,7 @@
       <view class="row-between">
         <view class="user-info-container">
           <image class="icon" src="/images/icons/idcard.png"/>
-          <text class="sm ml10">张三</text>
+          <text class="sm ml10">{{order.customer.nickName}}</text>
         </view>
         <text class="sm primary">{{order.statusText}}</text>
       </view>
@@ -34,7 +34,7 @@
 
     <!--操作栏-->
     <view class="order-action-bar row-end" wx:if="{{action != 0}}">
-      <view class="zan-btn zan-btn--small">订单备注</view>
+      <view class="zan-btn zan-btn--small" @tap="note({{order.orderId}}, {{order.sellerNote}})">订单备注</view>
       <view class="zan-btn zan-btn--small zan-btn--primary" wx:if="{{order.status == 1}}">订单关闭</view>
       <view class="zan-btn zan-btn--small zan-btn--primary" @tap="send({{order.orderId}})" wx:if="{{order.status == 2}}">订单发货</view>
       <view class="zan-btn zan-btn--small zan-btn--primary" wx:if="{{order.status == 3}}">物流查询</view>
@@ -57,6 +57,9 @@
     methods = {
       send(orderId) {
         this.$emit('send', orderId);
+      },
+      note(orderId, sellerNote) {
+        this.$emit('note', orderId, sellerNote);
       }
     };
     components = {

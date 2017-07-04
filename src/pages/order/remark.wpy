@@ -1,37 +1,64 @@
 <template>
-  <view class="weui-cells weui-cells_after-title">
+  <Tips />
+
+  <view class="weui-cells">
     <view class="weui-cell">
       <view class="weui-cell__bd">
-        <textarea class="weui-textarea" id="remark" placeholder="请输入订单备注" style="height: 6.3em" maxlength="200" @input="input" />
-        <view class="weui-textarea-counter">{{input.remark ? input.remark.length : 0}}/200</view>
+        <textarea class="weui-textarea" id="sellerNote" value="{{input.sellerNote}}" placeholder="请输入订单备注" style="height: 6.3em" maxlength="200" @input="input" />
+        <view class="weui-textarea-counter">{{input.sellerNote ? input.sellerNote.length : 0}}/200</view>
       </view>
     </view>
   </view>
   <text class="muted sm ml20">小提示：订单备注只有您自己可以看到。</text>
   <!--操作栏-->
-  <ActionBar okText="保存" cancelText="返回" @tap.user="onSubmitTap" />
+  <ActionBar okText="保存" cancelText="返回" @tap.user="submit" />
 </template>
 
 <script>
   import wepy from 'wepy';
   import input from '../../mixins/input';
+  import order from '../../api/order';
+  import Event from '../../utils/Event';
+  import Tips from '../../utils/Tips';
+  import FormTips from '../../components/weui/tips';
   import ActionBar from '../../components/common/action_bar';
 
   export default class OrderRemark extends wepy.page {
-    data = {};
-    onLoad () {};
+    def = {
+      orderId: ''
+    };
+    data = {...this.def};
+    onLoad (options) {
+      this.orderId = options.orderId;
+      const sellerNote = options.sellerNote;
+      if (!this.isEmpty(sellerNote)) {
+        this.input.sellerNote = options.sellerNote;
+      }
+    };
+    // 卸载清理
+    onUnload() {
+      Object.assign(this, this.def);
+    }
     methods = {
-      /**
-       * 提交表单
-       */
-      onSubmitTap() {
+      // 提交表单
+      async submit() {
+        const sellerNote = this.input.sellerNote;
+        if (this.isEmpty(sellerNote)) {
+          this.tips('请填写订单备注');
+          return;
+        }
+        await order.note(this.orderId, this.input.sellerNote);
+        await Tips.success('保存成功');
+        Event.emit(Event.ORDER_LIST_UPDATE);
+        this.$switch('index');
       }
     };
     config = {
       navigationBarTitleText: '订单备注'
     };
     components = {
-      ActionBar: ActionBar
+      ActionBar: ActionBar,
+      Tips: FormTips
     };
     mixins = [input];
     events = {};
