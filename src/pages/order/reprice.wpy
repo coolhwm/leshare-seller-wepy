@@ -1,45 +1,58 @@
 <template>
-  <view class="title">
-    <text class="muted lg">订单原价（含运费）：￥0.70 </text>
-  </view>
-  <view class="weui-cells weui-cells_after-title ">
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-cell__hd" >
-        <view class="weui-label">现价</view>
+  <Tips />
+  <view class="container" wx:if="{{init}}">
+    <view class="title">
+      <text class="muted lg">订单原价（含运费）：￥{{order.finalPrice}}</text>
+    </view>
+    <view class="weui-cells weui-cells_after-title ">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd" >
+          <view class="weui-label">现价</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="modifyPrice" @input="input" value="{{input.modifyPrice}}" placeholder="请输入需要修改订单价格"/>
+        </view>
+        <view class="weui-cell__ft">
+        </view>
       </view>
-      <view class="weui-cell__bd">
-        <input class="weui-input" id="modifyPrice" @input="input" placeholder="请输入需要修改订单价格"/>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd" >
+          <view class="weui-label">现运费</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="modifyPost" @input="input" value="{{input.modifyPost}}" placeholder="请输入需要修改的运费"/>
+        </view>
+        <view class="weui-cell__ft">
+        </view>
       </view>
-      <view class="weui-cell__ft">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd" >
+          <view class="weui-label">优惠减免</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input muted" id="modifyCoupon" disabled value="{{input.modifyCoupon + ' (无法修改)'}}" />
+        </view>
+        <view class="weui-cell__ft">
+        </view>
       </view>
     </view>
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-cell__hd" >
-        <view class="weui-label">现运费</view>
-      </view>
-      <view class="weui-cell__bd">
-        <input class="weui-input" id="modifyPost" @input="input" placeholder="请输入需要修改的运费"/>
-      </view>
-      <view class="weui-cell__ft">
-      </view>
-    </view>
-  </view>
-  <view class="weui-cells mt20">
-    <view class="weui-cell ">
-      <view class="weui-cell__hd" >
-        <view class="weui-label">现运费</view>
-      </view>
-      <view class="weui-cell__bd">
-        <text class="major xl">￥120.0</text>
-      </view>
-      <view class="weui-cell__ft">
-      </view>
-    </view>
-  </view>
 
-  <!--操作栏-->
-  <ActionBar @tap.user="onSubmitTap" />
+    <view class="weui-cells mt20">
+      <view class="weui-cell ">
+        <view class="weui-cell__hd" >
+          <view class="weui-label">现总价</view>
+        </view>
+        <view class="weui-cell__bd">
+          <text class="major xl" wx:if="{{isValid}}">￥</text><text class="major xl">{{modifyFinal}}</text>
+        </view>
+        <view class="weui-cell__ft">
+        </view>
+      </view>
+    </view>
 
+    <!--操作栏-->
+    <ActionBar @tap.user="submit" />
+  </view>
 </template>
 
 <style lang="scss">
@@ -52,16 +65,70 @@
 <script>
   import wepy from 'wepy';
   import input from '../../mixins/input';
+  import order from '../../api/order';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+  import Lang from '../../utils/Lang';
+  import FormTips from '../../components/weui/tips';
   import ActionBar from '../../components/common/action_bar';
 
   export default class OrderReprice extends wepy.page {
-    methods = {};
-    events = {};
-    async onLoad () {
+    def = {
+      order: {},
+      init: false
     };
-    data = {};
+    data = {...this.def};
+    async onLoad (options) {
+      const orderId = options.orderId;
+      const data = await order.detail(orderId);
+      this.order = data;
+      this.input.modifyPrice = data.dealPrice;
+      this.input.modifyPost = data.postFee;
+      this.input.modifyCoupon = data.couponPrice;
+      this.init = true;
+      this.$apply();
+      Tips.loaded();
+    };
+    // 卸载清理
+    onUnload() {
+      Object.assign(this, this.def);
+    }
+    computed = {
+      modifyFinal() {
+        const finalPrice = Lang.sum([this.input.modifyPrice, this.input.modifyPost, -this.input.modifyCoupon]);
+        if (isNaN(finalPrice)) {
+          return '请输入有效数字';
+        } else if (finalPrice < 0) {
+          return '总价不能为负数';
+        } else {
+          return finalPrice;
+        }
+      },
+      isValid() {
+        return Lang.isNumber(this.modifyFinal);
+      }
+    };
+    methods = {
+      async submit() {
+        if (!this.isValid) {
+          this.tips('请正确填写修改价格');
+          return;
+        }
+        const orderId = this.order.orderId;
+        const param = {
+          modifyPrice: this.input.modifyPrice,
+          modifyPost: this.input.modifyPost
+        };
+        await Tips.confirm(`是否确认修改订单总价为￥${this.modifyFinal}?`);
+        await order.reprice(orderId, param);
+        Event.emit(Event.ORDER_LIST_UPDATE);
+        await Tips.success('改价成功！');
+        this.$switch('index');
+      }
+    };
     components = {
-      ActionBar: ActionBar
+      ActionBar: ActionBar,
+      Tips: FormTips
     };
     mixins = [input];
     config = {

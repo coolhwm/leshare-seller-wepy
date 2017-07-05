@@ -84,6 +84,14 @@ export default class order extends base {
     return await this.put(url, param);
   }
 
+  /**
+   * 订单改价
+   */
+  static async reprice(orderId, param) {
+    const url = `${this.baseUrl}/orders/${orderId}/modify_money`;
+    return await this.put(url, param);
+  }
+
   /** ********************* 数据处理方法 ********************* **/
 
   /**

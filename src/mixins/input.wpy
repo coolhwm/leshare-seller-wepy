@@ -1,5 +1,6 @@
 <script>
   import wepy from 'wepy';
+  import Lang from '../utils/Lang';
   export default class input extends wepy.mixin {
     data = {
       input: { }
@@ -13,11 +14,11 @@
     }
     // 判断字符串是否为空
     isEmpty(str) {
-      return str == '' || str == null || str == 'null';
+      return Lang.isEmpty(str);
     }
     // 判断字符串是否不为空
-    isNotEmpty() {
-      return !this.isEmpty();
+    isNotEmpty(str) {
+      return !Lang.isEmpty(str);
     }
     // 提示错误（调用FormTips）
     tips(message) {
@@ -26,7 +27,8 @@
     methods = {
       // 处理输入事件
       input(e) {
-        this.input[e.currentTarget.id] = e.detail.value
+        const fieldName = e.currentTarget.id;
+        this.input[fieldName] = e.detail.value;
       }
     };
   }
