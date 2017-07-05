@@ -2,7 +2,6 @@
 import base from './base';
 
 export default class order extends base {
-
   /**
    * 查询快递公司列表
    */
@@ -84,7 +83,6 @@ export default class order extends base {
     return this.get(url, param);
   }
 
-
   /**
    * 提取步骤信息
    */
@@ -124,7 +122,7 @@ export default class order extends base {
       expTextName: data.expressType,
       mailNo: data.expressNo,
       status: data.status,
-      tel: data.telPhone,
+      tel: data.telPhone
     }
   }
 }

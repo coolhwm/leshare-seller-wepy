@@ -1,0 +1,121 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <!-- 物流基本信息区域 -->
+    <view class="express-box row">
+      <!--商品概览图片-->
+      <view class="column-center">
+        <image class="goods-info-image" src="{{order.imageUrl}}" />
+
+        <!--商品数量概览-->
+        <view class="goods-info-count">
+          <text class="goods-count-text">{{order.goodsCount}}件商品</text>
+        </view>
+      </view>
+
+      <!--快递信息-->
+      <view class="info-box column">
+        <text class="express-text-primary">物流状态：{{info.status}}</text>
+        <text class="express-text-desc">承运公司：{{info.expTextName}}</text>
+        <text class="express-text-desc">运单编号：{{info.mailNo}}</text>
+        <text class="express-text-desc">官方电话：{{info.tel}}</text>
+      </view>
+    </view>
+
+    <view class="steps-box panel">
+      <ZanStep :steps.sync="steps" />
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import order from '../../api/order';
+  import express from '../../api/express';
+  import ZanStep from '../../components/zanui/setp';
+
+  export default class OrderTrace extends wepy.page {
+    def = {
+      steps: [],
+      info: {},
+      order: {},
+      init: false
+    }
+    data = {...this.def};
+    async onLoad (options) {
+      const orderId = '1761';
+      const data = await order.detail(orderId);
+      // 构造基本信息
+      this.order = express.createExpressOrderPreview(data);
+      // 构造轨迹
+      const trace = express.createTrace(data.orderExpress)
+      this.info = trace.info;
+      this.steps = trace.steps;
+      this.loaded();
+    };
+    config = {
+      navigationBarTitleText: '物流查询'
+    };
+    components = {
+      ZanStep: ZanStep
+    };
+    mixins = [base];
+    methods = {};
+    events = {};
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+
+  /*物流基本信息区域*/
+  .express-box{
+    background-color: #FFF;
+    padding: 40rpx 25rpx;
+    border-bottom: $border;
+
+    .info-box{
+      margin-left: 30rpx;
+    }
+  }
+
+  /*商品概览图片*/
+  .goods-info-image{
+    height: 160rpx;
+    width: 160rpx;
+  }
+
+  /*商品数量*/
+  .goods-info-count{
+    background-color: #000;
+    -webkit-filter:opacity(.8);
+    width: 160rpx;
+    height: 45rpx;
+    position: absolute;
+    top:162rpx;
+    text-align: center;
+  }
+  /*商品数量文字*/
+  .goods-count-text{
+    position: relative;
+    top: -1px;
+    font-size: 30rpx;
+    color: #FFF;
+  }
+
+  /*主要文字*/
+  .express-text-primary{
+    font-size: 30rpx;
+    color: #000311;
+  }
+  /*次要文字*/
+  .express-text-desc{
+    font-size: 28rpx;
+    color: #A3A3A3;
+    margin-top: 10rpx;
+  }
+
+  .steps-box{
+    padding-left: 20rpx;
+  }
+</style>

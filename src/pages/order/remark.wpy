@@ -1,17 +1,18 @@
 <template>
-  <Tips />
-
-  <view class="weui-cells">
-    <view class="weui-cell">
-      <view class="weui-cell__bd">
-        <textarea class="weui-textarea" id="sellerNote" value="{{input.sellerNote}}" placeholder="请输入订单备注" style="height: 6.3em" maxlength="200" @input="input" />
-        <view class="weui-textarea-counter">{{input.sellerNote ? input.sellerNote.length : 0}}/200</view>
+  <view class="container" wx:if="{{init}}">
+    <Tips />
+    <view class="weui-cells">
+      <view class="weui-cell">
+        <view class="weui-cell__bd">
+          <textarea class="weui-textarea" id="sellerNote" value="{{input.sellerNote}}" placeholder="请输入订单备注" style="height: 6.3em" maxlength="200" @input="input" />
+          <view class="weui-textarea-counter">{{input.sellerNote ? input.sellerNote.length : 0}}/200</view>
+        </view>
       </view>
     </view>
+    <text class="muted sm ml20">小提示：订单备注只有您自己可以看到。</text>
+    <!--操作栏-->
+    <ActionBar okText="保存" cancelText="返回" @tap.user="submit" />
   </view>
-  <text class="muted sm ml20">小提示：订单备注只有您自己可以看到。</text>
-  <!--操作栏-->
-  <ActionBar okText="保存" cancelText="返回" @tap.user="submit" />
 </template>
 
 <script>
@@ -25,7 +26,8 @@
 
   export default class OrderRemark extends wepy.page {
     def = {
-      orderId: ''
+      orderId: '',
+      init: false
     };
     data = {...this.def};
     onLoad (options) {
@@ -34,6 +36,7 @@
       if (!this.isEmpty(sellerNote)) {
         this.input.sellerNote = options.sellerNote;
       }
+      this.init = true;
     };
     // 卸载清理
     onUnload() {

@@ -26,9 +26,11 @@ text, view {
   color: $color-normal;
 }
 
-form text,view{
-  font-family: 宋体;
-  font-size: $text-form;
+form {
+  text,view{
+    font-family: 宋体;
+    font-size: $text-form;
+  }
 }
 
 button[type="primary"]{
