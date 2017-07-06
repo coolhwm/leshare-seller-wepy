@@ -27,22 +27,21 @@ export default class extends wepy.app {
 
   globalData = {
     auth: {},
-    baseUrl: 'http://leshare.shop:9999/api/v1/seller',
-    publicUrl: 'http://leshare.shop:9999/v1'
+    baseUrl: 'http://leshare.shop:9090/api/v1/seller',
   }
 
   config = {
     pages: [
+      'pages/home/index',
       'pages/order/index',
+      'pages/home/login',
       'pages/order/trace',
       'pages/order/send',
-      'pages/home/login',
       'pages/shop/list',
       'pages/order/reprice',
       'pages/order/detail',
       'pages/order/close',
       'pages/order/remark',
-      'pages/home/index',
       'pages/user/index'
     ],
     window: {

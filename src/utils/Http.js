@@ -40,7 +40,8 @@ export default class http {
   static requestException(res) {
     const error = {};
     error.statusCode = res.statusCode;
-    const serverData = res.data;
+    const wxData = res.data;
+    const serverData = wxData.data;
     if (serverData) {
       error.serverCode = serverData.code;
       error.message = serverData.message;

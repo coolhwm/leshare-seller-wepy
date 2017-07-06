@@ -40,7 +40,7 @@
           {id: '1', title: '待付款'},
           {id: '2', title: '待发货'},
           {id: '3', title: '待收货'},
-          {id: '5', title: '维权中'}
+          {id: '5', title: '待退款'}
         ],
         selectedId: '0',
         scroll: false

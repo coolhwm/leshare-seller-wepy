@@ -4,7 +4,7 @@
     <view class="title">
       <text class="muted lg">订单原价（含运费）：￥{{order.finalPrice}}</text>
     </view>
-    <view class="weui-cells weui-cells_after-title ">
+    <view class="weui-cells weui-cells_after-title form">
       <view class="weui-cell weui-cell_input">
         <view class="weui-cell__hd" >
           <view class="weui-label">现价</view>

@@ -12,6 +12,6 @@ export default class auth extends base {
   static async sms (phone) {
     const url = `${this.baseUrl}/auth/sms_code?phone=${phone}`
     const data = await this.get(url);
-    return data.result;
+    return data.message;
   }
 }

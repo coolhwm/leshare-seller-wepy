@@ -1,7 +1,5 @@
 @import "variable";
 
-
-
 //******全局页面******/
 page{
   height: 100%;
@@ -26,7 +24,7 @@ text, view {
   color: $color-normal;
 }
 
-form {
+.form {
   text,view{
     font-family: 宋体;
     font-size: $text-form;

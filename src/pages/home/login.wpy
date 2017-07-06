@@ -1,22 +1,22 @@
 <template>
+  <Tips />
   <view class="page">
     <view class="brand column-center">
       <image class="icon-xxl" src="/images/home/shop-logo.png"/>
       <text>乐享商家助手</text>
     </view>
     <view class="page__bd form">
-      <Tips />
       <view class="weui-cells weui-cells_after-title">
         <view class="weui-cell weui-cell_input weui-cell_vcode">
           <view class="weui-cell__hd">
             <view class="weui-label">手机号</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" @input="onPhoneInput" maxlength="11" placeholder="请输入手机号" />
+            <input class="weui-input" id="phone" @input="input" maxlength="11" placeholder="请输入手机号" />
           </view>
           <view class="weui-cell__ft">
             <!--<view class="weui-vcode-btn {{isWaiting ? 'muted' : ''}}" @tap="onCodeTap">{{btnText}}</view>-->
-            <VCode  @tap.user="onCodeTap" />
+            <VCode  @tap.user="code" />
           </view>
         </view>
         <view class="weui-cell weui-cell_input weui-cell_vcode">
@@ -24,7 +24,7 @@
             <view class="weui-label">验证码</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" maxlength="4"  @input="onCodeInput" placeholder="请输入验证码" />
+            <input class="weui-input" id="code" maxlength="4"  @input="input" placeholder="请输入验证码" />
           </view>
         </view>
       </view>
@@ -32,7 +32,7 @@
 
 
       <view class="weui-btn-area">
-        <button class="weui-btn" type="primary" @tap="onConfirmTap">确定</button>
+        <button class="weui-btn" type="primary" @tap="confirm">确定</button>
       </view>
     </view>
   </view>
@@ -42,52 +42,47 @@
 <script>
   import wepy from 'wepy';
   import auth from '../../api/auth';
+  import input from '../../mixins/input';
   import FormTips from '../../components/weui/tips';
   import VCode from '../../components/weui/vcode';
   import Tips from '../../utils/Tips';
   export default class Login extends wepy.page {
     data = {
-      code: null,
-      phone: null
     };
     methods = {
-      async onConfirmTap() {
+      async confirm() {
         if (!this.isValid()) {
           return;
         }
         try {
-          const loginCode = await auth.login(this.phone, this.code);
+          const loginCode = await auth.login(this.input.phone, this.input.code);
           await wepy.setStorage({key: 'login_code', data: loginCode});
           this.$switch('/pages/home/index');
           wepy.$instance.globalData.auth.loginCode = loginCode;
         } catch (e) {
-          this.$invoke('Tips', 'show', e.message);
+          this.tips(e.message);
         } finally {
           Tips.loaded();
         }
       },
-      onCodeInput(event) {
-        this.code = event.detail.value;
-      },
-      onPhoneInput(event) {
-        this.phone = event.detail.value;
-      },
-      async onCodeTap() {
+      async code() {
         if (!this.isPhoneValid()) {
           return;
         }
         // 发送验证码
         try {
-          await auth.sms(this.phone);
+          await auth.sms(this.input.phone);
           this.$invoke('VCode', 'cd', 60);
+          Tips.success('验证码已发送');
         } catch (e) {
-          this.$invoke('Tips', 'show', e.message);
+          console.info(e);
+          this.tips(e.message);
         } finally {
           Tips.loaded();
         }
       }
     };
-    events = {};
+    mixins = [input];
     config = {
       navigationBarTitleText: '商家登录'
     };
@@ -104,8 +99,8 @@
       if (!this.isPhoneValid()) {
         return false;
       }
-      if (this.code === null) {
-        this.$invoke('Tips', 'show', '请输入验证码');
+      if (this.isEmpty(this.input.code)) {
+        this.tips('请输入验证码');
         return false;
       }
       return true;
@@ -114,13 +109,13 @@
      * 校验电话号码
      */
     isPhoneValid() {
-      if (this.phone === null || this.phone === '') {
-        this.$invoke('Tips', 'show', '请输入手机号码');
+      if (this.isEmpty(this.input.phone)) {
+        this.tips('请输入手机号码');
         return false;
       }
       const reg = /^1[34578]\d{9}$/;
-      if (!reg.test(this.phone)) {
-        this.$invoke('Tips', 'show', '电话号码格式错误');
+      if (!reg.test(this.input.phone)) {
+        this.tips('电话号码格式错误');
         return false;
       }
       return true;

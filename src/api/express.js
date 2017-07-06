@@ -6,7 +6,7 @@ export default class order extends base {
    * 查询快递公司列表
    */
   static async company() {
-    const url = `${this.publicUrl}/express/company`;
+    const url = `${this.baseUrl}/express/company`;
     return await this.get(url);
   }
   /**
@@ -78,7 +78,7 @@ export default class order extends base {
    */
 
   static _queryExpressInfo(orderId) {
-    const url = `${this.publicUrl}/express`;
+    const url = `${this.baseUrl}/express`;
     const param = { order_id: orderId };
     return this.get(url, param);
   }
@@ -118,6 +118,9 @@ export default class order extends base {
    * 提取物流基本信息
    */
   static _createExpressInfo(data) {
+    if (data.status == null) {
+      data.status = '待揽收';
+    }
     return {
       expTextName: data.expressType,
       mailNo: data.expressNo,
