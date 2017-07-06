@@ -53,10 +53,11 @@ export default class http {
    */
   static createAuthHeader () {
     const loginCode = wepy.$instance.globalData.auth.loginCode;
+    const shopId = wepy.$instance.globalData.auth.shopId;
     const header = {};
     if (loginCode) {
       header['login_code'] = loginCode;
-      header['shop_id'] = 3;
+      header['shop_id'] = shopId;
     }
     return header;
   }

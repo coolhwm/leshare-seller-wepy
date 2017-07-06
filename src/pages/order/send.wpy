@@ -15,11 +15,11 @@
           <switch checked="{{input.isMail}}" id="isMail" @change="input" />
         </view>
       </view>
-      <view class="weui-cell weui-cell_input" wx:if="{{input.isMail}}">
+      <view class="weui-cell weui-cell_input" wx:if="{{input.isMail}}" @tap="select">
         <view class="weui-cell__hd">
           <view class="weui-label">快递公司</view>
         </view>
-        <view class="weui-cell__bd" @tap="select">
+        <view class="weui-cell__bd">
           <input class="weui-input" placeholder="请选择快递公司" disabled value="{{company.name}}"/>
         </view>
         <view class="weui-cell__ft weui-cell__ft_in-access"></view>

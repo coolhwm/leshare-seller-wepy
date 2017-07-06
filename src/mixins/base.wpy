@@ -11,5 +11,10 @@
     onUnload() {
       Object.assign(this, this.def);
     }
+    methods = {
+      nopen() {
+        Tips.alert('尚未开放');
+      }
+    }
   }
 </script>

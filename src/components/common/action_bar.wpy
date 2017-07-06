@@ -1,5 +1,5 @@
 <template>
-  <view class="action-bar row-center fixed-bottom">
+  <view class="action-bar row-center fixed-bottom" wx:if="{{noCancel == 0}}">
     <navigator class="action secondary-action row-center" open-type="navigateBack">
       <text>{{cancelText}}</text>
     </navigator>
@@ -7,6 +7,12 @@
       <text>{{okText}}</text>
     </view>
   </view>
+  <view class="action-bar row-center fixed-bottom" wx:else>
+    <view class="action {{okType}}-acton row-center" style="width: 100%" @tap="tap">
+      <text>{{okText}}</text>
+    </view>
+  </view>
+
 </template>
 
 <script>
@@ -22,6 +28,9 @@
       },
       cancelText: {
         default: '取消'
+      },
+      noCancel: {
+        default: 0
       }
     };
     methods = {
