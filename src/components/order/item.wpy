@@ -17,12 +17,13 @@
       </view>
     </view>
 
-    <view class="order-goods-list-container">
+    <view class="order-goods-list-container" @tap="detail({{order.orderId}})">
       <repeat for="{{order.orderGoodsInfos}}" key="goodsId" index="index" item="item">
         <OrderGoods :goods="item"></OrderGoods>
         <view class="hr" />
       </repeat>
     </view>
+
 
     <!--汇总信息-->
     <view class="order-footer-container row-end">
@@ -38,8 +39,9 @@
       <view class="zan-btn zan-btn--small" @tap="reprice({{order.orderId}})"  wx:if="{{order.status == 1}}">订单改价</view>
       <view class="zan-btn zan-btn--small zan-btn--primary" @tap="close({{order.orderId}})" wx:if="{{order.status == 1}}">订单关闭</view>
       <view class="zan-btn zan-btn--small zan-btn--primary" @tap="send({{order.orderId}})" wx:if="{{order.status == 2}}">订单发货</view>
-      <view class="zan-btn zan-btn--small zan-btn--primary" wx:if="{{order.status == 3}}">物流查询</view>
+      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="trace({{order.orderId}})" wx:if="{{order.status == 3}}">物流查询</view>
     </view>
+
   </view>
 </template>
 
@@ -56,19 +58,26 @@
       }
     };
     methods = {
+      trace(orderId) {
+        this.$root.$navigate('trace', {orderId});
+      },
       send(orderId) {
-        this.$emit('send', orderId);
+        this.$root.$navigate('send', {orderId});
       },
       note(orderId, sellerNote) {
-        this.$emit('note', orderId, sellerNote);
+        this.$root.$navigate('remark', {orderId, sellerNote});
       },
       close(orderId) {
-        this.$emit('close', orderId);
+        this.$root.$navigate('close', {orderId});
       },
       reprice(orderId) {
-        this.$emit('reprice', orderId);
+        this.$root.$navigate('reprice', {orderId});
+      },
+      detail(orderId) {
+        this.$root.$navigate('detail', {orderId});
       }
     };
+
     components = {
       OrderGoods: OrderGoods
     };

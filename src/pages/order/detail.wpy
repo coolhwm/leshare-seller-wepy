@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container" wx:if="{{init}}">
     <!--状态栏-->
     <view class="order-status-bar row">
       <image class="icon-lg" src="/images/icons/status-{{order.status}}.png" wx:if="{{order.status}}" />
@@ -12,7 +12,7 @@
 
     <!--物流栏-->
     <block wx:if="{{order.isExpress}}">
-      <view class="order-trace-bar row" @tap="onOrderTrace">
+      <view class="order-trace-bar row" @tap="trace({{order.orderId}})">
         <image class="icon" src="/images/icons/car.png" />
         <view class="info-box column">
           <text class="inline">{{express.text}}</text>
@@ -67,34 +67,39 @@
 
 <script>
   import wepy from 'wepy'
+  import base from '../../mixins/base';
   import order from '../../api/order';
   import express from '../../api/express';
   import Address from '../../components/common/address';
-  import Tips from '../../utils/Tips';
   import OrderItem from '../../components/order/item';
   export default class OrderDetail extends wepy.page {
-    data = {
+    def = {
       order: {
         orderGoodsInfos: []
       },
       express: {},
-      address: {}
+      address: {},
+      init: false
     };
-    async onLoad () {
-      const orderId = 1767;
+    data = {...this.def};
+    async onLoad (options) {
+      const orderId = options.orderId;
       this.order = await order.detail(orderId);
       this.address = this.order.receiveAddress;
       this.express = express.createCurrentTrace(this.order.orderExpress);
-      this.init = true;
-      this.$apply();
-      Tips.loaded();
+      this.loaded();
+    };
+    methods = {
+      trace(orderId) {
+        this.$root.$navigate('trace', {orderId});
+      }
     };
     components = {
       Address: Address,
       OrderItem: OrderItem
     };
-    methods = {};
-    events = {};
+
+    mixins = [base];
     config = {
       navigationBarTitleText: '订单详情'
     };

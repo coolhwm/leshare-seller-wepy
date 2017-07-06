@@ -8,7 +8,7 @@
     <Address :address.sync="address" />
 
     <!--发货表单-->
-    <view class="weui-cells weui-cells_after-title ">
+    <view class="weui-cells weui-cells_after-title form">
       <view class="weui-cell weui-cell_switch">
         <view class="weui-cell__bd">物流发货</view>
         <view class="weui-cell__ft">
@@ -92,7 +92,8 @@
       // 提交表单
       async submit() {
         const orderId = this.order.orderId;
-        const expressType = this.company.type;
+        const expressType = this.company.name;
+        const telPhone = this.company.tel;
         const expressNo = this.input.mailNo;
         if (this.input.isMail) {
           if (this.isEmpty(expressType)) {
@@ -105,7 +106,8 @@
           }
         }
         await Tips.confirm('是否确认发货？');
-        await order.send(orderId, expressNo, expressType);
+        const param = {expressType, telPhone, expressNo};
+        await order.send(orderId, param);
         Event.emit(Event.ORDER_LIST_UPDATE);
         await Tips.success('发货成功！');
         this.$switch('index');

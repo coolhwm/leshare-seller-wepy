@@ -60,9 +60,8 @@ export default class order extends base {
   /**
    * 物流发货
    */
-  static async send(orderId, expressNo, expressType) {
+  static async send(orderId, param) {
     const url = `${this.baseUrl}/orders/${orderId}/send`;
-    const param = {expressNo, expressType};
     return await this.put(url, param);
   }
 
