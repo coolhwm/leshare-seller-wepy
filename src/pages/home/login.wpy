@@ -52,17 +52,21 @@
     };
     data = {...this.def}
     async onLoad () {
-      const loginCode = auth.getConfig('login_code');
-      if (loginCode != null) {
-        const result = await auth.check(loginCode);
-        if (result == 'SUCCESS') {
-          const shopId = auth.getConfig('shop_id');
-          if (shopId != null) {
-            this.$switch('index');
-          } else {
-            this.$redirect('shops');
+      try {
+        const loginCode = auth.getConfig('login_code');
+        if (loginCode != null) {
+          const result = await auth.check(loginCode);
+          if (result == 'SUCCESS') {
+            const shopId = auth.getConfig('shop_id');
+            if (shopId != null) {
+              this.$switch('index');
+            } else {
+              this.$redirect('shops');
+            }
           }
         }
+      } catch (e) {
+        await auth.removeConfig('login_code');
       }
       this.loaded();
     }

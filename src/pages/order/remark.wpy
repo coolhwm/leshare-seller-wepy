@@ -1,7 +1,7 @@
 <template>
   <view class="container" wx:if="{{init}}">
     <Tips />
-    <view class="weui-cells">
+    <view class="weui-cells form">
       <view class="weui-cell">
         <view class="weui-cell__bd">
           <textarea class="weui-textarea" id="sellerNote" value="{{input.sellerNote}}" placeholder="请输入订单备注" style="height: 6.3em" maxlength="200" @input="input" />
@@ -9,7 +9,7 @@
         </view>
       </view>
     </view>
-    <text class="muted sm ml20">小提示：订单备注只有您自己可以看到。</text>
+    <text class="muted ml20">小提示：订单备注只有您自己可以看到。</text>
     <!--操作栏-->
     <ActionBar okText="保存" cancelText="返回" @tap.user="submit" />
   </view>
