@@ -3,14 +3,11 @@
   import Lang from '../utils/Lang';
   export default class input extends wepy.mixin {
     data = {
-      input: { }
+      input: {}
     };
     // 卸载页面
     onUnload() {
-      const init = {
-        input: {}
-      };
-      Object.assign(this, init);
+      this.input = {};
     }
     // 判断字符串是否为空
     isEmpty(str) {

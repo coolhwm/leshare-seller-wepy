@@ -91,6 +91,86 @@ export default class order extends base {
     return await this.put(url, param);
   }
 
+  /**
+   * 同意退款
+   */
+  static async agreeRefund(orderId) {
+    const url = `${this.baseUrl}/orders/${orderId}/refund_money`;
+    return await this.put(url);
+  }
+
+  /**
+   * 拒绝退款
+   */
+  static async rejectRefund() {
+  }
+
+  /** ********************* 退款处理 ********************* **/
+
+  /**
+   * 根据退款时间生成退款步骤
+   */
+
+  static createOrderRefundSetps(refund) {
+    let steps = [];
+
+    // 提交申请
+    const creareTime = refund.createTime;
+    if (creareTime) {
+      steps.push(this._createRefundSetp('买家提交退款申请', creareTime));
+      steps.push(this._createRefundSetp('请您尽快处理，7天内未处理将自动退款给买家', creareTime));
+    }
+
+    // 卖家处理
+    const sellerTime = refund.sellerDealtime;
+    if (sellerTime) {
+      // 卖家同意
+      if (refund.isAgree == 1) {
+        steps.push(this._createRefundSetp('您已同意退款', sellerTime));
+        steps.push(this._createRefundSetp('款项已原路退回买家', sellerTime));
+      } else {
+        // 卖家不同意
+        steps.push(this._createRefundSetp(`您拒绝退款，原因：${refund.disagreeCause}`, sellerTime));
+      }
+    }
+
+    // 处理结束
+    const finishTime = refund.finishTime;
+    if (finishTime) {
+      // 卖家同意
+      if (refund.is_agree == 1) {
+        steps.push(this._createRefundSetp('订单退款成功', finishTime));
+      } else {
+        // 卖家不同意
+        steps.push(this._createRefundSetp('订单退款关闭', finishTime));
+      }
+    }
+
+    // 买家关闭
+    const closeTime = refund.closeTime;
+    if (closeTime) {
+      steps.push(this._createRefundSetp('买家取消退款，交易恢复', closeTime));
+    }
+
+    // 改变最后一个状态
+    const lastStep = steps[steps.length - 1];
+    lastStep.done = true;
+    lastStep.current = true;
+
+    // 反转
+    steps = steps.reverse();
+    return steps;
+  }
+
+  static _createRefundSetp(text, time) {
+    return {
+      text: text,
+      timestape: time,
+      done: false,
+      current: false
+    };
+  }
+
   /** ********************* 数据处理方法 ********************* **/
 
   /**
