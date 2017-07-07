@@ -52,11 +52,16 @@
     };
     data = {...this.def}
     async onLoad () {
-      const loginCode = wepy.$instance.globalData.auth.loginCode;
+      const loginCode = auth.getConfig('login_code');
       if (loginCode != null) {
         const result = await auth.check(loginCode);
         if (result == 'SUCCESS') {
-          this.$redirect('shops');
+          const shopId = auth.getConfig('shop_id');
+          if (shopId != null) {
+            this.$switch('index');
+          } else {
+            this.$redirect('shops');
+          }
         }
       }
       this.loaded();
@@ -68,9 +73,8 @@
         }
         try {
           const loginCode = await auth.login(this.input.phone, this.input.code);
-          await wepy.setStorage({key: 'login_code', data: loginCode});
+          await auth.setConfig('login_code', loginCode)
           this.$redirect('shops');
-          wepy.$instance.globalData.auth.loginCode = loginCode;
         } catch (e) {
           this.tips(e.message);
         } finally {

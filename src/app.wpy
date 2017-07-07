@@ -14,14 +14,36 @@ export default class extends wepy.app {
     // 注册中间件
     this.use('requestfix');
     this.use('promisify');
+    this.intercept('request', {
+      config (p) {
+        p.header = this.createAuthHeader();
+        return p;
+      }
+    });
+  }
+
+  createAuthHeader () {
+    const loginCode = wepy.$instance.globalData.auth.login_code;
+    const shopId = wepy.$instance.globalData.auth.shop_id;
+    const header = {};
+    if (loginCode) {
+      header['login_code'] = loginCode;
+    }
+    if (shopId) {
+      header['shop_id'] = shopId;
+    }
+    return header;
   }
 
   async onLaunch() {
-    // login_code
-    const result = await wepy.getStorage({key: 'login_code'});
-    const loginCode = result.data;
-    if (loginCode !== '') {
-      wepy.$instance.globalData.auth.loginCode = loginCode;
+    await this.syncStoreConfig('login_code');
+    await this.syncStoreConfig('shop_id');
+  }
+  async syncStoreConfig(key) {
+    const result = await wepy.getStorage({key: key});
+    const value = result.data;
+    if (value !== '') {
+      wepy.$instance.globalData.auth[key] = value;
     }
   }
 

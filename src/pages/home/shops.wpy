@@ -28,6 +28,7 @@
 <script>
   import wepy from 'wepy';
   import shop from '../../api/shop';
+  import auth from '../../api/auth';
   import base from '../../mixins/base';
   import Tips from '../../utils/Tips';
   import ShopItem from '../../components/shop/item';
@@ -46,15 +47,14 @@
     };
     methods = {
       // 进入店铺
-      enter(shopId) {
-        wepy.$instance.globalData.auth.shopId = shopId;
+      async enter(shopId) {
+        await auth.setConfig('shop_id', shopId)
         this.$switch('index');
       },
       // 重新登录
       async back() {
         Tips.loading();
-        wepy.$instance.globalData.auth.loginCode = null;
-        await wepy.removeStorage({key: 'login_code'});
+        await auth.removeConfig('login_code');
         this.$redirect('login');
       }
     };

@@ -1,4 +1,5 @@
 import base from './base'
+import wepy from 'wepy';
 
 export default class auth extends base {
   /**
@@ -25,5 +26,28 @@ export default class auth extends base {
     const url = `${this.baseUrl}/auth/check?login_code=${loginCode}`;
     const data = await this.get(url)
     return data.result;
+  }
+
+  /**
+   * 设置权限值
+   */
+  static getConfig(key) {
+    return wepy.$instance.globalData.auth[key];
+  }
+
+  /**
+   * 读取权限值
+   */
+  static async setConfig(key, value) {
+    await wepy.setStorage({key: key, data: value});
+    wepy.$instance.globalData.auth[key] = value;
+  }
+
+  /**
+   * 删除权限值
+   */
+  static async removeConfig(key) {
+    wepy.$instance.globalData.auth[key] = null;
+    await wepy.removeStorage({key: key});
   }
 }

@@ -5,11 +5,11 @@ const app = getApp();
 // HTTP工具类
 export default class http {
   static async request (method, url, data) {
-    const header = this.createAuthHeader();
+    // const header = this.createAuthHeader();
     const param = {
       url: url,
       method: method,
-      header: header,
+      // header: header,
       data: data
     }
     Tips.loading();
@@ -51,16 +51,16 @@ export default class http {
   /**
    * 构造权限头部
    */
-  static createAuthHeader () {
-    const loginCode = wepy.$instance.globalData.auth.loginCode;
-    const shopId = wepy.$instance.globalData.auth.shopId;
-    const header = {};
-    if (loginCode) {
-      header['login_code'] = loginCode;
-      header['shop_id'] = shopId;
-    }
-    return header;
-  }
+  // static createAuthHeader () {
+  //   const loginCode = wepy.$instance.globalData.auth.login_code;
+  //   const shopId = wepy.$instance.globalData.auth.shop_id;
+  //   const header = {};
+  //   if (loginCode) {
+  //     header['login_code'] = loginCode;
+  //     header['shop_id'] = shopId;
+  //   }
+  //   return header;
+  // }
 
   static get (url, data) {
     return this.request('GET', url, data)
