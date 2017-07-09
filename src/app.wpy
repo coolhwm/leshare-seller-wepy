@@ -24,6 +24,9 @@ export default class extends wepy.app {
       config (p) {
         p.header = this.createAuthHeader();
         return p;
+      },
+      success (p) {
+        return p.data;
       }
     });
   }
@@ -58,15 +61,15 @@ export default class extends wepy.app {
 
   globalData = {
     auth: {},
-    baseUrl: 'http://leshare.shop:9090/api/v1/seller',
+    baseUrl: 'http://leshare.shop:9999/api/v1/seller'
   }
 
   config = {
     pages: [
       'pages/goods/edit',
+      'pages/order/index',
       'pages/home/login',
       'pages/order/refund',
-      'pages/order/index',
       'pages/home/shops',
       'pages/home/index',
       'pages/order/trace',

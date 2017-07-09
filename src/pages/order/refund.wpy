@@ -86,7 +86,7 @@
       // 提交
       async submit() {
         const isAgree = this.input.isOk;
-        const orderId = this.refund.orderIdl
+        const orderId = this.refund.orderId;
         if (isAgree) {
           await Tips.confirm(`请确认退款 ￥${this.refund.refundPrice} 给客户？`);
           await order.agreeRefund(orderId);

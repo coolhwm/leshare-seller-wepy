@@ -41,7 +41,6 @@
     };
     watch = {
       input(value) {
-        console.info(value);
         this.companies.forEach(company => {
           company.display = value == null || value == '' ? true : company.name.indexOf(value) != -1;
         });
@@ -50,7 +49,6 @@
     };
     methods = {
       selected(company, event) {
-        console.info(company);
         this.$emit('selected', company);
       },
       back() {

@@ -26,6 +26,11 @@
       input(e) {
         const fieldName = e.currentTarget.id;
         this.input[fieldName] = e.detail.value;
+      },
+      // 处理单选事件
+      radio(e) {
+        const fieldName = e.currentTarget.id;
+        this.input[fieldName] = e.detail.value;
       }
     };
   }

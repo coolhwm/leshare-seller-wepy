@@ -16,16 +16,15 @@
   </view>
 
   <!--上传管理器-->
-  <SliderPanel :display.sync="isPanelDisplay">
+  <SliderPanel :display.sync="isPanelDisplay" >
     <view slot="title">编辑图片</view>
     <view slot="content" class="manage-box column">
-
       <view class="item-box row-between" wx:for="{{pictures}}" wx:key="*this" wx:index="index">
         <!--展现区域-->
         <view class="item-header-box">
           <text class="lg mr20">{{index + 1}}</text>
           <image class="icon-xl" src="{{item}}"></image>
-          <text class="ml20" wx:if="{{index == 0}}">(主要图片)</text>
+          <text class="ml20" wx:if="{{index == 0}}">(商品封面)</text>
           <text class="muted ml20" wx:else>(细节图片)</text>
         </view>
 
@@ -36,7 +35,7 @@
           <image class="icon-lg" src="/images/icons/minus.png" @tap="remove({{index}})"></image>
         </view>
       </view>
-
+      <text class="muted sm mt10 ml20">提示：请点击按钮改变图片顺序，第一张图片为商品封面</text>
     </view>
   </SliderPanel>
 
@@ -151,9 +150,10 @@
   }
 
   .manage-box{
+    padding-top: 10rpx;
     .item-box{
       padding: 10rpx 20rpx;
-      background-color: $color-bg-item;
+      background-color: white;
       margin-bottom: 5rpx;
       margin-top: 5rpx;
       border-top: $border;

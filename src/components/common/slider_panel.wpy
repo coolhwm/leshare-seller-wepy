@@ -3,7 +3,7 @@
   <view class="slider-panel-cover" wx:if="{{display == 'true'}}" @tap="close"></view>
 
   <!--滑动面板-->
-  <view class="slider-panel-box {{display == 'true' ? 'slider-panel-show' : '' }} " style="background-color:{{backgroundColor}}">
+  <view class="slider-panel-box {{display == 'true' ? 'slider-panel-show' : '' }} " style="min-height: {{minHeight}}">
     <!--面板标题-->
     <view class="header-box">
       <!--标题槽位-->
@@ -18,8 +18,14 @@
     </view>
 
     <!--内容槽位-->
-    <view class="content-box">
+    <scroll-view scroll-y="true" class="content-box" style="background-color:{{backgroundColor}};">
       <slot  name="content"></slot>
+    </scroll-view>
+
+    <!-- 按钮区域 -->
+    <view class="btn-box row-center" wx:if="{{btn == 'true'}}">
+      <view class="btn-back column-center" @tap="close"><text>取消</text></view>
+      <view class="btn-primary column-center ml20"><text>确定</text></view>
     </view>
   </view>
 </template>
@@ -34,6 +40,12 @@
       },
       backgroundColor: {
         default: '#F8F8F8'
+      },
+      minHeight: {
+        default: 0
+      },
+      btn: {
+        default: 'false',
       }
     };
     data = {
@@ -68,6 +80,7 @@
     bottom: 0;
     width: 100%;
     z-index: 100000;
+    background-color:#F8F8F8;
     transform: translateY(150%);
     transition: all 0.4s ease;
     padding-bottom: 20rpx;
@@ -90,6 +103,36 @@
     }
     .content-box{
       max-height:750rpx;
+    }
+  }
+
+  // 按钮组
+  .btn-box{
+    padding-top: 20rpx;
+    view {
+      background-color: white;
+      border-style: solid;
+      border-width: 1px;
+      border-radius: 5px;
+      width:250rpx;
+      height: 70rpx;
+      text {
+        font-size: $text-xl;
+      }
+    }
+
+    .btn-primary{
+      border-color: $color-primary;
+      text {
+        color: $color-primary;
+      }
+    }
+
+    .btn-back{
+      border-color: $color-muted;
+      text {
+        color: $color-muted;
+      }
     }
   }
 
