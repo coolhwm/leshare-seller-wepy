@@ -1,0 +1,169 @@
+<template>
+  <!-- 照片区域 -->
+  <view class="photo-box column-center" @tap="photo" wx:if="{{pictures.length < 1}}">
+    <image class="photo-btn " src="/images/icons/camera.png"></image>
+    <text class="mt10">添加商品图片</text>
+  </view>
+
+  <!-- 照片轮播区域-->
+  <view class="swiper-box" wx:if="{{pictures.length > 0}}" @tap="manage">
+    <swiper class="picture-swiper" indicator-dots="true" indicator-active-color="#EEE" >
+      <swiper-item wx:for="{{pictures}}" wx:key="*this">
+        <image mode="aspectFill" src="{{item}}"></image>
+      </swiper-item>
+    </swiper>
+    <image class="photo-btn icon-xl"  @tap.stop="photo" src="/images/icons/camera.png"></image>
+  </view>
+
+  <!--上传管理器-->
+  <SliderPanel :display.sync="isPanelDisplay">
+    <view slot="title">编辑图片</view>
+    <view slot="content" class="manage-box column">
+
+      <view class="item-box row-between" wx:for="{{pictures}}" wx:key="*this" wx:index="index">
+        <!--展现区域-->
+        <view class="item-header-box">
+          <text class="lg mr20">{{index + 1}}</text>
+          <image class="icon-xl" src="{{item}}"></image>
+          <text class="ml20" wx:if="{{index == 0}}">(主要图片)</text>
+          <text class="muted ml20" wx:else>(细节图片)</text>
+        </view>
+
+        <!-- 操作区域 -->
+        <view class="item-footer-box">
+          <image class="icon-lg" src="/images/icons/up-arrow.png" @tap="up({{index}})"></image>
+          <image class="icon-lg" src="/images/icons/down-arrow.png" @tap="down({{index}})"></image>
+          <image class="icon-lg" src="/images/icons/minus.png" @tap="remove({{index}})"></image>
+        </view>
+      </view>
+
+    </view>
+  </SliderPanel>
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import Tips from '../../utils/Tips';
+  import SliderPanel from '../../components/common/slider_panel';
+  export default class GoodsImageUploader extends wepy.component {
+    props = {
+      pictures: {
+        twoWay: true
+      }
+    };
+    data = {
+      isPanelDisplay: 'false'
+    };
+    methods = {
+      // 上传照片
+      async photo() {
+        const size = this.pictures.length;
+        if (size >= 5) {
+          Tips.alert('最多选择五张图片');
+          return;
+        }
+
+        const param = {
+          count: 5 - size,
+          sizeType: ['compressed']
+        }
+        try {
+          Tips.loading();
+          const result = await wepy.chooseImage(param);
+          this.pictures = this.pictures.concat(result.tempFilePaths);
+          this.$apply();
+        } finally {
+          Tips.loaded();
+        }
+      },
+      // 打开管理面板
+      manage() {
+        this.isPanelDisplay = 'true';
+      },
+      // 向上移动
+      up(index) {
+        if (index == 0) {
+          return;
+        }
+        const target = index - 1;
+        this.swap(index, target);
+      },
+      // 向下移动
+      down(index) {
+        if (index == this.pictures.length - 1) {
+          return;
+        }
+        const target = index + 1;
+        this.swap(index, target);
+      },
+      // 删除图片
+      remove(index) {
+        this.pictures.splice(index, 1);
+      }
+    };
+    components = {
+      SliderPanel: SliderPanel
+    };
+    events = {};
+    swap(srcIndex, targetIndex) {
+      const pictures = this.pictures;
+      const src = pictures[srcIndex];
+      const target = pictures[targetIndex];
+      pictures[targetIndex] = src;
+      pictures[srcIndex] = target;
+    }
+    onLoad() {
+    }
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+
+  .photo-box{
+    height: 150px;
+    background-color: $color-bg-item;
+    border-bottom: $border;
+
+    .photo-btn{
+      height: 75px;
+      width: 75px;
+    }
+  }
+  .swiper-box{
+    .photo-btn{
+      position: absolute;
+      right: 30rpx;
+      top: 455rpx;
+      background-color: white;
+      border-radius: 28px;
+      z-index: 100;
+    }
+
+    .picture-swiper{
+      height: 580rpx;
+      image{
+        height: 100%;
+        width: 100%;
+      }
+    }
+  }
+
+  .manage-box{
+    .item-box{
+      padding: 10rpx 20rpx;
+      background-color: $color-bg-item;
+      margin-bottom: 5rpx;
+      margin-top: 5rpx;
+      border-top: $border;
+      border-bottom: $border;
+
+      .item-footer-box{
+        image{
+          margin-left: 20rpx;
+        }
+      }
+    }
+  }
+</style>

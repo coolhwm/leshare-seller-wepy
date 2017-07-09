@@ -20,8 +20,17 @@ export default class extends wepy.app {
         return p;
       }
     });
+    this.intercept('uploadFile', {
+      config (p) {
+        p.header = this.createAuthHeader();
+        return p;
+      }
+    });
   }
 
+  /**
+   * 构造权限头部
+   */
   createAuthHeader () {
     const loginCode = wepy.$instance.globalData.auth.login_code;
     const shopId = wepy.$instance.globalData.auth.shop_id;

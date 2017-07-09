@@ -2,7 +2,7 @@
   <view class="sku-box row mt10">
     <view class="info-box">
       <view class="weui-cells-form">
-        <view class="weui-cell weui-cell_input" wx:if="{{cancel}}">
+        <view class="weui-cell weui-cell_input" wx:if="{{skuEditable}}">
           <view class="weui-cell__hd" >
             <view class="weui-label">型号</view>
           </view>
@@ -35,8 +35,8 @@
       </view>
     </view>
 
-    <view class="op-box column-center" wx:if="{{cancel}}" @tap="remove({{index}})">
-      <image class="icon" src="/images/icons/minus.png"></image>
+    <view class="op-box column-center" wx:if="{{skuEditable}}" @tap="remove({{index}})">
+      <image class="icon" src="/images/icons/minus.png" wx:if="{{index != 0}}"></image>
     </view>
   </view>
 </template>
@@ -49,7 +49,7 @@
       info: {
         twoWay: true
       },
-      cancel: {
+      skuEditable: {
         default: false
       }
     };
