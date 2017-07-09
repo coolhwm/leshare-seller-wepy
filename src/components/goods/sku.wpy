@@ -1,0 +1,91 @@
+<template>
+  <view class="sku-box row mt10">
+    <view class="info-box">
+      <view class="weui-cells-form">
+        <view class="weui-cell weui-cell_input" wx:if="{{cancel}}">
+          <view class="weui-cell__hd" >
+            <view class="weui-label">型号</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" id="sku" @input="input" value="{{info.sku}}" placeholder="请填写商品型号"/>
+          </view>
+          <view class="weui-cell__ft">
+          </view>
+        </view>
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__hd" >
+            <view class="weui-label">价格</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" id="stock" @input="input" value="{{info.stock}}" placeholder="请填写商品价格"/>
+          </view>
+          <view class="weui-cell__ft">
+          </view>
+        </view>
+        <view class="weui-cell weui-cell_input" >
+          <view class="weui-cell__hd" >
+            <view class="weui-label">库存</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" id="price"  @input="input" value="{{info.price}}"  placeholder="请填写商品库存"/>
+          </view>
+          <view class="weui-cell__ft">
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="op-box column-center" wx:if="{{cancel}}" @tap="remove({{index}})">
+      <image class="icon" src="/images/icons/minus.png"></image>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class GoodsSku extends wepy.component {
+    props = {
+      index: {},
+      info: {
+        twoWay: true
+      },
+      cancel: {
+        default: false
+      }
+    };
+    data = {};
+    methods = {
+      input(e) {
+        const fieldName = e.currentTarget.id;
+        this.info[fieldName] = e.detail.value;
+      },
+      remove(index) {
+        this.$emit('remove', index);
+      }
+    };
+    events = {};
+    onLoad() {
+    }
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  .sku-box{
+    border-top: $border;
+    border-bottom: $border;
+    background-color: white;
+
+    .info-box{
+      flex: 1;
+      .weui-cells-form{
+        border-bottom: none;
+      }
+    }
+
+    .op-box{
+      width: 100rpx;
+      height: 100%;
+    }
+  }
+</style>

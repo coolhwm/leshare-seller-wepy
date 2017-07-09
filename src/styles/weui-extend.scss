@@ -37,3 +37,19 @@
     content: normal;
   }
 }
+
+.form {
+  text,view{
+    font-family: 宋体;
+    font-size: $text-form;
+  }
+}
+
+.weui-cells-form{
+  @extend .weui-cells;
+  @extend .form;
+  @extend .weui-cells-merge-top;
+  &{
+    margin-top:0;
+  }
+}

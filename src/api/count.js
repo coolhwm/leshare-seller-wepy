@@ -2,7 +2,6 @@
 import base from './base';
 
 export default class count extends base {
-
   /**
    * 今日统计
    */

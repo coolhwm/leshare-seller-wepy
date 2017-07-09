@@ -1,0 +1,161 @@
+<template>
+  <view class="container">
+    <!-- 照片区域 -->
+    <view class="photo-box column-center" @tap="photo" wx:if="{{pictures.length < 1}}">
+      <image class="photo-btn " src="/images/icons/camera.png"></image>
+      <text class="mt10">添加商品图片</text>
+    </view>
+
+
+    <!-- 照片轮播区域-->
+    <view class="swiper-box" wx:if="{{pictures.length > 0}}">
+      <swiper class="picture-swiper" indicator-dots="true" indicator-active-color="#EEE" >
+        <swiper-item wx:for="{{pictures}}" wx:key="*this">
+          <image mode="aspectFill" src="{{item}}"></image>
+        </swiper-item>
+      </swiper>
+      <image class="photo-btn icon-xl"  @tap="photo" src="/images/icons/camera.png"></image>
+    </view>
+  </view>
+
+  <!-- 标题区域 -->
+  <view class="weui-cells-form">
+    <view class="weui-cell">
+      <view class="weui-cell__bd">
+        <textarea class="weui-textarea" id="sellerNote" value="{{input.sellerNote}}" placeholder="请输入商品标题" style="height: 2.3em" maxlength="30" @input="input" />
+        <view class="weui-textarea-counter">{{input.sellerNote ? input.sellerNote.length : 0}}/30</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- SKU 列表 -->
+  <SkuList :skuList.sync="skuList" />
+
+  <!-- 其他详细信息 -->
+  <view class="detail-box">
+    <view class="weui-cells-form">
+      <view class="weui-cell weui-cell_switch">
+        <view class="weui-cell__bd">推荐商品</view>
+        <view class="weui-cell__ft">
+          <switch checked="{{input.isMail}}" id="isMail" @change="input" />
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_input"  @tap="select">
+        <view class="weui-cell__hd">
+          <view class="weui-label">商品分类</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" placeholder="请选择商品分类" disabled value="{{company.name}}"/>
+        </view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+      </view>
+
+      <view class="weui-cell weui-cell_input"  @tap="select">
+        <view class="weui-cell__hd">
+          <view class="weui-label">运费</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" placeholder="请选择运费模板" disabled value="{{company.name}}"/>
+        </view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+      </view>
+
+      <view class="weui-cell weui-cell_input"  @tap="select">
+        <view class="weui-cell__hd">
+          <view class="weui-label">商品详情</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" placeholder="请编辑商品详情" disabled value="{{company.name}}"/>
+        </view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+      </view>
+    </view>
+
+    <!--操作栏-->
+    <ActionBar @tap.user="submit" />
+  </view>
+</template>
+
+
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import input from '../../mixins/input';
+  import SkuList from '../../components/goods/sku_list';
+  import Tips from '../../utils/Tips';
+  // import Event from '../../utils/Event';
+  import FormTips from '../../components/weui/tips';
+  import ActionBar from '../../components/common/action_bar';
+
+  export default class GoodsEdit extends wepy.page {
+    def = {
+      pictures: [],
+      skuList: [{}]
+    }
+    data = {...this.def};
+    onLoad (options) {
+    };
+    methods = {
+      async photo() {
+        const param = {
+          count: 5,
+          sizeType: ['compressed']
+        }
+        try {
+          Tips.loading();
+          const result = await wepy.chooseImage(param);
+          this.pictures = this.pictures.concat(result.tempFilePaths);
+        } finally {
+          Tips.loaded();
+        }
+      }
+    };
+    components = {
+      Tips: FormTips,
+      ActionBar: ActionBar,
+      SkuList: SkuList
+    };
+    mixins = [base, input];
+    config = {
+      navigationBarTitleText: '编辑商品'
+    };
+  }
+</script>
+<style lang="scss">
+  @import "../../styles/variable";
+
+  .photo-box{
+    height: 150px;
+    background-color: $color-bg-item;
+    border-bottom: $border;
+
+    .photo-btn{
+      height: 75px;
+      width: 75px;
+    }
+  }
+  .swiper-box{
+    .photo-btn{
+      position: absolute;
+      right: 30rpx;
+      top: 455rpx;
+      background-color: white;
+      border-radius: 28px;
+      z-index: 100;
+    }
+
+    .picture-swiper{
+      height: 580rpx;
+      image{
+        height: 100%;
+        width: 100%;
+      }
+    }
+  }
+
+  .detail-box{
+    border-top: $border;
+  }
+
+</style>

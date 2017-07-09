@@ -54,6 +54,7 @@ export default class extends wepy.app {
 
   config = {
     pages: [
+      'pages/goods/edit',
       'pages/home/login',
       'pages/order/refund',
       'pages/order/index',

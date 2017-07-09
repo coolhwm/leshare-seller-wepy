@@ -1,4 +1,5 @@
 <template>
+  <view class="action-bar-placeholder"></view>
   <view class="action-bar row-center fixed-bottom" wx:if="{{noCancel == 0}}">
     <navigator class="action secondary-action row-center" open-type="navigateBack">
       <text>{{cancelText}}</text>
@@ -17,7 +18,6 @@
 
 <script>
   import wepy from 'wepy'
-  export default class ActionBar extends wepy.component {
     props = {
       address: {},
       okType: {
@@ -43,12 +43,15 @@
 
 <style lang="scss">
   @import "../../styles/variable";
-  page{
-    padding-bottom: 120rpx;
+  .action-bar-placeholder{
+    height: 120rpx;
+    width: 100%;
   }
+
   .action-bar{
     width: 100%;
     height: 100rpx;
+    z-index: 100000;
 
     .action{
       height: 100%;
