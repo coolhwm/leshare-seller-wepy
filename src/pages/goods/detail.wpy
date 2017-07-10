@@ -1,0 +1,145 @@
+<template>
+  <view class="container">
+
+    <view class="details-box">
+      <view class="item-box" wx:for="{{details}}" wx:index="index" wx:key="index">
+        <view class="content-box column-center">
+          <textarea wx:if="{{item.type == 1}}" class="weui-textarea" auto-height value="{{item.content}}" @input="input({{index}})" placeholder="请输入详情描述" style="min-height: 4.3em" maxlength="200" />
+          <image wx:if="{{item.type == 2}}" src="{{item.content}}" mode="aspectFit" />
+        </view>
+        <view class="btn-box row-end">
+          <view class="item-btn" @tap="remove({{index}})" >× 删除</view>
+          <view class="item-btn" wx:if="{{index != 0}}" @tap="up({{index}})">↑ 上移</view>
+          <view class="item-btn" wx:if="{{index != details.length - 1}}" @tap="down({{index}})">↓ 下移</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="btn-group">
+      <button class="weui-btn" type="primary" plain="true" @tap="add">+ 添加内容</button>
+    </view>
+
+  </view>
+  <ActionBar @tap.user="submit" />
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import goods from '../../api/goods';
+  import base from '../../mixins/base';
+  import ActionBar from '../../components/common/action_bar';
+  import Tips from '../../utils/Tips';
+
+  export default class GoodsDetail extends wepy.page {
+    def = {
+      details: [
+        {
+          'type': 1,
+          'content': '1这里是一些文字描述内容'
+        },
+        {
+          'type': 1,
+          'content': '2这里是一些文字描述内容'
+        },
+        {
+          'type': 2,
+          'content': 'http://115.28.93.210/img2/i2/86/5RXqIF7FDOOTpO1vOAnSm1frFZHB.png'
+        }
+      ]
+    }
+    data = {...this.def};
+    onLoad (options) {
+    };
+    methods = {
+      input(index, e) {
+        this.details[index].content = e.detail.value;
+      },
+      // 向上移动
+      up(index) {
+        if (index == 0) {
+          return;
+        }
+        const target = index - 1;
+        this.swap(index, target);
+      },
+      // 向下移动
+      down(index) {
+        if (index == this.details.length - 1) {
+          return;
+        }
+        const target = index + 1;
+        this.swap(index, target);
+      },
+      // 删除图片
+      remove(index) {
+        this.details.splice(index, 1);
+      },
+      // 添加项目
+      async add() {
+        const menu = ['文字描述', '图片描述'];
+        Tips.actionWithFunc(menu, () => {
+          this.details.push({
+            type: 1,
+            content: ''
+          });
+          this.loaded();
+        }, async () => {
+          Tips.loading();
+          const param = {
+            count: 1,
+            sizeType: ['compressed']
+          };
+          const {tempFilePaths} = await wepy.chooseImage(param);
+          console.info(tempFilePaths);
+          const result = await goods.image(tempFilePaths[0]);
+          const {url} = JSON.parse(result);
+          this.details.push({
+            type: 2,
+            content: url
+          });
+          this.loaded();
+        });
+      }
+    }
+    swap(srcIndex, targetIndex) {
+      const details = this.details;
+      const src = details[srcIndex];
+      const target = details[targetIndex];
+      details[targetIndex] = src;
+      details[srcIndex] = target;
+    }
+    components = {
+      ActionBar: ActionBar
+    };
+    mixins = [base];
+    config = {
+      navigationBarTitleText: '商品详情'
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  .container {
+    background-color: #FFF;
+    padding: 20rpx;
+
+    .item-box{
+      margin-bottom: 20rpx;
+      border: $border;
+
+      .content-box{
+        padding:15rpx;
+      }
+
+      .btn-box .item-btn{
+        font-size: $text-sm;
+        color:$color-muted;
+        background-color: $color-bg-item;
+        padding: 5rpx 20rpx;
+        border-top: $border;
+        border-left: $border;
+      }
+    }
+  }
+</style>

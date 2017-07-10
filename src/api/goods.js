@@ -29,7 +29,7 @@ export default class goods extends base {
    */
   static async image(filePath) {
     // const url = `${this.baseUrl}/images`;
-    const url = `http://115.28.93.210:9999/api/v1/seller/images`;
+    const url = `${this.baseUrl}/images`;
     const param = {
       url,
       filePath,

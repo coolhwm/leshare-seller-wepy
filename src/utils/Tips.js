@@ -121,7 +121,7 @@ export default class Tips {
   /**
    * 弹出下拉动作栏
    */
-  static action (items) {
+  static action (...items) {
     return new Promise((resolve, reject) => {
       wx.showActionSheet({
         itemList: items,

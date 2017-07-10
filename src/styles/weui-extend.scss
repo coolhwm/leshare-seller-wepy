@@ -53,3 +53,8 @@
     margin-top:0;
   }
 }
+
+button[type="primary"][plain]{
+  color: $color-primary;
+  border-color: $color-primary;
+}

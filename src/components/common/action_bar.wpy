@@ -47,6 +47,7 @@
   .action-bar-placeholder{
     height: 120rpx;
     width: 100%;
+    background-color: $color-bg-body;
   }
 
   .action-bar{

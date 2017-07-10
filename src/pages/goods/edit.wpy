@@ -51,7 +51,7 @@
             <view class="weui-label">商品详情</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" placeholder="请编辑商品详情" disabled />
+            <input class="weui-input"  disabled />
           </view>
           <view class="weui-cell__ft weui-cell__ft_in-access"></view>
         </view>
