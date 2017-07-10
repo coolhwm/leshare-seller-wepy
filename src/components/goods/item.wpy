@@ -1,0 +1,92 @@
+<template>
+  <view class="item-box">
+    <view class="goods-box row">
+      <image class="goods-image" src="{{goods.imageUrl}}" />
+      <view class="info-box column">
+        <view class="title-box">
+          <text class="title">{{goods.name}}</text>
+        </view>
+        <view class="price-box row">
+          <text class="major lg">{{goods.priceText}}</text>
+          <text class="muted xs ml10" wx:if="{{goods.skuCount > 0}}">[{{goods.skuCount}}规格]</text>
+        </view>
+        <view class="desc-box row">
+          <text class="muted">库存：{{0}}</text>
+          <text class="muted ml20">销量：{{goods.salesVolume}}</text>
+        </view>
+      </view>
+      <image class="icon-recommend icon-lg"  wx:if="{{goods.isRecommend == 1}}" src="/images/icons/recommend.png"  />
+    </view>
+
+    <view class="action-bar row-end">
+      <view class="zan-btn zan-btn--small" >删除</view>
+      <view class="zan-btn zan-btn--small" >下架</view>
+      <view class="zan-btn zan-btn--small zan-btn--primary" >编辑</view>
+    </view>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class GoodsItem extends wepy.component {
+    props = {
+      goods: {}
+    };
+    data = {};
+    methods = {};
+    events = {};
+    onLoad() {
+    }
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  .item-box{
+    background-color: #FFF;
+    margin-top: 10rpx;
+    position: relative;
+
+    .action-bar{
+      border-top: $border;
+      height: 90rpx;
+      padding-right: 10rpx;
+    }
+
+    .goods-box{
+      padding: 30rpx 20rpx;
+
+      $image-size: 170rpx;
+
+      .goods-image{
+        height: $image-size;
+        width: $image-size;
+        border: $border;
+        border-radius: 8px;
+      }
+      .icon-recommend{
+        position: absolute;
+        height: 25px;
+        width: 25px;
+        right: 30rpx;
+        top: 0;
+      }
+
+      .price-box{
+        align-items: flex-end;
+      }
+
+      .info-box{
+        justify-content: space-between;
+        height: $image-size;
+        flex: 1;
+        margin-left: 20rpx;
+
+        .title{
+          line-height: 30rpx;
+        }
+      }
+    }
+  }
+</style>
