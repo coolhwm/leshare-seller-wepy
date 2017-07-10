@@ -17,7 +17,7 @@
             <view class="weui-label">价格</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" id="price" @input="input" value="{{info.price}}" placeholder="请填写商品价格"/>
+            <input class="weui-input" id="price" type="digit" @input="input" value="{{info.price}}" placeholder="请填写商品价格"/>
           </view>
           <view class="weui-cell__ft">
           </view>
@@ -27,7 +27,7 @@
             <view class="weui-label">库存</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" id="stock"  @input="input" value="{{info.stock}}"  placeholder="请填写商品库存"/>
+            <input class="weui-input" id="stock" type="number" @input="input" value="{{info.stock}}"  placeholder="请填写商品库存"/>
           </view>
           <view class="weui-cell__ft">
           </view>

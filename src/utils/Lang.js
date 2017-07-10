@@ -33,4 +33,8 @@ export default class Lang {
     const patrn = /^[1-9]\d*$|^\.\d*$|^0\.\d*$|^[1-9]\d*\.\d*$|^0$/;
     return patrn.test(value);
   }
+  // 数组判断
+  static isArray(o) {
+    return Object.prototype.toString.call(o) === '[object Array]';
+  }
 }

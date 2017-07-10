@@ -1,4 +1,5 @@
 <template>
+  <Tips />
   <view class="container">
 
     <!--照片上传区域-->
@@ -20,12 +21,7 @@
     <!-- 其他详细信息 -->
     <view class="detail-box">
       <view class="weui-cells-form">
-        <view class="weui-cell weui-cell_switch">
-          <view class="weui-cell__bd">推荐商品</view>
-          <view class="weui-cell__ft">
-            <switch checked="{{input.isRecommend}}" id="isRecommend" @change="input" />
-          </view>
-        </view>
+
         <view class="weui-cell weui-cell_input"  @tap="select">
           <view class="weui-cell__hd">
             <view class="weui-label">商品分类</view>
@@ -51,9 +47,22 @@
             <view class="weui-label">商品详情</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input"  disabled />
+            <input class="weui-input"  disabled  placeholder="{{detailText}}"  />
           </view>
           <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+        </view>
+
+        <view class="weui-cell weui-cell_switch">
+          <view class="weui-cell__bd">立即上架</view>
+          <view class="weui-cell__ft">
+            <switch checked="{{input.state}}" id="state" @change="input" />
+          </view>
+        </view>
+        <view class="weui-cell weui-cell_switch">
+          <view class="weui-cell__bd">推荐商品</view>
+          <view class="weui-cell__ft">
+            <switch checked="{{input.isRecommend}}" id="isRecommend" @change="input" />
+          </view>
         </view>
       </view>
     </view>
@@ -96,6 +105,7 @@
   import base from '../../mixins/base';
   import input from '../../mixins/input';
   import goods from '../../api/goods';
+  import v from '../../utils/Validate';
   import SkuList from '../../components/goods/sku_list';
   import ImageUploader from '../../components/goods/image_uploader';
   import Tips from '../../utils/Tips';
@@ -115,7 +125,10 @@
       details: [],
       innerCategories: [],
       init: false,
-      isInnerDisplay: 'false'
+      isInnerDisplay: 'false',
+      input: {
+        state: true
+      }
     }
     data = {...this.def};
     async onLoad (options) {
@@ -126,6 +139,9 @@
     methods = {
       // 提交表单
       async submit() {
+        if (!this.validate()) {
+          return;
+        }
         const data = {
           goodsDetails: [],
           goodsSkuInfo: {},
@@ -211,6 +227,115 @@
     detailsUpdate(details) {
       this.details = details;
     }
+    // 检验
+    validate() {
+      const picturesNum = this.pictures.length;
+      const prices = this.skuList.map(item => item.price);
+      const stocks = this.skuList.map(item => item.stock);
+      let rules = [
+        {
+          value: picturesNum,
+          method: 'min',
+          param: 1,
+          message: '请上传商品图片'
+        },
+        {
+          value: this.input.name,
+          method: 'required',
+          message: '请输入商品标题'
+        },
+        {
+          value: this.input.name,
+          method: 'minlength',
+          param: '2',
+          message: '商品标题太短'
+        },
+        {
+          value: prices,
+          method: 'required',
+          message: '商品价格不能为空'
+        },
+        {
+          value: prices,
+          method: 'number',
+          message: '商品价格必须为数字'
+        },
+        {
+          value: prices,
+          method: 'min',
+          param: 0.01,
+          message: '商品价格不能为0或负数'
+        },
+        {
+          value: prices,
+          method: 'max',
+          param: 1000000,
+          message: '商品价格过高'
+        },
+        {
+          value: stocks,
+          method: 'required',
+          message: '商品库存不能为空'
+        },
+        {
+          value: stocks,
+          method: 'digits',
+          message: '商品库存必须为整数'
+        },
+        {
+          value: stocks,
+          method: 'min',
+          param: 0,
+          message: '商品库存不能为负数'
+        },
+        {
+          value: stocks,
+          method: 'max',
+          param: 1000000,
+          message: '商品库存过高'
+        },
+        {
+          value: this.input.inner,
+          method: 'required',
+          message: '请选择商品分类'
+        }
+      ];
+      const sku = this.skuList.map(item => item.sku);
+      if (sku.length > 1) {
+        rules = rules.concat([
+          {
+            value: sku,
+            method: 'required',
+            message: '型号不能为空'
+          },
+          {
+            value: sku,
+            method: 'minlength',
+            param: 1,
+            message: '型号名称太短'
+          },
+          {
+            value: sku,
+            method: 'maxlength',
+            param: 10,
+            message: '型号名称太长'
+          },
+          {
+            value: sku,
+            method: 'noDuplicate',
+            message: '型号名称不能重复'
+          }
+        ]);
+      }
+      return this.check(rules);
+    }
+
+    computed = {
+      detailText() {
+        const size = this.details.length;
+        return size > 0 ? `已保存${size}条详情` : '请点击编辑详情';
+      }
+    };
     components = {
       Tips: FormTips,
       ActionBar: ActionBar,

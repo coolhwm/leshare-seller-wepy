@@ -1,5 +1,5 @@
 <template>
-  <view class="container" wx:if="{{!isEmpty}}">
+  <view class="container" wx:if="{{!isEmpty }}">
 
     <view class="details-box">
       <view class="item-box" wx:for="{{details}}" wx:index="index" wx:key="index">
@@ -44,6 +44,7 @@
       const param = options.details;
       this.details = JSON.parse(param);
       this.isEmpty = this.details.length < 1;
+      this.loaded();
     };
     methods = {
       input(index, e) {

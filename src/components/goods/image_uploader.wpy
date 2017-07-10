@@ -19,6 +19,7 @@
   <SliderPanel :display.sync="isPanelDisplay" >
     <view slot="title">编辑图片</view>
     <view slot="content" class="manage-box column">
+
       <view class="item-box row-between" wx:for="{{pictures}}" wx:key="*this" wx:index="index">
         <!--展现区域-->
         <view class="item-header-box">
@@ -30,8 +31,8 @@
 
         <!-- 操作区域 -->
         <view class="item-footer-box">
-          <image class="icon-lg" src="/images/icons/up-arrow.png" @tap="up({{index}})"></image>
-          <image class="icon-lg" src="/images/icons/down-arrow.png" @tap="down({{index}})"></image>
+          <image class="icon-lg" wx:if="{{index != 0}}" src="/images/icons/up-arrow.png" @tap="up({{index}})"></image>
+          <image class="icon-lg" wx:if="{{index != pictures.length - 1}}" src="/images/icons/down-arrow.png" @tap="down({{index}})"></image>
           <image class="icon-lg" src="/images/icons/minus.png" @tap="remove({{index}})"></image>
         </view>
       </view>
@@ -52,7 +53,8 @@
       }
     };
     data = {
-      isPanelDisplay: 'false'
+      isPanelDisplay: 'false',
+      isEmpty: false
     };
     methods = {
       // 上传照片
@@ -99,6 +101,9 @@
       // 删除图片
       remove(index) {
         this.pictures.splice(index, 1);
+        if (this.pictures.length < 1) {
+          this.isPanelDisplay = false;
+        }
       }
     };
     components = {
