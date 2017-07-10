@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container" wx:if="{{!isEmpty}}">
 
     <view class="details-box">
       <view class="item-box" wx:for="{{details}}" wx:index="index" wx:key="index">
@@ -15,12 +15,13 @@
       </view>
     </view>
 
-    <view class="btn-group">
+    <view class="btn-group" >
       <button class="weui-btn" type="primary" plain="true" @tap="add">+ 添加内容</button>
     </view>
-
   </view>
-  <ActionBar @tap.user="submit" />
+  <Placeholder :show.sync="isEmpty" type="add" message="点击添加内容" @tap.user="add"/>
+
+  <ActionBar @tap.user="submit" okText="保存详情" cancelText="返回编辑" />
 </template>
 
 <script>
@@ -28,27 +29,21 @@
   import goods from '../../api/goods';
   import base from '../../mixins/base';
   import ActionBar from '../../components/common/action_bar';
+  import Event from '../../utils/Event';
   import Tips from '../../utils/Tips';
+  import Placeholder from '../../components/common/placeholder';
 
   export default class GoodsDetail extends wepy.page {
     def = {
       details: [
-        {
-          'type': 1,
-          'content': '1这里是一些文字描述内容'
-        },
-        {
-          'type': 1,
-          'content': '2这里是一些文字描述内容'
-        },
-        {
-          'type': 2,
-          'content': 'http://115.28.93.210/img2/i2/86/5RXqIF7FDOOTpO1vOAnSm1frFZHB.png'
-        }
-      ]
+      ],
+      isEmpty: false
     }
     data = {...this.def};
     onLoad (options) {
+      const param = options.details;
+      this.details = JSON.parse(param);
+      this.isEmpty = this.details.length < 1;
     };
     methods = {
       input(index, e) {
@@ -89,16 +84,30 @@
             count: 1,
             sizeType: ['compressed']
           };
-          const {tempFilePaths} = await wepy.chooseImage(param);
-          console.info(tempFilePaths);
-          const result = await goods.image(tempFilePaths[0]);
-          const {url} = JSON.parse(result);
-          this.details.push({
-            type: 2,
-            content: url
-          });
-          this.loaded();
+          try {
+            const {tempFilePaths} = await wepy.chooseImage(param);
+            console.info(tempFilePaths);
+            const result = await goods.image(tempFilePaths[0]);
+            const {url} = JSON.parse(result);
+            console.info(url);
+            console.info(result);
+            this.details.push({
+              type: 2,
+              content: url
+            });
+          } finally {
+            this.loaded();
+          }
         });
+      },
+      // 提交信息
+      submit() {
+        const data = this.details.map((item, index) => {
+          item.sequence = index;
+          return item;
+        });
+        Event.emit(Event.GOODS_DETAILS_UPDATE, data);
+        wepy.navigateBack();
       }
     }
     swap(srcIndex, targetIndex) {
@@ -109,9 +118,15 @@
       details[srcIndex] = target;
     }
     components = {
-      ActionBar: ActionBar
+      ActionBar: ActionBar,
+      Placeholder: Placeholder
     };
     mixins = [base];
+    watch = {
+      details() {
+        this.isEmpty = this.details.length < 1;
+      }
+    }
     config = {
       navigationBarTitleText: '商品详情'
     };

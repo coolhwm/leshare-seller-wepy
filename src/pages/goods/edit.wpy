@@ -46,7 +46,7 @@
           <view class="weui-cell__ft weui-cell__ft_in-access"></view>
         </view>
 
-        <view class="weui-cell weui-cell_input"  @tap="select">
+        <view class="weui-cell weui-cell_input"  @tap="details">
           <view class="weui-cell__hd">
             <view class="weui-label">商品详情</view>
           </view>
@@ -99,7 +99,7 @@
   import SkuList from '../../components/goods/sku_list';
   import ImageUploader from '../../components/goods/image_uploader';
   import Tips from '../../utils/Tips';
-  // import Event from '../../utils/Event';
+  import Event from '../../utils/Event';
   import FormTips from '../../components/weui/tips';
   import ActionBar from '../../components/common/action_bar';
   import SliderPanel from '../../components/common/slider_panel';
@@ -112,6 +112,7 @@
         price: '',
         stock: ''
       }],
+      details: [],
       innerCategories: [],
       init: false,
       isInnerDisplay: 'false'
@@ -119,6 +120,7 @@
     data = {...this.def};
     async onLoad (options) {
       this.innerCategories = await goods.getInnerCategories();
+      Event.listen(Event.GOODS_DETAILS_UPDATE, this.detailsUpdate.bind(this), this);
       this.loaded();
     };
     methods = {
@@ -137,11 +139,13 @@
           const image = JSON.parse(result);
           data.images.push(image);
         }
-        // 处理其他信息
+        // 字段信息
         data.name = this.input.name;
         data.isRecommend = this.input.isRecommend ? 1 : 0;
         data.globalCid = 1; // 待完善
-        data.innerCid = this.innerCategories.find(item => item.name == this.input.inner).id; // 待完善
+        data.innerCid = this.innerCategories.find(item => item.name == this.input.inner).id;
+        // 详情信息
+        data.goodsDetails = this.details;
         // 处理SKU信息
         const skuList = this.skuList;
         if (skuList.length == 1) {
@@ -193,8 +197,20 @@
       // 展现分类
       showInner() {
         this.isInnerDisplay = 'true';
+      },
+      // 跳转到详情页面
+      details() {
+        const param = {
+          details: JSON.stringify(this.details)
+        }
+
+        this.$navigate('detail', param);
       }
     };
+    // 商品详情更新
+    detailsUpdate(details) {
+      this.details = details;
+    }
     components = {
       Tips: FormTips,
       ActionBar: ActionBar,
