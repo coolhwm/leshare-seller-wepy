@@ -9,7 +9,7 @@
     </repeat>
 
     <!--操作栏-->
-    <ActionBar @tap.user="submit" okText="新增商品" cancelText="返回" />
+    <ActionBar @tap.user="add" okText="新增商品" cancelText="返回" />
 
     <!--占位符-->
     <Placeholder :show.sync="isPageEmpty" message="您还没有相关商品"/>
@@ -30,6 +30,7 @@
   import ActionBar from '../../components/common/action_bar';
   import Placeholder from '../../components/common/placeholder';
   // import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
 
   export default class GoodsList extends wepy.page {
     def = {
@@ -52,7 +53,13 @@
       this.page = goods.page(this);
       this.goods = this.page.list;
       await this.next();
+      Event.listen(Event.GOODS_LIST_UPDATE, this.update.bind(this), this);
     };
+    methods = {
+      add() {
+        this.$navigate('edit');
+      }
+    }
     events = {};
     components = {
       ZanTab: ZanTab,

@@ -13,28 +13,44 @@
         <view class="desc-box row">
           <text class="muted">库存：{{0}}</text>
           <text class="muted ml20">销量：{{goods.salesVolume}}</text>
+          <text class="muted ml20">收藏：{{goods.salesVolume}}</text>
         </view>
       </view>
       <image class="icon-recommend icon-lg"  wx:if="{{goods.isRecommend == 1}}" src="/images/icons/recommend.png"  />
     </view>
 
-    <view class="action-bar row-end">
-      <view class="zan-btn zan-btn--small" >删除</view>
-      <view class="zan-btn zan-btn--small" >下架</view>
-      <view class="zan-btn zan-btn--small zan-btn--primary" >编辑</view>
+    <view class="action-bar row-between">
+      <text class="muted xs ml20">于 {{goods.createText}} 添加 </text>
+      <view>
+        <view class="zan-btn zan-btn--small" @tap="delete({{goods.id}})" >删除</view>
+        <view class="zan-btn zan-btn--small" >下架</view>
+        <view class="zan-btn zan-btn--small zan-btn--primary" @tap="edit({{goods.id}})">编辑</view>
+      </view>
     </view>
   </view>
-
 </template>
 
 <script>
-  import wepy from 'wepy'
+  import wepy from 'wepy';
+  import goods from '../../api/goods';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
   export default class GoodsItem extends wepy.component {
     props = {
       goods: {}
     };
     data = {};
-    methods = {};
+    methods = {
+      async delete(goodsId) {
+        await Tips.confirm('是否确认删除该商品？');
+        await goods.remove(goodsId);
+        await Tips.success('删除成功');
+        Event.emit(Event.GOODS_LIST_UPDATE);
+      },
+      async edit(goodsId) {
+        this.$root.$navigate('edit', {goodsId});
+      }
+    };
     events = {};
     onLoad() {
     }
@@ -69,12 +85,18 @@
         position: absolute;
         height: 25px;
         width: 25px;
-        right: 30rpx;
+        right: 10rpx;
         top: 0;
       }
 
       .price-box{
         align-items: flex-end;
+      }
+
+      .desc-box{
+        text {
+          font-size: $text-sm;
+        }
       }
 
       .info-box{

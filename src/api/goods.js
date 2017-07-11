@@ -1,6 +1,8 @@
 import base from './base';
 import wepy from 'wepy';
 import Page from '../utils/Page';
+import Lang from '../utils/Lang';
+
 
 export default class goods extends base {
 
@@ -52,6 +54,43 @@ export default class goods extends base {
     const url = `${this.baseUrl}/goods`;
     return await this.post(url, goods);
   }
+  /**
+   * 删除商品
+   */
+  static async remove(goodsId) {
+    const url = `${this.baseUrl}/goods/${goodsId}`;
+    return await this.delete(url);
+  }
+  /**
+   * 商品详情
+   */
+  static async detail(goodsId) {
+    const url = `${this.baseUrl}/goods/${goodsId}`;
+    const data = await this.get(url);
+    return this._processGoodsDetail(data);
+  }
+
+  /** ********************* 内部数据处理方法 ********************* **/
+
+
+  static _processGoodsDetail(goods) {
+    const pictures = goods.images.map(item => item.url);
+    const input = {
+      name: goods.name,
+      status: goods.status == 1,
+      isRecommend: goods.isRecommend == 1,
+      globalCid: goods.globalCid,
+      innerCid: goods.innerCid
+    }
+    const details = goods.goodsDetails;
+    const skuList = goods.goodsSkuInfo.goodsSkuDetails.map(item => {
+      const price = parseFloat(item.goodsSkuDetailBase.price).toFixed(2);
+      const sku = item.sku;
+      const stock = goods.goodsStocks.find(item => item.sku == sku).stock;
+      return {price, sku, stock};
+    });
+    return {pictures, input, details, skuList};
+  }
 
   /**
    * 处理商品列表数据
@@ -60,6 +99,11 @@ export default class goods extends base {
     this._processGoodsPreview(goods);
     this._processGoodsPriceRange(goods);
     this._processGoodsSkuCount(goods);
+    this._processGoodsDate(goods);
+  }
+
+  static _processGoodsDate(item) {
+    item.createText = Lang.convertTimestapeToDay(item.createTime);
   }
 
   /**
@@ -81,11 +125,9 @@ export default class goods extends base {
     // 图片处理
     if (images == null || images.length < 1) {
       item.imageUrl = '/images/icons/broken.png"'
-    }
-    else if (images[0].url == null) {
+    } else if (images[0].url == null) {
       item.imageUrl = '/images/icons/broken.png';
-    }
-    else {
+    } else {
       item.imageUrl = images[0].url;
     }
   }

@@ -37,4 +37,8 @@ export default class Lang {
   static isArray(o) {
     return Object.prototype.toString.call(o) === '[object Array]';
   }
+  // 事件转日期
+  static convertTimestapeToDay(timestape) {
+    return timestape.substring(0, timestape.indexOf(' ')).replace(/-/g, '.');
+  }
 }

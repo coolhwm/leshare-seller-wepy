@@ -56,10 +56,7 @@
     params() {
       return { status: this.tab.selectedId };
     }
-    // 更新列表
-    update() {
-      this.reload();
-    };
+
     methods = {
     };
     config = {

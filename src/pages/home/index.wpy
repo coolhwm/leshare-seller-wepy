@@ -68,14 +68,14 @@
           <image src="/images/home/shop.png"/>
           <text>店铺管理</text>
         </view>
-        <view class="column-center">
+        <navigator class="column-center" url="../goods/list">
           <image src="/images/home/cart.png"/>
           <text>商品管理</text>
-        </view>
-        <view class="column-center">
+        </navigator>
+        <navigator class="column-center" open-type="switchTab" url="../order/index">
           <image src="/images/home/order.png"/>
           <text>订单管理</text>
-        </view>
+        </navigator>
       </view>
 
       <view class="hr"></view>
@@ -89,10 +89,10 @@
           <image src="/images/home/chart.png"/>
           <text>信息统计</text>
         </view>
-        <view class="operation-row column-center">
+        <navigator class="operation-row column-center" open-type="switchTab" url="../user/index">
           <image src="/images/home/more.png"/>
           <text>更多配置</text>
-        </view>
+        </navigator>
       </view>
     </view>
   </view>

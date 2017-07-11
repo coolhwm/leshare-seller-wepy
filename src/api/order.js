@@ -1,6 +1,7 @@
 import base from './base';
 import Page from '../utils/Page';
 
+
 export default class order extends base {
   static closeReacon = [
     '无法联系上买家', '买家误拍或重拍', '买家无诚意完成交易',
