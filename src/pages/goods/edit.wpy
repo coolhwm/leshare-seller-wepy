@@ -1,6 +1,6 @@
 <template>
   <Tips />
-  <view class="container">
+  <view class="container" wx:if="{{init}}">
 
     <!--照片上传区域-->
     <ImageUploader :pictures.sync="pictures" />
@@ -131,10 +131,14 @@
       isInnerDisplay: 'false'
     }
     data = {...this.def};
-    async onLoad ({goodsId}) {
-      const detail = await goods.detail(goodsId);
-      Object.assign(this, detail);
+    async onLoad ({goodsId, mode}) {
+      this.mode = mode;
       this.innerCategories = await goods.getInnerCategories();
+      if (this.mode == 'edit') {
+        const detail = await goods.detail(goodsId);
+        Object.assign(this, detail);
+        this.input.inner = this.innerCategories.find(item => item.id == this.input.innerCid).name;
+      }
       Event.listen(Event.GOODS_DETAILS_UPDATE, this.detailsUpdate.bind(this), this);
       this.loaded();
     };

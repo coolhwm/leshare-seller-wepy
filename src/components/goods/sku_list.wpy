@@ -28,17 +28,15 @@
     methods = {
       add() {
         this.skuList.push({});
-        this.resetSkuEditable();
       },
       remove(index) {
         this.skuList.splice(index, 1);
-        this.resetSkuEditable();
       }
     };
-    computed = {
-      compute() {
+    watch = {
+      skuList() {
         this.resetSkuEditable();
-        return {};
+        this.$apply();
       }
     }
     resetSkuEditable() {
@@ -46,6 +44,7 @@
     }
     events = {};
     onLoad() {
+      this.resetSkuEditable();
     }
   }
 </script>

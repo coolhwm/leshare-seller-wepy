@@ -72,7 +72,6 @@ export default class goods extends base {
 
   /** ********************* 内部数据处理方法 ********************* **/
 
-
   static _processGoodsDetail(goods) {
     const pictures = goods.images.map(item => item.url);
     const input = {
@@ -82,13 +81,22 @@ export default class goods extends base {
       globalCid: goods.globalCid,
       innerCid: goods.innerCid
     }
-    const details = goods.goodsDetails;
-    const skuList = goods.goodsSkuInfo.goodsSkuDetails.map(item => {
-      const price = parseFloat(item.goodsSkuDetailBase.price).toFixed(2);
-      const sku = item.sku;
-      const stock = goods.goodsStocks.find(item => item.sku == sku).stock;
-      return {price, sku, stock};
-    });
+    let skuList;
+    const details = goods.goodsDetails ? goods.goodsDetails : [];
+    if (goods.goodsSkuInfo == null) {
+      skuList = [{
+        price: goods.sellPrice,
+        stock: goods.goodsStocks[0].stock,
+        sku: null
+      }];
+    } else {
+      skuList = goods.goodsSkuInfo.goodsSkuDetails.map(item => {
+        const price = parseFloat(item.goodsSkuDetailBase.price).toFixed(2);
+        const sku = item.sku;
+        const stock = goods.goodsStocks.find(item => item.sku == sku).stock;
+        return {price, sku, stock};
+      });
+    }
     return {pictures, input, details, skuList};
   }
 

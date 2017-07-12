@@ -48,7 +48,7 @@
         Event.emit(Event.GOODS_LIST_UPDATE);
       },
       async edit(goodsId) {
-        this.$root.$navigate('edit', {goodsId});
+        this.$root.$navigate('edit', {goodsId, mode: 'edit'});
       }
     };
     events = {};
