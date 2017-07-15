@@ -10,7 +10,7 @@
       <view class="list-box column">
         <repeat for="{{shops}}" key="index" index="index" item="item">
           <view @tap="enter({{item.shopId}})">
-            <ShopItem ></ShopItem>
+            <ShopItem :shop.sync="item"></ShopItem>
           </view>
         </repeat>
       </view>

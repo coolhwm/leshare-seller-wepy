@@ -61,14 +61,16 @@ export default class extends wepy.app {
 
   globalData = {
     auth: {},
-    baseUrl: 'http://leshare.shop:9999/api/v1/seller'
+    baseUrl: 'https://api.ioman.cc/api/v1/seller'
+    // baseUrl: 'http://leshare.shop:9999/api/v1/seller'
+    // baseUrl: 'http://192.168.31.124:9999/api/v1/seller'
   }
 
   config = {
     pages: [
-      'pages/goods/list',
-      'pages/home/index',
       'pages/home/login',
+      'pages/home/index',
+      'pages/goods/list',
       'pages/order/index',
       'pages/goods/edit',
       'pages/goods/detail',

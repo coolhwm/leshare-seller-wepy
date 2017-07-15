@@ -3,7 +3,6 @@ import wepy from 'wepy';
 import Page from '../utils/Page';
 import Lang from '../utils/Lang';
 
-
 export default class goods extends base {
 
   /**
@@ -83,7 +82,7 @@ export default class goods extends base {
     }
     let skuList;
     const details = goods.goodsDetails ? goods.goodsDetails : [];
-    if (goods.goodsSkuInfo == null) {
+    if (goods.goodsSkuInfo == null || goods.goodsSkuInfo.goodsSkuDetails == null) {
       skuList = [{
         price: goods.sellPrice,
         stock: goods.goodsStocks[0].stock,
