@@ -24,7 +24,7 @@
             <view class="weui-label">验证码</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" id="code" maxlength="4"  @input="input" placeholder="请输入验证码" />
+            <input class="weui-input" id="code" maxlength="6"  @input="input" placeholder="请输入验证码" />
           </view>
         </view>
       </view>
@@ -77,7 +77,8 @@
         }
         try {
           const loginCode = await auth.login(this.input.phone, this.input.code);
-          await auth.setConfig('login_code', loginCode)
+          await auth.setConfig('login_code', loginCode);
+          await auth.removeConfig('shop_id');
           this.$redirect('shops');
         } catch (e) {
           this.tips(e.message);

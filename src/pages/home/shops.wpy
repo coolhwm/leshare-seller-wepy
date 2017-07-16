@@ -3,7 +3,7 @@
     <view class="column">
       <view class="title-box row-between">
         <text class="muted lg">我管理的店铺</text>
-        <text class="muted lg" @tap="nopen">创建</text>
+        <!--<text class="muted lg" @tap="nopen">创建</text>-->
       </view>
 
       <!--店铺列表-->

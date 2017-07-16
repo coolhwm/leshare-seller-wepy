@@ -1,6 +1,6 @@
 <template>
   <view class="item-box row">
-    <image class="shop-icon icon-xl" src="/images/home/shop-logo.png"/>
+    <image class="shop-icon icon-xl" src="{{shop.avatar}}"/>
     <text class="shop-title xxl">{{shop.shopName}}</text>
   </view>
 </template>

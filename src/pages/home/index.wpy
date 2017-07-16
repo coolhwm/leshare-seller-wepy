@@ -1,5 +1,8 @@
 <template>
   <view class="conatiner" wx:if="{{init}}">
+    <view class="shop-box">
+      <text class="sm">{{shop.name}}</text>
+    </view>
     <!--今日统计区域-->
     <view class="today-box">
       <view class="column-center">
@@ -104,6 +107,7 @@
 <script>
   import wepy from 'wepy';
   import count from '../../api/count';
+  import shop from '../../api/shop';
   import base from '../../mixins/base';
 
   export default class HomeIndex extends wepy.page {
@@ -111,10 +115,12 @@
       today: {},
       month: {},
       order: {},
+      shop: {},
       init: false
     }
     data = {...this.def};
     async onLoad () {
+      this.shop = await shop.info();
       await this.reload();
     };
     async reload() {
@@ -139,12 +145,17 @@
 <style lang="scss">
   @import "../../styles/variable";
 
+  .shop-box {
+    background-color: $color-primary;
+    padding-left: 20rpx;
+    text{color: white;}
+  }
+
   /*今日区域*/
   .today-box{
     background-color: $color-primary;
     padding: 40rpx 0;
 
-    /*字体颜色*/
     text{color: white;}
 
     .today-price-text{
