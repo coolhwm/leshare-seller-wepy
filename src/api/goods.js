@@ -54,6 +54,13 @@ export default class goods extends base {
     return await this.post(url, goods);
   }
   /**
+   * 更新商品
+   */
+  static async update(goodsId, goods) {
+    const url = `${this.baseUrl}/goods/${goodsId}`;
+    return await this.put(url, goods);
+  }
+  /**
    * 删除商品
    */
   static async remove(goodsId) {
@@ -86,13 +93,14 @@ export default class goods extends base {
   /** ********************* 内部数据处理方法 ********************* **/
 
   static _processGoodsDetail(goods) {
-    const pictures = goods.images.map(item => item.url);
+    const pictures = goods.images;
     const input = {
       name: goods.name,
       status: goods.status == 0,
       isRecommend: goods.isRecommend == 1,
       globalCid: goods.globalCid,
-      innerCid: goods.innerCid
+      innerCid: goods.innerCid,
+      goodsId: goods.id
     }
     let skuList;
     const details = goods.goodsDetails ? goods.goodsDetails : [];

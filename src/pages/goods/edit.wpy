@@ -136,8 +136,11 @@
       this.innerCategories = await goods.getInnerCategories();
       if (this.mode == 'edit') {
         const detail = await goods.detail(goodsId);
-        Object.assign(this, detail);
-        this.input.inner = this.innerCategories.find(item => item.id == this.input.innerCid).name;
+        this.pictures = detail.pictures;
+        this.input = detail.input;
+        this.details = detail.details;
+        this.skuList = detail.skuList;
+        this.input.inner = this.innerCategories.find(item => item.id == this.input.innerCid).name
       }
       Event.listen(Event.GOODS_DETAILS_UPDATE, this.detailsUpdate.bind(this), this);
       this.loaded();
@@ -156,10 +159,14 @@
         }
         Tips.loading();
         // 处理图片信息
-        for (let file of this.pictures) {
-          const result = await goods.image(file);
-          const image = JSON.parse(result);
-          data.images.push(image);
+        for (let picture of this.pictures) {
+          if (picture.url.substring(0, 6) == 'wxfile') {
+            const result = await goods.image(picture.url);
+            const image = JSON.parse(result);
+            data.images.push(image);
+          } else {
+            data.images.push(picture);
+          }
         }
         // 字段信息
         data.name = this.input.name;
@@ -178,6 +185,7 @@
             sku: null,
             stock: sku.stock
           }
+          data.goodsSkuInfo = null;
           data.stock = sku.stock;
           data.goodsStocks.push(stock);
           data.sellPrice = sku.price;
@@ -202,8 +210,13 @@
             }
           });
         }
-        await goods.create(data);
-        await Tips.success('商品新增成功！');
+        if (this.mode == 'create') {
+          await goods.create(data);
+          await Tips.success('商品新增成功！');
+        } else {
+          await goods.update(this.input.goodsId, data);
+          await Tips.success('商品更新成功！');
+        }
         Event.emit(Event.GOODS_LIST_UPDATE);
         wepy.navigateBack();
       },

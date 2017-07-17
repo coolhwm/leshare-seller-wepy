@@ -1,7 +1,7 @@
 <template>
   <!--SKU区域// 组件化-->
   <repeat for="{{skuList}}" key="sku" index="index" item="item">
-    <Sku :info.sync="item" index.sync="index" :skuEditable.sync="skuEditable" @remove.user="remove" />
+    <Sku :info.sync="item" index.sync="index" :skuEditable.sync="skuEditable" @remove.user="remove" @change.user="change" />
   </repeat>
 
   <!--添加商品型号-->
@@ -31,6 +31,9 @@
       },
       remove(index) {
         this.skuList.splice(index, 1);
+      },
+      change(info) {
+        this.skuList[info.index][info.fieldName] = info.fieldValue;
       }
     };
     watch = {

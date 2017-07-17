@@ -8,8 +8,8 @@
   <!-- 照片轮播区域-->
   <view class="swiper-box" wx:if="{{pictures.length > 0}}" @tap="manage">
     <swiper class="picture-swiper" indicator-dots="true" indicator-active-color="#EEE" >
-      <swiper-item wx:for="{{pictures}}" wx:key="*this">
-        <image mode="aspectFill" src="{{item}}"></image>
+      <swiper-item wx:for="{{pictures}}" wx:key="index" wx:index="index">
+        <image mode="aspectFill" src="{{item.url}}"></image>
       </swiper-item>
     </swiper>
     <image class="photo-btn icon-xl"  @tap.stop="photo" src="/images/icons/camera.png"></image>
@@ -20,11 +20,11 @@
     <view slot="title">编辑图片</view>
     <view slot="content" class="manage-box column">
 
-      <view class="item-box row-between" wx:for="{{pictures}}" wx:key="*this" wx:index="index">
+      <view class="item-box row-between" wx:for="{{pictures}}" wx:key="index" wx:index="index">
         <!--展现区域-->
         <view class="item-header-box">
           <text class="lg mr20">{{index + 1}}</text>
-          <image class="icon-xl" src="{{item}}"></image>
+          <image class="icon-xl" src="{{item.url}}"></image>
           <text class="ml20" wx:if="{{index == 0}}">(商品封面)</text>
           <text class="muted ml20" wx:else>(细节图片)</text>
         </view>
@@ -71,8 +71,13 @@
         }
         try {
           Tips.loading();
-          const result = await wepy.chooseImage(param);
-          this.pictures = this.pictures.concat(result.tempFilePaths);
+          const {tempFilePaths} = await wepy.chooseImage(param);
+          const pictures = tempFilePaths.map(item => {
+            return {
+              url: item
+            }
+          });
+          this.pictures = this.pictures.concat(pictures);
           this.$apply();
         } finally {
           Tips.loaded();

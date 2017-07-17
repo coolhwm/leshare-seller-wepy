@@ -64,9 +64,9 @@
     }
     methods = {
       add() {
-        this.$navigate('edit');
+        this.$navigate('edit?mode=create');
       },
-      change(info) {
+      change() {
         this.reload();
       }
     }
