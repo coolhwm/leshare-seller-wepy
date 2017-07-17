@@ -68,6 +68,20 @@ export default class goods extends base {
     const data = await this.get(url);
     return this._processGoodsDetail(data);
   }
+  /**
+   * 商品上架
+   */
+  static async onSale(goodsId) {
+    const url = `${this.baseUrl}/goods/${goodsId}/on_sale`;
+    return this.put(url);
+  }
+  /**
+   * 商品下架
+   */
+  static async offSale(goodsId) {
+    const url = `${this.baseUrl}/goods/${goodsId}/off_sale`;
+    return this.put(url);
+  }
 
   /** ********************* 内部数据处理方法 ********************* **/
 

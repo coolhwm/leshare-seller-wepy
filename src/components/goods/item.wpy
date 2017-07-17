@@ -22,8 +22,9 @@
     <view class="action-bar row-between">
       <text class="muted xs ml20">于 {{goods.createText}} 添加 </text>
       <view>
-        <view class="zan-btn zan-btn--small" @tap="delete({{goods.id}})" >删除</view>
-        <view class="zan-btn zan-btn--small" >下架</view>
+        <view class="zan-btn zan-btn--small" wx:if="{{goods.status == 1}}" @tap="delete({{goods.id}})" >删除</view>
+        <view class="zan-btn zan-btn--small" wx:if="{{goods.status != 1}}" @tap="offSale({{goods.id}})">下架</view>
+        <view class="zan-btn zan-btn--small" wx:if="{{goods.status == 1}}" @tap="onSale({{goods.id}})">上架</view>
         <view class="zan-btn zan-btn--small zan-btn--primary" @tap="edit({{goods.id}})">编辑</view>
       </view>
     </view>
@@ -49,6 +50,18 @@
       },
       async edit(goodsId) {
         this.$root.$navigate('edit', {goodsId, mode: 'edit'});
+      },
+      async offSale(goodsId) {
+        await Tips.confirm('是否确认下架该商品？');
+        await goods.offSale(goodsId);
+        await Tips.success('下架成功');
+        Event.emit(Event.GOODS_LIST_UPDATE);
+      },
+      async onSale(goodsId) {
+        await Tips.confirm('是否确认上架该商品？');
+        await goods.onSale(goodsId);
+        await Tips.success('上架成功');
+        Event.emit(Event.GOODS_LIST_UPDATE);
       }
     };
     events = {};
