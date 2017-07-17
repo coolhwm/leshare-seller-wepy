@@ -13,7 +13,7 @@
         <view class="desc-box row">
           <text class="muted">库存：{{0}}</text>
           <text class="muted ml20">销量：{{goods.salesVolume}}</text>
-          <text class="muted ml20">收藏：{{goods.salesVolume}}</text>
+          <text class="muted ml20">收藏：{{goods.favoriteCount}}</text>
         </view>
       </view>
       <image class="icon-recommend icon-lg"  wx:if="{{goods.isRecommend == 1}}" src="/images/icons/recommend.png"  />

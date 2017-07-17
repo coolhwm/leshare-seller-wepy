@@ -4,6 +4,15 @@
     <view slot="title">{{title}}</view>
     <view slot="content" class="weui-cells-form">
       <radio-group @change="change" @tap="tap">
+
+        <label class="weui-cell weui-check__label" wx:if="{{displatyDefault == 'true' }}">
+          <radio class="weui-check" value="{{''}}" checked="{{selectedId == null || selectedId == ''}}"/>
+          <view class="weui-cell__bd">全部</view>
+          <view class="weui-cell__ft weui-cell__ft_in-radio" wx:if="{{selectedId == null || selectedId == ''}}">
+            <icon class="weui-icon-radio" type="success_no_circle" size="16"></icon>
+          </view>
+        </label>
+
         <label class="weui-cell weui-check__label" wx:for="{{list}}" wx:key="value">
           <radio class="weui-check" value="{{item.id}}" checked="{{selectedId == item.id}}"/>
           <view class="weui-cell__bd">{{item.name}}</view>
@@ -35,6 +44,10 @@
         type: String,
         default: '请选择'
       },
+      displatyDefault: {
+        type: String,
+        default: 'false'
+      },
       list: {}
     };
     data = {
@@ -44,7 +57,7 @@
     methods = {
       change(e) {
         const selectedId = e.detail.value;
-        const selectedName = this.list.find(item => item.id == selectedId).name;
+        const selectedName = selectedId == '' ? '全部' : this.list.find(item => item.id == selectedId).name;
         this.selectedId = selectedId;
         this.selectedName = selectedName;
         this.$emit('change', {selectedId, selectedName})

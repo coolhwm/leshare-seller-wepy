@@ -37,11 +37,11 @@
       },
       tab: {
         list: [
-          {id: '0', title: '出售中'},
-          {id: '1', title: '售罄的'},
-          {id: '2', title: '仓库中'}
+          {id: 'onSale', title: '出售中'},
+          {id: 'sellOut', title: '售罄的'},
+          {id: 'offSale', title: '仓库中'}
         ],
-        selectedId: '0',
+        selectedId: 'onSale',
         categoryId: '0',
         scroll: false
       },
@@ -55,9 +55,19 @@
       await this.next();
       Event.listen(Event.GOODS_LIST_UPDATE, this.update.bind(this), this);
     };
+    // 获取分页参数
+    params() {
+      return {
+        goods_status: this.tab.selectedId,
+        category_id: this.tab.categoryId
+      };
+    }
     methods = {
       add() {
         this.$navigate('edit');
+      },
+      change(info) {
+        this.reload();
       }
     }
     events = {};

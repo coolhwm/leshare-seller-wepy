@@ -8,13 +8,17 @@
     <view class="category-box column" @tap="show">
       <view class="vr row-center">
         <image class="icon" src="/images/icons/category.png"/>
-        <text class="ml10 muted">{{categoriesTitle}}</text>
+        <text class="category-text ml10 muted inline">{{categoriesTitle}}</text>
       </view>
     </view>
   </view>
 
   <!--下拉选择器-->
-  <SliderSelector :display.sync="display" :list.sync="categories" :title.sync="categoriesTitle" @change.user="categoriesChange"/>
+  <SliderSelector :display.sync="display"
+                  :list.sync="categories"
+                  :title="categoriesTitle"
+                  displatyDefault="true"
+                  @change.user="categoriesChange"/>
 </template>
 
 <script>
@@ -38,14 +42,23 @@
       },
       categoriesChange(info) {
         this.tab.categoryId = info.selectedId;
+        this.categoriesTitle = info.selectedId == '' ? this.props.categoriesTitle.default : info.selectedName;
+        this.change();
       },
-      tabChange(info) {
+      tabChange() {
+        this.change();
       }
     };
     components = {
       ZanTab: ZanTab,
       SliderSelector: SliderSelector
     };
+    change() {
+      this.$emit('change', {
+        selectedId: this.tab.selectedId,
+        categoryId: this.tab.categoryId
+      });
+    }
     events = {};
     onLoad() {
     }
@@ -79,6 +92,10 @@
         height: 30px;
         width: 100%;
         border-left: $border;
+      }
+
+      .category-text{
+        max-width: 130rpx;
       }
     }
   }
