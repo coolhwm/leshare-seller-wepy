@@ -58,7 +58,7 @@
         // 直接修改数据/双向通讯
         this.tab.selectedId = selectedId;
         // 发射事件
-        this.$emit('tab-change', data);
+        this.$emit('change', data);
       }
     };
     events = {};

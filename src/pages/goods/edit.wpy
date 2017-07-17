@@ -165,7 +165,7 @@
         data.name = this.input.name;
         data.isRecommend = this.input.isRecommend ? 1 : 0;
         data.globalCid = 1; // 待完善
-        data.status = this.input.status ? 1 : 0;
+        data.status = this.input.status ? 0 : 1;
         data.innerCid = this.innerCategories.find(item => item.name == this.input.inner).id;
         // 详情信息
         data.goodsDetails = this.details;

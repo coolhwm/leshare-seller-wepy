@@ -1,7 +1,7 @@
 <template>
   <view class="container" wx:if="{{init}}">
     <!--TAB 页-->
-    <ZanTab :tab="tab" handler="onTabChange" />
+    <CategoryTab :tab="tab" :categories.sync="categories" categoriesTitle="商品分类" @change.user="change"  />
 
     <!-- 商品列表 -->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
@@ -16,19 +16,16 @@
   </view>
 </template>
 
-<style lang="scss">
-  @import "../../styles/variable";
-</style>
-
 <script>
   import wepy from 'wepy';
   import base from '../../mixins/base';
   import pagination from '../../mixins/pagination';
   import goods from '../../api/goods';
   import GoodsItem from '../../components/goods/item';
-  import ZanTab from '../../components/zanui/tab';
+  import CategoryTab from '../../components/zanui/category-tab';
   import ActionBar from '../../components/common/action_bar';
   import Placeholder from '../../components/common/placeholder';
+
   // import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
 
@@ -45,13 +42,16 @@
           {id: '2', title: '仓库中'}
         ],
         selectedId: '0',
+        categoryId: '0',
         scroll: false
-      }
+      },
+      categories: []
     }
     data = {...this.def};
     async onLoad () {
       this.page = goods.page(this);
       this.goods = this.page.list;
+      this.categories = await goods.getInnerCategories();
       await this.next();
       Event.listen(Event.GOODS_LIST_UPDATE, this.update.bind(this), this);
     };
@@ -62,7 +62,7 @@
     }
     events = {};
     components = {
-      ZanTab: ZanTab,
+      CategoryTab: CategoryTab,
       Placeholder: Placeholder,
       GoodsItem: GoodsItem,
       ActionBar: ActionBar
@@ -74,3 +74,7 @@
     };
   }
 </script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>

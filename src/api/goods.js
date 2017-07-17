@@ -89,7 +89,7 @@ export default class goods extends base {
     const pictures = goods.images.map(item => item.url);
     const input = {
       name: goods.name,
-      status: goods.status == 1,
+      status: goods.status == 0,
       isRecommend: goods.isRecommend == 1,
       globalCid: goods.globalCid,
       innerCid: goods.innerCid

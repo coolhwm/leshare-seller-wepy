@@ -45,7 +45,7 @@
         default: 0
       },
       btn: {
-        default: 'false',
+        default: 'false'
       }
     };
     data = {
