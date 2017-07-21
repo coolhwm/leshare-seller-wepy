@@ -22,12 +22,12 @@
     <view class="detail-box">
       <view class="weui-cells-form">
 
-        <view class="weui-cell weui-cell_input"  @tap="select">
+        <view class="weui-cell weui-cell_input"  @tap="showInner">
           <view class="weui-cell__hd">
             <view class="weui-label">商品分类</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" placeholder="请选择商品分类" disabled value="{{input.inner}}" @tap="showInner"/>
+            <input class="weui-input" placeholder="请选择商品分类" disabled value="{{input.inner}}" />
           </view>
           <view class="weui-cell__ft weui-cell__ft_in-access"></view>
         </view>

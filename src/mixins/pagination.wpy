@@ -4,7 +4,7 @@
 
   /**
    * 分页通用方法
-   */
+  */
   export default class pagination extends wepy.mixin {
     config = {};
     components = {};

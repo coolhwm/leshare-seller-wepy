@@ -74,13 +74,17 @@
     }
     data = {...this.def};
     async onLoad (options) {
-      const orderId = '1793';
-      const data = await order.detail(orderId);
-      const refund = data.curRefund;
-      this.refund = refund;
-      this.steps = order.createOrderRefundSetps(refund);
-      this.input.isOk = true;
-      this.loaded();
+      try {
+        const orderId = options.orderId;
+        const data = await order.detail(orderId);
+        const refund = data.curRefund;
+        this.refund = refund;
+        this.steps = order.createOrderRefundSetps(refund);
+        this.input.isOk = true;
+        this.loaded();
+      } catch (e) {
+        Tips.error('加载失败请联系客服');
+      }
     };
     methods = {
       // 提交
@@ -97,7 +101,7 @@
             return;
           }
           await Tips.confirm(`请拒绝用户的退款申请？`);
-          await order.rejectRefund(orderId);
+          await order.rejectRefund(orderId, this.input.note);
           await Tips.success('处理成功！');
         }
         Event.emit(Event.ORDER_LIST_UPDATE);

@@ -97,13 +97,22 @@ export default class order extends base {
    */
   static async agreeRefund(orderId) {
     const url = `${this.baseUrl}/orders/${orderId}/refund_money`;
-    return await this.put(url);
+    const param = {
+      isAgree: 1
+    };
+    return await this.put(url, param);
   }
 
   /**
    * 拒绝退款
    */
-  static async rejectRefund() {
+  static async rejectRefund(orderId, note) {
+    const url = `${this.baseUrl}/orders/${orderId}/refund_money`;
+    const param = {
+      isAgree: 2,
+      disagreeCause: note
+    };
+    return await this.put(url, param);
   }
 
   /** ********************* 退款处理 ********************* **/

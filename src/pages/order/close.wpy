@@ -52,12 +52,16 @@
     methods = {
       // 确认提交
       async submit() {
-        const orderId = this.order.orderId;
-        await Tips.confirm('您确认要关闭该订单？');
-        await order.close(orderId, this.seletedReason);
-        Event.emit(Event.ORDER_LIST_UPDATE);
-        await Tips.success('关闭成功');
-        this.$switch('index');
+        try {
+          const orderId = this.order.orderId;
+          await Tips.confirm('您确认要关闭该订单？');
+          await order.close(orderId, this.seletedReason);
+          Event.emit(Event.ORDER_LIST_UPDATE);
+          await Tips.success('关闭成功');
+          this.$switch('index');
+        } catch (e) {
+          Tips.error('关闭失败请联系客服');
+        }
       }
     };
     computed = {

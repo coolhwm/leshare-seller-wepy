@@ -157,7 +157,7 @@ export default class goods extends base {
     } else if (images[0].url == null) {
       item.imageUrl = '/images/icons/broken.png';
     } else {
-      item.imageUrl = images[0].url;
+      item.imageUrl = images[0].url + '?imageView2/1/w/200/h/200/format/jpg/q/75|imageslim';
     }
   }
 
@@ -172,12 +172,12 @@ export default class goods extends base {
     }
     const skuDetails = detail.goodsSkuInfo.goodsSkuDetails;
     let maxPrice = 0;
-    let minPrice = 0;
+    let minPrice = Number.MAX_VALUE;
 
     for (let i in skuDetails) {
       const detail = skuDetails[i].goodsSkuDetailBase;
       maxPrice = Math.max(detail.price, maxPrice).toFixed(2);
-      minPrice = Math.min(detail.price, maxPrice).toFixed(2);
+      minPrice = Math.min(detail.price, minPrice).toFixed(2);
     }
     detail.maxPrice = maxPrice;
     detail.minPrice = minPrice;

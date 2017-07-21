@@ -19,8 +19,8 @@
       <image class="icon-recommend icon-lg"  wx:if="{{goods.isRecommend == 1}}" src="/images/icons/recommend.png"  />
     </view>
 
-    <view class="action-bar row-between">
-      <text class="muted xs ml20">于 {{goods.createText}} 添加 </text>
+    <view class="item-action row-between">
+      <text class="muted xs ml20">分类：{{goods.innerCategoryName}}</text>
       <view>
         <view class="zan-btn zan-btn--small" wx:if="{{goods.status == 1}}" @tap="delete({{goods.id}})" >删除</view>
         <view class="zan-btn zan-btn--small" wx:if="{{goods.status != 1}}" @tap="offSale({{goods.id}})">下架</view>
@@ -77,7 +77,7 @@
     margin-top: 10rpx;
     position: relative;
 
-    .action-bar{
+    .item-action{
       border-top: $border;
       height: 90rpx;
       padding-right: 10rpx;
