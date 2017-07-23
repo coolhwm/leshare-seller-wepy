@@ -98,6 +98,8 @@
         const finalPrice = Lang.sum([this.input.modifyPrice, this.input.modifyPost, -this.input.modifyCoupon]);
         if (isNaN(finalPrice)) {
           return '请输入有效数字';
+        } else if (this.input.modifyPrice <= 0) {
+          return '商品价格不能为0';
         } else if (finalPrice < 0) {
           return '总价不能为负数';
         } else {
