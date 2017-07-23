@@ -6,7 +6,7 @@
 
     <!--订单列表-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <OrderItem :order="item"></OrderItem>
+      <OrderItem :order.sync="item"></OrderItem>
     </repeat>
     <view class="tab-border" />
     <!--占位符-->

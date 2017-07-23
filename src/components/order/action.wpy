@@ -1,0 +1,28 @@
+<template>
+  <view @tap="tap">
+    ##{{order.orderId}}##
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class OrderAction extends wepy.component {
+    props = {
+      order: {
+      }
+    };
+    methods = {
+      tap() {
+        console.info(this);
+      }
+    };
+    events = {};
+    onLoad() {
+    }
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>

@@ -62,6 +62,16 @@
         <text class="lg major">￥{{order.finalPrice}}</text>
       </view>
     </view>
+
+    <!--操作栏-->
+    <view class="order-action-bar row-end">
+      <view class="zan-btn zan-btn--small" @tap="note({{order.orderId}}, {{order.sellerNote}})">订单备注</view>
+      <view class="zan-btn zan-btn--small" @tap="reprice({{order.orderId}})"  wx:if="{{order.status == 1}}">订单改价</view>
+      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="close({{order.orderId}})" wx:if="{{order.status == 1}}">订单关闭</view>
+      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="send({{order.orderId}})" wx:if="{{order.status == 2}}">订单发货</view>
+      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="trace({{order.orderId}})" wx:if="{{order.status == 3}}">物流查询</view>
+      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="refund({{order.orderId}})" wx:if="{{order.status == 5}}">订单退款</view>
+    </view>
   </view>
 </template>
 
@@ -92,6 +102,21 @@
     methods = {
       trace(orderId) {
         this.$root.$navigate('trace', {orderId});
+      },
+      send(orderId) {
+        this.$root.$navigate('send', {orderId});
+      },
+      note(orderId, sellerNote) {
+        this.$root.$navigate('remark', {orderId, sellerNote});
+      },
+      close(orderId) {
+        this.$root.$navigate('close', {orderId});
+      },
+      reprice(orderId) {
+        this.$root.$navigate('reprice', {orderId});
+      },
+      refund(orderId) {
+        this.$root.$navigate('refund', {orderId});
       }
     };
     components = {
@@ -108,6 +133,10 @@
 
 <style lang="scss">
   @import "../../styles/variable";
+  .container{
+    padding-bottom: 110rpx;
+  }
+
   //状态栏
   .order-status-bar{
     background-color: #FFF;
@@ -152,5 +181,16 @@
   //商品栏
   .order-item-container{
     margin-bottom: 0;
+  }
+
+  // 操作栏
+  .order-action-bar {
+    position: fixed;
+    background-color: white;
+    width: 750rpx;
+    bottom: 0;
+    border-top: $border;
+    height: 90rpx;
+    padding-right: 10rpx;
   }
 </style>

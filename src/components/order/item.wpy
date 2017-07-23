@@ -47,8 +47,9 @@
 </template>
 
 <script>
-  import wepy from 'wepy'
-  import OrderGoods from './goods'
+  import wepy from 'wepy';
+  import OrderGoods from './goods';
+  import OrderAction from './action';
   export default class OrderItem extends wepy.component {
     props = {
       order: {
@@ -83,7 +84,8 @@
     };
 
     components = {
-      OrderGoods: OrderGoods
+      OrderGoods: OrderGoods,
+      OrderAction: OrderAction
     };
   }
 </script>
