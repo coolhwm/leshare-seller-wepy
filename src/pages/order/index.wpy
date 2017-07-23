@@ -2,7 +2,7 @@
 <template>
   <view class="container" wx:if="{{init}}">
     <!--TAB 页-->
-    <ZanTab :tab="tab" handler="onTabChange" />
+    <ZanTab :tab.sync="tab" @change.user="switchTap" />
 
     <!--订单列表-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
@@ -51,13 +51,21 @@
       this.orders = this.page.list;
       await this.next();
       Event.listen(Event.ORDER_LIST_UPDATE, this.update.bind(this), this);
+      Event.listen(Event.ORDER_TAB_UPDATE, this.status.bind(this), this);
     };
     // 获取分页参数
     params() {
       return { status: this.tab.selectedId };
     }
-
+    // 切换状态
+    status(status) {
+      this.tab.selectedId = status;
+      this.update();
+    }
     methods = {
+      switchTap() {
+        this.reload();
+      }
     };
     config = {
       navigationBarTitleText: '订单管理',
@@ -69,10 +77,5 @@
       Placeholder: Placeholder
     };
     mixins = [pagination];
-    watch = {
-      tab() {
-        this.reload();
-      }
-    }
   }
 </script>

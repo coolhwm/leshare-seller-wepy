@@ -31,20 +31,20 @@
     <!--其他统计区域-->
     <view>
       <view class="count-box row-around bg-white">
-        <view class="count-item column-center">
+        <navigator class="count-item column-center"  @tap="order('2')" open-type="switchTab" url="../order/index">
           <text class="count-value">{{order.n2}}</text>
           <text class="muted">待发货订单</text>
-        </view>
+        </navigator>
         <view class="vr"/>
-        <view class="count-item column-center">
+        <navigator class="count-item column-center"  @tap="order('1')" open-type="switchTab" url="../order/index">
           <text class="count-value">{{order.n1}}</text>
           <text class="muted">待付款订单</text>
-        </view>
+        </navigator>
         <view class="vr"/>
-        <view class="count-item column-center">
+        <navigator class="count-item column-center" @tap="order('5')" open-type="switchTab" url="../order/index">
           <text class="count-value">{{order.n5}}</text>
           <text class="muted">待退款订单</text>
-        </view>
+        </navigator>
       </view>
       <view class="count-box row-around bg-white">
         <view class="count-item column-center">
@@ -109,6 +109,7 @@
   import count from '../../api/count';
   import shop from '../../api/shop';
   import base from '../../mixins/base';
+  import Event from '../../utils/Event';
 
   export default class HomeIndex extends wepy.page {
     def = {
@@ -133,11 +134,14 @@
       await this.reload();
       wepy.stopPullDownRefresh();
     }
+    methods = {
+      order(status) {
+        Event.emit(Event.ORDER_TAB_UPDATE, status);
+      }
+    }
     config = {
       enablePullDownRefresh: true
     };
-    components = {};
-    methods = {};
     mixins = [base];
   }
 </script>
