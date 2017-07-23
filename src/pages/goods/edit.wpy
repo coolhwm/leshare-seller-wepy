@@ -209,6 +209,10 @@
               stock: item.stock
             }
           });
+          // 库存求和
+          data.stock = skuList.map(item => item.stock).reduce((pre, cur) => parseInt(pre) + parseInt(cur));
+          // 售价求最低值
+          data.sellPrice = Math.min(...skuList.map(item => item.price));
         }
         if (this.mode == 'create') {
           await goods.create(data);
