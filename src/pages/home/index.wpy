@@ -66,11 +66,11 @@
 
     <!--操作区域-->
     <view class="operation-box">
-      <view class="operation-row row-around">
-        <view class="column-center">
+      <view class="operation-row row-around" >
+        <navigator class="column-center" url="../shop/detail">
           <image src="/images/home/shop.png"/>
           <text>店铺管理</text>
-        </view>
+        </navigator>
         <navigator class="column-center" url="../goods/list">
           <image src="/images/home/cart.png"/>
           <text>商品管理</text>
