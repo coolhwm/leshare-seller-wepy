@@ -128,6 +128,9 @@ view.bg-white{background-color: white}
 .icon-xxl{
   @include icon-image(60px);
 }
+.icon-round {
+  border-radius: 50%;
+}
 
 //******间隔******/
 .hr{

@@ -1,0 +1,76 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <!--TAB 页-->
+    <ZanTab :tab.sync="tab" @change.user="switchTab" />
+
+    <!--订单列表-->
+    <repeat for="{{page.list}}" key="index" index="index" item="item">
+      <CustomerItem :customer.sync="item"></CustomerItem>
+    </repeat>
+
+    <view class="tab-border" />
+    <!--占位符-->
+    <Placeholder :show.sync="isPageEmpty" message="您还没有相关客户信息"/>
+
+  </view>
+</template>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import pagination from '../../mixins/pagination';
+  import customer from '../../api/customer';
+  import ZanTab from '../../components/zanui/tab';
+  import Placeholder from '../../components/common/placeholder';
+  import CustomerItem from '../../components/customer/item';
+  // import Tips from '../../utils/Tips';
+
+  export default class CustomerIndex extends wepy.page {
+    def = {
+      init: true,
+      page: {
+        list: [
+        ]
+      },
+      tab: {
+        list: [
+          {id: 'PRICE', title: '总交易额'},
+          {id: 'TIME', title: '最近购买'},
+          {id: 'COUNT', title: '购买次数'}
+        ],
+        selectedId: 'PRICE',
+        order: true,
+        sord: 'desc',
+        scroll: false
+      }
+    }
+    data = {...this.def};
+    async onLoad (options) {
+      this.page = customer.page(this.tab.selectedId);
+      await this.next();
+    };
+    params() {
+      return { sort: this.tab.sord };
+    }
+    methods = {
+      async switchTab() {
+        this.page = customer.page(this.tab.selectedId);
+        await this.next();
+      }
+    }
+    events = {};
+    components = {
+      ZanTab: ZanTab,
+      Placeholder: Placeholder,
+      CustomerItem: CustomerItem
+    };
+    mixins = [base, pagination];
+    config = {
+      navigationBarTitleText: '客户管理'
+    };
+  }
+</script>

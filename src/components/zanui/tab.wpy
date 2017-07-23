@@ -14,7 +14,13 @@
           data-item-id="{{item.id}}"
           @tap="handleZanTabChange"
         >
-          <view class="zan-tab__title"><text>{{item.title}}</text></view>
+          <view class="zan-tab__title">
+            <text>{{item.title}}</text>
+            <block wx:if="{{tab.order}}">
+              <image class="icon" src="/images/icons/order-{{tab.sord}}.png" wx:if="{{tab.selectedId == item.id}}"/>
+              <image class="icon" src="/images/icons/order-none.png" wx:else/>
+            </block>
+          </view>
         </view>
       </scroll-view>
     </block>
@@ -28,7 +34,13 @@
           data-item-id="{{item.id}}"
           @tap="handleZanTabChange"
         >
-          <view class="zan-tab__title"><text>{{item.title}}</text></view>
+          <view class="zan-tab__title">
+            <text>{{item.title}}</text>
+            <block wx:if="{{tab.order}}">
+              <image class="icon" src="/images/icons/order-{{tab.sord}}.png" wx:if="{{tab.selectedId == item.id}}"/>
+              <image class="icon" src="/images/icons/order-none.png" wx:else/>
+            </block>
+          </view>
         </view>
       </view>
     </block>
@@ -55,6 +67,14 @@
         const componentId = dataset.componentId;
         const selectedId = dataset.itemId;
         const data = { componentId, selectedId };
+        // 处理排序情况
+        if (this.tab.order) {
+          const lastId = this.tab.selectedId;
+          if (lastId == selectedId) {
+            this.tab.sord = this.tab.sord == 'desc' ? 'asc' : 'desc';
+          }
+          data.sord = this.tab.sord;
+        }
         // 直接修改数据/双向通讯
         this.tab.selectedId = selectedId;
         // 发射事件

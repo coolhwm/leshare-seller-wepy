@@ -88,10 +88,10 @@
           <image src="/images/home/coupon.png"/>
           <text>营销管理</text>
         </view>
-        <view class="operation-row column-center">
+        <navigator class="operation-row column-center" url="../customer/list">
           <image src="/images/home/chart.png"/>
-          <text>信息统计</text>
-        </view>
+          <text>用户管理</text>
+        </navigator>
         <navigator class="operation-row column-center" open-type="switchTab" url="../user/index">
           <image src="/images/home/more.png"/>
           <text>更多配置</text>

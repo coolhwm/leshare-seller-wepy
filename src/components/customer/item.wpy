@@ -1,0 +1,43 @@
+<template>
+  <view class="cusomer-box row">
+    <image class="avatar icon-xl icon-round" src="{{customer.avatar}}"></image>
+    <view class="info-box column">
+      <text class="xl">{{customer.name}}</text>
+      <view class="count-box row">
+        <text class="muted">{{customer.key}}</text>
+        <text class="major ml10"> {{customer.value}}</text>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class OrderGoods extends wepy.component {
+    props = {
+      customer: {}
+    };
+    data = {};
+    methods = {};
+    events = {};
+    onLoad() {
+    }
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  .cusomer-box{
+    background-color: white;
+    padding:30rpx;
+    border-bottom: $border;
+
+    .info-box{
+      margin-left: 30rpx;
+
+      .count-box{
+        margin-top: 15rpx;
+      }
+    }
+  }
+</style>
