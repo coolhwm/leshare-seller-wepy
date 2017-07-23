@@ -1,22 +1,81 @@
 <template>
+
+  <!-- 头图区域 -->
+  <view class="info-box column-center">
+    <image class="avatar" src="{{shop.avatar}}" />
+    <text class="name">{{shop.name}}</text>
+  </view>
+
+  <view class="h-gap" />
+
+  <view class="weui-cells weui-cells-form">
+    <view url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="shops">
+      <view class="weui-cell__bd">切换店铺</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+    </view>
+    <view url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="logout">
+      <view class="weui-cell__bd">切换账号</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+    </view>
+  </view>
+
   <view class="tab-border" />
 </template>
 
 <script>
-  import wepy from 'wepy'
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import auth from '../../api/auth';
+  import shop from '../../api/shop';
+  import Tips from '../../utils/Tips';
 
   export default class UserIndex extends wepy.page {
+    data = {
+      shop: {}
+    };
+    async onLoad () {
+      this.shop = await shop.info();
+      this.loaded();
+    };
+    methods = {
+      async shops() {
+        await Tips.confirm('是否确认切换店铺？');
+        await auth.removeConfig('shop_id');
+        this.$redirect('../home/shops');
+      },
+      async logout() {
+        await Tips.confirm('是否确认退出登录？');
+        await auth.removeConfig('shop_id');
+        await auth.removeConfig('login_code');
+        this.$redirect('../home/login');
+      }
+    };
     config = {
       navigationBarTitleText: '我的信息'
     };
-    components = {};
-    methods = {};
-    events = {};
-    onLoad () {};
-    data = {};
+    mixins = [base];
   }
 </script>
 
 <style lang="scss">
   @import "../../styles/variable";
+  /*用户信息*/
+  .info-box{
+    align-items: center;
+    height: 300rpx;
+    background-color: $color-primary;
+
+    .avatar{
+      height:160rpx;
+      width: 160rpx;
+      border-radius: 50%;
+    }
+
+    .name{
+      color: white;
+      font-size: $text-xxl;
+      margin-top: 20rpx;
+    }
+  }
+
 </style>

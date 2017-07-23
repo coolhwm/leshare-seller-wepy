@@ -69,7 +69,9 @@ export default class extends wepy.app {
 
   config = {
     pages: [
+      'pages/user/index',
       'pages/home/login',
+      'pages/shop/detail',
       'pages/goods/list',
       'pages/home/index',
       'pages/order/index',
@@ -82,8 +84,7 @@ export default class extends wepy.app {
       'pages/order/reprice',
       'pages/order/detail',
       'pages/order/close',
-      'pages/order/remark',
-      'pages/user/index'
+      'pages/order/remark'
     ],
     window: {
       backgroundTextStyle: 'light',
