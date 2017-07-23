@@ -1,0 +1,246 @@
+<template>
+  <Tips />
+  <view class="h-gap"></view>
+  <view class="weui-cells weui-cells-form">
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label">名称</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" id="name" @input="input" value="{{input.name}}" placeholder="优惠亮点，吸引客户"/>
+      </view>
+    </view>
+
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label">面值</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" id="price" @input="input" value="{{input.price}}" type="digit" placeholder="请输入卡券抵扣金额"/>
+      </view>
+    </view>
+
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label">订单金额</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" id="limitPrice"  @input="input"  value="{{input.limitPrice}}" type="digit" placeholder="请输入最低消费金额"/>
+      </view>
+    </view>
+
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label">限领张数</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" id="perLimit"  @input="input" value="{{input.perLimit}}" type="number" placeholder="请输入每人最多领几张"/>
+      </view>
+    </view>
+
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label">发放总量</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input class="weui-input" id="stock"  @input="input" value="{{input.stock}}" type="number" placeholder="请输入卡券库存"/>
+      </view>
+    </view>
+
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label">生效时间</view>
+      </view>
+      <view class="weui-cell__bd">
+        <picker mode="date"  id="beginTime"  @change="input" value="{{input.beginTime}}"  start="2015-09-01" end="2017-09-01">
+          <view class="weui-input">{{input.beginTime? input.beginTime : '请选择卡券生效时间'}}</view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__hd">
+        <view class="weui-label">过期时间</view>
+      </view>
+      <view class="weui-cell__bd">
+        <picker mode="date" id="dueTime"  @change="input" value="{{input.dueTime}}" start="2015-09-01" end="2017-09-01">
+          <view class="weui-input">{{input.dueTime? input.dueTime : '请选择卡券过期时间'}}</view>
+        </picker>
+      </view>
+    </view>
+  </view>
+
+  <!--操作栏-->
+  <ActionBar @tap.user="submit" />
+</template>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import input from '../../mixins/input';
+  import coupon from '../../api/coupon';
+  import ActionBar from '../../components/common/action_bar';
+  import FormTips from '../../components/weui/tips';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+
+  export default class CouponEdit extends wepy.page {
+    def = {
+      mode: 'create'
+    }
+    data = {...this.def};
+    onLoad (options) {
+    };
+    methods = {
+      async submit() {
+        if (!this.validate()) {
+          return;
+        }
+        const param = this.input;
+        param.suitLimit = 0;
+        await coupon.create(param)
+        await Tips.success('创建成功！');
+        Event.emit(Event.COUPON_LIST_UPDATE);
+        wepy.navigateBack();
+      }
+    };
+    validate() {
+      const rules = [
+        {
+          value: this.input.name,
+          method: 'required',
+          message: '优惠券名称不能为空'
+        },
+        {
+          value: this.input.name,
+          method: 'minlength',
+          param: 2,
+          message: '优惠券名称太短'
+        },
+        {
+          value: this.input.name,
+          method: 'maxlength',
+          param: 20,
+          message: '优惠券名称太长'
+        },
+        {
+          value: this.input.price,
+          method: 'required',
+          message: '优惠券面值不能为空'
+        },
+        {
+          value: this.input.price,
+          method: 'number',
+          message: '优惠券面值必须为数字'
+        },
+        {
+          value: this.input.price,
+          method: 'min',
+          param: 0.01,
+          message: '优惠券面值不能为0或负数'
+        },
+        {
+          value: this.input.price,
+          method: 'max',
+          param: this.input.limitPrice,
+          message: '优惠券面值不能大于订单金额'
+        },
+        {
+          value: this.input.price,
+          method: 'max',
+          param: 10000,
+          message: '优惠券面值过高'
+        },
+        {
+          value: this.input.limitPrice,
+          method: 'required',
+          message: '订单金额不能为空'
+        },
+        {
+          value: this.input.limitPrice,
+          method: 'number',
+          message: '订单金额必须为数字'
+        },
+        {
+          value: this.input.limitPrice,
+          method: 'max',
+          param: 10000,
+          message: '订单金额过高'
+        },
+        {
+          value: this.input.limitPrice,
+          method: 'min',
+          param: 0,
+          message: '订单金额不能为负数'
+        },
+        {
+          value: this.input.perLimit,
+          method: 'required',
+          message: '限领张数不能为空'
+        },
+        {
+          value: this.input.perLimit,
+          method: 'digits',
+          message: '限领张数必须为整数'
+        },
+        {
+          value: this.input.perLimit,
+          method: 'min',
+          param: 1,
+          message: '至少需要能够领取一张'
+        },
+        {
+          value: this.input.perLimit,
+          method: 'max',
+          param: 100,
+          message: '每人不能领取超过100张'
+        },
+        {
+          value: this.input.stock,
+          method: 'required',
+          message: '发放总量不能为空'
+        },
+        {
+          value: this.input.stock,
+          method: 'digits',
+          message: '发放总量必须为整数'
+        },
+        {
+          value: this.input.stock,
+          method: 'min',
+          param: 1,
+          message: '至少需要发放张'
+        },
+        {
+          value: this.input.stock,
+          method: 'max',
+          param: 10000,
+          message: '发放总量过高'
+        },
+        {
+          value: this.input.beginTime,
+          method: 'required',
+          message: '生效时间不能为空'
+        },
+        {
+          value: this.input.dueTime,
+          method: 'required',
+          message: '过期时间不能为空'
+        }
+      ];
+      return this.check(rules);
+    }
+    components = {
+      ActionBar: ActionBar,
+      Tips: FormTips
+    };
+    mixins = [base, input];
+    config = {
+      navigationBarTitleText: '编辑优惠券'
+    };
+  }
+</script>

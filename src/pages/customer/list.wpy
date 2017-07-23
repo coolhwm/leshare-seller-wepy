@@ -3,15 +3,13 @@
     <!--TAB 页-->
     <ZanTab :tab.sync="tab" @change.user="switchTab" />
 
-    <!--订单列表-->
+    <!--客户列表-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
       <CustomerItem :customer.sync="item"></CustomerItem>
     </repeat>
 
-    <view class="tab-border" />
     <!--占位符-->
     <Placeholder :show.sync="isPageEmpty" message="您还没有相关客户信息"/>
-
   </view>
 </template>
 
@@ -70,7 +68,8 @@
     };
     mixins = [base, pagination];
     config = {
-      navigationBarTitleText: '客户管理'
+      navigationBarTitleText: '客户管理',
+      enablePullDownRefresh: true
     };
   }
 </script>

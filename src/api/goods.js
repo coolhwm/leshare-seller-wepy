@@ -157,7 +157,7 @@ export default class goods extends base {
     } else if (images[0].url == null) {
       item.imageUrl = '/images/icons/broken.png';
     } else {
-      item.imageUrl = images[0].url + '?imageView2/1/w/200/h/200/format/jpg/q/75|imageslim';
+      item.imageUrl = images[0].url + '/small';
     }
   }
 

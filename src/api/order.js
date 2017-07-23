@@ -313,6 +313,7 @@ export default class order extends base {
       // 处理SKU描述
       const sku = item.goodsSku;
       item.skuText = this._processOrderSku(sku);
+      item.imageUrl += '/small';
     });
   }
 

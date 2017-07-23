@@ -9,6 +9,8 @@ export default class Event {
   static GOODS_DETAILS_UPDATE = 'GOODS_DETAILS_UPDATE';
   // 商品列表更新事件
   static GOODS_LIST_UPDATE = 'GOODS_LIST_UPDATE';
+  // 卡券列表更新事件
+  static COUPON_LIST_UPDATE = 'COUPON_LIST_UPDATE';
   static listen(eventName, callback, observer) {
     WxNotificationCenter.addNotification(eventName, callback, observer);
   }

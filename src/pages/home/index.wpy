@@ -84,12 +84,12 @@
       <view class="hr"></view>
 
       <view class="row-around">
-        <view class="operation-row column-center">
+        <navigator class="operation-row column-center" url="../coupon/list">
           <image src="/images/home/coupon.png"/>
-          <text>营销管理</text>
-        </view>
+          <text>卡券管理</text>
+        </navigator>
         <navigator class="operation-row column-center" url="../customer/list">
-          <image src="/images/home/chart.png"/>
+          <image src="/images/home/customer.png"/>
           <text>用户管理</text>
         </navigator>
         <navigator class="operation-row column-center" open-type="switchTab" url="../user/index">

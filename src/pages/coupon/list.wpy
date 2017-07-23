@@ -1,0 +1,75 @@
+<template>
+  <!--TAB 页-->
+  <ZanTab :tab.sync="tab" @change.user="switchTab" />
+
+  <!--列表展现-->
+  <repeat for="{{page.list}}" key="index" index="index" item="item">
+    <CouponItem :coupon.sync="item"></CouponItem>
+  </repeat>
+
+
+  <!--操作栏-->
+  <ActionBar @tap.user="add" okText="新增优惠券" cancelText="返回" />
+
+  <!--占位符-->
+  <Placeholder :show.sync="isPageEmpty" message="您还没有相关卡券信息"/>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import coupon from '../../api/coupon';
+  import pagination from '../../mixins/pagination.wpy';
+  import Placeholder from '../../components/common/placeholder';
+  import ZanTab from '../../components/zanui/tab';
+  import ActionBar from '../../components/common/action_bar';
+  import CouponItem from '../../components/coupon/item';
+  import Event from '../../utils/Event';
+  // import Tips from '../../utils/Tips';
+
+  export default class CouponIndex extends wepy.page {
+    def = {
+      init: true,
+      page: {
+        list: [
+        ]
+      },
+      tab: {
+        list: [
+          {id: '0', title: '未开始'},
+          {id: '1', title: '进行中'},
+          {id: '2', title: '已失效'}
+        ],
+        selectedId: '0'
+      }
+    }
+    data = {...this.def};
+    async onLoad () {
+      this.page = coupon.page();
+      await this.next();
+      Event.listen(Event.COUPON_LIST_UPDATE, this.update.bind(this), this);
+    };
+    methods = {
+      switchTab() {
+      },
+      add() {
+        this.$navigate('edit?mode=create');
+      }
+    }
+    components = {
+      Placeholder: Placeholder,
+      ZanTab: ZanTab,
+      ActionBar: ActionBar,
+      CouponItem: CouponItem
+    };
+    mixins = [base, pagination];
+    config = {
+      navigationBarTitleText: '卡券列表',
+      enablePullDownRefresh: true
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>
