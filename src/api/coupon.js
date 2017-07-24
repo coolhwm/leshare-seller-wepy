@@ -27,6 +27,22 @@ export default class coupon extends base {
   }
 
   /**
+   * 查询卡券信息
+   */
+  static async info(couponId) {
+    const url = `${this.baseUrl}/coupons/${couponId}`;
+    return await this.get(url);
+  }
+
+  /**
+   * 编辑卡券
+   */
+  static async update(couponId, coupon) {
+    const url = `${this.baseUrl}/coupons/${couponId}`;
+    return await this.put(url, coupon);
+  }
+
+  /**
    * 数据处理
    */
   static processCouponItem(coupon) {

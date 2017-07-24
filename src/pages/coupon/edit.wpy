@@ -1,77 +1,80 @@
 <template>
   <Tips />
-  <view class="h-gap"></view>
-  <view class="weui-cells weui-cells-form">
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-cell__hd">
-        <view class="weui-label">名称</view>
+  <view class="container">
+    <view class="h-gap"></view>
+    <view class="weui-cells weui-cells-form">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">名称</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="name" @input="input" value="{{input.name}}" placeholder="优惠亮点，吸引客户"/>
+        </view>
       </view>
-      <view class="weui-cell__bd">
-        <input class="weui-input" id="name" @input="input" value="{{input.name}}" placeholder="优惠亮点，吸引客户"/>
-      </view>
-    </view>
 
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-cell__hd">
-        <view class="weui-label">面值</view>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">面值</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input {{mode == 'edit' ? 'muted' : ''}}" id="price" @input="input" value="{{input.price}}" type="digit" placeholder="请输入卡券抵扣金额"  disabled="{{mode == 'edit'}}" />
+        </view>
       </view>
-      <view class="weui-cell__bd">
-        <input class="weui-input" id="price" @input="input" value="{{input.price}}" type="digit" placeholder="请输入卡券抵扣金额"/>
-      </view>
-    </view>
 
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-cell__hd">
-        <view class="weui-label">订单金额</view>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">订单金额</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input {{mode == 'edit' ? 'muted' : ''}}" id="limitPrice"  @input="input"  value="{{input.limitPrice}}" type="digit" placeholder="请输入最低消费金额" disabled="{{mode == 'edit'}}"/>
+        </view>
       </view>
-      <view class="weui-cell__bd">
-        <input class="weui-input" id="limitPrice"  @input="input"  value="{{input.limitPrice}}" type="digit" placeholder="请输入最低消费金额"/>
-      </view>
-    </view>
 
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-cell__hd">
-        <view class="weui-label">限领张数</view>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">限领张数</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input {{mode == 'edit' ? 'muted' : ''}}" id="perLimit"  @input="input" value="{{input.perLimit}}" type="number" placeholder="请输入每人最多领几张" disabled="{{mode == 'edit'}}"/>
+        </view>
       </view>
-      <view class="weui-cell__bd">
-        <input class="weui-input" id="perLimit"  @input="input" value="{{input.perLimit}}" type="number" placeholder="请输入每人最多领几张"/>
-      </view>
-    </view>
 
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-cell__hd">
-        <view class="weui-label">发放总量</view>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">发放总量</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="stock"  @input="input" value="{{input.stock}}" type="number" placeholder="请输入卡券库存"/>
+        </view>
       </view>
-      <view class="weui-cell__bd">
-        <input class="weui-input" id="stock"  @input="input" value="{{input.stock}}" type="number" placeholder="请输入卡券库存"/>
-      </view>
-    </view>
 
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-cell__hd">
-        <view class="weui-label">生效时间</view>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">生效时间</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker mode="date"  id="beginTime"  @change="input" value="{{input.beginTime}}"  start="2015-09-01" end="2017-09-01" disabled="{{mode == 'edit'}}">
+            <view class="weui-input {{mode == 'edit' ? 'muted' : ''}}">{{input.beginTime? input.beginTime : '请选择卡券生效时间'}}</view>
+          </picker>
+        </view>
       </view>
-      <view class="weui-cell__bd">
-        <picker mode="date"  id="beginTime"  @change="input" value="{{input.beginTime}}"  start="2015-09-01" end="2017-09-01">
-          <view class="weui-input">{{input.beginTime? input.beginTime : '请选择卡券生效时间'}}</view>
-        </picker>
-      </view>
-    </view>
 
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-cell__hd">
-        <view class="weui-label">过期时间</view>
-      </view>
-      <view class="weui-cell__bd">
-        <picker mode="date" id="dueTime"  @change="input" value="{{input.dueTime}}" start="2015-09-01" end="2017-09-01">
-          <view class="weui-input">{{input.dueTime? input.dueTime : '请选择卡券过期时间'}}</view>
-        </picker>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">过期时间</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker mode="date" id="dueTime"  @change="input" value="{{input.dueTime}}" start="2015-09-01" end="2017-09-01" disabled="{{mode == 'edit'}}">
+            <view class="weui-input {{mode == 'edit' ? 'muted' : ''}}">{{input.dueTime? input.dueTime : '请选择卡券过期时间'}}</view>
+          </picker>
+        </view>
       </view>
     </view>
+    <text class="muted mt20 ml20">提示：已创建的卡券只能编辑名称及投放总量</text>
+
+    <!--操作栏-->
+    <ActionBar @tap.user="submit" />
   </view>
-
-  <!--操作栏-->
-  <ActionBar @tap.user="submit" />
 </template>
 
 <style lang="scss">
@@ -90,20 +93,35 @@
 
   export default class CouponEdit extends wepy.page {
     def = {
-      mode: 'create'
+      mode: 'create',
+      init: false
     }
     data = {...this.def};
-    onLoad (options) {
+    async onLoad ({couponId, mode}) {
+      this.mode = mode;
+      if (mode == 'edit') {
+        this.input = await coupon.info(couponId);
+      }
+      this.loaded();
     };
     methods = {
       async submit() {
         if (!this.validate()) {
           return;
         }
-        const param = this.input;
-        param.suitLimit = 0;
-        await coupon.create(param)
-        await Tips.success('创建成功！');
+        if (this.mode == 'create') {
+          const param = this.input;
+          param.suitLimit = 0;
+          await coupon.create(param)
+          await Tips.success('创建成功！');
+        } else if (this.mode == 'edit') {
+          const param = {
+            name: this.input.name,
+            stock: this.input.stock
+          };
+          await coupon.update(this.input.id, param);
+          await Tips.success('编辑成功！');
+        }
         Event.emit(Event.COUPON_LIST_UPDATE);
         wepy.navigateBack();
       }

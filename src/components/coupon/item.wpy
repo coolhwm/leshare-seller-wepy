@@ -20,8 +20,8 @@
 
       <!--分隔符-->
       <view class="btn-box row-end">
-        <view class="zan-btn zan-btn--small" >编辑</view>
-        <view class="zan-btn zan-btn--small  zan-btn--primary" >发放</view>
+        <view class="zan-btn zan-btn--small" @tap="edit({{coupon.id}})">编辑</view>
+        <view class="zan-btn zan-btn--small  zan-btn--primary" @tap="put({{coupon.id}})" >发放</view>
       </view>
     </view>
   </view>
@@ -43,9 +43,18 @@
         await coupon.remove(couponId);
         await Tips.success('删除成功');
         Event.emit(Event.COUPON_LIST_UPDATE);
+      },
+      edit(couponId) {
+        const param = {
+          couponId,
+          mode: 'edit'
+        }
+        this.$root.$navigate('edit', param);
+      },
+      put(couponId) {
+        Tips.alert('敬请期待');
       }
     };
-    events = {};
     onLoad() {
     }
   }
