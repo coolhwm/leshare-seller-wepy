@@ -7,6 +7,8 @@
     <CouponItem :coupon.sync="item"></CouponItem>
   </repeat>
 
+  <!-- 加载提示 -->
+  <Loadmore :loading.sync="isPageLoading" :nomore.sync="isPageReachBottom"/>
 
   <!--操作栏-->
   <ActionBar @tap.user="add" okText="新增优惠券" cancelText="返回" />
@@ -25,7 +27,7 @@
   import ActionBar from '../../components/common/action_bar';
   import CouponItem from '../../components/coupon/item';
   import Event from '../../utils/Event';
-  // import Tips from '../../utils/Tips';
+  import Loadmore from '../../components/weui/loadmore';
 
   export default class CouponIndex extends wepy.page {
     def = {
@@ -64,7 +66,8 @@
       Placeholder: Placeholder,
       ZanTab: ZanTab,
       ActionBar: ActionBar,
-      CouponItem: CouponItem
+      CouponItem: CouponItem,
+      Loadmore: Loadmore
     };
     mixins = [base, pagination];
     config = {

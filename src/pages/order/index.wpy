@@ -8,6 +8,10 @@
     <repeat for="{{page.list}}" key="index" index="index" item="item">
       <OrderItem :order.sync="item"></OrderItem>
     </repeat>
+
+    <!-- 加载提示 -->
+    <Loadmore :loading.sync="isPageLoading" :nomore.sync="isPageReachBottom"/>
+
     <view class="tab-border" />
     <!--占位符-->
     <Placeholder :show.sync="isPageEmpty" message="您还没有相关订单"/>
@@ -24,6 +28,7 @@
   import ZanTab from '../../components/zanui/tab';
   import OrderItem from '../../components/order/item';
   import Placeholder from '../../components/common/placeholder';
+  import Loadmore from '../../components/weui/loadmore';
 
   export default class OrderIndex extends wepy.page {
     // 页面数据
@@ -74,7 +79,8 @@
     components = {
       ZanTab: ZanTab,
       OrderItem: OrderItem,
-      Placeholder: Placeholder
+      Placeholder: Placeholder,
+      Loadmore: Loadmore
     };
     mixins = [pagination];
   }

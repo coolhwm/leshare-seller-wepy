@@ -8,6 +8,9 @@
       <GoodsItem :goods="item"></GoodsItem>
     </repeat>
 
+    <!-- 加载提示 -->
+    <Loadmore :loading.sync="isPageLoading" :nomore.sync="isPageReachBottom"/>
+
     <!--操作栏-->
     <ActionBar @tap.user="add" okText="新增商品" cancelText="返回" />
 
@@ -25,8 +28,7 @@
   import CategoryTab from '../../components/zanui/category-tab';
   import ActionBar from '../../components/common/action_bar';
   import Placeholder from '../../components/common/placeholder';
-
-  // import Tips from '../../utils/Tips';
+  import Loadmore from '../../components/weui/loadmore';
   import Event from '../../utils/Event';
 
   export default class GoodsList extends wepy.page {
@@ -75,7 +77,8 @@
       CategoryTab: CategoryTab,
       Placeholder: Placeholder,
       GoodsItem: GoodsItem,
-      ActionBar: ActionBar
+      ActionBar: ActionBar,
+      Loadmore: Loadmore
     };
     mixins = [base, pagination];
     config = {

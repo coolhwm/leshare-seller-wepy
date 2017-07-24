@@ -11,7 +11,9 @@
     methods = {};
     events = {};
     data = {
-      isPageEmpty: false
+      isPageLoading: false,
+      isPageEmpty: false,
+      isPageReachBottom: false
     };
 
     /**
@@ -19,13 +21,19 @@
      */
     async next () {
       try {
+        if (this.page.reachBottom) {
+          return;
+        }
         Tips.setLoading();
+        this.isPageLoading = true;
         const param = this.params ? this.params() : {};
         await this.page.next(param);
+        this.isPageReachBottom = this.page.reachBottom;
         this.isPageEmpty = this.page.list.length == 0;
+      } finally {
+        this.isPageLoading = false;
         this.init = true;
         this.$apply();
-      } finally {
         Tips.loaded();
       }
     }
@@ -50,7 +58,6 @@
      * 下拉刷新
      */
     async onPullDownRefresh () {
-      console.debug('page pull down');
       await this.reload();
     }
 

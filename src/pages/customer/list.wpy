@@ -8,6 +8,9 @@
       <CustomerItem :customer.sync="item"></CustomerItem>
     </repeat>
 
+    <!-- 加载提示 -->
+    <Loadmore :loading.sync="isPageLoading" :nomore.sync="isPageReachBottom"/>
+
     <!--占位符-->
     <Placeholder :show.sync="isPageEmpty" message="您还没有相关客户信息"/>
   </view>
@@ -25,7 +28,7 @@
   import ZanTab from '../../components/zanui/tab';
   import Placeholder from '../../components/common/placeholder';
   import CustomerItem from '../../components/customer/item';
-  // import Tips from '../../utils/Tips';
+  import Loadmore from '../../components/weui/loadmore';
 
   export default class CustomerIndex extends wepy.page {
     def = {
@@ -64,7 +67,8 @@
     components = {
       ZanTab: ZanTab,
       Placeholder: Placeholder,
-      CustomerItem: CustomerItem
+      CustomerItem: CustomerItem,
+      Loadmore: Loadmore
     };
     mixins = [base, pagination];
     config = {
