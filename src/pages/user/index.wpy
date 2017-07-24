@@ -19,6 +19,8 @@
     </view>
   </view>
 
+  <Copyright />
+
   <view class="tab-border" />
 </template>
 
@@ -28,6 +30,7 @@
   import auth from '../../api/auth';
   import shop from '../../api/shop';
   import Tips from '../../utils/Tips';
+  import Copyright from '../../components/common/copyright';
 
   export default class UserIndex extends wepy.page {
     data = {
@@ -49,6 +52,9 @@
         await auth.removeConfig('login_code');
         this.$redirect('../home/login');
       }
+    };
+    components = {
+      Copyright: Copyright
     };
     config = {
       navigationBarTitleText: '我的信息'

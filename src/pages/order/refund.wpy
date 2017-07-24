@@ -4,7 +4,7 @@
   <view class="container" wx:if="{{init}}">
     <view class="mt10"></view>
     <!--操作表单-->
-    <view class="weui-cells weui-cells_after-title form">
+    <view class="weui-cells weui-cells-form">
       <view class="weui-cell weui-cell_switch">
         <view class="weui-cell__bd">同意退款</view>
         <view class="weui-cell__ft">
@@ -21,7 +21,7 @@
 
     <!--信息展现-->
     <view class="mt10"></view>
-    <view class="weui-cells weui-cells_after-title">
+    <view class="weui-cells weui-cells-form">
       <view class="weui-cell">
         <view class="weui-cell__bd">订单号：</view>
         <view class="weui-cell__ft">{{refund.orderUuid}}</view>
