@@ -112,20 +112,27 @@
     };
     methods = {
       async submit() {
-        if (!this.isValid) {
-          this.tips('请正确填写修改价格');
-          return;
+        try {
+          if (!this.isValid) {
+            this.tips('请正确填写修改价格');
+            return;
+          }
+          const orderId = this.order.orderId;
+          const param = {
+            modifyPrice: this.input.modifyPrice,
+            modifyPost: this.input.modifyPost
+          };
+          await Tips.confirm(`是否确认修改订单总价为￥${this.modifyFinal}?`);
+          await order.reprice(orderId, param);
+          Event.emit(Event.ORDER_LIST_UPDATE);
+          await Tips.success('改价成功！');
+          this.$switch('index');
+        } catch (e) {
+          if (e.message) {
+            this.tips('改价失败，请联系客服');
+            Tips.loaded();
+          }
         }
-        const orderId = this.order.orderId;
-        const param = {
-          modifyPrice: this.input.modifyPrice,
-          modifyPost: this.input.modifyPost
-        };
-        await Tips.confirm(`是否确认修改订单总价为￥${this.modifyFinal}?`);
-        await order.reprice(orderId, param);
-        Event.emit(Event.ORDER_LIST_UPDATE);
-        await Tips.success('改价成功！');
-        this.$switch('index');
       }
     };
     components = {

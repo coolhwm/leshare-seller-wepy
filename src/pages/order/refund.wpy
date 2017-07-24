@@ -91,21 +91,28 @@
       async submit() {
         const isAgree = this.input.isOk;
         const orderId = this.refund.orderId;
-        if (isAgree) {
-          await Tips.confirm(`请确认退款 ￥${this.refund.refundPrice} 给客户？`);
-          await order.agreeRefund(orderId);
-          await Tips.success('退款成功！');
-        } else {
-          if (this.isEmpty(this.input.note)) {
-            this.tips('请输入拒绝原因');
-            return;
+        try {
+          if (isAgree) {
+            await Tips.confirm(`请确认退款 ￥${this.refund.refundPrice} 给客户？`);
+            await order.agreeRefund(orderId);
+            await Tips.success('退款成功！');
+          } else {
+            if (this.isEmpty(this.input.note)) {
+              this.tips('请输入拒绝原因');
+              return;
+            }
+            await Tips.confirm(`请拒绝用户的退款申请？`);
+            await order.rejectRefund(orderId, this.input.note);
+            await Tips.success('处理成功！');
           }
-          await Tips.confirm(`请拒绝用户的退款申请？`);
-          await order.rejectRefund(orderId, this.input.note);
-          await Tips.success('处理成功！');
+          Event.emit(Event.ORDER_LIST_UPDATE);
+          this.$switch('index');
+        } catch (e) {
+          if (e.message) {
+            this.tips('退款处理失败，请联系客服');
+            Tips.loaded();
+          }
         }
-        Event.emit(Event.ORDER_LIST_UPDATE);
-        this.$switch('index');
       }
     };
     components = {
