@@ -11,7 +11,7 @@
           <text class="muted xs ml10" wx:if="{{goods.skuCount > 0}}">[{{goods.skuCount}}规格]</text>
         </view>
         <view class="desc-box row">
-          <text class="muted">库存：{{0}}</text>
+          <text class="muted">库存：{{goods.totalStock}}</text>
           <text class="muted ml20">销量：{{goods.salesVolume}}</text>
           <text class="muted ml20">收藏：{{goods.favoriteCount}}</text>
         </view>

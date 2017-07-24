@@ -36,11 +36,11 @@
       },
       tab: {
         list: [
-          {id: '0', title: '未开始'},
-          {id: '1', title: '进行中'},
-          {id: '2', title: '已失效'}
+          {id: 'USED', title: '进行中'},
+          {id: 'NEVER_USED', title: '未开始'},
+          {id: 'EXPIRED', title: '已失效'}
         ],
-        selectedId: '0'
+        selectedId: 'USED'
       }
     }
     data = {...this.def};
@@ -49,8 +49,12 @@
       await this.next();
       Event.listen(Event.COUPON_LIST_UPDATE, this.update.bind(this), this);
     };
+    params() {
+      return {status: this.tab.selectedId};
+    }
     methods = {
       switchTab() {
+        this.reload();
       },
       add() {
         this.$navigate('edit?mode=create');
