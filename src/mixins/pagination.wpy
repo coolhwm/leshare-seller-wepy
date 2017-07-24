@@ -18,12 +18,16 @@
      * 下一页
      */
     async next () {
-      const param = this.params ? this.params() : {};
-      await this.page.next(param);
-      this.isPageEmpty = this.page.list.length == 0;
-      this.init = true;
-      this.$apply();
-      Tips.loaded();
+      try {
+        Tips.setLoading();
+        const param = this.params ? this.params() : {};
+        await this.page.next(param);
+        this.isPageEmpty = this.page.list.length == 0;
+        this.init = true;
+        this.$apply();
+      } finally {
+        Tips.loaded();
+      }
     }
 
     /**
@@ -46,6 +50,7 @@
      * 下拉刷新
      */
     async onPullDownRefresh () {
+      console.debug('page pull down');
       await this.reload();
     }
 

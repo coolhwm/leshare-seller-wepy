@@ -352,7 +352,18 @@
           }
         ]);
       }
-      return this.check(rules);
+      const result = this.check(rules);
+      if (!result) {
+        return false;
+      }
+      // 库存校验
+      const empty = stocks.every(item => item == 0);
+      if (empty && this.input.status) {
+        this.tips('无库存商品不能上架');
+        this.input.status = false;
+        return false;
+      }
+      return true;
     }
 
     computed = {

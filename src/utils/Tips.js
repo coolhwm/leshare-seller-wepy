@@ -2,9 +2,8 @@
  * 提示与加载工具类
  */
 export default class Tips {
-  constructor () {
-    this.isLoading = false
-  }
+  static isLoading = false;
+  static pause = false;
   /**
    * 弹出提示框
    */
@@ -98,22 +97,22 @@ export default class Tips {
    * 弹出加载提示
    */
   static loading (title = '加载中') {
-    if (Tips.isLoading) {
-      return
+    if (this.isLoading) {
+      return;
     }
-    Tips.isLoading = true
+    this.isLoading = true;
     wx.showLoading({
       title: title,
       mask: true
-    })
+    });
   }
 
   /**
    * 加载完毕
    */
   static loaded () {
-    if (Tips.isLoading) {
-      Tips.isLoading = false
+    if (this.isLoading) {
+      this.isLoading = false
       wx.hideLoading()
     }
   }
@@ -151,8 +150,6 @@ export default class Tips {
     })
   }
 
-
-
   static share (title, url, desc) {
     return {
       title: title,
@@ -163,9 +160,8 @@ export default class Tips {
       }
     }
   }
-}
 
-/**
- * 静态变量，是否加载中
- */
-Tips.isLoading = false;
+  static setLoading () {
+    this.isLoading = true;
+  }
+}

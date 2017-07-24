@@ -24,7 +24,7 @@
       <view>
         <view class="zan-btn zan-btn--small" wx:if="{{goods.status == 1}}" @tap="delete({{goods.id}})" >删除</view>
         <view class="zan-btn zan-btn--small" wx:if="{{goods.status != 1}}" @tap="offSale({{goods.id}})">下架</view>
-        <view class="zan-btn zan-btn--small" wx:if="{{goods.status == 1}}" @tap="onSale({{goods.id}})">上架</view>
+        <view class="zan-btn zan-btn--small  {{ goods.totalStock == 0 ?  'zan-btn--disabled ' : ''}}"  wx:if="{{goods.status == 1}}" @tap="onSale({{goods.id}}, {{goods.totalStock}})">上架</view>
         <view class="zan-btn zan-btn--small zan-btn--primary" @tap="edit({{goods.id}})">编辑</view>
       </view>
     </view>
@@ -57,7 +57,11 @@
         await Tips.success('下架成功');
         Event.emit(Event.GOODS_LIST_UPDATE);
       },
-      async onSale(goodsId) {
+      async onSale(goodsId, stock) {
+        if (stock == 0) {
+          Tips.alert('无库存');
+          return;
+        }
         await Tips.confirm('是否确认上架该商品？');
         await goods.onSale(goodsId);
         await Tips.success('上架成功');

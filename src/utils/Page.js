@@ -30,37 +30,43 @@ export default class Pagination {
       from: this.start,
       limit: this.count
     };
+    if (this.loading) {
+      console.warn('page loading!');
+      return this;
+    }
     // 附加参数
     this.loading = true;
-    Object.assign(param, args);
-    const data = await http.get(this.url, param);
-    // 底部判断
-    if (data === null || data.length < 1) {
+    try {
+      Object.assign(param, args);
+      const data = await http.get(this.url, param);
+      // 底部判断
+      if (data === null || data.length < 1) {
+        if (this.toClear) {
+          this.clear();
+        } else {
+          this.reachBottom = true;
+        }
+        return this;
+      }
+
+      // 处理数据
+      this._processData(data)
+
+      // 设置数据
       if (this.toClear) {
-        this.clear();
+        this.list = data;
+        this.toClear = false;
       } else {
+        this.list = this.list.concat(data);
+      }
+      this.start += this.count;
+      if (data.length < this.count) {
         this.reachBottom = true;
       }
       return this;
+    } finally {
+      this.loading = false;
     }
-
-    // 处理数据
-    this._processData(data)
-
-    // 设置数据
-    if (this.toClear) {
-      this.list = data;
-      this.toClear = false;
-    } else {
-      this.list = this.list.concat(data);
-    }
-    this.start += this.count;
-    // 加载完毕
-    this.loading = false;
-    if (data.length < this.count) {
-      this.reachBottom = true;
-    }
-    return this;
   }
 
   /**

@@ -140,7 +140,8 @@
       }
     }
     config = {
-      enablePullDownRefresh: true
+      enablePullDownRefresh: true,
+      navigationBarTitleText: '    '
     };
     mixins = [base];
   }
