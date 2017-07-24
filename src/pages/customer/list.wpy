@@ -9,7 +9,7 @@
     </repeat>
 
     <!-- 加载提示 -->
-    <Loadmore :loading.sync="isPageLoading" :nomore.sync="isPageReachBottom"/>
+    <Loadmore :page.sync="page"/>
 
     <!--占位符-->
     <Placeholder :show.sync="isPageEmpty" message="您还没有相关客户信息"/>

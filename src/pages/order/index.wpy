@@ -10,7 +10,7 @@
     </repeat>
 
     <!-- 加载提示 -->
-    <Loadmore :loading.sync="isPageLoading" :nomore.sync="isPageReachBottom"/>
+    <Loadmore :page.sync="page"/>
 
     <view class="tab-border" />
     <!--占位符-->

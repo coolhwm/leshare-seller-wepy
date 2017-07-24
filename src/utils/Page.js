@@ -18,6 +18,8 @@ export default class Pagination {
     this.params = [];
     // 是否底部
     this.reachBottom = false;
+    // 是否为空
+    this.empty = true;
     // 是否需要清除
     this.toClear = false;
   }
@@ -48,10 +50,9 @@ export default class Pagination {
         }
         return this;
       }
-
+      this.empty = false;
       // 处理数据
       this._processData(data)
-
       // 设置数据
       if (this.toClear) {
         this.list = data;
@@ -73,6 +74,7 @@ export default class Pagination {
    * 恢复到第一页
    */
   reset () {
+    this.empty = true;
     this.toClear = true;
     this.start = 0;
     this.reachBottom = false;
