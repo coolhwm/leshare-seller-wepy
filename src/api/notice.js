@@ -9,4 +9,12 @@ export default class notice extends base {
     const url = `${this.baseUrl}/notices/shows`;
     return new Page(url);
   }
+
+  /**
+   * 创建公告
+   */
+  static async create(notice) {
+    const url = `${this.baseUrl}/notices`;
+    return await this.post(url, notice);
+  }
 }

@@ -59,7 +59,7 @@
         this.reload();
       },
       add() {
-        this.$navigate('edit?mode=create');
+        this.$navigate('edit.wpy?mode=create');
       }
     }
     components = {
