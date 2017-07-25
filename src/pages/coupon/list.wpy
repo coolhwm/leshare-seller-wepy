@@ -1,27 +1,29 @@
 <template>
-  <!--TAB 页-->
-  <ZanTab :tab.sync="tab" @change.user="switchTab" />
+  <view class="conatiner" wx:if="{{init}}">
+    <!--TAB 页-->
+    <ZanTab :tab.sync="tab" @change.user="switchTab" />
 
-  <!--列表展现-->
-  <repeat for="{{page.list}}" key="index" index="index" item="item">
-    <CouponItem :coupon.sync="item"></CouponItem>
-  </repeat>
+    <!--列表展现-->
+    <repeat for="{{page.list}}" key="index" index="index" item="item">
+      <CouponItem :coupon.sync="item"></CouponItem>
+    </repeat>
 
-  <!-- 加载提示 -->
-  <Loadmore :page.sync="page"/>
+    <!-- 加载提示 -->
+    <Loadmore :page.sync="page"/>
 
-  <!--操作栏-->
-  <ActionBar @tap.user="add" okText="新增优惠券" cancelText="返回" />
+    <!--操作栏-->
+    <ActionBar @tap.user="add" okText="新增优惠券" cancelText="返回" />
 
-  <!--占位符-->
-  <Placeholder :show.sync="isPageEmpty" message="您还没有相关卡券信息"/>
+    <!--占位符-->
+    <Placeholder :show.sync="isPageEmpty" message="您还没有相关卡券信息"/>
+  </view>
 </template>
 
 <script>
   import wepy from 'wepy';
   import base from '../../mixins/base';
   import coupon from '../../api/coupon';
-  import pagination from '../../mixins/pagination.wpy';
+  import pagination from '../../mixins/pagination';
   import Placeholder from '../../components/common/placeholder';
   import ZanTab from '../../components/zanui/tab';
   import ActionBar from '../../components/common/action_bar';
@@ -31,7 +33,7 @@
 
   export default class CouponIndex extends wepy.page {
     def = {
-      init: true,
+      init: false,
       page: {
         list: [
         ]
@@ -59,7 +61,7 @@
         this.reload();
       },
       add() {
-        this.$navigate('edit.wpy?mode=create');
+        this.$navigate('edit?mode=create');
       }
     }
     components = {

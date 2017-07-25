@@ -32,7 +32,7 @@
 
   export default class CustomerIndex extends wepy.page {
     def = {
-      init: true,
+      init: false,
       page: {
         list: [
         ]

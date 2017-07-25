@@ -62,14 +62,14 @@ export default class extends wepy.app {
   globalData = {
     auth: {},
     shop: {},
-    // baseUrl: 'https://api.ioman.cc/v1/seller'
+    // baseUrl: 'https://api.leshare.shop/v1/seller'
     baseUrl: 'http://leshare.shop:9999/v1/seller'
     // baseUrl: 'http://192.168.31.124:9999/v1/seller'
   }
 
   config = {
     pages: [
-      'pages/home/login',
+      'pages/home/index',
       'pages/notice/list',
       'pages/notice/edit',
       'pages/order/index',
@@ -79,7 +79,7 @@ export default class extends wepy.app {
       'pages/shop/detail',
       'pages/user/index',
       'pages/goods/list',
-      'pages/home/index',
+      'pages/home/home',
       'pages/goods/edit',
       'pages/goods/detail',
       'pages/order/refund',
@@ -105,7 +105,7 @@ export default class extends wepy.app {
         {
           iconPath: 'images/tab/manage.png',
           selectedIconPath: 'images/tab/manage-active.png',
-          pagePath: 'pages/home/index',
+          pagePath: 'pages/home/home',
           text: '工作台'
         },
         {

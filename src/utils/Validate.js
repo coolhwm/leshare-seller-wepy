@@ -107,14 +107,28 @@ export default class Validate {
    * 验证最小值
    */
   static min(value, param) {
-    return this.optional(value) || value >= param
+    return this.optional(value) || Number(value) >= Number(param);
   }
   /**
    * 验证最大值
    */
   static max(value, param) {
-    return this.optional(value) || value <= param
+    return this.optional(value) || Number(value) <= Number(param);
   }
+
+  /**
+   * 验证时间
+   */
+  static after(value, param) {
+    return this.optional(value) || value >= param;
+  }
+  /**
+   * 验证时间
+   */
+  static before(value, param) {
+    return this.optional(value) || value <= param;
+  }
+
   /**
    * 验证一个值范围[min, max]
    */

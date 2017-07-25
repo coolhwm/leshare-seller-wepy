@@ -43,8 +43,9 @@ export default class http {
     const wxData = res.data;
     const serverData = wxData.data;
     if (serverData) {
-      error.serverCode = serverData.code;
+      error.serverCode = wxData.code;
       error.message = serverData.message;
+      error.serverData = serverData;
     }
     return error;
   }

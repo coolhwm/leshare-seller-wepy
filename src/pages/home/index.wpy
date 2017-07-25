@@ -1,231 +1,174 @@
 <template>
-  <view class="conatiner" wx:if="{{init}}">
-    <view class="shop-box">
-      <text class="sm">{{shop.name}}</text>
+  <Tips />
+  <view class="page" wx:if="{{init}}">
+    <view class="brand column-center">
+      <image class="logo" src="/images/home/shop-logo.png"/>
+      <text>乐享商家助手</text>
     </view>
-    <!--今日统计区域-->
-    <view class="today-box">
-      <view class="column-center">
-        <text class="xl">今日付款金额(元)</text>
-        <text class="today-price-text">{{today.income}}</text>
-      </view>
-
-      <view class="today-kpi-box row-around">
-        <view class="column-center">
-          <text>浏览人数</text>
-          <text class="lg mt20">{{today.visitShopLog}}</text>
+    <view class="page__bd form">
+      <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell weui-cell_input weui-cell_vcode">
+          <view class="weui-cell__hd">
+            <view class="weui-label">手机号</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" id="phone" @input="input" maxlength="11" placeholder="请输入手机号" />
+          </view>
+          <view class="weui-cell__ft">
+            <!--<view class="weui-vcode-btn {{isWaiting ? 'muted' : ''}}" @tap="onCodeTap">{{btnText}}</view>-->
+            <VCode  @tap.user="code" />
+          </view>
         </view>
-        <view class="vr"/>
-        <view class="column-center">
-          <text>付款订单数</text>
-          <text class="lg mt20">{{today.paymentOrder}}</text>
-        </view>
-        <view class="vr"/>
-        <view class="column-center">
-          <text>付款件数</text>
-          <text class="lg mt20">{{today.paymentGoods}}</text>
-        </view>
-      </view>
-    </view>
-
-    <!--其他统计区域-->
-    <view>
-      <view class="count-box row-around bg-white">
-        <navigator class="count-item column-center"  @tap="order('2')" open-type="switchTab" url="../order/index">
-          <text class="count-value">{{order.n2}}</text>
-          <text class="muted">待发货订单</text>
-        </navigator>
-        <view class="vr"/>
-        <navigator class="count-item column-center"  @tap="order('1')" open-type="switchTab" url="../order/index">
-          <text class="count-value">{{order.n1}}</text>
-          <text class="muted">待付款订单</text>
-        </navigator>
-        <view class="vr"/>
-        <navigator class="count-item column-center" @tap="order('5')" open-type="switchTab" url="../order/index">
-          <text class="count-value">{{order.n5}}</text>
-          <text class="muted">待退款订单</text>
-        </navigator>
-      </view>
-      <view class="count-box row-around bg-white">
-        <view class="count-item column-center">
-          <text class="count-value">{{month.paymentOrder}}</text>
-          <text class="muted">本月订单数</text>
-        </view>
-        <view class="vr"/>
-        <view class="count-item column-center">
-          <text class="count-value">￥{{month.income}}</text>
-          <text class="muted">本月成交额</text>
-        </view>
-        <view class="vr"/>
-        <view class="count-item column-center">
-          <text class="count-value">{{month.visitShopLog}}</text>
-          <text class="muted">本月浏览数</text>
+        <view class="weui-cell weui-cell_input weui-cell_vcode">
+          <view class="weui-cell__hd">
+            <view class="weui-label">验证码</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" id="code" maxlength="6"  @input="input" placeholder="请输入验证码" />
+          </view>
         </view>
       </view>
-    </view>
+      <view class="weui-cells__tips">提示：未注册用户将进入示例店铺</view>
 
-    <!--操作区域-->
-    <view class="operation-box">
-      <view class="operation-row row-around" >
-        <navigator class="column-center" url="../shop/detail">
-          <image src="/images/home/shop.png"/>
-          <text>店铺管理</text>
-        </navigator>
-        <navigator class="column-center" url="../goods/list">
-          <image src="/images/home/cart.png"/>
-          <text>商品管理</text>
-        </navigator>
-        <navigator class="column-center" open-type="switchTab" url="../order/index">
-          <image src="/images/home/order.png"/>
-          <text>订单管理</text>
-        </navigator>
-      </view>
-
-      <view class="hr"></view>
-
-      <view class="row-around">
-        <navigator class="operation-row column-center" url="../coupon/list">
-          <image src="/images/home/coupon.png"/>
-          <text>卡券管理</text>
-        </navigator>
-        <navigator class="operation-row column-center" url="../customer/list">
-          <image src="/images/home/customer.png"/>
-          <text>用户管理</text>
-        </navigator>
-        <navigator class="operation-row column-center" open-type="switchTab" url="../user/index">
-          <image src="/images/home/more.png"/>
-          <text>更多配置</text>
-        </navigator>
+      <view class="weui-btn-area">
+        <button class="weui-btn" type="primary" @tap="confirm">确定</button>
       </view>
     </view>
   </view>
-  <view class="tab-border" />
+
 
 </template>
-
-
 <script>
   import wepy from 'wepy';
-  import count from '../../api/count';
-  import shop from '../../api/shop';
+  import auth from '../../api/auth';
   import base from '../../mixins/base';
-  import Event from '../../utils/Event';
-
-  export default class HomeIndex extends wepy.page {
+  import input from '../../mixins/input';
+  import FormTips from '../../components/weui/tips';
+  import VCode from '../../components/weui/vcode';
+  import Tips from '../../utils/Tips';
+  export default class Login extends wepy.page {
     def = {
-      today: {},
-      month: {},
-      order: {},
-      shop: {},
       init: false
-    }
-    data = {...this.def};
-    async onLoad () {
-      this.shop = await shop.info();
-      await this.reload();
     };
-    async reload() {
-      this.today = await count.today();
-      this.month = await count.month();
-      this.order = await count.order();
-      this.loaded();
-    }
-    async onPullDownRefresh () {
-      await this.reload();
-      wepy.stopPullDownRefresh();
-    }
-    methods = {
-      order(status) {
-        Event.emit(Event.ORDER_TAB_UPDATE, status);
+    data = {...this.def}
+    async onLoad () {
+      try {
+        const loginCode = auth.getConfig('login_code');
+        console.debug(`login_code: ${loginCode}`);
+        if (loginCode != null) {
+          const result = await auth.check(loginCode);
+          if (result == 'SUCCESS') {
+            const shopId = auth.getConfig('shop_id');
+            console.debug(`shop_id: ${shopId}`);
+            if (shopId != null) {
+              this.$switch('home');
+            } else {
+              this.$redirect('shops');
+            }
+          }
+        }
+        console.debug(`login_fail: ${loginCode}`);
+      } catch (e) {
+        await auth.removeConfig('login_code');
+      } finally {
+        this.loaded();
       }
     }
-    config = {
-      enablePullDownRefresh: true,
-      navigationBarTitleText: '    '
+    methods = {
+      async confirm() {
+        if (!this.isValid()) {
+          return;
+        }
+        try {
+          let loginCode;
+          try {
+            loginCode = await auth.login(this.input.phone, this.input.code);
+          } catch (err) {
+            if (err.serverCode == 10501) {
+              loginCode = err.serverData.login_code;
+              Tips.loaded();
+              await Tips.modal('您尚未注册，将进入示例店铺');
+            }
+          }
+          await auth.setConfig('login_code', loginCode);
+          await auth.removeConfig('shop_id');
+          this.$redirect('shops');
+        } catch (e) {
+          this.tips(e.message);
+        } finally {
+          this.loaded();
+        }
+      },
+      async code() {
+        if (!this.isPhoneValid()) {
+          return;
+        }
+        // 发送验证码
+        try {
+          await auth.sms(this.input.phone);
+          this.$invoke('VCode', 'cd', 60);
+          Tips.success('验证码已发送');
+        } catch (e) {
+          console.info(e);
+          this.tips(e.message);
+        } finally {
+          this.loaded();
+        }
+      }
     };
-    mixins = [base];
+    mixins = [input, base];
+    config = {
+      navigationBarTitleText: '商家登录'
+    };
+    components = {
+      Tips: FormTips,
+      VCode: VCode
+    };
+    /**
+     * 校验表单提交
+     */
+    isValid() {
+      if (!this.isPhoneValid()) {
+        return false;
+      }
+      if (this.isEmpty(this.input.code)) {
+        this.tips('请输入验证码');
+        return false;
+      }
+      return true;
+    }
+    /**
+     * 校验电话号码
+     */
+    isPhoneValid() {
+      if (this.isEmpty(this.input.phone)) {
+        this.tips('请输入手机号码');
+        return false;
+      }
+      const reg = /^1[34578]\d{9}$/;
+      if (!reg.test(this.input.phone)) {
+        this.tips('电话号码格式错误');
+        return false;
+      }
+      return true;
+    }
   }
 </script>
 
 <style lang="scss">
   @import "../../styles/variable";
+  .brand{
+    padding-top: 60rpx;
+    padding-bottom: 60rpx;
 
-  .shop-box {
-    background-color: $color-primary;
-    padding-left: 20rpx;
-    text{color: white;}
-  }
-
-  /*今日区域*/
-  .today-box{
-    background-color: $color-primary;
-    padding: 40rpx 0;
-
-    text{color: white;}
-
-    .today-price-text{
-      font-size: 80rpx;
-      margin-top: 40rpx;
-      margin-bottom: 40rpx;
+    .logo{
+      width: 100px;
+      height: 100px;
     }
 
-    .vr{
-      width:1px;
-      height: 30rpx;
-      background-color: white;
-    }
-
-    .today-kpi-box .column-center{
-      width: 250rpx;
+    text{
+      margin-top: 15rpx;
+      font-size: $text-form;
     }
   }
-
-  /*统计区域*/
-  .count-box{
-    padding: 20rpx 0;
-    text{font-size: $text-lg}
-    border-bottom: $border;
-
-    .vr{
-      width: 1px;
-      height: 100rpx;
-      background-color: $color-border;
-    }
-
-    .count-value{
-      font-size: $text-xl;
-      margin-bottom: 20rpx;
-    }
-
-    .count-item{
-      width: 250rpx;
-    }
-  }
-
-  /*操作区域*/
-  .operation-box{
-    background-color: #FFFCFC;
-    margin-bottom: 20rpx;
-    padding-top:35rpx;
-    padding-bottom: 35rpx;
-    border-bottom: $border;
-
-    image{
-      height: 90rpx;
-      width: 90rpx;
-    }
-
-    .hr{
-      height: 40rpx;
-      width: 100%;
-    }
-
-    .operation-row{
-      text{
-        color: $color-weak;
-        margin-top: 10rpx;
-      }
-    }
-  }
-
 </style>

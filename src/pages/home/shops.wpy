@@ -49,13 +49,13 @@
       // 进入店铺
       async enter(shopId) {
         await auth.setConfig('shop_id', shopId)
-        this.$switch('index');
+        this.$switch('home');
       },
       // 重新登录
       async back() {
         Tips.loading();
         await auth.removeConfig('login_code');
-        this.$redirect('login');
+        this.$redirect('index');
       }
     };
     mixins = [base];

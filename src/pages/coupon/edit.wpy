@@ -251,13 +251,13 @@
         },
         {
           value: this.input.beginTime,
-          method: 'max',
+          method: 'after',
           param: this.input.dueTime,
           message: '生效时间不能晚于过期时间'
         },
         {
           value: this.input.dueTime,
-          method: 'min',
+          method: 'before',
           param: new Date().toISOString().substring(0, 10),
           message: '不能创建已经过期的优惠券'
         }

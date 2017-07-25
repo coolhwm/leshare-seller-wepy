@@ -23,7 +23,7 @@
   import wepy from 'wepy';
   import base from '../../mixins/base';
   import notice from '../../api/notice';
-  import pagination from '../../mixins/pagination.wpy';
+  import pagination from '../../mixins/pagination';
   import Placeholder from '../../components/common/placeholder';
   import ZanTab from '../../components/zanui/tab';
   import ActionBar from '../../components/common/action_bar';
@@ -33,7 +33,7 @@
 
   export default class NoticeIndex extends wepy.page {
     def = {
-      init: true,
+      init: false,
       page: {
         list: [
         ]
