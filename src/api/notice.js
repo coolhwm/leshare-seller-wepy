@@ -6,7 +6,7 @@ export default class notice extends base {
    * 分页方法
    */
   static page () {
-    const url = `${this.baseUrl}/notices/shows`;
+    const url = `${this.baseUrl}/notices`;
     return new Page(url);
   }
 
@@ -24,5 +24,21 @@ export default class notice extends base {
   static async remove(noticeId) {
     const url = `${this.baseUrl}/notices/${noticeId}`;
     return await this.delete(url);
+  }
+
+  /**
+   * 编辑公告
+   */
+  static async update(noticeId, notice) {
+    const url = `${this.baseUrl}/notices/${noticeId}`;
+    return await this.put(url, notice);
+  }
+
+  /**
+   * 单条信息
+   */
+  static async info(noticeId) {
+    const url = `${this.baseUrl}/notices/${noticeId}`;
+    return await this.get(url);
   }
 }

@@ -40,10 +40,10 @@
       },
       tab: {
         list: [
-          {id: 'USED', title: '发布中'},
-          {id: 'EXPIRED', title: '已失效'}
+          {id: 'SHOW', title: '发布中'},
+          {id: 'HIDE', title: '已失效'}
         ],
-        selectedId: 'USED'
+        selectedId: 'SHOW'
       }
     }
     data = {...this.def};
