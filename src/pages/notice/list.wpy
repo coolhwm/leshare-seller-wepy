@@ -5,7 +5,7 @@
 
     <!--列表展现-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-
+      <NoticeItem :notice.sync="item" />
     </repeat>
 
     <!-- 加载提示 -->
@@ -29,6 +29,7 @@
   import ActionBar from '../../components/common/action_bar';
   import Event from '../../utils/Event';
   import Loadmore from '../../components/weui/loadmore';
+  import NoticeItem from '../../components/notice/item';
 
   export default class NoticeIndex extends wepy.page {
     def = {
@@ -46,7 +47,7 @@
       }
     }
     data = {...this.def};
-    async onLoad (options) {
+    async onLoad () {
       this.page = notice.page();
       await this.next();
       Event.listen(Event.NOTICE_LIST_UPDATE, this.update.bind(this), this);
@@ -57,6 +58,9 @@
     methods = {
       switchTab() {
         this.reload();
+      },
+      add() {
+        this.$navigate('edit?mode=create');
       }
     }
     events = {};
@@ -64,7 +68,8 @@
       Placeholder: Placeholder,
       ZanTab: ZanTab,
       ActionBar: ActionBar,
-      Loadmore: Loadmore
+      Loadmore: Loadmore,
+      NoticeItem: NoticeItem
     };
     mixins = [base, pagination];
     config = {

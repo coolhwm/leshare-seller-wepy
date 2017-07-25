@@ -70,12 +70,5 @@
         this.input[fieldName] = e.detail.value;
       }
     };
-    // 获取默认事件
-    events = {
-      'input': (e) => {
-        const fieldName = e.currentTarget.id;
-        this.data.input[fieldName] = e.detail.value;
-      }
-    };
   }
 </script>

@@ -17,4 +17,12 @@ export default class notice extends base {
     const url = `${this.baseUrl}/notices`;
     return await this.post(url, notice);
   }
+
+  /**
+   * 删除公告
+   */
+  static async remove(noticeId) {
+    const url = `${this.baseUrl}/notices/${noticeId}`;
+    return await this.delete(url);
+  }
 }

@@ -94,7 +94,7 @@
       .btn-box{
         padding: 5px 0;
         margin-top: 5rpx;
-        border-top: 1px dotted #EFF0F2;
+        border-top: $border-dot;
       }
     }
   }
