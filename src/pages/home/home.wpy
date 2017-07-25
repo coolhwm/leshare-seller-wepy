@@ -110,6 +110,7 @@
   import shop from '../../api/shop';
   import base from '../../mixins/base';
   import Event from '../../utils/Event';
+  import Tips from '../../utils/Tips';
 
   export default class HomeIndex extends wepy.page {
     def = {
@@ -133,6 +134,11 @@
     async onPullDownRefresh () {
       await this.reload();
       wepy.stopPullDownRefresh();
+    }
+    onShareAppMessage () {
+      const title = '乐享商家助手';
+      const url = '/pages/home/index';
+      return Tips.share(title, url, title);
     }
     methods = {
       order(status) {
