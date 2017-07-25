@@ -1,0 +1,86 @@
+<template>
+  <Tips />
+  <view class="container" wx:if="{{init}}">
+    <view class="mt10"></view>
+    <!--操作表单-->
+    <view class="weui-cells-form">
+      <Switch title="发布公告" fieldName="show" :input.sync="input" />
+      <Textarea fieldName="content" :input.sync="input"/>
+    </view>
+
+    <!--操作栏-->
+    <ActionBar @tap.user="submit" />
+  </view>
+</template>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import input from '../../mixins/input';
+  import notice from '../../api/notice';
+  import Textarea from '../../components/weui/textarea';
+  import Switch from '../../components/weui/switch';
+  import FormTips from '../../components/weui/tips';
+  import ActionBar from '../../components/common/action_bar';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+
+  export default class NoticeIndex extends wepy.page {
+    def = {
+      init: false,
+      mode: 'create'
+    }
+    data = {...this.def};
+    async onLoad ({mode, noticeId}) {
+      this.mode = mode;
+      if (mode == 'create') {
+        this.input.show = true;
+      } else if (mode == 'edit') {
+        this.input = await notice.info(noticeId);
+        this.input.show = this.input.isShow == 1;
+      }
+      this.loaded();
+    };
+    methods = {
+      async submit() {
+        if (!this.validate()) {
+          return;
+        }
+        const data = this.input;
+        data.isShow = data.show ? 1 : 2;
+        if (this.mode == 'create') {
+          await notice.create(data);
+          await Tips.success('创建成功');
+        } else {
+          await notice.update(this.input.id, data);
+          await Tips.success('更新成功');
+        }
+        Event.emit(Event.NOTICE_LIST_UPDATE);
+        wepy.navigateBack();
+      }
+    };
+    validate() {
+      const rules = [
+        {
+          value: this.input.content,
+          method: 'required',
+          message: '公告内容不能为空'
+        }];
+      return this.check(rules);
+    }
+    mixins = [base, input];
+    components = {
+      Tips: FormTips,
+      ActionBar: ActionBar,
+      Textarea: Textarea,
+      Switch: Switch
+    };
+    config = {
+      navigationBarTitleText: '编辑公告'
+    };
+  }
+</script>

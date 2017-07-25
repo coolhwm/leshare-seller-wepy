@@ -1,0 +1,77 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <!--TAB 页-->
+    <ZanTab :tab.sync="tab" @change.user="switchTab" />
+
+
+    <!--列表展现-->
+    <repeat for="{{page.list}}" key="index" index="index" item="item">
+      <GoodsScoreItem />
+    </repeat>
+
+    <!-- 加载提示 -->
+    <Loadmore :page.sync="page"/>
+  </view>
+
+  <!--占位符-->
+  <Placeholder :show.sync="isPageEmpty" message="该商品还没有评价"/>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import pagination from '../../mixins/pagination.wpy';
+  import Placeholder from '../../components/common/placeholder';
+  import ZanTab from '../../components/zanui/tab';
+  import ActionBar from '../../components/common/action_bar';
+  import Loadmore from '../../components/weui/loadmore';
+  import GoodsScoreItem from '../../components/goods/score_item';
+
+  export default class GoodsScoreIndex extends wepy.page {
+    def = {
+      init: true,
+      page: {
+        list: [{}, {}
+        ]
+      },
+      tab: {
+        list: [
+          {id: 'USED', title: '好评(10)'},
+          {id: 'EXPIRED', title: '中评(10)'},
+          {id: 'XX', title: '差评(10)'}
+        ],
+        selectedId: 'USED'
+      }
+    }
+    data = {...this.def};
+    async onLoad (options) {
+      // this.page = notice.page();
+      // await this.next();
+    };
+    params() {
+      return {status: this.tab.selectedId};
+    }
+    methods = {
+      switchTab() {
+        this.reload();
+      }
+    }
+    events = {};
+    components = {
+      Placeholder: Placeholder,
+      ZanTab: ZanTab,
+      ActionBar: ActionBar,
+      Loadmore: Loadmore,
+      GoodsScoreItem: GoodsScoreItem
+    };
+    mixins = [base, pagination];
+    config = {
+      navigationBarTitleText: '商品评价',
+      enablePullDownRefresh: true
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>
