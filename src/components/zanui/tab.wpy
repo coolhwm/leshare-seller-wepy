@@ -48,7 +48,7 @@
 </template>
 
 <script>
-  import wepy from 'wepy'
+  import wepy from 'wepy';
   export default class ZanTab extends wepy.component {
     props = {
       tab: {twoWay: true},

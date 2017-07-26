@@ -9,7 +9,7 @@
     </repeat>
 
     <!-- 加载提示 -->
-    <Loadmore :loading.sync="isPageLoading" :nomore.sync="isPageReachBottom"/>
+    <Loadmore :page.sync="page"/>
 
     <!--操作栏-->
     <ActionBar @tap.user="add" okText="新增商品" cancelText="返回" />

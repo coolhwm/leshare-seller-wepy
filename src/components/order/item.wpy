@@ -76,7 +76,8 @@
         this.$root.$navigate('reprice', {orderId});
       },
       detail(orderId) {
-        this.$root.$navigate('detail', {orderId});
+        this.$emit('tap', orderId);
+        // this.$root.$navigate('detail', {orderId});
       },
       refund(orderId) {
         this.$root.$navigate('refund', {orderId});

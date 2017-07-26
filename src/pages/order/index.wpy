@@ -6,7 +6,7 @@
 
     <!--订单列表-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <OrderItem :order.sync="item"></OrderItem>
+      <OrderItem :order.sync="item" @tap.user="detail"></OrderItem>
     </repeat>
 
     <!-- 加载提示 -->
@@ -70,6 +70,9 @@
     methods = {
       switchTap() {
         this.reload();
+      },
+      detail(orderId) {
+        this.$navigate('detail', {orderId});
       }
     };
     config = {

@@ -15,7 +15,6 @@
       isPageEmpty: false,
       isPageReachBottom: false
     };
-
     /**
      * 下一页
      */
@@ -24,7 +23,9 @@
         if (this.page.reachBottom) {
           return;
         }
-        Tips.setLoading();
+        if (this.page.start != 0) {
+          Tips.setLoading();
+        }
         this.isPageLoading = true;
         const param = this.params ? this.params() : {};
         await this.page.next(param);

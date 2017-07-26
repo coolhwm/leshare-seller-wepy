@@ -53,7 +53,7 @@
           <view class="weui-label">生效时间</view>
         </view>
         <view class="weui-cell__bd">
-          <picker mode="date"  id="beginTime"  @change="input" value="{{input.beginTime}}"  start="2015-09-01" end="2017-09-01" disabled="{{mode == 'edit'}}">
+          <picker mode="date"  id="beginTime"  @change="input" value="{{input.beginTime}}"  disabled="{{mode == 'edit'}}">
             <view class="weui-input {{mode == 'edit' ? 'muted' : ''}}">{{input.beginTime? input.beginTime : '请选择卡券生效时间'}}</view>
           </picker>
         </view>
@@ -64,7 +64,7 @@
           <view class="weui-label">过期时间</view>
         </view>
         <view class="weui-cell__bd">
-          <picker mode="date" id="dueTime"  @change="input" value="{{input.dueTime}}" start="2015-09-01" end="2017-09-01" disabled="{{mode == 'edit'}}">
+          <picker mode="date" id="dueTime"  @change="input" value="{{input.dueTime}}"  disabled="{{mode == 'edit'}}">
             <view class="weui-input {{mode == 'edit' ? 'muted' : ''}}">{{input.dueTime? input.dueTime : '请选择卡券过期时间'}}</view>
           </picker>
         </view>
@@ -251,13 +251,13 @@
         },
         {
           value: this.input.beginTime,
-          method: 'after',
+          method: 'before',
           param: this.input.dueTime,
           message: '生效时间不能晚于过期时间'
         },
         {
           value: this.input.dueTime,
-          method: 'before',
+          method: 'after',
           param: new Date().toISOString().substring(0, 10),
           message: '不能创建已经过期的优惠券'
         }
