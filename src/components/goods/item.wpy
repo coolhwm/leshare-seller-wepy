@@ -22,6 +22,7 @@
     <view class="item-action row-between">
       <text class="muted xs ml20">分类：{{goods.innerCategoryName}}</text>
       <view>
+        <view class="zan-btn zan-btn--small"  @tap="comment({{goods.id}})" >评价</view>
         <view class="zan-btn zan-btn--small" wx:if="{{goods.status == 1}}" @tap="delete({{goods.id}})" >删除</view>
         <view class="zan-btn zan-btn--small" wx:if="{{goods.status != 1}}" @tap="offSale({{goods.id}})">下架</view>
         <view class="zan-btn zan-btn--small  {{ goods.totalStock == 0 ?  'zan-btn--disabled ' : ''}}"  wx:if="{{goods.status == 1}}" @tap="onSale({{goods.id}}, {{goods.totalStock}})">上架</view>
@@ -47,6 +48,9 @@
         await goods.remove(goodsId);
         await Tips.success('删除成功');
         Event.emit(Event.GOODS_LIST_UPDATE);
+      },
+      async comment(goodsId) {
+        this.$root.$navigate('comment', {goodsId});
       },
       async edit(goodsId) {
         this.$root.$navigate('edit', {goodsId, mode: 'edit'});

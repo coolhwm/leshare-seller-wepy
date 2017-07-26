@@ -24,7 +24,7 @@
 
 <script>
   import wepy from 'wepy'
-  export default class GoodsScoreItem extends wepy.component {
+  export default class CommentItem extends wepy.component {
     props = {
       order: {}
     };

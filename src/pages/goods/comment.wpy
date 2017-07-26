@@ -20,36 +20,42 @@
 <script>
   import wepy from 'wepy';
   import base from '../../mixins/base';
+  import comment from '../../api/comment';
   import pagination from '../../mixins/pagination.wpy';
   import Placeholder from '../../components/common/placeholder';
   import ZanTab from '../../components/zanui/tab';
   import ActionBar from '../../components/common/action_bar';
   import Loadmore from '../../components/weui/loadmore';
-  import GoodsScoreItem from '../../components/goods/score_item';
+  import CommentItem from '../../components/goods/comment_item';
 
   export default class GoodsScoreIndex extends wepy.page {
     def = {
       init: true,
       page: {
-        list: [{}, {}
-        ]
+        list: []
       },
       tab: {
-        list: [
-          {id: 'USED', title: '好评(10)'},
-          {id: 'EXPIRED', title: '中评(10)'},
-          {id: 'XX', title: '差评(10)'}
-        ],
-        selectedId: 'USED'
-      }
+        list: []
+      },
+      goodsId: ''
     }
     data = {...this.def};
-    async onLoad (options) {
-      // this.page = notice.page();
-      // await this.next();
+    async onLoad ({goodsId}) {
+      this.goodsId = goodsId;
+      const count = await comment.count(goodsId);
+      this.tab = {
+        list: [
+          {id: 'GOOD', title: `好评（${count.GOOD}）`},
+          {id: 'NORMAL', title: `中评（${count.NORMAL}）`},
+          {id: 'BAD', title: `差评（${count.BAD}）`}
+        ],
+        selectedId: 'GOOD'
+      };
+      this.page = comment.page();
+      await this.next();
     };
     params() {
-      return {status: this.tab.selectedId};
+      return {status: this.tab.selectedId, goods_id: this.goodsId};
     }
     methods = {
       switchTab() {
@@ -62,7 +68,7 @@
       ZanTab: ZanTab,
       ActionBar: ActionBar,
       Loadmore: Loadmore,
-      GoodsScoreItem: GoodsScoreItem
+      GoodsScoreItem: CommentItem
     };
     mixins = [base, pagination];
     config = {

@@ -88,6 +88,9 @@
               loginCode = err.serverData.login_code;
               Tips.loaded();
               await Tips.modal('您尚未注册，将进入示例店铺');
+            } else {
+              this.tips(err.message);
+              return;
             }
           }
           await auth.setConfig('login_code', loginCode);
