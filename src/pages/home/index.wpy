@@ -111,9 +111,12 @@
           await auth.sms(this.input.phone);
           this.$invoke('VCode', 'cd', 60);
           Tips.success('验证码已发送');
-        } catch (e) {
-          console.info(e);
-          this.tips(e.message);
+        } catch (err) {
+          if (err.serverCode == 10005) {
+            console.debug('请求验证码太频繁');
+            this.$invoke('VCode', 'cd', 60);
+          }
+          this.tips(err.message);
         } finally {
           this.loaded();
         }
