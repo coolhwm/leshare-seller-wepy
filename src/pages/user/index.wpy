@@ -1,26 +1,19 @@
 <template>
 
   <!-- 头图区域 -->
-  <view class="info-box column-center">
-    <image class="avatar" src="{{shop.avatar}}" />
-    <text class="name">{{shop.name}}</text>
-  </view>
+  <AvatarPanel :info.sync="shop" />
 
   <view class="h-gap" />
 
-  <view class="weui-cells weui-cells-form">
-    <navigator url="../notice/list" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
-      <view class="weui-cell__bd">店铺公告</view>
-      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-    </navigator>
-    <view url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="shops">
-      <view class="weui-cell__bd">切换店铺</view>
-      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-    </view>
-    <view url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="logout">
-      <view class="weui-cell__bd">切换账号</view>
-      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-    </view>
+  <view class="weui-cells-form">
+    <NavNotice title="店铺公告" url="../notice/list" />
+
+    <NavDelivery title="运费模板" url="../delivery/list" />
+
+    <NavShops title="切换店铺" @tap.user="shops" />
+
+    <NavLogout title="切换账号" @tap.user="logout" />
+
   </view>
 
   <Copyright />
@@ -34,11 +27,13 @@
   import auth from '../../api/auth';
   import shop from '../../api/shop';
   import Tips from '../../utils/Tips';
+  import Navigator from '../../components/weui/navigator';
   import Copyright from '../../components/common/copyright';
+  import AvatarPanel from '../../components/common/avatar_panel';
 
   export default class UserIndex extends wepy.page {
     data = {
-      shop: {}
+      shop: {},
     };
     async onLoad () {
       this.shop = await shop.info();
@@ -58,7 +53,12 @@
       }
     };
     components = {
-      Copyright: Copyright
+      Copyright: Copyright,
+      NavNotice: Navigator,
+      NavDelivery: Navigator,
+      NavShops: Navigator,
+      NavLogout: Navigator,
+      AvatarPanel: AvatarPanel
     };
     config = {
       navigationBarTitleText: '我的信息'
@@ -69,23 +69,5 @@
 
 <style lang="scss">
   @import "../../styles/variable";
-  /*用户信息*/
-  .info-box{
-    align-items: center;
-    height: 300rpx;
-    background-color: $color-primary;
-
-    .avatar{
-      height:160rpx;
-      width: 160rpx;
-      border-radius: 50%;
-    }
-
-    .name{
-      color: white;
-      font-size: $text-xxl;
-      margin-top: 20rpx;
-    }
-  }
 
 </style>

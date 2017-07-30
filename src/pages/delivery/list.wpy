@@ -1,0 +1,62 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <!--列表展现-->
+    <repeat for="{{page.list}}" key="index" index="index" item="item">
+
+    </repeat>
+
+    <!-- 加载提示 -->
+    <Loadmore :page.sync="page"/>
+
+    <!--操作栏-->
+    <ActionBar @tap.user="add" okText="新增模板" cancelText="返回" />
+  </view>
+
+  <!--占位符-->
+  <Placeholder :show.sync="isPageEmpty" message="您还没有运费模板"/>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import pagination from '../../mixins/pagination.wpy';
+  import Placeholder from '../../components/common/placeholder';
+  import ZanTab from '../../components/zanui/tab';
+  // import ActionBar from '../../components/common/action_bar';
+  // import Event from '../../utils/Event';
+  import Loadmore from '../../components/weui/loadmore';
+
+  export default class NoticeIndex extends wepy.page {
+    def = {
+      init: true,
+      page: {
+        list: [
+        ]
+      }
+    }
+    data = {...this.def};
+    async onLoad (options) {
+      // this.page = notice.page();
+      // await this.next();
+      // Event.listen(Event.NOTICE_LIST_UPDATE, this.update.bind(this), this);
+    };
+    methods = {
+    }
+    events = {};
+    components = {
+      Placeholder: Placeholder,
+      ZanTab: ZanTab,
+      Loadmore: Loadmore
+    };
+    mixins = [base, pagination];
+    config = {
+      navigationBarTitleText: '运费模板',
+      enablePullDownRefresh: true
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>
+
