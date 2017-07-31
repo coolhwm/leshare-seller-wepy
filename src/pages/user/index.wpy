@@ -13,7 +13,6 @@
     <NavShops title="切换店铺" @tap.user="shops" />
 
     <NavLogout title="切换账号" @tap.user="logout" />
-
   </view>
 
   <Copyright />

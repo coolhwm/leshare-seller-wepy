@@ -1,0 +1,152 @@
+<template>
+  <Tips />
+  <view class="container" wx:if="{{init}}">
+    <view class="mt10"></view>
+    <!--表单-->
+    <view class="weui-cells-form">
+      <Picker :range="type" title="配送方式" fieldName="type" :input.sync="input" @input.user="seletedType"/>
+      <InputText_name title="模板名称" :input.sync="input"/>
+      <InputText_limitPrice title="起送价格" :input.sync="input" type="digit"/>
+      <InputText_fee title="运费" :input.sync="input" type="digit"/>
+      <InputText_location title="配送范围" :input.sync="input"/>
+    </view>
+
+    <!--操作栏-->
+    <ActionBar @tap.user="submit" />
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import input from '../../mixins/input';
+  import delivery from '../../api/delivery';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+  import FormTips from '../../components/weui/tips';
+  import Picker from '../../components/weui/picker';
+  import InputText from '../../components/weui/input';
+  import ActionBar from '../../components/common/action_bar';
+
+  export default class DeliveryEdit extends wepy.page {
+    def = {
+      init: false,
+      mode: 'create',
+      type: [
+        {value: 'SELF', key: '自提'},
+        {value: 'CITY', key: '同城配送'},
+        {value: 'EXPRESS', key: '快递配送'}
+      ]
+    }
+    data = {...this.def};
+    onLoad ({mode, deliveryId}, {preload}) {
+      this.mode = mode;
+      if (mode == 'edit') {
+        this.input = preload.delivery;
+      }
+      this.loaded();
+    };
+    methods = {
+      seletedType(data) {
+        this.input.name = data.key;
+      },
+      async submit() {
+        if (!this.validate()) {
+          return;
+        }
+        if (this.mode == 'edit') {
+          await delivery.update(this.input.id, this.input);
+          await Tips.success('更新成功！');
+        } else {
+          await delivery.create(this.input);
+          await Tips.success('创建成功！');
+        }
+        Event.emit(Event.DELIVERY_LIST_UPDATE);
+        wepy.navigateBack();
+      }
+    };
+    validate() {
+      const rules = [
+        {
+          value: this.input.type,
+          method: 'required',
+          message: '请选择配送方式'
+        },
+        {
+          value: this.input.name,
+          method: 'required',
+          message: '请输入模板名称'
+        },
+        {
+          value: this.input.name,
+          method: 'maxlength',
+          param: '15',
+          message: '模板名称太长'
+        },
+        {
+          value: this.input.limitPrice,
+          method: 'required',
+          message: '起送价格必填'
+        },
+        {
+          value: this.input.limitPrice,
+          method: 'number',
+          message: '起送价格必须为数字'
+        },
+        {
+          value: this.input.limitPrice,
+          method: 'min',
+          param: '0',
+          message: '起送价格不能为负数'
+        },
+        {
+          value: this.input.limitPrice,
+          method: 'max',
+          param: '10000',
+          message: '起送价格太高'
+        },
+        {
+          value: this.input.fee,
+          method: 'required',
+          message: '运费必填'
+        },
+        {
+          value: this.input.fee,
+          method: 'number',
+          message: '运费必须为数字'
+        },
+        {
+          value: this.input.fee,
+          method: 'min',
+          param: '0',
+          message: '运费不能为负数'
+        },
+        {
+          value: this.input.fee,
+          method: 'max',
+          param: '10000',
+          message: '运费价格太高'
+        }
+      ];
+      return this.check(rules);
+    }
+    events = {};
+    components = {
+      Tips: FormTips,
+      ActionBar: ActionBar,
+      Picker: Picker,
+      InputText_name: InputText,
+      InputText_limitPrice: InputText,
+      InputText_fee: InputText,
+      InputText_location: InputText
+    };
+    mixins = [base, input];
+    config = {
+      navigationBarTitleText: '编辑模板'
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>

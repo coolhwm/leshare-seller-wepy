@@ -1,0 +1,71 @@
+<template>
+  <view class="notice-box column">
+    <view class="content-box row">
+      <text class="lg">{{delivery.name}}</text>
+      <text class="desc inline">￥{{delivery.limitPrice}}起送 | 配送费￥{{delivery.fee}} | {{delivery.location}}</text>
+    </view>
+    <view class="btn-box row-end">
+      <view class="zan-btn zan-btn--small"  @tap="delete({{delivery.id}})" >删除</view>
+      <view class="zan-btn zan-btn--small  zan-btn--primary"  @tap="edit({{delivery.id}})">编辑</view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+  import delivery from '../../api/delivery';
+  export default class DeliveryItem extends wepy.component {
+    props = {
+      delivery: {}
+    };
+    data = {};
+    methods = {
+      async delete(id) {
+        await Tips.confirm('确认删除？');
+        await delivery.remove(id);
+        await Tips.success('删除成功');
+        Event.emit(Event.DELIVERY_LIST_UPDATE);
+      },
+      edit(id) {
+        const param = {
+          mode: 'edit',
+          deliveryId: id
+        }
+        this.$root.$preload('delivery', this.delivery);
+        this.$root.$navigate('edit', param);
+      }
+    };
+    events = {};
+    onLoad() {
+    }
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  .notice-box{
+    background-color: white;
+    border-bottom: $border;
+    border-top: $border;
+    padding: 20rpx;
+    margin-top: 10rpx;
+    .content-box{
+      align-items: flex-end;
+
+      .desc{
+        color: $color-muted;
+        font-size: $text-sm;
+        margin-left: 20rpx;
+        flex: 1;
+      }
+    }
+
+    .btn-box{
+      margin-top: 10rpx;
+      padding-top: 20rpx;
+      border-top: $border-dot;
+    }
+  }
+</style>
