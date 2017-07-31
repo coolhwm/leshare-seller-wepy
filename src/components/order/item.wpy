@@ -6,7 +6,7 @@
       <view class="row-between">
         <view class="user-info-container">
           <image class="icon" src="/images/icons/idcard.png"/>
-          <text class="sm ml10">{{order.customer.nickName}}</text>
+          <text class="sm ml10">{{order.customer.nickName ? order.customer.nickName : '微信用户'}}</text>
         </view>
         <text class="sm primary">{{order.statusText}}</text>
       </view>

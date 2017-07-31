@@ -130,6 +130,11 @@
       Tips: FormTips,
       VCode: VCode
     };
+    onShareAppMessage () {
+      const title = '乐享商家助手';
+      const url = '/pages/home/index';
+      return Tips.share(title, url, title);
+    }
     /**
      * 校验表单提交
      */
