@@ -70,9 +70,10 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/home/index',
+      'pages/user/index',
+      'pages/shop/status',
       'pages/delivery/list',
       'pages/delivery/edit',
-      'pages/user/index',
       'pages/goods/comment',
       'pages/notice/list',
       'pages/notice/edit',
@@ -81,7 +82,6 @@ export default class extends wepy.app {
       'pages/coupon/edit',
       'pages/customer/list',
       'pages/shop/detail',
-      'pages/user/index',
       'pages/goods/list',
       'pages/home/home',
       'pages/goods/edit',

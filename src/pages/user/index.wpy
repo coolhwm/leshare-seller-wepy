@@ -6,6 +6,8 @@
   <view class="h-gap" />
 
   <view class="weui-cells-form">
+    <NavStatus title="营业状态" url="../shop/status" :describe.sync="statusText" />
+
     <NavNotice title="店铺公告" url="../notice/list" />
 
     <NavDelivery title="运费模板" url="../delivery/list" />
@@ -26,6 +28,7 @@
   import auth from '../../api/auth';
   import shop from '../../api/shop';
   import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
   import Navigator from '../../components/weui/navigator';
   import Copyright from '../../components/common/copyright';
   import AvatarPanel from '../../components/common/avatar_panel';
@@ -33,9 +36,17 @@
   export default class UserIndex extends wepy.page {
     data = {
       shop: {},
+      status: {},
+      statusText: ''
     };
     async onLoad () {
+      await this.load();
+      Event.listen(Event.SHOP_INFO_UPDATE, this.load.bind(this), this);
+    };
+    async load () {
       this.shop = await shop.info();
+      this.status = await shop.getStatus();
+      this.statusText = this.status.statusText;
       this.loaded();
     };
     methods = {
@@ -53,6 +64,7 @@
     };
     components = {
       Copyright: Copyright,
+      NavStatus: Navigator,
       NavNotice: Navigator,
       NavDelivery: Navigator,
       NavShops: Navigator,

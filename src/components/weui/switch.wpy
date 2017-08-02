@@ -2,7 +2,7 @@
   <view class="weui-cell weui-cell_switch">
     <view class="weui-cell__bd">{{title}}</view>
     <view class="weui-cell__ft">
-      <switch checked="{{input[fieldName]}}" id="{{fieldName}}" @change="input" />
+      <text class="switch-describe">{{input[fieldName] ? checkedText : uncheckText}}</text><switch checked="{{input[fieldName]}}" id="{{fieldName}}" @change="input" />
     </view>
   </view>
 </template>
@@ -14,8 +14,19 @@
       input: {
         twoWay: true
       },
+      checkedText: {},
+      uncheckText: {},
       title: {},
       fieldName: {}
+    }
+    onLoad() {
+      if (this.fieldName == null) {
+        const name = this.$name;
+        const index = name.indexOf('_');
+        if (index != -1) {
+          this.fieldName = name.substring(index + 1, name.length);
+        }
+      }
     }
     methods = {
       input(e) {
@@ -28,4 +39,11 @@
 
 <style lang="scss">
   @import "../../styles/variable";
+  .weui-cell_switch{
+    .switch-describe{
+      font-size: $text-sm;
+      color: $color-muted;
+      margin-right: 10rpx;
+    }
+  }
 </style>

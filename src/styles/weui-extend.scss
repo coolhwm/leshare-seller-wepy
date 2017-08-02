@@ -52,7 +52,12 @@
   &{
     margin-top:0;
   }
+  .weui-cell__ft{
+    color: #999;
+  }
+  border-top: $border;
 }
+
 
 button[type="primary"][plain]{
   color: $color-primary;

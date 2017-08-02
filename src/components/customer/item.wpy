@@ -1,6 +1,6 @@
 <template>
   <view class="cusomer-box row">
-    <image class="avatar icon-xl icon-round" src="{{customer.avatar}}"></image>
+    <image class="avatar icon-xl icon-round" src="{{customer.avatar ? customer.avatar : '/images/icons/customer.png'}}"></image>
     <view class="info-box column">
       <text class="xl">{{customer.name ? customer.name : '微信用户'}}</text>
       <view class="count-box row">

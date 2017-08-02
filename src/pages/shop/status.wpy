@@ -1,0 +1,106 @@
+<template>
+  <Tips />
+  <view class="container" wx:if="{{init}}">
+    <view class="mt10"></view>
+    <view class="weui-cells-form">
+      <Switch_status title="营业状态"  :input.sync="input" uncheckText="歇业中" checkedText="营业中"/>
+      <Switch_day title="全天营业"  :input.sync="input" uncheckText="时段营业" checkedText="全天营业"/>
+    </view>
+
+    <view class="mt10"></view>
+    <view class="weui-cells-form" wx:if="{{!input.day}}">
+      <PickerTime_beginTime title="开业时间" :input.sync="input" />
+      <PickerTime_endTime title="打烊时间" :input.sync="input" />
+    </view>
+
+    <text class="muted sm ml20">提示：{{input.day ? '全天营业无需设置开业、打烊时间': '请点击设置自动开业、打烊时间'}}</text>
+  </view>
+
+  <!--操作栏-->
+  <ActionBar @tap.user="submit" />
+</template>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import input from '../../mixins/input';
+  import shop from '../../api/shop';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+  import Switch from '../../components/weui/switch';
+  import FormTips from '../../components/weui/tips';
+  import ActionBar from '../../components/common/action_bar';
+  import PickerTime from '../../components/weui/picker_time';
+
+  export default class OrderIndex extends wepy.page {
+    def = {
+      init: true
+    }
+    data = {...this.def};
+    async onLoad (options) {
+      this.input = await shop.getStatus();
+      this.loaded();
+    };
+    methods = {
+      async submit() {
+        if (!this.validate()) {
+          return;
+        }
+        const data = {};
+        if (this.input.day) {
+          data.beginTime = '00:00';
+          data.endTime = '23:59';
+        } else {
+          data.beginTime = this.input.beginTime;
+          data.endTime = this.input.endTime;
+        }
+        data.status = this.input.status ? 'NORMAL' : 'CLOSE';
+        await Tips.confirm('确认修改？');
+        await shop.setStatus(data);
+        await Tips.success('修改成功');
+        Event.emit(Event.SHOP_INFO_UPDATE);
+        wepy.navigateBack();
+
+      }
+    };
+    getShopPeriod() {
+    };
+    validate() {
+      const rules = [
+        {
+          value: this.input.beginTime,
+          method: 'required',
+          message: '开业时间不能为空'
+        },
+        {
+          value: this.input.endTime,
+          method: 'required',
+          message: '打烊时间不能为空'
+        },
+        {
+          value: this.input.beginTime,
+          method: 'before',
+          param: this.input.endTime,
+          message: '开业时间需要早于打烊时间'
+        }];
+      return this.check(rules);
+    }
+    events = {};
+    components = {
+      Tips: FormTips,
+      ActionBar: ActionBar,
+      Switch_status: Switch,
+      Switch_day: Switch,
+      PickerTime_beginTime: PickerTime,
+      PickerTime_endTime: PickerTime
+    };
+    mixins = [base, input];
+    config = {
+      navigationBarTitleText: '店铺状态'
+    };
+  }
+</script>
