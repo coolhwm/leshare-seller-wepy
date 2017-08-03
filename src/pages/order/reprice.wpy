@@ -10,7 +10,7 @@
           <view class="weui-label">现价</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" id="modifyPrice" @input="input" value="{{input.modifyPrice}}" placeholder="请输入需要修改订单价格"/>
+          <input class="weui-input" id="modifyPrice"  type="digit" @input="input" value="{{input.modifyPrice}}" placeholder="请输入需要修改订单价格"/>
         </view>
         <view class="weui-cell__ft">
         </view>
@@ -20,7 +20,7 @@
           <view class="weui-label">现运费</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" id="modifyPost" @input="input" value="{{input.modifyPost}}" placeholder="请输入需要修改的运费"/>
+          <input class="weui-input" id="modifyPost"  type="digit" @input="input" value="{{input.modifyPost}}" placeholder="请输入需要修改的运费"/>
         </view>
         <view class="weui-cell__ft">
         </view>

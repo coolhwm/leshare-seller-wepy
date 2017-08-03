@@ -11,10 +11,12 @@
 
     <!-- 加载提示 -->
     <Loadmore :page.sync="page"/>
+
+    <!--占位符-->
+    <Placeholder :show.sync="isPageEmpty" message="该商品还没有评价"/>
   </view>
 
-  <!--占位符-->
-  <Placeholder :show.sync="isPageEmpty" message="该商品还没有评价"/>
+
 </template>
 
 <script>
@@ -30,7 +32,7 @@
 
   export default class GoodsScoreIndex extends wepy.page {
     def = {
-      init: true,
+      init: false,
       page: {
         list: []
       },
@@ -45,9 +47,9 @@
       const count = await comment.count(goodsId);
       this.tab = {
         list: [
-          {id: 'GOOD', title: `好评（${count.GOOD}）`},
-          {id: 'NORMAL', title: `中评（${count.NORMAL}）`},
-          {id: 'BAD', title: `差评（${count.BAD}）`}
+          {id: 'GOOD', title: `满意(${count.GOOD})`},
+          {id: 'NORMAL', title: `一般(${count.NORMAL})`},
+          {id: 'BAD', title: `不满意(${count.BAD})`}
         ],
         selectedId: 'GOOD'
       };

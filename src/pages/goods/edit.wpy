@@ -32,15 +32,15 @@
           <view class="weui-cell__ft weui-cell__ft_in-access"></view>
         </view>
 
-        <view class="weui-cell"  @tap="select">
-          <view class="weui-cell__hd">
-            <view class="weui-label">运费</view>
-          </view>
-          <view class="weui-cell__bd">
-            请选择运费模板
-          </view>
-          <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-        </view>
+        <!--<view class="weui-cell"  @tap="select">-->
+          <!--<view class="weui-cell__hd">-->
+            <!--<view class="weui-label">运费</view>-->
+          <!--</view>-->
+          <!--<view class="weui-cell__bd">-->
+            <!--请选择运费模板-->
+          <!--</view>-->
+          <!--<view class="weui-cell__ft weui-cell__ft_in-access"></view>-->
+        <!--</view>-->
 
         <view class="weui-cell"  @tap="details">
           <view class="weui-cell__hd">
@@ -387,9 +387,5 @@
 </script>
 <style lang="scss">
   @import "../../styles/variable";
-
-  .detail-box{
-    border-top: $border;
-  }
 
 </style>

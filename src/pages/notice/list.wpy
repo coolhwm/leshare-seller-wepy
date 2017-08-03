@@ -13,10 +13,10 @@
 
     <!--操作栏-->
     <ActionBar @tap.user="add" okText="新增公告" cancelText="返回" />
-  </view>
 
-  <!--占位符-->
-  <Placeholder :show.sync="isPageEmpty" message="您还没有相关公告信息"/>
+    <!--占位符-->
+    <Placeholder :show.sync="isPageEmpty" message="您还没有相关公告信息"/>
+  </view>
 </template>
 
 <script>

@@ -1,23 +1,27 @@
 <template>
 
-  <!-- 头图区域 -->
-  <AvatarPanel :info.sync="shop" />
+  <view class="container" wx:if="{{init}}">
 
-  <view class="h-gap" />
+    <!-- 头图区域 -->
+    <AvatarPanel :info.sync="shop" />
 
-  <view class="weui-cells-form">
-    <NavStatus title="营业状态" url="../shop/status" :describe.sync="statusText" />
+    <view class="h-gap" />
 
-    <NavNotice title="店铺公告" url="../notice/list" />
+    <view class="weui-cells-form">
+      <NavStatus title="营业状态" url="../shop/status" :describe.sync="statusText" />
 
-    <NavDelivery title="运费模板" url="../delivery/list" />
+      <NavNotice title="店铺公告" url="../notice/list" />
 
-    <NavShops title="切换店铺" @tap.user="shops" />
+      <NavDelivery title="运费模板" url="../delivery/list" />
 
-    <NavLogout title="切换账号" @tap.user="logout" />
+      <NavShops title="切换店铺" @tap.user="shops" />
+
+      <NavLogout title="切换账号" @tap.user="logout" />
+    </view>
+
+    <Copyright />
+
   </view>
-
-  <Copyright />
 
   <view class="tab-border" />
 </template>
@@ -35,6 +39,7 @@
 
   export default class UserIndex extends wepy.page {
     data = {
+      init: false,
       shop: {},
       status: {},
       statusText: ''

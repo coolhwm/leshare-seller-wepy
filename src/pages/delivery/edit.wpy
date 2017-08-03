@@ -33,7 +33,7 @@
       init: false,
       mode: 'create',
       type: [
-        {value: 'SELF', key: '自提'},
+        {value: 'SELF', key: '到店自提'},
         {value: 'CITY', key: '同城配送'},
         {value: 'EXPRESS', key: '快递配送'}
       ]

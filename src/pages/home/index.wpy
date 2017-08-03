@@ -36,6 +36,7 @@
     </view>
   </view>
 
+  <Copyright buttom="true" />
 
 </template>
 <script>
@@ -46,6 +47,7 @@
   import FormTips from '../../components/weui/tips';
   import VCode from '../../components/weui/vcode';
   import Tips from '../../utils/Tips';
+  import Copyright from '../../components/common/copyright';
   export default class Login extends wepy.page {
     def = {
       init: false
@@ -122,14 +124,6 @@
         }
       }
     };
-    mixins = [input, base];
-    config = {
-      navigationBarTitleText: '商家登录'
-    };
-    components = {
-      Tips: FormTips,
-      VCode: VCode
-    };
     onShareAppMessage () {
       const title = '乐享商家助手';
       const url = '/pages/home/index';
@@ -163,6 +157,15 @@
       }
       return true;
     }
+    mixins = [input, base];
+    config = {
+      navigationBarTitleText: '商家登录'
+    };
+    components = {
+      Tips: FormTips,
+      VCode: VCode,
+      Copyright: Copyright
+    };
   }
 </script>
 

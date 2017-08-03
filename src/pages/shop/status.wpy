@@ -38,10 +38,10 @@
 
   export default class OrderIndex extends wepy.page {
     def = {
-      init: true
+      init: false
     }
     data = {...this.def};
-    async onLoad (options) {
+    async onLoad () {
       this.input = await shop.getStatus();
       this.loaded();
     };
@@ -64,7 +64,6 @@
         await Tips.success('修改成功');
         Event.emit(Event.SHOP_INFO_UPDATE);
         wepy.navigateBack();
-
       }
     };
     getShopPeriod() {

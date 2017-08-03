@@ -68,7 +68,7 @@
       },
       address: {},
       input: {
-        isMail: true,
+        isMail: false,
         mailNo: ''
       },
       init: false,

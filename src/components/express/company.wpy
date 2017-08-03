@@ -4,8 +4,8 @@
     <SearchBar :inputVal="input" back="true" @back.user="back" />
     <!--搜索结果-->
     <view class="weui-cells searchbar-result">
-      <view url="" class="weui-cell" hover-class="weui-cell_active"  wx:item="item" wx:for="{{companies}}" wx:key="type" wx:if="{{item.display}}">
-        <view class="weui-cell__bd" @tap="selected({{item}})">
+      <view url="" class="weui-cell" hover-class="weui-cell_active" @tap="selected({{item}})"  wx:item="item" wx:for="{{companies}}" wx:key="type" wx:if="{{item.display}}">
+        <view class="weui-cell__bd" >
           <view>{{item.name}}</view>
         </view>
       </view>

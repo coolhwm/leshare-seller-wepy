@@ -72,7 +72,6 @@
 <style lang="scss">
   @import "../../styles/variable";
   .sku-box{
-    border-top: $border;
     border-bottom: $border;
     background-color: white;
 
