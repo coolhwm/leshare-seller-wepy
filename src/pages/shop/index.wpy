@@ -19,7 +19,7 @@
       <NavLogout title="切换账号" @tap.user="logout" />
     </view>
 
-    <Copyright />
+    <Copyright buttom="true" />
 
   </view>
 

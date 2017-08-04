@@ -71,7 +71,7 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/home/index',
-      'pages/user/index',
+      'pages/shop/index',
       'pages/shop/status',
       'pages/delivery/list',
       'pages/delivery/edit',
@@ -122,8 +122,8 @@ export default class extends wepy.app {
         {
           iconPath: 'images/tab/user.png',
           selectedIconPath: 'images/tab/user-active.png',
-          pagePath: 'pages/user/index',
-          text: '我的'
+          pagePath: 'pages/shop/index',
+          text: '店铺'
         }
       ]
     }
