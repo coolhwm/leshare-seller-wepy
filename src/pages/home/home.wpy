@@ -92,7 +92,7 @@
           <image src="/images/home/customer.png"/>
           <text>用户管理</text>
         </navigator>
-        <navigator class="operation-row column-center" open-type="switchTab" url="../user/index">
+        <navigator class="operation-row column-center" open-type="switchTab" url="../shop/index">
           <image src="/images/home/more.png"/>
           <text>更多配置</text>
         </navigator>

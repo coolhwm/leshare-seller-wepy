@@ -14,10 +14,10 @@
     </view>
 
     <text class="muted sm ml20">提示：{{input.day ? '全天营业无需设置开业、打烊时间': '请点击设置自动开业、打烊时间'}}</text>
-  </view>
 
-  <!--操作栏-->
-  <ActionBar @tap.user="submit" />
+    <!--操作栏-->
+    <ActionBar @tap.user="submit" />
+  </view>
 </template>
 
 <style lang="scss">
