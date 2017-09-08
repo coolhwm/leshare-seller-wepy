@@ -6,7 +6,7 @@
 
     <!--订单列表-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <OrderItem :order.sync="item" @tap.user="detail"></OrderItem>
+      <OrderItem :order.sync="item" @tap.user="detail" @receive.user="receive"></OrderItem>
     </repeat>
 
     <!-- 加载提示 -->
@@ -17,6 +17,7 @@
     <Placeholder :show.sync="isPageEmpty" message="您还没有相关订单"/>
   </view>
 </template>
+
 <style lang="scss">
 </style>
 
@@ -29,6 +30,7 @@
   import OrderItem from '../../components/order/item';
   import Placeholder from '../../components/common/placeholder';
   import Loadmore from '../../components/weui/loadmore';
+  import Tips from '../../utils/Tips';
 
   export default class OrderIndex extends wepy.page {
     // 页面数据
@@ -52,7 +54,7 @@
       }
     };
     async onLoad () {
-      this.page = order.page(this);
+      this.page = order.page();
       this.orders = this.page.list;
       await this.next();
       Event.listen(Event.ORDER_LIST_UPDATE, this.update.bind(this), this);
@@ -73,6 +75,17 @@
       },
       detail(orderId) {
         this.$navigate('detail', {orderId});
+      },
+      async receive(orderId) {
+        await Tips.confirm('是否确认客户已收到货品？');
+        try {
+          await order.confirmOrder(orderId);
+          await Tips.success('订单已完成');
+        } catch (e) {
+          console.warn(e);
+          await Tips.success('操作失败');
+        }
+        Event.emit(Event.ORDER_LIST_UPDATE);
       }
     };
     config = {

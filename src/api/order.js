@@ -83,7 +83,13 @@ export default class order extends base {
     const param = {orderId, note};
     return await this.put(url, param);
   }
-
+  /**
+   * 确认收货
+   */
+  static confirmOrder (orderId) {
+    const url = `${this.baseUrl}/orders/${orderId}/status/comments`
+    return this.put(url)
+  }
   /**
    * 订单改价
    */

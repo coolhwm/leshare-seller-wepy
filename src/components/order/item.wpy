@@ -39,6 +39,7 @@
       <view class="zan-btn zan-btn--small" @tap="reprice({{order.orderId}})"  wx:if="{{order.status == 1}}">订单改价</view>
       <view class="zan-btn zan-btn--small zan-btn--primary" @tap="close({{order.orderId}})" wx:if="{{order.status == 1}}">订单关闭</view>
       <view class="zan-btn zan-btn--small zan-btn--primary" @tap="send({{order.orderId}})" wx:if="{{order.status == 2}}">订单发货</view>
+      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="receive({{order.orderId}})" wx:if="{{order.status == 3}}">确认送达</view>
       <view class="zan-btn zan-btn--small zan-btn--primary" @tap="trace({{order.orderId}})" wx:if="{{order.status == 3 && order.deliveryType == 'EXPRESS'}}">物流查询</view>
       <view class="zan-btn zan-btn--small zan-btn--primary" @tap="refund({{order.orderId}})" wx:if="{{order.status == 5}}">订单退款</view>
     </view>
@@ -50,6 +51,7 @@
   import wepy from 'wepy';
   import OrderGoods from './goods';
   import OrderAction from './action';
+  import Tips from '../../utils/Tips';
   export default class OrderItem extends wepy.component {
     props = {
       order: {
@@ -81,6 +83,9 @@
       },
       refund(orderId) {
         this.$root.$navigate('refund', {orderId});
+      },
+      receive(orderId) {
+        this.$emit('receive', orderId);
       }
     };
 
