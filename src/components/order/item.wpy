@@ -8,7 +8,10 @@
           <image class="icon" src="/images/icons/idcard.png"/>
           <text class="sm ml10">{{order.customer.nickName ? order.customer.nickName : '微信用户'}}</text>
         </view>
-        <text class="sm primary">{{order.statusText}}</text>
+        <view>
+          <text class="sm primary">{{order.statusText}}</text>
+          <text class="muted danger"> {{order.paymentType == 0 ? '(线下支付)' : ''}}</text>
+        </view>
       </view>
 
       <view class="order-info-container row-between">
