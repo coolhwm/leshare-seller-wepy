@@ -1,0 +1,91 @@
+<template>
+  <Tips />
+  <view class="container" wx:if="{{init}}">
+    <!--操作表单-->
+    <view class="weui-cells-form">
+      <Switch title="请输入分类名称：" fieldName="show" :input.sync="input" switchFlag="0" />
+      <Textarea fieldName="name" :input.sync="input"/>
+    </view>
+
+    <!--操作栏-->
+    <ActionBar @tap.user="submit" />
+  </view>
+</template>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import input from '../../mixins/input';
+  import goods from '../../api/goods';
+  import Textarea from '../../components/weui/textarea';
+  import Switch from '../../components/weui/switch';
+  import FormTips from '../../components/weui/tips';
+  import ActionBar from '../../components/common/action_bar';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+
+  export default class NoticeIndex extends wepy.page {
+    def = {
+      init: false,
+      mode: 'create'
+    }
+    data = {...this.def};
+    async onReady() {
+      wepy.setNavigationBarTitle({
+        title: this.title
+      })
+    }
+    async onLoad ({mode, categoryId}) {
+      this.mode = mode;
+      if (mode == 'create') {
+        this.title = '新增公告';
+        this.input.show = true;
+      } else if (mode == 'edit') {
+        this.title = '修改公告';
+        this.input = await goods.getInnerCategorieId(categoryId);
+        this.input.show = this.input.isShow == 1;
+      }
+      this.loaded();
+    };
+    methods = {
+      async submit() {
+        if (!this.validate()) {
+          return;
+        }
+        const name = this.input.name;
+        if (this.mode == 'create') {
+          await goods.addInnerCategories(name);
+          await Tips.success('创建成功');
+        } else {
+          await goods.updateInnerCategories(this.input.id, name);
+          await Tips.success('更新成功');
+        }
+        Event.emit(Event.CATEGORY_LIST_UPDATE);
+        wepy.navigateBack();
+      }
+    };
+    validate() {
+      const rules = [
+        {
+          value: this.input.name,
+          method: 'required',
+          message: '分类名称不能为空'
+        }];
+      return this.check(rules);
+    }
+    mixins = [base, input];
+    components = {
+      Tips: FormTips,
+      ActionBar: ActionBar,
+      Textarea: Textarea,
+      Switch: Switch
+    };
+    config = {
+      navigationBarTitleText: ''
+    };
+  }
+</script>

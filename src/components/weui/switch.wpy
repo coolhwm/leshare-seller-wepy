@@ -1,7 +1,7 @@
 <template>
   <view class="weui-cell weui-cell_switch">
     <view class="weui-cell__bd">{{title}}</view>
-    <view class="weui-cell__ft">
+    <view class="weui-cell__ft" wx:if="{{switchFlag}}">
       <text class="switch-describe">{{input[fieldName] ? checkedText : uncheckText}}</text><switch checked="{{input[fieldName]}}" id="{{fieldName}}" @change="input" />
     </view>
   </view>
@@ -14,6 +14,7 @@
       input: {
         twoWay: true
       },
+      switchFlag: true,
       checkedText: {},
       uncheckText: {},
       title: {},
@@ -26,6 +27,10 @@
         if (index != -1) {
           this.fieldName = name.substring(index + 1, name.length);
         }
+      }
+
+      if (this.switchFlag == '0') {
+        this.switchFlag = false;
       }
     }
     methods = {
