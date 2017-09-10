@@ -42,10 +42,10 @@
     async onLoad ({mode, categoryId}) {
       this.mode = mode;
       if (mode == 'create') {
-        this.title = '新增公告';
+        this.title = '新增分类';
         this.input.show = true;
       } else if (mode == 'edit') {
-        this.title = '修改公告';
+        this.title = '修改分类';
         this.input = await goods.getInnerCategorieId(categoryId);
         this.input.show = this.input.isShow == 1;
       }
