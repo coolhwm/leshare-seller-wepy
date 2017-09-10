@@ -13,6 +13,8 @@ export default class Event {
   static COUPON_LIST_UPDATE = 'COUPON_LIST_UPDATE';
   // 公告列表更新事件
   static NOTICE_LIST_UPDATE = 'NOTICE_LIST_UPDATE';
+  // 分类列表更新事件
+  static CATEGORY_LIST_UPDATE = 'CATEGORY_LIST_UPDATE';
   // 配送列表更新事件
   static DELIVERY_LIST_UPDATE = 'DELIVERY_LIST_UPDATE';
   // 店铺信息更新

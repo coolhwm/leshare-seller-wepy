@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 import base from './base';
 import wepy from 'wepy';
 import Page from '../utils/Page';
@@ -12,6 +13,7 @@ export default class goods extends base {
     const url = `${this.baseUrl}/goods`;
     return new Page(url, this._processGoodsListItem.bind(this));
   }
+
   /**
    * 商品分类
    */
@@ -20,6 +22,13 @@ export default class goods extends base {
     return await this.get(url);
   }
 
+  /**
+   * 分类管理分页方法
+   */
+  static categoryPage() {
+    const url = `${this.baseUrl}/goods/inner_category`;
+    return new Page(url);
+  }
   /**
    *  新增商品分类
    */
@@ -31,6 +40,33 @@ export default class goods extends base {
       seq: 0
     }
     return await this.post(url, param);
+  }
+  /**
+   * 获取单条商品分类信息
+   */
+  static async getInnerCategorieId(categoryId) {
+    let list = await this.getInnerCategories();
+    return list.find((item) => item.id == categoryId);
+  }
+  /**
+  *  更新商品分类
+  */
+  static async updateInnerCategories(id, name) {
+    const url = `${this.baseUrl}/goods/inner_category`;
+    const param = {
+      name: name,
+      id: id,
+      pid: 0,
+      seq: 0
+    }
+    return await this.put(url, param);
+  }
+  /**
+   *  删除商品分类
+   */
+  static async removeInnerCategories(id) {
+    const url = `${this.baseUrl}/goods/inner_category/${id}`;
+    return await this.delete(url);
   }
 
   /**
