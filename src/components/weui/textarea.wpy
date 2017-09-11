@@ -2,7 +2,7 @@
   <view class="weui-cell">
     <view class="weui-cell__bd">
       <textarea class="weui-textarea" id="{{fieldName}}" value="{{input[fieldName]}}" placeholder="{{placeholder}}" style="height: 4.3em" maxlength="{{maxlength}}" @input="input" />
-      <view class="weui-textarea-counter">{{lenght[fieldName] ? lenght[fieldName] : 0}}/{{maxlength}}</view>
+      <view class="weui-textarea-counter">{{length[fieldName] ? length[fieldName] : input[fieldName].length ? input[fieldName].length : 0}}/{{maxlength}}</view>
     </view>
   </view>
 </template>
@@ -11,7 +11,7 @@
   import wepy from 'wepy'
   export default class Textarea extends wepy.component {
     data = {
-      lenght: {}
+      length: {}
     }
     props = {
       input: {
@@ -23,13 +23,17 @@
       },
       maxlength: {
         default: 50
-      }
+      },
+      defaultLength: 0
+    }
+    onLoad() {
+      console.log(`传入 = ` + this.defaultLength);
     }
     methods = {
       input(e) {
         const fieldName = e.currentTarget.id;
         const fieldValue = e.detail.value;
-        this.lenght[fieldName] = fieldValue.length;
+        this.length[fieldName] = fieldValue.length;
         this.input[fieldName] = fieldValue;
       }
     }

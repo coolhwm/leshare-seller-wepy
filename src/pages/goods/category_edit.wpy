@@ -28,7 +28,7 @@
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
 
-  export default class NoticeIndex extends wepy.page {
+  export default class CategoryEdit extends wepy.page {
     def = {
       init: false,
       mode: 'create'
@@ -47,7 +47,6 @@
       } else if (mode == 'edit') {
         this.title = '修改分类';
         this.input = await goods.getInnerCategorieId(categoryId);
-        this.input.show = this.input.isShow == 1;
       }
       this.loaded();
     };

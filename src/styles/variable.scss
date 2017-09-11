@@ -27,3 +27,5 @@ $border-dot: 1px dotted #EFF0F2;
 $color-bg-body: #F5F5F5;
 $color-bg-item: #FAFAFA;
 
+@function rpx($value) {@return $value * 1rpx;}
+
