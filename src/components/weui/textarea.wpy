@@ -23,11 +23,7 @@
       },
       maxlength: {
         default: 50
-      },
-      defaultLength: 0
-    }
-    onLoad() {
-      console.log(`传入 = ` + this.defaultLength);
+      }
     }
     methods = {
       input(e) {

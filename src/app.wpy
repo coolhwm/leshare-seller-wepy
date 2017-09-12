@@ -1,135 +1,135 @@
-<style lang="scss" >
-  @import "./styles/base";
-  @import "./styles/zent";
-  @import "./styles/weui-extend";
+<style lang="scss">
+    @import "./styles/base";
+    @import "./styles/zent";
+    @import "./styles/weui-extend";
 </style>
 
 <script>
-import wepy from 'wepy'
-import 'wepy-async-function'
+  import wepy from 'wepy'
+  import 'wepy-async-function'
 
-export default class extends wepy.app {
-  constructor () {
-    super()
-    // 注册中间件
-    this.use('requestfix');
-    this.use('promisify');
-    this.intercept('request', {
-      config (p) {
-        p.header = this.createAuthHeader();
-        return p;
-      }
-    });
-    this.intercept('uploadFile', {
-      config (p) {
-        p.header = this.createAuthHeader();
-        return p;
-      },
-      success (p) {
-        return p.data;
-      }
-    });
-  }
-
-  /**
-   * 构造权限头部
-   */
-  createAuthHeader () {
-    const loginCode = wepy.$instance.globalData.auth.login_code;
-    const shopId = wepy.$instance.globalData.auth.shop_id;
-    const header = {};
-    if (loginCode) {
-      header['login_code'] = loginCode;
-    }
-    if (shopId) {
-      header['shop_id'] = shopId;
-    }
-    return header;
-  }
-
-  async onLaunch() {
-    await this.syncStoreConfig('login_code');
-    await this.syncStoreConfig('shop_id');
-  }
-  async syncStoreConfig(key) {
-    const result = await wepy.getStorage({key: key});
-    const value = result.data;
-    if (value !== '') {
-      wepy.$instance.globalData.auth[key] = value;
-    }
-  }
-
-  globalData = {
-    auth: {},
-    shop: {},
-    // baseUrl: 'http://api.leshare.shop:9001/v1/seller'
-    baseUrl: 'https://api.leshare.shop/v1/seller'
-    // baseUrl: 'http://121.42.178.251:9999/v1/seller'
-    // baseUrl: 'http://192.168.31.124:9999/v1/seller'
-  }
-
-  config = {
-    pages: [
-      'pages/home/index',
-      'pages/shop/index',
-      'pages/shop/contact',
-      'pages/shop/status',
-      'pages/delivery/list',
-      'pages/delivery/edit',
-      'pages/goods/comment',
-      'pages/notice/list',
-      'pages/notice/edit',
-      'pages/order/index',
-      'pages/coupon/list',
-      'pages/coupon/edit',
-      'pages/customer/list',
-      'pages/shop/detail',
-      'pages/goods/list',
-      'pages/goods/category',
-      'pages/goods/category_edit',
-      'pages/home/home',
-      'pages/goods/edit',
-      'pages/goods/detail',
-      'pages/order/refund',
-      'pages/home/shops',
-      'pages/order/trace',
-      'pages/order/send',
-      'pages/order/reprice',
-      'pages/order/detail',
-      'pages/order/close',
-      'pages/order/remark'
-    ],
-    window: {
-      backgroundTextStyle: 'dark',
-      backgroundColor: '#F5F5F5',
-      navigationBarBackgroundColor: '#1296db'
-    },
-    tabBar: {
-      color: '#666666',
-      selectedColor: '#1296db',
-      borderStyle: 'white',
-      backgroundColor: '#FAFAFA',
-      list: [
-        {
-          iconPath: 'images/tab/manage.png',
-          selectedIconPath: 'images/tab/manage-active.png',
-          pagePath: 'pages/home/home',
-          text: '工作台'
-        },
-        {
-          iconPath: 'images/tab/order.png',
-          selectedIconPath: 'images/tab/order-active.png',
-          pagePath: 'pages/order/index',
-          text: '订单'
-        },
-        {
-          iconPath: 'images/tab/user.png',
-          selectedIconPath: 'images/tab/user-active.png',
-          pagePath: 'pages/shop/index',
-          text: '店铺'
+  export default class extends wepy.app {
+    constructor () {
+      super()
+      // 注册中间件
+      this.use('requestfix')
+      this.use('promisify')
+      this.intercept('request', {
+        config (p) {
+          p.header = this.createAuthHeader()
+          return p
         }
-      ]
+      })
+      this.intercept('uploadFile', {
+        config (p) {
+          p.header = this.createAuthHeader()
+          return p
+        },
+        success (p) {
+          return p.data
+        }
+      })
+    }
+
+    /**
+     * 构造权限头部
+     */
+    createAuthHeader () {
+      const loginCode = wepy.$instance.globalData.auth.login_code
+      const shopId = wepy.$instance.globalData.auth.shop_id
+      const header = {}
+      if (loginCode) {
+        header['login_code'] = loginCode
+      }
+      if (shopId) {
+        header['shop_id'] = shopId
+      }
+      return header
+    }
+
+    onLaunch () {
+      this.syncStoreConfig({'login_code': 'login_code'}, 'login_code')
+      this.syncStoreConfig({'shop_id': 'shop_id'}, 'shop_id')
+    }
+
+    syncStoreConfig (obj, key) {
+      const value = wepy.getStorageSync(obj[key])
+      if (value !== '') {
+        wepy.$instance.globalData.auth[key] = value
+      }
+    }
+
+    globalData = {
+      auth: {},
+      shop: {},
+      // baseUrl: 'http://api.leshare.shop:9001/v1/seller'
+      baseUrl: 'https://api.leshare.shop/v1/seller'
+      // baseUrl: 'http://121.42.178.251:9999/v1/seller'
+      // baseUrl: 'http://192.168.31.124:9999/v1/seller'
+    }
+
+    config = {
+      pages: [
+        'pages/home/index',
+        'pages/shop/index',
+        'pages/shop/contact',
+        'pages/shop/status',
+        'pages/delivery/list',
+        'pages/delivery/edit',
+        'pages/goods/comment',
+        'pages/notice/list',
+        'pages/notice/edit',
+        'pages/order/index',
+        'pages/coupon/list',
+        'pages/coupon/edit',
+        'pages/customer/list',
+        'pages/shop/detail',
+        'pages/goods/list',
+        'pages/goods/category',
+        'pages/goods/category_edit',
+        'pages/home/home',
+        'pages/goods/edit',
+        'pages/goods/detail',
+        'pages/order/refund',
+        'pages/home/shops',
+        'pages/order/trace',
+        'pages/order/send',
+        'pages/order/reprice',
+        'pages/order/detail',
+        'pages/order/close',
+        'pages/order/remark'
+      ],
+      window: {
+        backgroundTextStyle: 'dark',
+        backgroundColor: '#F5F5F5',
+        navigationBarBackgroundColor: '#1296db'
+      },
+      tabBar: {
+        color: '#666666',
+        selectedColor: '#1296db',
+        borderStyle: 'white',
+        backgroundColor: '#FAFAFA',
+        list: [
+          {
+            iconPath: 'images/tab/manage.png',
+            selectedIconPath: 'images/tab/manage-active.png',
+            pagePath: 'pages/home/home',
+            text: '工作台'
+          },
+          {
+            iconPath: 'images/tab/order.png',
+            selectedIconPath: 'images/tab/order-active.png',
+            pagePath: 'pages/order/index',
+            text: '订单'
+          },
+          {
+            iconPath: 'images/tab/user.png',
+            selectedIconPath: 'images/tab/user-active.png',
+            pagePath: 'pages/shop/index',
+            text: '店铺'
+          }
+        ]
+      }
     }
   }
-}
 </script>
