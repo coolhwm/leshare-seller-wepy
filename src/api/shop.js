@@ -1,12 +1,12 @@
-
 import base from './base';
+import wepy from 'wepy';
 
 export default class shop extends base {
 
   /**
    * 获取卖家的店铺列表
    */
-  static async list() {
+  static async list () {
     const url = `${this.baseUrl}/sellers/shop_list`;
     return await this.get(url);
   }
@@ -14,15 +14,38 @@ export default class shop extends base {
   /**
    * 获取店铺信息
    */
-  static async info() {
+  static async info () {
     const url = `${this.baseUrl}/shops`;
     return await this.get(url);
   }
 
   /**
+   * 更新店铺信息
+   */
+  static async updateShop (shop) {
+    const url = `${this.baseUrl}/shops`;
+
+    return await this.put(url, shop);
+  }
+
+  /**
+   * 上传图片
+   */
+  static async image(filePath) {
+    // const url = `${this.baseUrl}/images`;
+    const url = `${this.baseUrl}/images`;
+    const param = {
+      url,
+      filePath,
+      name: 'image'
+    }
+    return await wepy.uploadFile(param);
+  }
+
+  /**
    * 获取店铺状态
    */
-  static async getStatus() {
+  static async getStatus () {
     const url = `${this.baseUrl}/shops/status`;
     const data = await this.get(url);
     // 文本转换
@@ -36,11 +59,12 @@ export default class shop extends base {
   /**
    * 修改店铺状态
    */
-  static async setStatus(status) {
+  static async setStatus (status) {
     const url = `${this.baseUrl}/shops/status`;
     return this.put(url, status);
   }
-  static _processStatusText(data) {
+
+  static _processStatusText (data) {
     const status = data.status;
     const isOpen = data.open;
     if (status == 'NORMAL') {

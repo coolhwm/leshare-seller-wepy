@@ -5,57 +5,57 @@
 </style>
 
 <script>
-  import wepy from 'wepy'
-  import 'wepy-async-function'
+  import wepy from 'wepy';
+  import 'wepy-async-function';
 
   export default class extends wepy.app {
     constructor () {
-      super()
+      super();
       // 注册中间件
-      this.use('requestfix')
-      this.use('promisify')
+      this.use('requestfix');
+      this.use('promisify');
       this.intercept('request', {
         config (p) {
-          p.header = this.createAuthHeader()
-          return p
+          p.header = this.createAuthHeader();
+          return p;
         }
-      })
+      });
       this.intercept('uploadFile', {
         config (p) {
-          p.header = this.createAuthHeader()
-          return p
+          p.header = this.createAuthHeader();
+          return p;
         },
         success (p) {
-          return p.data
+          return p.data;
         }
-      })
+      });
     }
 
     /**
      * 构造权限头部
      */
     createAuthHeader () {
-      const loginCode = wepy.$instance.globalData.auth.login_code
-      const shopId = wepy.$instance.globalData.auth.shop_id
-      const header = {}
+      const loginCode = wepy.$instance.globalData.auth.login_code;
+      const shopId = wepy.$instance.globalData.auth.shop_id;
+      const header = {};
       if (loginCode) {
-        header['login_code'] = loginCode
+        header['login_code'] = loginCode;
       }
       if (shopId) {
-        header['shop_id'] = shopId
+        header['shop_id'] = shopId;
       }
-      return header
+      return header;
     }
 
     onLaunch () {
-      this.syncStoreConfig({'login_code': 'login_code'}, 'login_code')
-      this.syncStoreConfig({'shop_id': 'shop_id'}, 'shop_id')
+      this.syncStoreConfig({'login_code': 'login_code'}, 'login_code');
+      this.syncStoreConfig({'shop_id': 'shop_id'}, 'shop_id');
     }
 
     syncStoreConfig (obj, key) {
-      const value = wepy.getStorageSync(obj[key])
+      const value = wepy.getStorageSync(obj[key]);
       if (value !== '') {
-        wepy.$instance.globalData.auth[key] = value
+        wepy.$instance.globalData.auth[key] = value;
       }
     }
 
@@ -66,7 +66,8 @@
       baseUrl: 'https://api.leshare.shop/v1/seller'
       // baseUrl: 'http://121.42.178.251:9999/v1/seller'
       // baseUrl: 'http://192.168.31.124:9999/v1/seller'
-    }
+      // baseUrl: 'http://106.14.195.68:9999/v1/seller'
+    };
 
     config = {
       pages: [
@@ -84,6 +85,7 @@
         'pages/coupon/edit',
         'pages/customer/list',
         'pages/shop/detail',
+        'pages/shop/edit',
         'pages/goods/list',
         'pages/goods/category',
         'pages/goods/category_edit',
@@ -130,6 +132,6 @@
           }
         ]
       }
-    }
+    };
   }
 </script>
