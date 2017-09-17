@@ -7,12 +7,12 @@
 
   <!-- 照片轮播区域-->
   <view class="swiper-box" wx:if="{{pictures.length > 0}}" @tap="manage">
-    <swiper class="picture-swiper" indicator-dots="true" indicator-active-color="#EEE" >
+    <swiper class="{{otherClass}}" indicator-dots="true" indicator-active-color="#EEE" >
       <swiper-item wx:for="{{pictures}}" wx:key="index" wx:index="index">
         <image mode="aspectFill" src="{{item.url}}"></image>
       </swiper-item>
     </swiper>
-    <image class="photo-btn icon-xl"  @tap.stop="photo" src="/images/icons/camera.png"></image>
+    <image class="photo-btn icon-xl" style="top: {{top}}rpx;"  @tap.stop="photo" src="/images/icons/camera.png"></image>
   </view>
 
   <!--上传管理器-->
@@ -50,6 +50,12 @@
     props = {
       pictures: {
         twoWay: true
+      },
+      otherClass: {
+        default: 'picture-swiper'
+      },
+      top: {
+        default: '455'
       }
     };
     data = {
