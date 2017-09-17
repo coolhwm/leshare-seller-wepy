@@ -54,7 +54,7 @@
   import wepy from 'wepy';
   import OrderGoods from './goods';
   import OrderAction from './action';
-  import Tips from '../../utils/Tips';
+
   export default class OrderItem extends wepy.component {
     props = {
       order: {
