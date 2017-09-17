@@ -67,7 +67,7 @@
     <!--操作区域-->
     <view class="operation-box">
       <view class="operation-row row-around" >
-        <navigator class="column-center" url="../shop/detail">
+        <navigator class="column-center" url="../shop/edit">
           <image src="/images/home/shop.png"/>
           <text>店铺管理</text>
         </navigator>

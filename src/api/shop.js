@@ -12,6 +12,14 @@ export default class shop extends base {
   }
 
   /**
+   * 店铺分类
+   */
+  static async getShopCategories() {
+    const url = `${this.baseUrl}/shop_parent_categories/0`;
+    return await this.get(url);
+  }
+
+  /**
    * 获取店铺信息
    */
   static async info () {

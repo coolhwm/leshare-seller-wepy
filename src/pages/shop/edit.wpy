@@ -1,6 +1,7 @@
 <template>
+    <Tips/>
     <!--照片上传区域-->
-    <ImageUploader :pictures.sync="pictures" otherClass="shop-swiper" top="185" />
+    <ImageUploader :pictures.sync="pictures" otherClass="shop-swiper" top="260"/>
 
     <view class="hr"></view>
 
@@ -36,7 +37,7 @@
         </view>
     </view>
 
-    <ActionBarSave cancelText="放弃" okText="保存" @tap.user="save"/>
+    <ActionBar cancelText="返回" okText="保存" @tap.user="save"/>
 
     <!--下拉选择器-->
     <SliderSelector :display.sync="display"
@@ -50,10 +51,10 @@
   import wepy from 'wepy';
   import base from '../../mixins/base';
   import shop from '../../api/shop';
-  import goods from '../../api/goods';
+  import input from '../../mixins/input';
+  import FormTips from '../../components/weui/tips';
   import ImageUploader from '../../components/goods/image_uploader';
   import ActionBar from '../../components/common/action_bar';
-  import Event from '../../utils/Event';
   import Tips from '../../utils/Tips';
   import SliderSelector from '../../components/common/slider_selector';
 
@@ -66,7 +67,7 @@
     };
 
     async onLoad () {
-      let [shops, categories] = await Promise.all([shop.info(), goods.getInnerCategories()]);
+      const [shops, categories] = await Promise.all([shop.info(), shop.getShopCategories()]);
       this.shop = shops;
       this.categories = categories;
 
@@ -83,7 +84,7 @@
           this.shop.longitude = res.longitude;
           let address = res.address;
           if (address == '' || address == undefined) {
-            address = '请选择店铺店址';
+            address = '请选择店铺地址';
           }
           this.shop.address = address;
 
@@ -94,7 +95,13 @@
         this.shop[e.target.id] = e.detail.value;
       },
       async save () {
-        let data = {
+        if (this.shop.address === '请选择店铺地址') {
+          this.tips('店铺地址不能为空');
+
+          return;
+        }
+
+        const data = {
           images: []
         };
         for (let picture of this.pictures) {
@@ -108,7 +115,6 @@
         }
         this.shop.images = data.images;
         await shop.updateShop(this.shop);
-        Event.emit(Event.SHOP_INFO_UPDATE);
         await Tips.success('更新成功！');
         wepy.navigateBack();
       },
@@ -122,12 +128,12 @@
 
     events = {};
     components = {
+      Tips: FormTips,
       SliderSelector: SliderSelector,
       ImageUploader: ImageUploader,
-      ActionBarSave: ActionBar,
-      ActionBarEdit: ActionBar
+      ActionBar: ActionBar
     };
-    mixins = [base];
+    mixins = [base, input];
     config = {
       navigationBarTitleText: '修改店铺信息'
     };
@@ -138,11 +144,11 @@
     @import "../../styles/variable";
 
     .shop-swiper {
-        height: 375 rpx;
-        width: 750 rpx;
+        height: rpx(375);
+        width: rpx(750);
         image {
             width: 100%;
-            height: 375 rpx;
+            height: rpx(375);
         }
     }
 
