@@ -11,30 +11,30 @@
 </template>
 
 <script>
-  import wepy from 'wepy'
-  import goods from '../../api/goods'
-  import Tips from '../../utils/Tips'
-  import Event from '../../utils/Event'
+  import wepy from 'wepy';
+  import goods from '../../api/goods';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
 
   export default class NoticeItem extends wepy.component {
     props = {
       notice: {}
-    }
+    };
     methods = {
       async delete (categoryId) {
-        await Tips.confirm('确认删除该分类？')
-        await goods.removeInnerCategories(categoryId)
-        await Tips.success('删除成功')
-        Event.emit(Event.CATEGORY_LIST_UPDATE)
+        await Tips.confirm('确认删除该分类？');
+        await goods.removeInnerCategories(categoryId);
+        await Tips.success('删除成功');
+        Event.emit(Event.CATEGORY_LIST_UPDATE);
       },
       edit (categoryId) {
         const param = {
           mode: 'edit',
           categoryId
-        }
-        this.$root.$navigate('category_edit', param)
+        };
+        this.$root.$navigate('category_edit', param);
       }
-    }
+    };
   }
 </script>
 
