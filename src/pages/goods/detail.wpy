@@ -80,33 +80,42 @@
           });
           this.loaded();
         }, async () => {
-          Tips.loading();
           const param = {
-            count: 1,
+            count: 10,
             sizeType: ['compressed']
           };
           try {
             const {tempFilePaths} = await wepy.chooseImage(param);
-            console.info(tempFilePaths);
-            const result = await goods.image(tempFilePaths[0]);
-            const {url} = JSON.parse(result);
-            console.info(url);
-            console.info(result);
-            this.details.push({
-              type: 2,
-              content: url
-            });
+            Tips.loading();
+            for (let path of tempFilePaths) {
+              // const result = await goods.image(path);
+              // const {url} = JSON.parse(result);
+              this.details.push({
+                type: 2,
+                content: path
+              });
+            }
           } finally {
             this.loaded();
           }
         });
       },
       // 提交信息
-      submit() {
-        const data = this.details.map((item, index) => {
+      async submit() {
+        const data = [];
+        for (let index in this.details) {
+          Tips.loading();
+          // 序列处理
+          const item = this.details[index];
           item.sequence = index;
-          return item;
-        });
+          // 图片上传
+          if (item.type == 2 && item.content.substring(0, 6) == 'wxfile') {
+            const result = await goods.image(item.content);
+            const {url} = JSON.parse(result);
+            item.content = url;
+          }
+          data.push(item);
+        }
         Event.emit(Event.GOODS_DETAILS_UPDATE, data);
         wepy.navigateBack();
       }

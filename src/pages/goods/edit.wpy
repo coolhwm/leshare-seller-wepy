@@ -342,7 +342,7 @@
           {
             value: sku,
             method: 'maxlength',
-            param: 10,
+            param: 20,
             message: '型号名称太长'
           },
           {
