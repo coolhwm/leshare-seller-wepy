@@ -9,23 +9,23 @@
   import 'wepy-async-function';
 
   export default class extends wepy.app {
-    constructor () {
+    constructor() {
       super();
       // 注册中间件
       this.use('requestfix');
       this.use('promisify');
       this.intercept('request', {
-        config (p) {
+        config(p) {
           p.header = this.createAuthHeader();
           return p;
         }
       });
       this.intercept('uploadFile', {
-        config (p) {
+        config(p) {
           p.header = this.createAuthHeader();
           return p;
         },
-        success (p) {
+        success(p) {
           return p.data;
         }
       });
@@ -34,7 +34,7 @@
     /**
      * 构造权限头部
      */
-    createAuthHeader () {
+    createAuthHeader() {
       const loginCode = wepy.$instance.globalData.auth.login_code;
       const shopId = wepy.$instance.globalData.auth.shop_id;
       const header = {};
@@ -47,12 +47,12 @@
       return header;
     }
 
-    onLaunch () {
+    onLaunch() {
       this.syncStoreConfig({'login_code': 'login_code'}, 'login_code');
       this.syncStoreConfig({'shop_id': 'shop_id'}, 'shop_id');
     }
 
-    syncStoreConfig (obj, key) {
+    syncStoreConfig(obj, key) {
       const value = wepy.getStorageSync(obj[key]);
       if (value !== '') {
         wepy.$instance.globalData.auth[key] = value;
