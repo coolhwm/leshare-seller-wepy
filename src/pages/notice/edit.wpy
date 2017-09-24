@@ -4,7 +4,7 @@
     <view class="mt10"></view>
     <!--操作表单-->
     <view class="weui-cells-form">
-      <Switch title="发布公告" fieldName="show" :input.sync="input" />
+      <Switch title="发布公告" fieldName="show" :input.sync="input" switchFlag="true" />
       <Textarea fieldName="content" :input.sync="input"/>
     </view>
 
