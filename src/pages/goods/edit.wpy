@@ -276,6 +276,12 @@
           message: '商品标题太短'
         },
         {
+          value: this.input.name,
+          method: 'maxlength',
+          param: '30',
+          message: '商品标题太长'
+        },
+        {
           value: prices,
           method: 'required',
           message: '商品价格不能为空'
