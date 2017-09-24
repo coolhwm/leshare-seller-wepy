@@ -1,0 +1,73 @@
+<template>
+    <view class="category-box column">
+        <view class="category-item">
+          <view>
+            <text class="xl">{{deliver.name}}</text>
+            <text class="sm ml10">({{deliver.phone}})</text>
+          </view>
+          <view>
+              <view class="zan-btn zan-btn--small" @tap="delete({{deliver.id}})">删除</view>
+              <view class="zan-btn zan-btn--small  zan-btn--primary" @tap="edit({{deliver}})">编辑</view>
+          </view>
+        </view>
+    </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import delivery from '../../api/delivery';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+
+  export default class DeliverItem extends wepy.component {
+    props = {
+      deliver: {}
+    };
+    methods = {
+      async delete (id) {
+        await Tips.confirm('确认删除该配送员？');
+        await delivery.removeDeliver(id);
+        await Tips.success('删除成功');
+        Event.emit(Event.DELIVER_LIST_UPDATE);
+      },
+      edit (deliver) {
+        const param = {
+          mode: 'edit',
+          deliver: JSON.stringify(deliver)
+        };
+        this.$root.$navigate('deliver_edit', param);
+      }
+    };
+  }
+</script>
+
+<style lang="scss">
+    @import "../../styles/variable";
+
+    .category-box {
+        background-color: white;
+        border-bottom: $border;
+        border-top: $border;
+        padding: rpx(20);
+        margin-top: rpx(10);
+
+        .btn-box {
+            margin-top: rpx(10);
+            padding-top: rpx(20);
+            border-top: $border-dot;
+        }
+
+        .category-item {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            text {
+                line-height: rpx(60);
+                vertical-align: center;
+            }
+        }
+    }
+
+
+</style>

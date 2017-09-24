@@ -1,0 +1,101 @@
+<template>
+  <Tips />
+  <view class="container">
+    <view class="h-gap"></view>
+    <view class="weui-cells weui-cells-form">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">姓名</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="name" @input="input" value="{{input.name}}" placeholder="请输入配送员姓名"/>
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">电话</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="phone" type="number" maxlength="11" @input="input" value="{{input.phone}}" placeholder="请输入配送员电话"/>
+        </view>
+      </view>
+    </view>
+
+    <!--操作栏-->
+    <ActionBar @tap.user="submit" />
+  </view>
+</template>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>
+
+<script>
+  import wepy from 'wepy';
+  import delivery from '../../api/delivery';
+  import base from '../../mixins/base';
+  import input from '../../mixins/input';
+  import ActionBar from '../../components/common/action_bar';
+  import FormTips from '../../components/weui/tips';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+
+  export default class CouponEdit extends wepy.page {
+    def = {
+      mode: 'create',
+      init: false
+    }
+    data = {...this.def};
+    async onLoad ({deliver, mode}) {
+      this.mode = mode;
+      if (mode == 'edit') {
+        this.input = JSON.parse(deliver);
+      }
+      this.loaded();
+    };
+    methods = {
+      async submit() {
+        if (!this.validate()) {
+          return;
+        }
+        if (this.mode == 'create') {
+          await delivery.createDeliver(this.input)
+          await Tips.success('创建成功！');
+        } else if (this.mode == 'edit') {
+          await delivery.updateDeliver(this.input);
+          await Tips.success('编辑成功！');
+        }
+        Event.emit(Event.DELIVER_LIST_UPDATE);
+        wepy.navigateBack();
+      }
+    };
+    validate() {
+      const rules = [
+        {
+          value: this.input.name,
+          method: 'required',
+          message: '配送员姓名不能为空'
+        },
+        {
+          value: this.input.phone,
+          method: 'required',
+          message: '配送员电话不能为空'
+        },
+        {
+          value: this.input.phone,
+          method: 'tel',
+          message: '配送员电话格式错误'
+        }];
+      return this.check(rules);
+    }
+    components = {
+      ActionBar: ActionBar,
+      Tips: FormTips
+    };
+    mixins = [base, input];
+    config = {
+      navigationBarTitleText: '编辑配送员信息'
+    };
+  }
+</script>
