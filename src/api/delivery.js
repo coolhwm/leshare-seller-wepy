@@ -40,7 +40,12 @@ export default class delivery extends base {
    */
   static listDeliver () {
     const url = `${this.baseUrl}/deliver_user`;
-    return this.get(url);
+    return this.get(url).then(data => {
+      data.forEach(v => {
+        v.showText = `${v.name} (${v.phone})`
+      });
+      return data;
+    });
   }
 
   /**
