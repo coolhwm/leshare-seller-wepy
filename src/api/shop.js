@@ -81,4 +81,36 @@ export default class shop extends base {
       return '歇业中';
     }
   }
+
+  /**
+   * 配送员列表
+   */
+  static listReduce () {
+    const url = `${this.baseUrl}/reduce_rule`;
+    return this.get(url);
+  }
+
+  /**
+   * 创建
+   */
+  static createReduce(reduce) {
+    const url = `${this.baseUrl}/reduce_rule`;
+    return this.post(url, reduce);
+  }
+
+  /**
+   * 删除
+   */
+  static removeReduce(id) {
+    const url = `${this.baseUrl}/reduce_rule/${id}`;
+    return this.delete(url);
+  }
+
+  /**
+   * 更新
+   */
+  static updateReduce(reduce) {
+    const url = `${this.baseUrl}/reduce_rule`;
+    return this.put(url, reduce);
+  }
 }

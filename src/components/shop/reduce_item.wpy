@@ -1,0 +1,72 @@
+<template>
+    <view class="category-box column">
+        <view class="category-item">
+          <view>
+            <text>满 ￥{{reduce.limitPrice}} 减 ￥{{reduce.fee}}</text>
+          </view>
+          <view>
+              <view class="zan-btn zan-btn--small" @tap="delete({{reduce.id}})">删除</view>
+              <view class="zan-btn zan-btn--small  zan-btn--primary" @tap="edit({{reduce}})">编辑</view>
+          </view>
+        </view>
+    </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import shop from '../../api/shop';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+
+  export default class ReduceItem extends wepy.component {
+    props = {
+      reduce: {}
+    };
+    methods = {
+      async delete (id) {
+        await Tips.confirm('确认删除该优惠？');
+        await shop.removeReduce(id);
+        await Tips.success('删除成功');
+        Event.emit(Event.REDUCE_LIST_UPDATE);
+      },
+      edit (reduce) {
+        const param = {
+          mode: 'edit',
+          reduce: JSON.stringify(reduce)
+        };
+        this.$root.$navigate('reduce_edit', param);
+      }
+    };
+  }
+</script>
+
+<style lang="scss">
+    @import "../../styles/variable";
+
+    .category-box {
+        background-color: white;
+        border-bottom: $border;
+        border-top: $border;
+        padding: rpx(20);
+        margin-top: rpx(10);
+
+        .btn-box {
+            margin-top: rpx(10);
+            padding-top: rpx(20);
+            border-top: $border-dot;
+        }
+
+        .category-item {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            text {
+                line-height: rpx(60);
+                vertical-align: center;
+            }
+        }
+    }
+
+
+</style>
