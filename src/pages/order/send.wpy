@@ -10,7 +10,7 @@
     <!--发货表单-->
     <view class="weui-cells weui-cells_after-title form">
       <view class="weui-cell weui-cell_switch">
-        <view class="weui-cell__bd">物流发货</view>
+        <view class="weui-cell__bd">{{input.isMail ? '物流发货' : '同城配送'}}</view>
         <view class="weui-cell__ft">
           <switch checked="{{input.isMail}}" id="isMail" @change="input" />
         </view>
@@ -34,8 +34,20 @@
         <view class="weui-cell__ft">
         </view>
       </view>
-      <view class="weui-cell weui-cell_input row-center express-tips" wx:if="{{!input.isMail}}">
-        <text class="muted">无需发物流不用填写物流相关信息</text>
+
+      <view class="weui-cell weui-cell_input row-center express-tips" wx:if="{{!input.isMail && delivers.length < 1}}">
+        <text class="muted">尚未配置配送员</text>
+      </view>
+
+      <view class="weui-cell weui-cell_select" wx:if="{{!input.isMail && delivers.length > 0}}">
+        <view class="weui-cell__hd weui-cell__hd_in-select-after">
+          <view class="weui-label">配送员</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker @change="input" id="deliverIndex" range-key="showText" value="{{input.deliverIndex}}" range="{{delivers}}">
+            <view class="weui-select weui-select_in-select-after">{{seletedDeliver}}</view>
+          </picker>
+        </view>
       </view>
     </view>
 
@@ -52,6 +64,7 @@
 <script>
   import wepy from 'wepy';
   import order from '../../api/order';
+  import delivery from '../../api/delivery';
   import input from '../../mixins/input';
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
@@ -73,13 +86,18 @@
       },
       init: false,
       selectDisplay: false,
-      company: {}
+      company: {},
+      delivers: []
     };
     data = {...this.def};
     async onLoad (options) {
       const orderId = options.orderId;
       this.order = await order.detail(orderId);
       this.address = this.order.receiveAddress;
+      this.delivers = await delivery.listDeliver();
+      if (this.delivers.length > 0) {
+        this.input.deliverIndex = 0;
+      }
       this.init = true;
       this.$apply();
       Tips.loaded();
@@ -92,10 +110,11 @@
       // 提交表单
       async submit() {
         const orderId = this.order.orderId;
-        const expressType = this.company.name;
-        const telPhone = this.company.tel;
-        const expressNo = this.input.mailNo;
+        let expressType, expressNo, telPhone, note;
         if (this.input.isMail) {
+          expressType = this.company.name;
+          expressNo = this.input.mailNo;
+          telPhone = this.company.tel;
           if (this.isEmpty(expressType)) {
             this.tips('请选择快递公司');
             return;
@@ -104,9 +123,19 @@
             this.tips('请填写快递单号');
             return;
           }
+        } else {
+          if (this.delivers.length > 0 && this.input.deliverIndex == null) {
+            this.tips('请选择配送员');
+          }
+          if (this.input.deliverIndex) {
+            const deliver = this.delivers[this.input.deliverIndex];
+            telPhone = deliver.phone;
+            note = deliver.name;
+            expressType = '同城配送';
+          }
         }
         await Tips.confirm('是否确认发货？');
-        const param = {expressType, telPhone, expressNo};
+        const param = {expressType, telPhone, expressNo, note};
         await order.send(orderId, param);
         Event.emit(Event.ORDER_LIST_UPDATE);
         await Tips.success('发货成功！');
@@ -140,6 +169,13 @@
       // 计算主面板是否显示
       panelDisplay() {
         return this.init && !this.selectDisplay;
+      },
+      seletedDeliver() {
+        if (this.input.deliverIndex != null) {
+          return this.delivers[this.input.deliverIndex].showText;
+        } else {
+          return '请选择';
+        }
       }
     }
     mixins = [input];

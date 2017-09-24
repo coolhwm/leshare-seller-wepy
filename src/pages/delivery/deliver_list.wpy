@@ -1,0 +1,68 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <!--列表展现-->
+    <repeat for="{{list}}" key="index" index="index" item="item">
+      <DeliverItem :deliver.sync="item" />
+    </repeat>
+
+    <!--操作栏-->
+    <ActionBar @tap.user="add" okText="新增配送员" cancelText="返回" />
+
+    <!--占位符-->
+    <Placeholder :show.sync="empty" message="尚未配置配送员"/>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import delivery from '../../api/delivery';
+  import Placeholder from '../../components/common/placeholder';
+  import ActionBar from '../../components/common/action_bar';
+  import Event from '../../utils/Event';
+  import DeliverItem from '../../components/delivery/deliver_item';
+
+  export default class DeliverList extends wepy.page {
+    def = {
+      init: false,
+      list: [
+      ],
+      empty: null
+    }
+    data = {...this.def};
+    async onLoad () {
+      await this.doLoad();
+      Event.listen(Event.DELIVER_LIST_UPDATE, this.doLoad.bind(this), this);
+    };
+    async doLoad() {
+      this.list = await delivery.listDeliver();
+      this.empty = this.list.length < 1;
+      this.loaded();
+    }
+    async onPullDownRefresh () {
+      await this.doLoad();
+    }
+    methods = {
+      add() {
+        this.$navigate('deliver_edit?mode=create');
+      }
+    }
+    computed = {
+    }
+    events = {};
+    components = {
+      Placeholder: Placeholder,
+      ActionBar: ActionBar,
+      DeliverItem: DeliverItem
+    };
+    mixins = [base];
+    config = {
+      navigationBarTitleText: '配送员管理',
+      enablePullDownRefresh: true
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>
