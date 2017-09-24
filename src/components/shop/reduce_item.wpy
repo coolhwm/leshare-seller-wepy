@@ -2,7 +2,7 @@
     <view class="category-box column">
         <view class="category-item">
           <view>
-            <text>满 {{reduce.limitPrice}} 减 {{reduce.fee}}</text>
+            <text class="lg">满 {{reduce.limitPrice}} 减 {{reduce.fee}}</text>
           </view>
           <view>
               <view class="zan-btn zan-btn--small" @tap="delete({{reduce.id}})">删除</view>

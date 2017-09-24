@@ -37,11 +37,10 @@
       this.list = await shop.listReduce();
       this.empty = this.list.length < 1;
       this.loaded();
-      wepy.startPullDownRefresh();
     }
     async onPullDownRefresh () {
       await this.doLoad();
-      wepy.startPullDownRefresh();
+      wepy.stopPullDownRefresh();
     }
     methods = {
       add() {
