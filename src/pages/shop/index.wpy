@@ -14,6 +14,10 @@
 
       <NavDelivery title="运费模板" url="../delivery/list" />
 
+      <NavDeliver title="配送员管理" url="../delivery/deliver_list" />
+
+      <NavReduce title="优惠管理" url="../shop/reduce_list" />
+
       <NavCategory title="分类管理" url="../goods/category" />
 
       <NavShops title="切换店铺" @tap.user="shops" />
@@ -21,7 +25,7 @@
       <NavLogout title="切换账号" @tap.user="logout" />
     </view>
 
-    <Copyright buttom="true" />
+    <Copyright />
 
   </view>
 
@@ -74,6 +78,8 @@
       NavStatus: Navigator,
       NavNotice: Navigator,
       NavDelivery: Navigator,
+      NavDeliver: Navigator,
+      NavReduce: Navigator,
       NavCategory: Navigator,
       NavShops: Navigator,
       NavLogout: Navigator,

@@ -1,0 +1,118 @@
+<template>
+  <Tips />
+  <view class="container">
+    <view class="h-gap"></view>
+    <view class="weui-cells weui-cells-form">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">订单金额</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="limitPrice" @input="input" value="{{input.limitPrice}}" placeholder="优惠要求订单金额"/>
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">减免金额</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="fee" type="digit" @input="input" value="{{input.fee}}" placeholder="优惠减免金额"/>
+        </view>
+      </view>
+    </view>
+
+    <!--操作栏-->
+    <ActionBar @tap.user="submit" />
+  </view>
+</template>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>
+
+<script>
+  import wepy from 'wepy';
+  import shop from '../../api/shop';
+  import base from '../../mixins/base';
+  import input from '../../mixins/input';
+  import ActionBar from '../../components/common/action_bar';
+  import FormTips from '../../components/weui/tips';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+
+  export default class CouponEdit extends wepy.page {
+    def = {
+      mode: 'create',
+      init: false
+    }
+    data = {...this.def};
+    async onLoad ({reduce, mode}) {
+      this.mode = mode;
+      if (mode == 'edit') {
+        this.input = JSON.parse(reduce);
+      }
+      this.loaded();
+    };
+    methods = {
+      async submit() {
+        if (!this.validate()) {
+          return;
+        }
+        if (this.mode == 'create') {
+          await shop.createReduce(this.input)
+          await Tips.success('创建成功！');
+        } else if (this.mode == 'edit') {
+          await shop.updateReduce(this.input);
+          await Tips.success('编辑成功！');
+        }
+        Event.emit(Event.REDUCE_LIST_UPDATE);
+        wepy.navigateBack();
+      }
+    };
+    validate() {
+      const rules = [
+        {
+          value: this.input.limitPrice,
+          method: 'required',
+          message: '订单金额不能为空'
+        },
+        {
+          value: this.input.fee,
+          method: 'required',
+          message: '减免金额不能为空'
+        },
+        {
+          value: this.input.limitPrice,
+          method: 'number',
+          message: '订单金额必须为数字'
+        },
+        {
+          value: this.input.fee,
+          method: 'number',
+          message: '减免金额必须为数字'
+        },
+        {
+          value: this.input.fee,
+          method: 'min',
+          param: '0.01',
+          message: '减免金额不能0或负数'
+        },
+        {
+          value: this.input.fee,
+          method: 'max',
+          param: this.input.limitPrice,
+          message: '减免金额不能大于订单金额'
+        }];
+      return this.check(rules);
+    }
+    components = {
+      ActionBar: ActionBar,
+      Tips: FormTips
+    };
+    mixins = [base, input];
+    config = {
+      navigationBarTitleText: '编辑优惠策略'
+    };
+  }
+</script>
