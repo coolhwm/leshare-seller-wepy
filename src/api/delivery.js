@@ -34,4 +34,36 @@ export default class delivery extends base {
     const url = `${this.baseUrl}/delivery/${id}`;
     return this.put(url, delivery);
   }
+
+  /**
+   * 配送员列表
+   */
+  static listDeliver () {
+    const url = `${this.baseUrl}/deliver_user`;
+    return this.get(url);
+  }
+
+  /**
+   * 创建
+   */
+  static createDeliver(deliver) {
+    const url = `${this.baseUrl}/deliver_user`;
+    return this.post(url, deliver);
+  }
+
+  /**
+   * 删除
+   */
+  static removeDeliver(id) {
+    const url = `${this.baseUrl}/deliver_user/${id}`;
+    return this.delete(url);
+  }
+
+  /**
+   * 更新
+   */
+  static updateDeliver(deliver) {
+    const url = `${this.baseUrl}/deliver_user`;
+    return this.put(url, deliver);
+  }
 }
