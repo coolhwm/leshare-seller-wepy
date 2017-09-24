@@ -1,19 +1,27 @@
 <template>
-  <Tips />
-  <view class="container" wx:if="{{init}}">
-    <view class="mt10"></view>
-    <!--表单-->
-    <view class="weui-cells-form">
-      <Picker :range="type" title="配送方式" fieldName="type" :input.sync="input" @input.user="seletedType"/>
-      <InputText_name title="模板名称" :input.sync="input"/>
-      <InputText_limitPrice title="起送价格" :input.sync="input" type="digit"/>
-      <InputText_fee title="运费" :input.sync="input" type="digit"/>
-      <InputText_location title="配送范围" :input.sync="input"/>
-    </view>
+    <Tips/>
+    <view class="container" wx:if="{{init}}">
+        <map id="map" longitude="{{longitude}}" latitude="{{latitude}}"
+             markers="{{markers}}"
+             scale="14" circles="{{circles}}" style="width: 100%; height: 520rpx;"></map>
 
-    <!--操作栏-->
-    <ActionBar @tap.user="submit" />
-  </view>
+        <!--表单-->
+        <view class="weui-cells-form">
+            <Picker :range="type" title="配送方式" fieldName="type" :input.sync="input" @input.user="seletedType"/>
+            <InputText_name title="模板名称" :input.sync="input"/>
+            <InputText_limitPrice title="起送价格" :input.sync="input" type="digit"/>
+            <InputText_fee title="运费" :input.sync="input" type="digit"/>
+
+            <view>请设置配送范围:</view>
+            <InputText_one title="一级半径" :input.sync="input" type="number"
+                           unit="单位(米)" fieldName="radius1" @input.user="radius"/>
+            <InputText_two title="二级半径" :input.sync="input" type="number"
+                           unit="单位(米)" fieldName="radius2" @input.user="radius"/>
+        </view>
+
+        <!--操作栏-->
+        <ActionBar @tap.user="submit"/>
+    </view>
 </template>
 
 <script>
@@ -36,24 +44,98 @@
         {value: 'SELF', key: '到店自提'},
         {value: 'CITY', key: '同城配送'},
         {value: 'EXPRESS', key: '快递配送'}
-      ]
-    }
+      ],
+      latitude: 39.9088600000,
+      longitude: 116.3973900000,
+      markers: [],
+      circles: [{
+        latitude: 39.9088600000,
+        longitude: 116.3973900000,
+        radius: 0,
+        color: '#ddd',
+        fillColor: '#33CCFF88'
+      }, {
+        latitude: 39.9088600000,
+        longitude: 116.3973900000,
+        radius: 0,
+        color: '#ddd',
+        fillColor: '#7cb5ec88'
+      }]
+    };
     data = {...this.def};
-    onLoad ({mode, deliveryId}, {preload}) {
+
+    async onLoad({mode, deliveryId}, {preload}) {
       this.mode = mode;
+
+      const param = {
+        type: 'wgs84'
+      };
+      let res = await wepy.getLocation(param);
+      let markers = [{
+        iconPath: '../../images/icons/address_red.png',
+        id: 0,
+        latitude: 39.9088600000,
+        longitude: 116.3973900000,
+        width: 30,
+        height: 30
+      }];
+
+      if (res) {
+        this.latitude = res.latitude;
+        this.longitude = res.longitude;
+        markers[0].latitude = res.latitude;
+        markers[0].longitude = res.longitude;
+
+        this.markers = markers;
+      }
       if (mode == 'edit') {
         this.input = preload.delivery;
+
+        this.input['radius1'] = 300;
+        this.input['radius2'] = 500;
+        this.circles[0].latitude = res.latitude;
+        this.circles[0].longitude = res.longitude;
+        this.circles[0].radius = 300;
+        this.circles[1].latitude = res.latitude;
+        this.circles[1].longitude = res.longitude;
+        this.circles[1].radius = 500;
       }
+
       this.loaded();
     };
+
     methods = {
+      radius(value, id) {
+        let circle = {
+          latitude: this.latitude,
+          longitude: this.longitude,
+          radius: Number.parseInt(value),
+          color: '#ddd',
+          fillColor: '#33CCFF88'
+        };
+
+        if (id == 'radius1') {
+          this.input[id] = Number.parseInt(value);
+          this.circles[0] = circle;
+        } else if (id == 'radius2') {
+          this.input[id] = Number.parseInt(value);
+          circle.fillColor = '#7cb5ec88';
+          this.circles[1] = circle;
+        }
+
+        this.$apply();
+      },
       seletedType(data) {
         this.input.name = data.key;
       },
       async submit() {
+        if (!this.validateRaiuds()) {
+          return;
+        }
         if (!this.validate()) {
           return;
         }
+
         if (this.mode == 'edit') {
           await delivery.update(this.input.id, this.input);
           await Tips.success('更新成功！');
@@ -65,6 +147,36 @@
         wepy.navigateBack();
       }
     };
+
+    validateRaiuds() {
+      let flag = true;
+      if (this.input['radius1'] != '') {
+        if (!Number.isInteger(this.input['radius1'])) {
+          this.tips('半径只能为数字');
+
+          flag = false;
+        }
+      }
+
+      if (this.input['radius2'] != '') {
+        if (!Number.isInteger(this.input['radius1'])) {
+          this.tips('半径只能为数字');
+
+          flag = false;
+        }
+      }
+
+      if (this.input['radius1'] != '' && this.input['radius2'] != '') {
+        if (this.input['radius2'] < this.input['radius1']) {
+          this.tips('二级半径不能小于一级半径');
+
+          flag = false;
+        }
+      }
+
+      return flag;
+    }
+
     validate() {
       const rules = [
         {
@@ -130,6 +242,7 @@
       ];
       return this.check(rules);
     }
+
     events = {};
     components = {
       Tips: FormTips,
@@ -138,7 +251,8 @@
       InputText_name: InputText,
       InputText_limitPrice: InputText,
       InputText_fee: InputText,
-      InputText_location: InputText
+      InputText_one: InputText,
+      InputText_two: InputText
     };
     mixins = [base, input];
     config = {
@@ -148,5 +262,5 @@
 </script>
 
 <style lang="scss">
-  @import "../../styles/variable";
+    @import "../../styles/variable";
 </style>
