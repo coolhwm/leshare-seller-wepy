@@ -3,8 +3,8 @@
   <view class="container" wx:if="{{init}}">
     <view class="mt10"></view>
     <view class="weui-cells-form">
-      <Switch_status title="营业状态"  :input.sync="input" uncheckText="歇业中" checkedText="营业中"/>
-      <Switch_day title="全天营业"  :input.sync="input" uncheckText="时段营业" checkedText="全天营业"/>
+      <Switch_status title="营业状态"  :input.sync="input" uncheckText="歇业中" checkedText="营业中" switchFlag="true" />
+      <Switch_day title="全天营业"  :input.sync="input" uncheckText="时段营业" checkedText="全天营业" switchFlag="true" />
     </view>
 
     <view class="mt10"></view>
