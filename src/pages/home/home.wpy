@@ -111,6 +111,7 @@
   import base from '../../mixins/base';
   import Event from '../../utils/Event';
   import Tips from '../../utils/Tips';
+  import WxUtils from '../../utils/WxUtils';
 
   export default class HomeIndex extends wepy.page {
     def = {
@@ -122,6 +123,7 @@
     }
     data = {...this.def};
     async onLoad () {
+      WxUtils.checkSDK();
       this.shop = await shop.info();
       await this.reload();
     };

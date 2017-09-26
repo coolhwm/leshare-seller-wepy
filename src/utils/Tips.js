@@ -120,10 +120,14 @@ export default class Tips {
       return;
     }
     this.isLoading = true;
-    wx.showLoading({
-      title: title,
-      mask: true
-    });
+    if (wx.showLoading) {
+      wx.showLoading({
+        title: title,
+        mask: true
+      });
+    } else {
+      wx.showNavigationBarLoading();
+    }
   }
 
   /**
@@ -132,7 +136,11 @@ export default class Tips {
   static loaded () {
     if (this.isLoading) {
       this.isLoading = false
-      wx.hideLoading()
+      if (wx.hideLoading) {
+        wx.hideLoading();
+      } else {
+        wx.hideNavigationBarLoading();
+      }
     }
   }
 
