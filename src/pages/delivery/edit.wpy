@@ -2,8 +2,8 @@
     <Tips/>
     <view class="container" wx:if="{{init}}">
         <map id="map" longitude="{{longitude}}" latitude="{{latitude}}"
-             markers="{{markers}}"
-             scale="14" circles="{{circles}}" style="width: 100%; height: 520rpx;"></map>
+             markers="{{markers}}" wx:if="{{input.name=='同城配送'}}"
+             scale="13" circles="{{circles}}" style="width: 100%; height: 500rpx;"></map>
 
         <!--表单-->
         <view class="weui-cells-form">
@@ -12,11 +12,31 @@
             <InputText_limitPrice title="起送价格" :input.sync="input" type="digit"/>
             <InputText_fee title="运费" :input.sync="input" type="digit"/>
 
-            <view>请设置配送范围:</view>
-            <InputText_one title="一级半径" :input.sync="input" type="number"
-                           unit="单位(米)" fieldName="radius1" @input.user="radius"/>
-            <InputText_two title="二级半径" :input.sync="input" type="number"
-                           unit="单位(米)" fieldName="radius2" @input.user="radius"/>
+            <view wx:if="{{input.name=='同城配送'}}">
+                <view style="display: flex;">
+                    <view>
+                        <InputText_lv_one_from title="起始距离" placeholder="0" :input.sync="input" type="number"
+                                               level="1" unit="米" fieldName="fromLimit1" @input.user="radius"/>
+                    </view>
+                    <view>
+                        <InputText_lv_one_to title="结束距离" placeholder="一级" :input.sync="input" type="number"
+                                             level="1" unit="米" fieldName="toLimit1" @input.user="radius"/>
+                    </view>
+                </view>
+                <view style="display: flex;">
+                    <view>
+                        <InputText_lv_two_from title="起始距离" placeholder="二级" :input.sync="input" type="number"
+                                               level="2" unit="米" fieldName="fromLimit2" @input.user="radius"/>
+                    </view>
+                    <view>
+                        <InputText_lv_two_to title="结束距离" placeholder="二级" :input.sync="input" type="number"
+                                             level="2" unit="米" fieldName="toLimit2" @input.user="radius"/>
+                    </view>
+                </view>
+            </view>
+            <view wx:else>
+                <InputText_location title="配送范围" :input.sync="input"/>
+            </view>
         </view>
 
         <!--操作栏-->
@@ -29,6 +49,7 @@
   import base from '../../mixins/base';
   import input from '../../mixins/input';
   import delivery from '../../api/delivery';
+  import shop from '../../api/shop';
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
   import FormTips from '../../components/weui/tips';
@@ -53,13 +74,13 @@
         longitude: 116.3973900000,
         radius: 0,
         color: '#ddd',
-        fillColor: '#33CCFF88'
+        fillColor: '#33CCFF99'
       }, {
         latitude: 39.9088600000,
         longitude: 116.3973900000,
         radius: 0,
         color: '#ddd',
-        fillColor: '#7cb5ec88'
+        fillColor: '#7cb5ec99'
       }]
     };
     data = {...this.def};
@@ -67,61 +88,74 @@
     async onLoad({mode, deliveryId}, {preload}) {
       this.mode = mode;
 
-      const param = {
-        type: 'wgs84'
-      };
-      let res = await wepy.getLocation(param);
+      let shopInfo = await shop.info();
+
       let markers = [{
         iconPath: '../../images/icons/address_red.png',
         id: 0,
-        latitude: 39.9088600000,
-        longitude: 116.3973900000,
+        latitude: shopInfo.latitude,
+        longitude: shopInfo.longitude,
         width: 30,
         height: 30
       }];
 
-      if (res) {
-        this.latitude = res.latitude;
-        this.longitude = res.longitude;
-        markers[0].latitude = res.latitude;
-        markers[0].longitude = res.longitude;
+      this.latitude = shopInfo.latitude;
+      this.longitude = shopInfo.longitude;
 
-        this.markers = markers;
-      }
+      this.markers = markers;
       if (mode == 'edit') {
         this.input = preload.delivery;
+        this.input.toLimit1 = 1500;
+        this.input.fromLimit2 = 1500;
+        this.input.toLimit2 = 2500;
 
-        this.input['radius1'] = 300;
-        this.input['radius2'] = 500;
-        this.circles[0].latitude = res.latitude;
-        this.circles[0].longitude = res.longitude;
-        this.circles[0].radius = 300;
-        this.circles[1].latitude = res.latitude;
-        this.circles[1].longitude = res.longitude;
-        this.circles[1].radius = 500;
+        this.circles[0].latitude = shopInfo.latitude;
+        this.circles[0].longitude = shopInfo.longitude;
+        this.circles[0].radius = this.getValue('toLimit1');
+        this.circles[1].latitude = shopInfo.latitude;
+        this.circles[1].longitude = shopInfo.longitude;
+        this.circles[1].radius = this.getValue('toLimit2');
       }
 
       this.loaded();
     };
 
+    getValue(id) {
+      if (this.input[id] > 0) {
+        return Number.parseInt(this.input[id]);
+      } else {
+        return 0;
+      }
+    }
+
+    limitRadius(id) {
+      let toLimit1 = this.getValue('toLimit1');
+      let toLimit2 = this.getValue('toLimit2');
+      if (id == 'toLimit1') {
+        if (toLimit2 > 0) {
+          this.input['fromLimit2'] = toLimit1;
+        }
+      }
+      if (id == 'toLimit2') {
+        this.input['fromLimit2'] = toLimit1;
+      }
+    }
+
     methods = {
-      radius(value, id) {
+      radius(value, id, level) {
+        const colors = ['#33CCFF99', '#7cb5ec99'];
         let circle = {
           latitude: this.latitude,
           longitude: this.longitude,
-          radius: Number.parseInt(value),
+          radius: this.getValue('toLimit' + level),
           color: '#ddd',
-          fillColor: '#33CCFF88'
+          fillColor: colors[level - 1]
         };
 
-        if (id == 'radius1') {
-          this.input[id] = Number.parseInt(value);
-          this.circles[0] = circle;
-        } else if (id == 'radius2') {
-          this.input[id] = Number.parseInt(value);
-          circle.fillColor = '#7cb5ec88';
-          this.circles[1] = circle;
-        }
+        this.input[id] = Number.parseInt(value);
+        this.limitRadius(id);
+
+        this.circles[level - 1] = circle;
 
         this.$apply();
       },
@@ -129,7 +163,9 @@
         this.input.name = data.key;
       },
       async submit() {
-        if (!this.validateRaiuds()) {
+        if (this.getValue('toLimit2') < this.getValue('fromLimit2')) {
+          this.tips('结束距离不能小于开始距离');
+
           return;
         }
         if (!this.validate()) {
@@ -140,6 +176,7 @@
           await delivery.update(this.input.id, this.input);
           await Tips.success('更新成功！');
         } else {
+          this.input.location = '县城';
           await delivery.create(this.input);
           await Tips.success('创建成功！');
         }
@@ -147,35 +184,6 @@
         wepy.navigateBack();
       }
     };
-
-    validateRaiuds() {
-      let flag = true;
-      if (this.input['radius1'] != '') {
-        if (!Number.isInteger(this.input['radius1'])) {
-          this.tips('半径只能为数字');
-
-          flag = false;
-        }
-      }
-
-      if (this.input['radius2'] != '') {
-        if (!Number.isInteger(this.input['radius1'])) {
-          this.tips('半径只能为数字');
-
-          flag = false;
-        }
-      }
-
-      if (this.input['radius1'] != '' && this.input['radius2'] != '') {
-        if (this.input['radius2'] < this.input['radius1']) {
-          this.tips('二级半径不能小于一级半径');
-
-          flag = false;
-        }
-      }
-
-      return flag;
-    }
 
     validate() {
       const rules = [
@@ -238,6 +246,16 @@
           method: 'max',
           param: '10000',
           message: '运费价格太高'
+        },
+        {
+          value: this.input.toLimit1,
+          method: 'number',
+          message: '结束距离只能为数字'
+        },
+        {
+          value: this.input.toLimit2,
+          method: 'number',
+          message: '结束距离只能为数字'
         }
       ];
       return this.check(rules);
@@ -251,8 +269,11 @@
       InputText_name: InputText,
       InputText_limitPrice: InputText,
       InputText_fee: InputText,
-      InputText_one: InputText,
-      InputText_two: InputText
+      InputText_location: InputText,
+      InputText_lv_one_from: InputText,
+      InputText_lv_one_to: InputText,
+      InputText_lv_two_from: InputText,
+      InputText_lv_two_to: InputText
     };
     mixins = [base, input];
     config = {

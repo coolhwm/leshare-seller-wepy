@@ -5,10 +5,11 @@
         </view>
         <view class="weui-cell__bd">
             <input class="weui-input" id="{{fieldName}}" @input="input" value="{{input[fieldName]}}"
+                   disabled="{{fieldName=='fromLimit1' || fieldName=='fromLimit2'}}"
                    type="{{type}}" placeholder="{{placeholder}}"/>
         </view>
         <view class="weui-cell__ft">
-            {{unit}}
+
         </view>
     </view>
 </template>
@@ -29,7 +30,10 @@
         default: ''
       },
       fieldName: {},
-      placeholder: {}
+      placeholder: {},
+      level: {
+        default: 1
+      }
     };
 
     onLoad() {
@@ -50,7 +54,7 @@
         const value = e.detail.value;
         const id = e.target.id;
         this.input[this.fieldName] = value;
-        this.$emit('input', value, id);
+        this.$emit('input', value, id, this.level);
       }
     };
     events = {};
