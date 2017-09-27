@@ -20,12 +20,27 @@
       </view>
     </view>
 
+    <!--商品区域-->
+
     <view class="order-goods-list-container" @tap="detail({{order.orderId}})">
+      <repeat for="{{order.orderGoodsInfos}}" key="goodsId" index="index" item="item">
+        <view class="{{!order.orderId || index == 0 || expand[order.orderId] ? '' : 'order-goods-fold'}}">
+          <OrderGoods :goods="item"></OrderGoods>
+          <view class="hr" />
+        </view>
+      </repeat>
+      <view wx:if="{{order.orderId && order.orderGoodsInfos.length > 1}}" class="goods-fold-btn row-center" @tap.stop="expand({{order.orderId}})">
+        <text class="muted" wx:if="{{!expand[order.orderId]}}">查看全部 {{order.orderGoodsInfos.length}} 件商品</text>
+        <text class="muted" wx:else>收起商品</text>
+      </view>
+    </view>
+
+    <!--<view class="order-goods-list-container" @tap="detail({{order.orderId}})">
       <repeat for="{{order.orderGoodsInfos}}" key="goodsId" index="index" item="item">
         <OrderGoods :goods="item"></OrderGoods>
         <view class="hr" />
       </repeat>
-    </view>
+    </view>-->
 
 
     <!--汇总信息-->
@@ -64,7 +79,18 @@
         default: true
       }
     };
+    data = {
+      expand: {},
+      shopName: {}
+    };
     methods = {
+      /**
+       * 商品展开收缩
+       */
+      expand(orderId) {
+        orderId = orderId == null ? 0 : orderId;
+        this.expand[orderId] = !this.expand[orderId];
+      },
       trace(orderId) {
         this.$root.$navigate('trace', {orderId});
       },
@@ -134,5 +160,14 @@
     border-top: $border;
     height: 90rpx;
     padding-right: 10rpx;
+  }
+  .order-goods-fold{
+    display: none;
+  }
+
+  .goods-fold-btn{
+    background-color: $color-bg-item;
+    padding-top: 5rpx;
+    padding-bottom: 5rpx;
   }
 </style>
