@@ -1,6 +1,5 @@
 @import "variable";
 
-//******全局页面******/
 page{
   height: 100%;
   background-color: $color-bg-body;
@@ -34,6 +33,25 @@ text, view {
 button[type="primary"]{
   background-color: $color-primary;
 }
+button.pain-btn[open-type="share"]{
+  background-color: transparent;
+  line-height: normal;
+  padding: 0;
+  margin: 0;
+}
+button{
+  margin:0;
+}
+.weui-btn.mini-btn{
+  margin-top: 0;
+}
+button.pain-btn[open-type="share"]::after {
+  border:none;
+}
+button[plain]{
+  border:none;
+}
+
 .button-hover[type="primary"]{
   background-color: $color-primary-darken;
 }
@@ -50,6 +68,7 @@ text.xxl{font-size: $text-xxl}
 text.lg{font-size: $text-lg}
 text.sm{font-size: $text-sm}
 text.xs{font-size: $text-xs}
+text.xxs{font-size: $text-xxs}
 
 text.inline{
   text-overflow: ellipsis;
@@ -157,4 +176,38 @@ view.bg-white{background-color: white}
   border-bottom: $border;
   margin-top: 10rpx;
   overflow: hidden;
+}
+.label {
+  display: inline-block;
+  font-size: 12px;
+  height: 28px;
+  line-height: 28px;
+  color: #333;
+  border: 1rpx solid #999;
+  padding: 0 10px;
+  border-radius: 2px;
+  margin-right: 10px;
+  box-sizing: border-box;
+  vertical-align: middle;
+  text-align: center;
+  &.primary {
+    color: #fff;
+    background: $color-primary;
+    border: 1rpx solid $color-primary;
+  }
+  &.disabled {
+    color: #cacaca;
+    background: #eee;
+    border: 1rpx solid #e5e5e5;
+  }
+  &.small {
+    font-size: 11px;
+    height: 20px;
+    line-height: 18px;
+    padding: 0 3px;
+  }
+  &.pain.primary {
+    color: $color-primary;
+    background: #fff;
+  }
 }

@@ -15,6 +15,7 @@ $text-nm: 28rpx;
 $text-lg: 30rpx;
 $text-sm: 26rpx;
 $text-xs: 24rpx;
+$text-xxs: 22rpx;
 $text-form: 17px;
 
 
@@ -26,6 +27,4 @@ $border-dot: 1px dotted #EFF0F2;
 //******背景样式******/
 $color-bg-body: #F5F5F5;
 $color-bg-item: #FAFAFA;
-
-@function rpx($value) {@return $value * 1rpx;}
 
