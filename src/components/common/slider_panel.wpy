@@ -84,6 +84,7 @@
     transform: translateY(150%);
     transition: all 0.4s ease;
     padding-bottom: 20rpx;
+    overflow-y: scroll;
 
     .header-box{
       text-align: center;
