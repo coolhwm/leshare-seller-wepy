@@ -81,7 +81,7 @@
     send({orderId}) {
       this.$root.$navigate('send', {orderId});
     }
-    note({orderId, sellerNote}) {
+    remark({orderId, sellerNote}) {
       this.$root.$navigate('remark', {orderId, sellerNote});
     }
     close({orderId}) {
