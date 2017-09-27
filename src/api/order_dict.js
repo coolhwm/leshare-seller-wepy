@@ -33,6 +33,11 @@ export const ACTIONS = {
     primary: false,
     name: '订单备注',
     func: 'remark'
+  },
+  TRACE: {
+    primary: false,
+    name: '订单跟踪',
+    func: 'trace'
   }
 };
 export const ACTION_MAP = {

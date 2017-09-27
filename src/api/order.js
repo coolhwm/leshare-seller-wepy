@@ -1,6 +1,6 @@
 import base from './base';
 import Page from '../utils/Page';
-import {ACTIONS, ACTION_MAP} from './actions'
+import {ACTIONS, ACTION_MAP} from './order_dict'
 
 export default class order extends base {
   static closeReacon = [

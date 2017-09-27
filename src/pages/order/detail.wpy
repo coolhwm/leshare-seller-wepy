@@ -65,14 +65,6 @@
 
     <!--操作栏-->
     <view class="order-action-bar row-end">
-      <!--<view class="zan-btn zan-btn&#45;&#45;small" @tap="note({{order.orderId}}, {{order.sellerNote}})">订单备注</view>-->
-      <!--<view class="zan-btn zan-btn&#45;&#45;small" @tap="reprice({{order.orderId}})"  wx:if="{{order.status == 1}}">订单改价</view>-->
-      <!--<view class="zan-btn zan-btn&#45;&#45;small zan-btn&#45;&#45;primary" @tap="close({{order.orderId}})" wx:if="{{order.status == 1 || (order.status == 2 && order.paymentType == 0)}}">订单关闭</view>-->
-      <!--<view class="zan-btn zan-btn&#45;&#45;small zan-btn&#45;&#45;primary" @tap="send({{order.orderId}})" wx:if="{{order.status == 2}}">订单发货</view>-->
-      <!--<view class="zan-btn zan-btn&#45;&#45;small zan-btn&#45;&#45;primary" @tap="receive({{order.orderId}})" wx:if="{{order.status == 3}}">确认送达</view>-->
-      <!--<view class="zan-btn zan-btn&#45;&#45;small zan-btn&#45;&#45;primary" @tap="trace({{order.orderId}})" wx:if="{{order.status == 3}}">物流查询</view>-->
-      <!--<view class="zan-btn zan-btn&#45;&#45;small zan-btn&#45;&#45;primary" @tap="refund({{order.orderId}})" wx:if="{{order.status == 5}}">订单退款</view>-->
-
       <block wx:for="{{order.actions}}" wx:for-item="action" wx:key="index">
         <view class="zan-btn zan-btn--small {{action.primary ? 'zan-btn--primary' : ''}}" @tap="action({{action.func}}, {{order}})">{{action.name}}</view>
       </block>
@@ -146,6 +138,7 @@
       wepy.navigateBack();
     }
     trace({orderId}) {
+      // TODO 尚未处理
       this.$root.$navigate('trace', {orderId});
     }
     methods = {
