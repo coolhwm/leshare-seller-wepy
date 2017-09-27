@@ -21,14 +21,6 @@ export default class goods extends base {
     const url = `${this.baseUrl}/goods/inner_category`;
     return await this.get(url);
   }
-
-  /**
-   * 分类管理分页方法
-   */
-  static categoryPage() {
-    const url = `${this.baseUrl}/goods/inner_category`;
-    return new Page(url);
-  }
   /**
    *  新增商品分类
    */
