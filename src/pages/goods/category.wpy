@@ -38,8 +38,9 @@
       this.loaded();
       Event.listen(Event.CATEGORY_LIST_UPDATE, this.update.bind(this), this);
     };
-    update() {
-      this.list = goods.getInnerCategories();
+    async update () {
+      this.list = await goods.getInnerCategories();
+      this.loaded();
     }
     methods = {
       add() {

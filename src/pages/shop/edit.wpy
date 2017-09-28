@@ -14,26 +14,60 @@
     <view class="hr"></view>
 
     <view class="weui-cells weui-cells-form">
-        <view class="weui-cell">
-            <view class="weui-cell__bd">联系电话</view>
-            <input class="weui-cell__ft" id="phone" placeholder="请输入电话号码" value="{{shop.phone}}"
-                   bindinput="input"/>
-        </view>
-        <view class="weui-cell">
-            <view class="weui-cell__bd" style="min-width: 150rpx;">店铺地址</view>
-            <view @tap.stop="chooseLocation" style="min-width: 500rpx;">
-                <view class="weui-cell__ft">{{shop.address}}</view>
-            </view>
 
-        </view>
-        <view class="weui-cell">
-            <view class="weui-cell__bd" style="min-width: 150rpx;">店铺描述</view>
-            <input class="weui-cell__ft" id="describe" style="width: 100%" placeholder="请输入店铺描述"
-                   value="{{shop.describe}}" bindinput="input"/>
-        </view>
         <view class="weui-cell">
             <view class="weui-cell__bd">店铺分类</view>
             <view class="weui-cell__ft" @tap="show">{{shop.categoryName}}</view>
+        </view>
+
+        <view class="weui-cell weui-cell_switch">
+          <view class="weui-cell__bd">自动接单</view>
+          <view class="weui-cell__ft">
+            <switch checked="{{shop.autoOrder}}" id="autoOrder" @change="input" />
+          </view>
+        </view>
+      <view class="weui-cell">
+        <view class="weui-cell__bd" style="min-width: 150rpx;">店铺位置</view>
+        <view @tap.stop="chooseLocation" style="min-width: 500rpx;">
+          <view class="weui-cell__ft">{{shop.address}}</view>
+        </view>
+      </view>
+    </view>
+    <view class="mt10"></view>
+      <view class="weui-cells weui-cells-form">
+
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__hd" >
+            <view class="weui-label">详细地址</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" id="detailAddress"  bindinput="input" value="{{shop.detailAddress}}" placeholder="请输入详细地址"/>
+          </view>
+          <view class="weui-cell__ft">
+          </view>
+        </view>
+
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__hd" >
+            <view class="weui-label">联系电话</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" id="phone"  bindinput="input" value="{{shop.phone}}" placeholder="请输入电话号码"/>
+          </view>
+          <view class="weui-cell__ft">
+          </view>
+        </view>
+
+        <view class="weui-cell">
+          <view class="weui-cell__bd">店铺描述</view>
+          <view class="weui-cell__ft" >   </view>
+        </view>
+
+        <view class="weui-cell">
+          <view class="weui-cell__bd">
+            <textarea class="weui-textarea" id="sellerNote" value="{{shop.describe}}" placeholder="请输入店铺描述" style="height: 6.3em" maxlength="200" @input="input" />
+            <view class="weui-textarea-counter">{{shop.describe ? shop.describe.length : 0}}/200</view>
+          </view>
         </view>
     </view>
 
@@ -69,8 +103,8 @@
     async onLoad () {
       const [shops, categories] = await Promise.all([shop.info(), shop.getShopCategories()]);
       this.shop = shops;
+      this.shop.autoOrder = this.shop.autoOrder == 1;
       this.categories = categories;
-
       this.pictures = this.shop.images;
       this.loaded();
     };
@@ -97,7 +131,6 @@
       async save () {
         if (this.shop.address === '请选择店铺地址') {
           this.tips('店铺地址不能为空');
-
           return;
         }
 
@@ -113,6 +146,7 @@
             data.images.push(picture);
           }
         }
+        this.shop.autoOrder = this.shop.autoOrder ? 1 : 0;
         this.shop.images = data.images;
         await shop.updateShop(this.shop);
         await Tips.success('更新成功！');

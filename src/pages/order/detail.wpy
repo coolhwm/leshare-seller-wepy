@@ -65,13 +65,9 @@
 
     <!--操作栏-->
     <view class="order-action-bar row-end">
-      <view class="zan-btn zan-btn--small" @tap="note({{order.orderId}}, {{order.sellerNote}})">订单备注</view>
-      <view class="zan-btn zan-btn--small" @tap="reprice({{order.orderId}})"  wx:if="{{order.status == 1}}">订单改价</view>
-      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="close({{order.orderId}})" wx:if="{{order.status == 1 || (order.status == 2 && order.paymentType == 0)}}">订单关闭</view>
-      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="send({{order.orderId}})" wx:if="{{order.status == 2}}">订单发货</view>
-      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="receive({{order.orderId}})" wx:if="{{order.status == 3}}">确认送达</view>
-      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="trace({{order.orderId}})" wx:if="{{order.status == 3}}">物流查询</view>
-      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="refund({{order.orderId}})" wx:if="{{order.status == 5}}">订单退款</view>
+      <block wx:for="{{order.actions}}" wx:for-item="action" wx:key="index">
+        <view class="zan-btn zan-btn--small {{action.primary ? 'zan-btn--primary' : ''}}" @tap="action({{action.func}}, {{order}})">{{action.name}}</view>
+      </block>
     </view>
   </view>
 </template>
@@ -84,6 +80,7 @@
   import Address from '../../components/common/address';
   import OrderItem from '../../components/order/item';
   import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
   export default class OrderDetail extends wepy.page {
     def = {
       order: {
@@ -101,35 +98,58 @@
       this.express = express.createCurrentTrace(this.order.orderExpress);
       this.loaded();
     };
+    close({orderId}) {
+      this.$root.$navigate('close', {orderId});
+    }
+    send({orderId}) {
+      this.$root.$navigate('send', {orderId});
+    }
+    remark({orderId, sellerNote}) {
+      this.$root.$navigate('remark', {orderId, sellerNote});
+    }
+    reprice({orderId}) {
+      this.$root.$navigate('reprice', {orderId});
+    }
+    refund({orderId}) {
+      this.$root.$navigate('refund', {orderId});
+    }
+    async take({orderId}) {
+      await Tips.confirm('确认接单？');
+      try {
+        await order.take(orderId);
+        await Tips.success('接单成功');
+      } catch (e) {
+        console.warn(e);
+        await Tips.success('操作失败');
+      }
+      wepy.navigateBack();
+      Event.emit(Event.ORDER_LIST_UPDATE);
+    }
+    async receive({orderId}) {
+      await Tips.confirm('是否确认客户已收到货品？');
+      try {
+        await order.confirmOrder(orderId);
+        await Tips.success('订单已完成');
+      } catch (e) {
+        console.warn(e);
+        await Tips.success('操作失败');
+      }
+      Event.emit(Event.ORDER_LIST_UPDATE);
+      wepy.navigateBack();
+    }
+    trace({orderId}) {
+      // TODO 尚未处理
+      this.$root.$navigate('trace', {orderId});
+    }
     methods = {
-      trace(orderId) {
-        this.$root.$navigate('trace', {orderId});
-      },
-      send(orderId) {
-        this.$root.$navigate('send', {orderId});
-      },
-      note(orderId, sellerNote) {
-        this.$root.$navigate('remark', {orderId, sellerNote});
-      },
-      close(orderId) {
-        this.$root.$navigate('close', {orderId});
-      },
-      reprice(orderId) {
-        this.$root.$navigate('reprice', {orderId});
-      },
-      refund(orderId) {
-        this.$root.$navigate('refund', {orderId});
-      },
-      async receive(orderId) {
-        await Tips.confirm('是否确认客户已收到货品？');
-        try {
-          await order.confirmOrder(orderId);
-          await Tips.success('订单已完成');
-        } catch (e) {
-          console.warn(e);
-          await Tips.success('操作失败');
+      action(funcName, order) {
+        console.info('[action]' + funcName);
+        if (this[funcName]) {
+          const func = this[funcName].bind(this);
+          func(order);
+        } else {
+          Tips.error('未知错误');
         }
-        Event.emit(Event.ORDER_LIST_UPDATE);
       }
     };
     components = {

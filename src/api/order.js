@@ -1,6 +1,6 @@
 import base from './base';
 import Page from '../utils/Page';
-
+import {ACTIONS, ACTION_MAP} from './order_dict'
 
 export default class order extends base {
   static closeReacon = [
@@ -9,16 +9,30 @@ export default class order extends base {
     '已通过网上银行直接汇款', '已缺货无法交易'
   ];
   static statusDict = {
-    '0': '全部',
-    '1': '等待买家付款',
-    '2': '等待卖家发货',
-    '3': '卖家已发货',
-    '4': '等待买家评价',
-    '5': '申请退款中',
-    '6': '交易成功',
-    '7': '交易关闭',
-    '8': '卖家已退款'
-  };
+    '10': {
+      '0': '全部',
+      '1': '等待买家付款',
+      '2': '等待卖家发货',
+      '3': '卖家已发货',
+      '4': '等待买家评价',
+      '5': '申请退款中',
+      '6': '交易成功',
+      '7': '交易关闭',
+      '8': '卖家已退款'
+    },
+    '20': {
+      '0': '全部',
+      '1': '等待买家付款',
+      '2': '等待店家接单',
+      '3': '店家配送中',
+      '4': '等待买家评价',
+      '5': '申请退款中',
+      '6': '交易成功',
+      '7': '交易关闭',
+      '8': '卖家已退款',
+      '9': '店家已接单'
+    }
+  }
   static paymentDict = {
     '0': '线下支付',
     '1': '在线支付'
@@ -32,13 +46,14 @@ export default class order extends base {
 
   static statusDesc = {
     '1': '等待买家付款，超时订单自动关闭',
-    '2': '买家已付款，请您尽快发货',
+    '2': '买家已付款，请您尽快发货，超时未接单将自动退款',
     '3': '您已发货，请耐心等待买家确认收货',
     '4': '买家已确认收货，请核对收款情况',
     '5': '买家发起退款申请，请您尽快处理',
     '6': '交易已完成，您已收到买家货款',
     '7': '本交易已取消',
-    '8': '您已退货成功'
+    '8': '您已退货成功',
+    '9': '您已接单，请尽快配送'
   }
 
   /**
@@ -90,6 +105,14 @@ export default class order extends base {
     const url = `${this.baseUrl}/orders/${orderId}/status/comments`
     return this.put(url)
   }
+  /**
+   * 接单
+   */
+  static take (orderId) {
+    const url = `${this.baseUrl}/orders/${orderId}/take_food_order`
+    return this.put(url)
+  }
+  /**
   /**
    * 订单改价
    */
@@ -193,8 +216,11 @@ export default class order extends base {
    * 处理订单列表数据
    */
   static _processOrderListItem(order) {
-    const status = order.status;
-    order.statusText = this.statusDict[status];
+    // const status = order.status;
+    // order.statusText = this.statusDict[status];
+    // 处理动作
+    this._processOrderAction(order);
+    this._processOrderStatusDesc(order)
     // 所有情况均展现动作条
     order.isAction = true;
     // 处理订单价格
@@ -227,7 +253,20 @@ export default class order extends base {
     this._processOrderAddress(detail);
     // 处理商品信息
     this._processOrderGoods(detail.orderGoodsInfos);
+    // 处理动作
+    this._processOrderAction(detail);
     return detail;
+  }
+
+  /**
+   * 处理订单动作
+   */
+  static _processOrderAction(order) {
+    order.actions = [ACTIONS.REMARK];
+    const key = `${order.orderType}-${order.paymentType}-${order.status}`;
+    if (ACTION_MAP[key]) {
+      order.actions = order.actions.concat(ACTION_MAP[key]);
+    }
   }
 
   /**
@@ -252,8 +291,9 @@ export default class order extends base {
    * 处理状态描述文本
    */
   static _processOrderStatusDesc(order) {
+    const statusDict = order.orderType ? this.statusDict[order.orderType] : this.statusDict[10];
     const status = order.status;
-    order.statusText = this.statusDict[status];
+    order.statusText = statusDict[status];
     order.statusDesc = this.statusDesc[status];
     order.isAction = status == 1 || status == 2 || status == 3 || status == 4;
   }

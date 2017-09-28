@@ -15,7 +15,7 @@
       </view>
     </view>
   </view>
-  <image class="hr" src="/images/icons/address-hr.png" />
+  <image class="hr-address" src="/images/icons/address-hr.png" />
 </template>
 
 <script>
@@ -43,7 +43,7 @@
       text{ font-size: $text-lg}
     }
   }
-  .hr{
+  .hr-address{
     width: 100%;
     height: 5px;
     margin-bottom: 15rpx;

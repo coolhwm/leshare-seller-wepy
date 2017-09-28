@@ -5,7 +5,7 @@
 
       <view class="row-between">
         <view class="user-info-container">
-          <image class="icon" src="/images/icons/idcard.png"/>
+          <image class="icon" src="/images/icons/idcard.png"  />
           <text class="sm ml10">{{order.customer.nickName ? order.customer.nickName : '微信用户'}}</text>
         </view>
         <view>
@@ -20,11 +20,19 @@
       </view>
     </view>
 
+    <!--商品区域-->
+
     <view class="order-goods-list-container" @tap="detail({{order.orderId}})">
       <repeat for="{{order.orderGoodsInfos}}" key="goodsId" index="index" item="item">
-        <OrderGoods :goods="item"></OrderGoods>
-        <view class="hr" />
+        <view class="{{!order.orderId || index == 0 || expand[order.orderId] ? '' : 'order-goods-fold'}}">
+          <OrderGoods :goods="item"></OrderGoods>
+          <view class="hr" />
+        </view>
       </repeat>
+      <view wx:if="{{order.orderId && order.orderGoodsInfos.length > 1}}" class="goods-fold-btn row-center" @tap.stop="expand({{order.orderId}})">
+        <text class="muted" wx:if="{{!expand[order.orderId]}}">查看全部 {{order.orderGoodsInfos.length}} 件商品</text>
+        <text class="muted" wx:else>收起商品</text>
+      </view>
     </view>
 
 
@@ -37,14 +45,15 @@
     </view>
 
     <!--操作栏/可以抽取为组件-->
-    <view class="order-action-bar row-end" wx:if="{{action != 0}}">
-      <view class="zan-btn zan-btn--small" @tap="note({{order.orderId}}, {{order.sellerNote}})">订单备注</view>
-      <view class="zan-btn zan-btn--small" @tap="reprice({{order.orderId}})"  wx:if="{{order.status == 1}}">订单改价</view>
-      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="close({{order.orderId}})" wx:if="{{order.status == 1 || (order.status == 2 && order.paymentType == 0)}}">订单关闭</view>
-      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="send({{order.orderId}})" wx:if="{{order.status == 2}}">订单发货</view>
-      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="receive({{order.orderId}})" wx:if="{{order.status == 3}}">确认送达</view>
-      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="trace({{order.orderId}})" wx:if="{{order.status == 3 && order.deliveryType == 'EXPRESS'}}">物流查询</view>
-      <view class="zan-btn zan-btn--small zan-btn--primary" @tap="refund({{order.orderId}})" wx:if="{{order.status == 5}}">订单退款</view>
+    <view class="order-action-bar row-between" wx:if="{{action != 0}}">
+      <view>
+        <view class="small label primary ml20" wx:if="{{order.orderType == 20}}">外卖</view>
+      </view>
+      <view>
+        <block wx:for="{{order.actions}}" wx:for-item="action" wx:key="index">
+          <view class="zan-btn zan-btn--small {{action.primary ? 'zan-btn--primary' : ''}}" @tap="action({{action.func}}, {{order}})">{{action.name}}</view>
+        </block>
+      </view>
     </view>
 
   </view>
@@ -52,8 +61,11 @@
 
 <script>
   import wepy from 'wepy';
+  import order from '../../api/order';
   import OrderGoods from './goods';
   import OrderAction from './action';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
 
   export default class OrderItem extends wepy.component {
     props = {
@@ -64,31 +76,59 @@
         default: true
       }
     };
+    data = {
+      expand: {},
+      shopName: {}
+    };
+    send({orderId}) {
+      this.$root.$navigate('send', {orderId});
+    }
+    remark({orderId, sellerNote}) {
+      this.$root.$navigate('remark', {orderId, sellerNote});
+    }
+    close({orderId}) {
+      this.$root.$navigate('close', {orderId});
+    }
+    reprice({orderId}) {
+      this.$root.$navigate('reprice', {orderId});
+    }
+    receive({orderId}) {
+      this.$emit('receive', orderId);
+    }
+    refund({orderId}) {
+      this.$root.$navigate('refund', {orderId});
+    }
+    trace({orderId}) {
+      // TODO 尚未处理
+      this.$root.$navigate('trace', {orderId});
+    }
+    async take({orderId}) {
+      await Tips.confirm('确认接单？');
+      try {
+        await order.take(orderId);
+        await Tips.success('接单成功');
+      } catch (e) {
+        console.warn(e);
+        await Tips.success('操作失败');
+      }
+      Event.emit(Event.ORDER_LIST_UPDATE);
+    }
     methods = {
-      trace(orderId) {
-        this.$root.$navigate('trace', {orderId});
+      action(funcName, order) {
+        console.info('[action]' + funcName);
+        if (this[funcName]) {
+          const func = this[funcName].bind(this);
+          func(order);
+        } else {
+          Tips.error('未知错误');
+        }
       },
-      send(orderId) {
-        this.$root.$navigate('send', {orderId});
-      },
-      note(orderId, sellerNote) {
-        this.$root.$navigate('remark', {orderId, sellerNote});
-      },
-      close(orderId) {
-        this.$root.$navigate('close', {orderId});
-      },
-      reprice(orderId) {
-        this.$root.$navigate('reprice', {orderId});
+      expand(orderId) {
+        orderId = orderId == null ? 0 : orderId;
+        this.expand[orderId] = !this.expand[orderId];
       },
       detail(orderId) {
         this.$emit('tap', orderId);
-        // this.$root.$navigate('detail', {orderId});
-      },
-      refund(orderId) {
-        this.$root.$navigate('refund', {orderId});
-      },
-      receive(orderId) {
-        this.$emit('receive', orderId);
       }
     };
 
@@ -134,5 +174,14 @@
     border-top: $border;
     height: 90rpx;
     padding-right: 10rpx;
+  }
+  .order-goods-fold{
+    display: none;
+  }
+
+  .goods-fold-btn{
+    background-color: $color-bg-item;
+    padding-top: 5rpx;
+    padding-bottom: 5rpx;
   }
 </style>
