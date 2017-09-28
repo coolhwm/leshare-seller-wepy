@@ -114,6 +114,7 @@
           }
         }
         this.shop.images = data.images;
+        this.shop.autoOrder = 0;
         await shop.updateShop(this.shop);
         await Tips.success('更新成功！');
         wepy.navigateBack();

@@ -157,7 +157,7 @@
           goodsStocks: [],
           images: []
         }
-        Tips.loading();
+        Tips.loading('保存中');
         // 处理图片信息
         for (let picture of this.pictures) {
           if (picture.url.substring(0, 6) == 'wxfile') {
@@ -168,6 +168,7 @@
             data.images.push(picture);
           }
         }
+        Tips.loading('保存中', true);
         // 字段信息
         data.name = this.input.name;
         data.isRecommend = this.input.isRecommend ? 1 : 0;

@@ -115,8 +115,8 @@ export default class Tips {
   /**
    * 弹出加载提示
    */
-  static loading (title = '加载中') {
-    if (this.isLoading) {
+  static loading (title = '加载中', force = false) {
+    if (this.isLoading && !force) {
       return;
     }
     this.isLoading = true;
