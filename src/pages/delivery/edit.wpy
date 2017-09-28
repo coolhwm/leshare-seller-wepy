@@ -74,13 +74,13 @@
         longitude: 116.3973900000,
         radius: 0,
         color: '#ddd',
-        fillColor: '#33CCFF99'
+        fillColor: '#000000510'
       }, {
         latitude: 39.9088600000,
         longitude: 116.3973900000,
         radius: 0,
         color: '#ddd',
-        fillColor: '#7cb5ec99'
+        fillColor: '#3399FF99'
       }]
     };
     data = {...this.def};
@@ -105,9 +105,13 @@
       this.markers = markers;
       if (mode == 'edit') {
         this.input = preload.delivery;
-        this.input.toLimit1 = 1500;
-        this.input.fromLimit2 = 1500;
-        this.input.toLimit2 = 2500;
+        this.input.toLimit1 = this.input.fromLimit;
+        if (this.input.toLimit == '') {
+          this.input.fromLimit2 = '';
+        } else {
+          this.input.fromLimit2 = this.input.fromLimit;
+        }
+        this.input.toLimit2 = this.input.toLimit;
 
         this.circles[0].latitude = shopInfo.latitude;
         this.circles[0].longitude = shopInfo.longitude;
@@ -143,7 +147,7 @@
 
     methods = {
       radius(value, id, level) {
-        const colors = ['#33CCFF99', '#7cb5ec99'];
+        const colors = ['#000000510', '#3399FF99'];
         let circle = {
           latitude: this.latitude,
           longitude: this.longitude,
@@ -163,15 +167,25 @@
         this.input.name = data.key;
       },
       async submit() {
+        if (this.getValue('toLimit2') == 0) {
+          this.input['fromLimit2'] = 0;
+          this.input['toLimit2'] = 0;
+        }
         if (this.getValue('toLimit2') < this.getValue('fromLimit2')) {
           this.tips('结束距离不能小于开始距离');
 
           return;
         }
+        if (this.getValue('toLimit2') == 0) {
+          this.input['fromLimit2'] = '';
+          this.input['toLimit2'] = '';
+        }
         if (!this.validate()) {
           return;
         }
 
+        this.input.fromLimit = this.input.toLimit1;
+        this.input.toLimit = this.input.toLimit2;
         if (this.mode == 'edit') {
           await delivery.update(this.input.id, this.input);
           await Tips.success('更新成功！');
