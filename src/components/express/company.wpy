@@ -31,13 +31,6 @@
       input: ''
     };
     async onLoad () {
-      const companies = await express.company();
-      companies.forEach(item => {
-        item.display = true;
-      });
-      this.companies = companies;
-      this.$apply();
-      Tips.loaded();
     };
     watch = {
       input(value) {
@@ -45,6 +38,17 @@
           company.display = value == null || value == '' ? true : company.name.indexOf(value) != -1;
         });
         this.$apply();
+      },
+      async display(value) {
+        if (value) {
+          const companies = await express.company();
+          companies.forEach(item => {
+            item.display = true;
+          });
+          this.companies = companies;
+          this.$apply();
+          Tips.loaded();
+        }
       }
     };
     methods = {
