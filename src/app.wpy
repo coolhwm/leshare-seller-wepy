@@ -62,9 +62,9 @@
     globalData = {
       auth: {},
       shop: {},
-      // baseUrl: 'https://api.leshare.shop/v1/seller'
+      baseUrl: 'https://api.leshare.shop/v1/seller'
       // baseUrl: 'http://192.168.31.124:9999/v1/seller'
-      baseUrl: 'http://106.14.195.68:9999/v1/seller'
+      // baseUrl: 'http://106.14.195.68:9999/v1/seller'
     };
 
     config = {
