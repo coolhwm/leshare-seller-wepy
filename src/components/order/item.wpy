@@ -61,9 +61,11 @@
 
 <script>
   import wepy from 'wepy';
+  import order from '../../api/order';
   import OrderGoods from './goods';
   import OrderAction from './action';
   import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
 
   export default class OrderItem extends wepy.component {
     props = {
@@ -99,6 +101,17 @@
     trace({orderId}) {
       // TODO 尚未处理
       this.$root.$navigate('trace', {orderId});
+    }
+    async take({orderId}) {
+      await Tips.confirm('确认接单？');
+      try {
+        await order.take(orderId);
+        await Tips.success('接单成功');
+      } catch (e) {
+        console.warn(e);
+        await Tips.success('操作失败');
+      }
+      Event.emit(Event.ORDER_LIST_UPDATE);
     }
     methods = {
       action(funcName, order) {
