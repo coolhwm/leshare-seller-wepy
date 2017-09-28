@@ -15,7 +15,6 @@
             <input class="weui-input" id="phone" type="number" @input="input" maxlength="11" placeholder="请输入手机号" />
           </view>
           <view class="weui-cell__ft">
-            <!--<view class="weui-vcode-btn {{isWaiting ? 'muted' : ''}}" @tap="onCodeTap">{{btnText}}</view>-->
             <VCode  @tap.user="code" />
           </view>
         </view>
