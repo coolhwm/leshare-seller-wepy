@@ -59,6 +59,7 @@ export default class WxUtils {
           Tips.alert(`第${posStr}张图超过${maxSize}M`);
         }
       }
+      Tips.loaded();
       return tempFilePaths;
     }).catch(() => {
       Tips.loaded();
