@@ -1,19 +1,29 @@
 <template>
-  <Tips />
-  <view class="container" wx:if="{{init}}">
-    <view class="mt10"></view>
-    <!--表单-->
-    <view class="weui-cells-form">
-      <Picker :range="type" title="配送方式" fieldName="type" :input.sync="input" @input.user="seletedType"/>
-      <InputText_name title="模板名称" :input.sync="input"/>
-      <InputText_limitPrice title="起送价格" :input.sync="input" type="digit"/>
-      <InputText_fee title="运费" :input.sync="input" type="digit"/>
-      <InputText_location title="配送范围" :input.sync="input"/>
-    </view>
+    <Tips/>
+    <view class="container" wx:if="{{init}}">
+        <map id="map" longitude="{{longitude}}" latitude="{{latitude}}"
+             markers="{{markers}}" wx:if="{{input.name=='同城配送'}}"
+             scale="13" circles="{{circles}}" style="width: 100%; height: 500rpx;"></map>
 
-    <!--操作栏-->
-    <ActionBar @tap.user="submit" />
-  </view>
+        <!--表单-->
+        <view class="weui-cells-form">
+            <Picker :range="type" title="配送方式" fieldName="type" :input.sync="input" @input.user="seletedType"/>
+            <InputText_name title="模板名称" :input.sync="input"/>
+            <InputText_limitPrice title="起送价格" :input.sync="input" type="digit"/>
+            <InputText_fee title="运费" :input.sync="input" type="digit"/>
+
+            <block wx:if="{{input.name=='同城配送'}}">
+              <InputText_lv_one_to title="起始距离" placeholder="配送的开始范围(米)" :input.sync="input" type="number" fieldName="toLimit1" @input.user="radius"/>
+              <InputText_lv_two_to title="结束距离" placeholder="配送的结束范围(米)" :input.sync="input" type="number" fieldName="toLimit2" @input.user="radius"/>
+            </block>
+            <block wx:else>
+                <InputText_location title="配送范围" :input.sync="input"/>
+            </block>
+        </view>
+
+        <!--操作栏-->
+        <ActionBar @tap.user="submit"/>
+    </view>
 </template>
 
 <script>
@@ -21,6 +31,7 @@
   import base from '../../mixins/base';
   import input from '../../mixins/input';
   import delivery from '../../api/delivery';
+  import shop from '../../api/shop';
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
   import FormTips from '../../components/weui/tips';
@@ -36,28 +47,132 @@
         {value: 'SELF', key: '到店自提'},
         {value: 'CITY', key: '同城配送'},
         {value: 'EXPRESS', key: '快递配送'}
-      ]
-    }
+      ],
+      latitude: 39.9088600000,
+      longitude: 116.3973900000,
+      markers: [],
+      circles: [{
+        latitude: 39.9088600000,
+        longitude: 116.3973900000,
+        radius: 0,
+        color: '#ddd',
+        fillColor: '#000000510'
+      }, {
+        latitude: 39.9088600000,
+        longitude: 116.3973900000,
+        radius: 0,
+        color: '#ddd',
+        fillColor: '#3399FF99'
+      }]
+    };
     data = {...this.def};
-    onLoad ({mode, deliveryId}, {preload}) {
+
+    async onLoad({mode, deliveryId}, {preload}) {
       this.mode = mode;
+
+      let shopInfo = await shop.info();
+
+      let markers = [{
+        iconPath: '../../images/icons/address_red.png',
+        id: 0,
+        latitude: shopInfo.latitude,
+        longitude: shopInfo.longitude,
+        width: 30,
+        height: 30
+      }];
+
+      this.latitude = shopInfo.latitude;
+      this.longitude = shopInfo.longitude;
+
+      this.markers = markers;
       if (mode == 'edit') {
         this.input = preload.delivery;
+        this.input.toLimit1 = this.input.fromLimit;
+        if (this.input.toLimit == '') {
+          this.input.fromLimit2 = '';
+        } else {
+          this.input.fromLimit2 = this.input.fromLimit;
+        }
+        this.input.toLimit2 = this.input.toLimit;
+
+        this.circles[0].latitude = shopInfo.latitude;
+        this.circles[0].longitude = shopInfo.longitude;
+        this.circles[0].radius = this.getValue('toLimit1');
+        this.circles[1].latitude = shopInfo.latitude;
+        this.circles[1].longitude = shopInfo.longitude;
+        this.circles[1].radius = this.getValue('toLimit2');
       }
+
       this.loaded();
     };
+
+    getValue(id) {
+      if (this.input[id] > 0) {
+        return Number.parseInt(this.input[id]);
+      } else {
+        return 0;
+      }
+    }
+
+    limitRadius(id) {
+      let toLimit1 = this.getValue('toLimit1');
+      let toLimit2 = this.getValue('toLimit2');
+      if (id == 'toLimit1') {
+        if (toLimit2 > 0) {
+          this.input['fromLimit2'] = toLimit1;
+        }
+      }
+      if (id == 'toLimit2') {
+        this.input['fromLimit2'] = toLimit1;
+      }
+    }
+
     methods = {
+      radius(value, id, level) {
+        const colors = ['#000000510', '#3399FF99'];
+        let circle = {
+          latitude: this.latitude,
+          longitude: this.longitude,
+          radius: this.getValue('toLimit' + level),
+          color: '#ddd',
+          fillColor: colors[level - 1]
+        };
+
+        this.input[id] = Number.parseInt(value);
+        this.limitRadius(id);
+
+        this.circles[level - 1] = circle;
+
+        this.$apply();
+      },
       seletedType(data) {
         this.input.name = data.key;
       },
       async submit() {
+        if (this.getValue('toLimit2') == 0) {
+          this.input['fromLimit2'] = 0;
+          this.input['toLimit2'] = 0;
+        }
+        if (this.getValue('toLimit2') < this.getValue('fromLimit2')) {
+          this.tips('结束距离不能小于开始距离');
+
+          return;
+        }
+        if (this.getValue('toLimit2') == 0) {
+          this.input['fromLimit2'] = '';
+          this.input['toLimit2'] = '';
+        }
         if (!this.validate()) {
           return;
         }
+
+        this.input.fromLimit = this.input.toLimit1;
+        this.input.toLimit = this.input.toLimit2;
         if (this.mode == 'edit') {
           await delivery.update(this.input.id, this.input);
           await Tips.success('更新成功！');
         } else {
+          this.input.location = '县城';
           await delivery.create(this.input);
           await Tips.success('创建成功！');
         }
@@ -65,6 +180,7 @@
         wepy.navigateBack();
       }
     };
+
     validate() {
       const rules = [
         {
@@ -126,10 +242,21 @@
           method: 'max',
           param: '10000',
           message: '运费价格太高'
+        },
+        {
+          value: this.input.toLimit1,
+          method: 'number',
+          message: '结束距离只能为数字'
+        },
+        {
+          value: this.input.toLimit2,
+          method: 'number',
+          message: '结束距离只能为数字'
         }
       ];
       return this.check(rules);
     }
+
     events = {};
     components = {
       Tips: FormTips,
@@ -138,7 +265,11 @@
       InputText_name: InputText,
       InputText_limitPrice: InputText,
       InputText_fee: InputText,
-      InputText_location: InputText
+      InputText_location: InputText,
+      InputText_lv_one_from: InputText,
+      InputText_lv_one_to: InputText,
+      InputText_lv_two_from: InputText,
+      InputText_lv_two_to: InputText
     };
     mixins = [base, input];
     config = {
@@ -148,5 +279,5 @@
 </script>
 
 <style lang="scss">
-  @import "../../styles/variable";
+    @import "../../styles/variable";
 </style>
