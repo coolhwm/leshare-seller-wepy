@@ -66,22 +66,10 @@
         {value: 'CITY', key: '同城配送'},
         {value: 'EXPRESS', key: '快递配送'}
       ],
-      latitude: 39.9088600000,
-      longitude: 116.3973900000,
+      latitude: '',
+      longitude: '',
       markers: [],
-      circles: [{
-        latitude: 39.9088600000,
-        longitude: 116.3973900000,
-        radius: 0,
-        color: '#ddd',
-        fillColor: '#000000510'
-      }, {
-        latitude: 39.9088600000,
-        longitude: 116.3973900000,
-        radius: 0,
-        color: '#ddd',
-        fillColor: '#3399FF99'
-      }]
+      circles: []
     };
     data = {...this.def};
 
@@ -106,19 +94,26 @@
       if (mode == 'edit') {
         this.input = preload.delivery;
         this.input.toLimit1 = this.input.fromLimit;
-        if (this.input.toLimit == '') {
+        if (this.input.toLimit == '' || this.input.toLimit == 0) {
+          this.input.toLimit = '';
           this.input.fromLimit2 = '';
         } else {
           this.input.fromLimit2 = this.input.fromLimit;
         }
         this.input.toLimit2 = this.input.toLimit;
 
-        this.circles[0].latitude = shopInfo.latitude;
-        this.circles[0].longitude = shopInfo.longitude;
-        this.circles[0].radius = this.getValue('toLimit1');
-        this.circles[1].latitude = shopInfo.latitude;
-        this.circles[1].longitude = shopInfo.longitude;
-        this.circles[1].radius = this.getValue('toLimit2');
+        for (let i = 0; i < 2; i++) {
+          const colors = ['#000000510', '#3399FF99'];
+          let circle = {
+            latitude: shopInfo.latitude,
+            longitude: shopInfo.longitude,
+            radius: this.getValue('toLimit' + (i + 1)),
+            color: '#ddd',
+            fillColor: colors[i]
+          };
+
+          this.circles[i] = circle;
+        }
       }
 
       this.loaded();
@@ -148,6 +143,7 @@
     methods = {
       radius(value, id, level) {
         const colors = ['#000000510', '#3399FF99'];
+
         let circle = {
           latitude: this.latitude,
           longitude: this.longitude,
@@ -156,10 +152,17 @@
           fillColor: colors[level - 1]
         };
 
+        this.circles[level - 1] = circle;
+
+        if (!this.circles[0]) {
+          this.input.toLimit1 = 0;
+          circle.radius = 0;
+          circle.fillColor = colors[0];
+          this.circles[0] = circle;
+        }
+
         this.input[id] = Number.parseInt(value);
         this.limitRadius(id);
-
-        this.circles[level - 1] = circle;
 
         this.$apply();
       },
