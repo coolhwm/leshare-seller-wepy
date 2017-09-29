@@ -32,6 +32,7 @@
   import Event from '../../utils/Event';
   import Tips from '../../utils/Tips';
   import Placeholder from '../../components/common/placeholder';
+  import WxUtils from '../../utils/WxUtils';
 
   export default class GoodsDetail extends wepy.page {
     def = {
@@ -84,32 +85,14 @@
             count: 10,
             sizeType: ['compressed']
           };
-          try {
-            const {tempFilePaths, tempFiles} = await wepy.chooseImage(param);
-            if (tempFiles) {
-              const removeIndex = [];
-              tempFiles.forEach((file, index) => {
-                const maxSize = 5 * 1024 * 1024;
-                if (file.size > maxSize) {
-                  removeIndex.push(index);
-                }
-              });
-              const posStr = removeIndex.map(v => v + 1).join(',');
-              if (removeIndex.length > 0) {
-                removeIndex.forEach(i => tempFilePaths.splice(i, 1));
-                Tips.alert(`第${posStr}张图超过5M`);
-              }
-            }
-            Tips.loading();
-            for (let path of tempFilePaths) {
-              this.details.push({
-                type: 2,
-                content: path
-              });
-            }
-          } finally {
-            this.loaded();
+          const tempFilePaths = await WxUtils.chooseImage(param, 5);
+          for (let path of tempFilePaths) {
+            this.details.push({
+              type: 2,
+              content: path
+            });
           }
+          this.$apply();
         });
       },
       // 提交信息

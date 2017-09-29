@@ -1,4 +1,5 @@
 import Tips from './Tips';
+import wepy from 'wepy';
 
 export default class WxUtils {
   /**
@@ -36,6 +37,33 @@ export default class WxUtils {
         delta: delta
       });
     }
+  }
+
+  /**
+   * 选择图标（最大大小限制）
+   */
+  static chooseImage(param, maxSize) {
+    Tips.loading();
+    return wepy.chooseImage(param).then(({tempFilePaths, tempFiles}) => {
+      if (tempFiles && maxSize) {
+        const removeIndex = [];
+        tempFiles.forEach((file, index) => {
+          const limit = maxSize * 1024 * 1024;
+          if (file.size > limit) {
+            removeIndex.push(index);
+          }
+        });
+        const posStr = removeIndex.map(v => v + 1).join(',');
+        if (removeIndex.length > 0) {
+          removeIndex.forEach(i => tempFilePaths.splice(i, 1));
+          Tips.alert(`第${posStr}张图超过${maxSize}M`);
+        }
+      }
+      return tempFilePaths;
+    }).catch(() => {
+      Tips.loaded();
+      return [];
+    });
   }
 
   /**

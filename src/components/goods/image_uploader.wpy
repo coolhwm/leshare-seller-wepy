@@ -46,6 +46,7 @@
   import wepy from 'wepy';
   import Tips from '../../utils/Tips';
   import SliderPanel from '../../components/common/slider_panel';
+  import WxUtils from '../../utils/WxUtils';
   export default class GoodsImageUploader extends wepy.component {
     props = {
       pictures: {
@@ -73,29 +74,11 @@
           Tips.alert('最多选择五张图片');
           return;
         }
-
         const param = {
           count: 5 - size,
           sizeType: ['compressed']
         }
-
-        Tips.loading();
-        const {tempFilePaths, tempFiles} = await wepy.chooseImage(param);
-        Tips.loaded();
-        if (tempFiles) {
-          const removeIndex = [];
-          tempFiles.forEach((file, index) => {
-            const maxSize = this.maxSize * 1024 * 1024;
-            if (file.size > maxSize) {
-              removeIndex.push(index);
-            }
-          });
-          const posStr = removeIndex.map(v => v + 1).join(',');
-          if (removeIndex.length > 0) {
-            removeIndex.forEach(i => tempFilePaths.splice(i, 1));
-            Tips.alert(`第${posStr}张图超过${this.maxSize}M`);
-          }
-        }
+        const tempFilePaths = await WxUtils.chooseImage(param, this.maxSize);
         const pictures = tempFilePaths.map(item => {
           return {
             url: item
