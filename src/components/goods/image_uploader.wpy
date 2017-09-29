@@ -56,6 +56,9 @@
       },
       top: {
         default: '455'
+      },
+      maxSize: {
+        default: '5'
       }
     };
     data = {
@@ -75,19 +78,31 @@
           count: 5 - size,
           sizeType: ['compressed']
         }
-        try {
-          Tips.loading();
-          const {tempFilePaths} = await wepy.chooseImage(param);
-          const pictures = tempFilePaths.map(item => {
-            return {
-              url: item
+
+        Tips.loading();
+        const {tempFilePaths, tempFiles} = await wepy.chooseImage(param);
+        Tips.loaded();
+        if (tempFiles) {
+          const removeIndex = [];
+          tempFiles.forEach((file, index) => {
+            const maxSize = this.maxSize * 1024 * 1024;
+            if (file.size > maxSize) {
+              removeIndex.push(index);
             }
           });
-          this.pictures = this.pictures.concat(pictures);
-          this.$apply();
-        } finally {
-          Tips.loaded();
+          const posStr = removeIndex.map(v => v + 1).join(',');
+          if (removeIndex.length > 0) {
+            removeIndex.forEach(i => tempFilePaths.splice(i, 1));
+            Tips.alert(`第${posStr}张图超过${this.maxSize}M`);
+          }
         }
+        const pictures = tempFilePaths.map(item => {
+          return {
+            url: item
+          }
+        });
+        this.pictures = this.pictures.concat(pictures);
+        this.$apply();
       },
       // 打开管理面板
       manage() {

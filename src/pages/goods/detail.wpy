@@ -85,11 +85,23 @@
             sizeType: ['compressed']
           };
           try {
-            const {tempFilePaths} = await wepy.chooseImage(param);
+            const {tempFilePaths, tempFiles} = await wepy.chooseImage(param);
+            if (tempFiles) {
+              const removeIndex = [];
+              tempFiles.forEach((file, index) => {
+                const maxSize = 5 * 1024 * 1024;
+                if (file.size > maxSize) {
+                  removeIndex.push(index);
+                }
+              });
+              const posStr = removeIndex.map(v => v + 1).join(',');
+              if (removeIndex.length > 0) {
+                removeIndex.forEach(i => tempFilePaths.splice(i, 1));
+                Tips.alert(`第${posStr}张图超过5M`);
+              }
+            }
             Tips.loading();
             for (let path of tempFilePaths) {
-              // const result = await goods.image(path);
-              // const {url} = JSON.parse(result);
               this.details.push({
                 type: 2,
                 content: path
