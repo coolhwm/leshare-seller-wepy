@@ -12,31 +12,13 @@
             <InputText_limitPrice title="起送价格" :input.sync="input" type="digit"/>
             <InputText_fee title="运费" :input.sync="input" type="digit"/>
 
-            <view wx:if="{{input.name=='同城配送'}}">
-                <view style="display: flex;">
-                    <view>
-                        <InputText_lv_one_from title="起始距离" placeholder="0" :input.sync="input" type="number"
-                                               level="1" unit="米" fieldName="fromLimit1" @input.user="radius"/>
-                    </view>
-                    <view>
-                        <InputText_lv_one_to title="结束距离" placeholder="一级" :input.sync="input" type="number"
-                                             level="1" unit="米" fieldName="toLimit1" @input.user="radius"/>
-                    </view>
-                </view>
-                <view style="display: flex;">
-                    <view>
-                        <InputText_lv_two_from title="起始距离" placeholder="二级" :input.sync="input" type="number"
-                                               level="2" unit="米" fieldName="fromLimit2" @input.user="radius"/>
-                    </view>
-                    <view>
-                        <InputText_lv_two_to title="结束距离" placeholder="二级" :input.sync="input" type="number"
-                                             level="2" unit="米" fieldName="toLimit2" @input.user="radius"/>
-                    </view>
-                </view>
-            </view>
-            <view wx:else>
+            <block wx:if="{{input.name=='同城配送'}}">
+              <InputText_lv_one_to title="起始距离" placeholder="配送的开始范围(米)" :input.sync="input" type="number" fieldName="toLimit1" @input.user="radius"/>
+              <InputText_lv_two_to title="结束距离" placeholder="配送的结束范围(米)" :input.sync="input" type="number" fieldName="toLimit2" @input.user="radius"/>
+            </block>
+            <block wx:else>
                 <InputText_location title="配送范围" :input.sync="input"/>
-            </view>
+            </block>
         </view>
 
         <!--操作栏-->
