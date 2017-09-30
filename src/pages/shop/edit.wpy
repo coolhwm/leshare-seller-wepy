@@ -1,7 +1,7 @@
 <template>
     <Tips/>
     <!--照片上传区域-->
-    <ImageUploader :pictures.sync="pictures" otherClass="shop-swiper" top="260"/>
+    <ImageUploader :pictures.sync="pictures" otherClass="shop-swiper" top="260" maxSize="6" @toggle.user="toggle"/>
 
     <view class="hr"></view>
 
@@ -63,15 +63,19 @@
           <view class="weui-cell__ft" >   </view>
         </view>
 
-        <view class="weui-cell">
+        <view class="weui-cell" wx:if="{{!uploader}}">
           <view class="weui-cell__bd">
-            <textarea class="weui-textarea" id="sellerNote" value="{{shop.describe}}" placeholder="请输入店铺描述" style="height: 6.3em" maxlength="200" @input="input" />
-            <view class="weui-textarea-counter">{{shop.describe ? shop.describe.length : 0}}/200</view>
+            <textarea class="weui-textarea" id="describe" value="{{shop.describe}}" placeholder="请输入店铺描述" style="height: 4.0em" maxlength="50" @input="input" />
+            <view class="weui-textarea-counter">{{shop.describe ? shop.describe.length : 0}}/50</view>
           </view>
         </view>
     </view>
 
-    <ActionBar cancelText="返回" okText="保存" @tap.user="save"/>
+    <view class="zan-panel">
+      <view class="zan-btns">
+        <button class="zan-btn zan-btn--fill" @tap="save">保存</button>
+      </view>
+    </view>
 
     <!--下拉选择器-->
     <SliderSelector :display.sync="display"
@@ -88,7 +92,6 @@
   import input from '../../mixins/input';
   import FormTips from '../../components/weui/tips';
   import ImageUploader from '../../components/goods/image_uploader';
-  import ActionBar from '../../components/common/action_bar';
   import Tips from '../../utils/Tips';
   import SliderSelector from '../../components/common/slider_selector';
 
@@ -97,7 +100,8 @@
       shop: {},
       pictures: [],
       categories: [],
-      display: false
+      display: false,
+      uploader: false
     };
 
     async onLoad () {
@@ -137,6 +141,7 @@
         const data = {
           images: []
         };
+        Tips.loading('保存中');
         for (let picture of this.pictures) {
           if (picture.url.substring(0, 6) == 'wxfile') {
             const result = await shop.image(picture.url);
@@ -157,6 +162,9 @@
       },
       change ({selectedId, selectedName}) {
         this.shop.categoryName = selectedName;
+      },
+      toggle(value) {
+        this.uploader = value == 'true';
       }
     };
 
@@ -164,8 +172,7 @@
     components = {
       Tips: FormTips,
       SliderSelector: SliderSelector,
-      ImageUploader: ImageUploader,
-      ActionBar: ActionBar
+      ImageUploader: ImageUploader
     };
     mixins = [base, input];
     config = {

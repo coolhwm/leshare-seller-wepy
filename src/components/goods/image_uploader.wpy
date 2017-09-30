@@ -115,6 +115,11 @@
         }
       }
     };
+    watch = {
+      isPanelDisplay(value) {
+        this.$emit('toggle', value);
+      }
+    };
     components = {
       SliderPanel: SliderPanel
     };
