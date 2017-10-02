@@ -145,6 +145,16 @@
       Event.emit(Event.ORDER_LIST_UPDATE);
       wepy.navigateBack();
     }
+    async print({orderId}) {
+      await Tips.confirm('确认打印？');
+      try {
+        await order.print(orderId);
+        await Tips.success('打印成功');
+      } catch (e) {
+        console.warn(e);
+        await Tips.success('操作失败');
+      }
+    }
     trace({orderId}) {
       // TODO 尚未处理
       this.$root.$navigate('trace', {orderId});

@@ -91,6 +91,14 @@ export default class order extends base {
   }
 
   /**
+   * 订单打印
+   */
+  static async print(orderId) {
+    const url = `${this.baseUrl}/orders/${orderId}/print`;
+    return await this.put(url);
+  }
+
+  /**
    * 关闭订单
    */
   static async close(orderId, note) {
@@ -264,6 +272,7 @@ export default class order extends base {
     const basic = [ACTIONS.REMARK];
     if (inner) {
       basic.push(ACTIONS.PHONE);
+      basic.push(ACTIONS.PRINT);
     }
     const key = `${order.orderType}-${order.paymentType}-${order.status}`;
     const actions = ACTION_MAP[key];

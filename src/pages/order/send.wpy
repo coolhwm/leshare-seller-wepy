@@ -127,7 +127,7 @@
           if (this.delivers.length > 0 && this.input.deliverIndex == null) {
             this.tips('请选择配送员');
           }
-          if (this.input.deliverIndex) {
+          if (this.input.deliverIndex != null) {
             const deliver = this.delivers[this.input.deliverIndex];
             telPhone = deliver.phone;
             note = deliver.name;
