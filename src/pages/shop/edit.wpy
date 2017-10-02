@@ -26,6 +26,14 @@
             <switch checked="{{shop.autoOrder}}" id="autoOrder" @change="input" />
           </view>
         </view>
+
+      <view class="weui-cell weui-cell_switch">
+        <view class="weui-cell__bd">线下支付</view>
+        <view class="weui-cell__ft">
+          <switch checked="{{shop.offPay}}" id="offPay" @change="input" />
+        </view>
+      </view>
+
       <view class="weui-cell">
         <view class="weui-cell__bd" style="min-width: 150rpx;">店铺位置</view>
         <view @tap.stop="chooseLocation" style="min-width: 500rpx;">
@@ -108,6 +116,7 @@
       const [shops, categories] = await Promise.all([shop.info(), shop.getShopCategories()]);
       this.shop = shops;
       this.shop.autoOrder = this.shop.autoOrder == 1;
+      this.shop.offPay = this.shop.offPay == 1;
       this.categories = categories;
       this.pictures = this.shop.images;
       this.loaded();
@@ -152,6 +161,7 @@
           }
         }
         this.shop.autoOrder = this.shop.autoOrder ? 1 : 0;
+        this.shop.offPay = this.shop.offPay ? 1 : 0;
         this.shop.images = data.images;
         await shop.updateShop(this.shop);
         await Tips.success('更新成功！');
