@@ -38,6 +38,12 @@ export const ACTIONS = {
     primary: false,
     name: '订单跟踪',
     func: 'trace'
+  },
+  PHONE: {
+    inner: true,
+    primary: false,
+    name: '联系客户',
+    func: 'phone'
   }
 };
 export const ACTION_MAP = {

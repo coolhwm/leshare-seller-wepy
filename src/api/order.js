@@ -234,7 +234,6 @@ export default class order extends base {
    * 处理订单详情
    */
   static _processOrderDetail(detail) {
-
     // 支付方式
     detail.shopName = this.shopName;
     // 处理订单支付方式
@@ -254,18 +253,25 @@ export default class order extends base {
     // 处理商品信息
     this._processOrderGoods(detail.orderGoodsInfos);
     // 处理动作
-    this._processOrderAction(detail);
+    this._processOrderAction(detail, true);
     return detail;
   }
 
   /**
    * 处理订单动作
    */
-  static _processOrderAction(order) {
-    order.actions = [ACTIONS.REMARK];
+  static _processOrderAction(order, inner = false) {
+    const basic = [ACTIONS.REMARK];
+    if (inner) {
+      basic.push(ACTIONS.PHONE);
+    }
     const key = `${order.orderType}-${order.paymentType}-${order.status}`;
-    if (ACTION_MAP[key]) {
-      order.actions = order.actions.concat(ACTION_MAP[key]);
+    const actions = ACTION_MAP[key];
+    if (actions) {
+      const display = inner ? actions.filter(v => v.inner != true) : actions;
+      order.actions = basic.concat(display);
+    } else {
+      order.actions = basic;
     }
   }
 

@@ -118,6 +118,9 @@
     refund({orderId}) {
       this.$root.$navigate('refund', {orderId});
     }
+    phone({receivePhone}) {
+      wepy.makePhoneCall({phoneNumber: receivePhone});
+    }
     async take({orderId}) {
       await Tips.confirm('确认接单？');
       try {
