@@ -73,7 +73,12 @@
         <text>优惠券</text>
         <text class="major">-￥{{order.couponPrice}}</text>
       </view>
-      <view class="final-box" wx:if="{{order.status != 1}}">
+      <view class="price-hr"></view>
+      <view class="final-box origin-box" wx:if="{{order.orderPriceHistory.length > 0}}">
+        <text class="lg muted">原价：</text>
+        <text class="lg muted">￥{{originPrice}}</text>
+      </view>
+      <view class="final-box">
         <text class="lg">实付款：</text>
         <text class="lg major">￥{{order.finalPrice}}</text>
       </view>
@@ -189,6 +194,18 @@
         wepy.makePhoneCall({phoneNumber: this.order.orderExpress.telPhone});
       }
     };
+    computed = {
+      originPrice() {
+        if (this.order && this.order.orderPriceHistory) {
+          const records = this.order.orderPriceHistory;
+          const length = records.length;
+          if (length > 0) {
+            return records[length - 1].currentPrice.toFixed(2);
+          }
+        }
+        return null;
+      }
+    };
     components = {
       Address: Address,
       OrderItem: OrderItem
@@ -235,12 +252,22 @@
   .summary-box{
     padding: 10px 15px;
 
+    .price-hr{
+      border-top: $border;
+      width: 100%;
+    }
+
     .final-box{
       float: right;
       width: 100%;
       padding-top: 10rpx;
-      border-top: $border;
       text-align: right;
+    }
+
+    .origin-box{
+      text{
+        text-decoration: line-through;
+      }
     }
 
     .price-box{
