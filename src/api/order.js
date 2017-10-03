@@ -4,9 +4,7 @@ import {ACTIONS, ACTION_MAP} from './order_dict'
 
 export default class order extends base {
   static closeReacon = [
-    '无法联系上买家', '买家误拍或重拍', '买家无诚意完成交易',
-    '已通过银行线下汇款', '已通过同城见面交易', '已通过货到付款交易',
-    '已通过网上银行直接汇款', '已缺货无法交易'
+    '已缺货无法交易', '协商取消交易', '已通过货到付款交易', '无法联系上买家', '买家误拍或重拍', '其他'
   ];
   static statusDict = {
     '10': {
