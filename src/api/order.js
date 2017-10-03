@@ -269,7 +269,6 @@ export default class order extends base {
   static _processOrderAction(order, inner = false) {
     const basic = [ACTIONS.REMARK];
     if (inner) {
-      basic.push(ACTIONS.PHONE);
       basic.push(ACTIONS.PRINT);
     }
     const key = `${order.orderType}-${order.paymentType}-${order.status}`;
