@@ -71,7 +71,7 @@
       async photo() {
         const size = this.pictures.length;
         if (size >= 5) {
-          Tips.alert('最多选择五张图片');
+          await Tips.alert('最多选择五张图片');
           return;
         }
         const param = {

@@ -44,7 +44,7 @@ export default class WxUtils {
    */
   static chooseImage(param, maxSize) {
     Tips.loading();
-    return wepy.chooseImage(param).then(({tempFilePaths, tempFiles}) => {
+    return wepy.chooseImage(param).then(async ({tempFilePaths, tempFiles}) => {
       if (tempFiles && maxSize) {
         const removeIndex = [];
         tempFiles.forEach((file, index) => {
@@ -56,7 +56,7 @@ export default class WxUtils {
         const posStr = removeIndex.map(v => v + 1).join(',');
         if (removeIndex.length > 0) {
           removeIndex.forEach(i => tempFilePaths.splice(i, 1));
-          Tips.alert(`第${posStr}张图超过${maxSize}M`);
+          await Tips.alert(`第${posStr}张图超过${maxSize}M`);
         }
       }
       Tips.loaded();
