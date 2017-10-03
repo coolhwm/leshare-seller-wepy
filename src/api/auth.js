@@ -3,6 +3,13 @@ import wepy from 'wepy';
 
 export default class auth extends base {
   /**
+   * 检查登录状态
+   */
+  static isLogin() {
+    const loginCode = this.getConfig('login_code');
+    return loginCode != null;
+  }
+  /**
    * 登录
    */
   static async login(phone, code) {

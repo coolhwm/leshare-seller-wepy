@@ -10,8 +10,8 @@
       </view>
     </view>
 
-    <!--物流栏-->
-    <block wx:if="{{order.isExpress}}">
+    <!--物流栏（电商）-->
+    <block wx:if="{{order.isExpress && order.orderType == 10}}">
       <view class="order-trace-bar row" @tap="trace({{order.orderId}})">
         <image class="icon" src="/images/icons/car.png" />
         <view class="info-box column">
@@ -21,6 +21,22 @@
         <image class="icon" wx:if="{{express.timestape}}" src="/images/icons/more-gray.png" />
       </view>
     </block>
+
+    <!--物流栏（外卖）-->
+    <block wx:if="{{order.isExpress && order.orderType == 20}}">
+      <view class="order-trace-bar row-between" >
+        <view class="row">
+          <image class="icon" src="/images/icons/sender.png" />
+          <text class="ml20">{{order.orderExpress.note}}（{{order.orderExpress.telPhone}}）</text>
+        </view>
+        <view  class="row" @tap="sender">
+          <image class="icon" src="/images/icons/call.png"  />
+          <text class="ml10 primary">电话联系</text>
+        </view>
+      </view>
+    </block>
+
+
     <!--地址展现-->
     <Address :address.sync="address" />
 
@@ -57,7 +73,12 @@
         <text>优惠券</text>
         <text class="major">-￥{{order.couponPrice}}</text>
       </view>
-      <view class="final-box" wx:if="{{order.status != 1}}">
+      <view class="price-hr"></view>
+      <view class="final-box origin-box" wx:if="{{order.orderPriceHistory.length > 0}}">
+        <text class="lg muted">原价：</text>
+        <text class="lg muted">￥{{originPrice}}</text>
+      </view>
+      <view class="final-box">
         <text class="lg">实付款：</text>
         <text class="lg major">￥{{order.finalPrice}}</text>
       </view>
@@ -74,6 +95,7 @@
 
 <script>
   import wepy from 'wepy'
+  import auth from '../../api/auth';
   import base from '../../mixins/base';
   import order from '../../api/order';
   import express from '../../api/express';
@@ -92,6 +114,10 @@
     };
     data = {...this.def};
     async onLoad (options) {
+      if (!auth.isLogin()) {
+        this.$redirect('/pages/home/index');
+        return;
+      }
       const orderId = options.orderId;
       this.order = await order.detail(orderId);
       this.address = this.order.receiveAddress;
@@ -112,6 +138,9 @@
     }
     refund({orderId}) {
       this.$root.$navigate('refund', {orderId});
+    }
+    phone({receivePhone}) {
+      wepy.makePhoneCall({phoneNumber: receivePhone});
     }
     async take({orderId}) {
       await Tips.confirm('确认接单？');
@@ -137,6 +166,16 @@
       Event.emit(Event.ORDER_LIST_UPDATE);
       wepy.navigateBack();
     }
+    async print({orderId}) {
+      await Tips.confirm('确认打印？');
+      try {
+        await order.print(orderId);
+        await Tips.success('打印成功');
+      } catch (e) {
+        console.warn(e);
+        await Tips.success('操作失败');
+      }
+    }
     trace({orderId}) {
       // TODO 尚未处理
       this.$root.$navigate('trace', {orderId});
@@ -150,6 +189,21 @@
         } else {
           Tips.error('未知错误');
         }
+      },
+      sender() {
+        wepy.makePhoneCall({phoneNumber: this.order.orderExpress.telPhone});
+      }
+    };
+    computed = {
+      originPrice() {
+        if (this.order && this.order.orderPriceHistory) {
+          const records = this.order.orderPriceHistory;
+          const length = records.length;
+          if (length > 0) {
+            return records[length - 1].currentPrice.toFixed(2);
+          }
+        }
+        return null;
       }
     };
     components = {
@@ -198,12 +252,22 @@
   .summary-box{
     padding: 10px 15px;
 
+    .price-hr{
+      border-top: $border;
+      width: 100%;
+    }
+
     .final-box{
       float: right;
       width: 100%;
       padding-top: 10rpx;
-      border-top: $border;
       text-align: right;
+    }
+
+    .origin-box{
+      text{
+        text-decoration: line-through;
+      }
     }
 
     .price-box{

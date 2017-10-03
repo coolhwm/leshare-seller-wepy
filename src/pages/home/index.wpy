@@ -15,7 +15,6 @@
             <input class="weui-input" id="phone" type="number" @input="input" maxlength="11" placeholder="请输入手机号" />
           </view>
           <view class="weui-cell__ft">
-            <!--<view class="weui-vcode-btn {{isWaiting ? 'muted' : ''}}" @tap="onCodeTap">{{btnText}}</view>-->
             <VCode  @tap.user="code" />
           </view>
         </view>
@@ -28,7 +27,6 @@
           </view>
         </view>
       </view>
-      <view class="weui-cells__tips">提示：未注册用户将进入示例店铺</view>
 
       <view class="weui-btn-area">
         <button class="weui-btn" type="primary" @tap="confirm">确定</button>

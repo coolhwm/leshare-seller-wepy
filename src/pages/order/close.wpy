@@ -47,6 +47,7 @@
     async onLoad (options) {
       const orderId = options.orderId;
       this.order = await order.detail(orderId);
+      this.input.reasonIndex = 0;
       this.init = true;
       this.$apply();
       Tips.loaded();
@@ -57,7 +58,8 @@
         try {
           const orderId = this.order.orderId;
           await Tips.confirm('您确认要关闭该订单？');
-          await order.close(orderId, this.seletedReason);
+          const reason = this.seletedReason ? this.seletedReason : '卖家关闭';
+          await order.close(orderId, reason);
           Event.emit(Event.ORDER_LIST_UPDATE);
           await Tips.success('关闭成功');
           this.$switch('index');

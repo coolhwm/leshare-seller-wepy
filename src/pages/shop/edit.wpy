@@ -1,7 +1,7 @@
 <template>
     <Tips/>
     <!--照片上传区域-->
-    <ImageUploader :pictures.sync="pictures" otherClass="shop-swiper" top="260"/>
+    <ImageUploader :pictures.sync="pictures" otherClass="shop-swiper" top="260" maxSize="6" @toggle.user="toggle"/>
 
     <view class="hr"></view>
 
@@ -26,6 +26,14 @@
             <switch checked="{{shop.autoOrder}}" id="autoOrder" @change="input" />
           </view>
         </view>
+
+      <view class="weui-cell weui-cell_switch">
+        <view class="weui-cell__bd">线下支付</view>
+        <view class="weui-cell__ft">
+          <switch checked="{{shop.offPay}}" id="offPay" @change="input" />
+        </view>
+      </view>
+
       <view class="weui-cell">
         <view class="weui-cell__bd" style="min-width: 150rpx;">店铺位置</view>
         <view @tap.stop="chooseLocation" style="min-width: 500rpx;">
@@ -63,15 +71,19 @@
           <view class="weui-cell__ft" >   </view>
         </view>
 
-        <view class="weui-cell">
+        <view class="weui-cell" wx:if="{{!uploader}}">
           <view class="weui-cell__bd">
-            <textarea class="weui-textarea" id="sellerNote" value="{{shop.describe}}" placeholder="请输入店铺描述" style="height: 6.3em" maxlength="200" @input="input" />
-            <view class="weui-textarea-counter">{{shop.describe ? shop.describe.length : 0}}/200</view>
+            <textarea class="weui-textarea" id="describe" value="{{shop.describe}}" placeholder="请输入店铺描述" style="height: 4.0em" maxlength="50" @input="input" />
+            <view class="weui-textarea-counter">{{shop.describe ? shop.describe.length : 0}}/50</view>
           </view>
         </view>
     </view>
 
-    <ActionBar cancelText="返回" okText="保存" @tap.user="save"/>
+    <view class="zan-panel">
+      <view class="zan-btns">
+        <button class="zan-btn zan-btn--fill" @tap="save">保存</button>
+      </view>
+    </view>
 
     <!--下拉选择器-->
     <SliderSelector :display.sync="display"
@@ -88,7 +100,6 @@
   import input from '../../mixins/input';
   import FormTips from '../../components/weui/tips';
   import ImageUploader from '../../components/goods/image_uploader';
-  import ActionBar from '../../components/common/action_bar';
   import Tips from '../../utils/Tips';
   import SliderSelector from '../../components/common/slider_selector';
 
@@ -97,13 +108,15 @@
       shop: {},
       pictures: [],
       categories: [],
-      display: false
+      display: false,
+      uploader: false
     };
 
     async onLoad () {
       const [shops, categories] = await Promise.all([shop.info(), shop.getShopCategories()]);
       this.shop = shops;
       this.shop.autoOrder = this.shop.autoOrder == 1;
+      this.shop.offPay = this.shop.offPay == 1;
       this.categories = categories;
       this.pictures = this.shop.images;
       this.loaded();
@@ -137,6 +150,7 @@
         const data = {
           images: []
         };
+        Tips.loading('保存中');
         for (let picture of this.pictures) {
           if (picture.url.substring(0, 6) == 'wxfile') {
             const result = await shop.image(picture.url);
@@ -147,6 +161,7 @@
           }
         }
         this.shop.autoOrder = this.shop.autoOrder ? 1 : 0;
+        this.shop.offPay = this.shop.offPay ? 1 : 0;
         this.shop.images = data.images;
         await shop.updateShop(this.shop);
         await Tips.success('更新成功！');
@@ -157,6 +172,9 @@
       },
       change ({selectedId, selectedName}) {
         this.shop.categoryName = selectedName;
+      },
+      toggle(value) {
+        this.uploader = value == 'true';
       }
     };
 
@@ -164,8 +182,7 @@
     components = {
       Tips: FormTips,
       SliderSelector: SliderSelector,
-      ImageUploader: ImageUploader,
-      ActionBar: ActionBar
+      ImageUploader: ImageUploader
     };
     mixins = [base, input];
     config = {

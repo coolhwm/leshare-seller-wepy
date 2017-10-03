@@ -26,7 +26,7 @@
   import pagination from '../../mixins/pagination';
   import order from '../../api/order';
   import Event from '../../utils/Event';
-  import ZanTab from '../../components/zanui/tab';
+  import ZanTab from '../../components/zanui/expand-tab';
   import OrderItem from '../../components/order/item';
   import Placeholder from '../../components/common/placeholder';
   import Loadmore from '../../components/weui/loadmore';
@@ -43,34 +43,44 @@
       },
       tab: {
         list: [
-          {id: '0', title: '全部'},
-          {id: '1', title: '待付款'},
-          {id: '2', title: '待发货'},
-          {id: '3', title: '待收货'},
+          {id: '2', title: '待接单'},
+          {id: '9', title: '待发货'},
+          {id: '3', title: '待送达'},
           {id: '5', title: '待退款'}
         ],
-        selectedId: '0',
+        expand: [
+          {id: '0', title: '全部'},
+          {id: '1', title: '待付款'},
+          {id: '4', title: '待评价'},
+          {id: '6', title: '已完成'},
+          {id: '7', title: '已关闭'},
+          {id: '8', title: '已退款'}
+        ],
+        expandDefaultText: '其他状态',
+        selectedId: '2',
         scroll: false
-      }
+      },
+      status: '2'
     };
     async onLoad () {
       this.page = order.page();
       this.orders = this.page.list;
       await this.next();
       Event.listen(Event.ORDER_LIST_UPDATE, this.update.bind(this), this);
-      Event.listen(Event.ORDER_TAB_UPDATE, this.status.bind(this), this);
+      Event.listen(Event.ORDER_TAB_UPDATE, this.updateStatus.bind(this), this);
     };
     // 获取分页参数
     params() {
-      return { status: this.tab.selectedId };
+      return { status: this.status };
     }
     // 切换状态
-    status(status) {
+    updateStatus(status) {
       this.tab.selectedId = status;
       this.update();
     }
     methods = {
-      switchTap() {
+      switchTap({selectedId}) {
+        this.status = selectedId;
         this.reload();
       },
       detail(orderId) {

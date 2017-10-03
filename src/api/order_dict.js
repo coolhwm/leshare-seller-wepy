@@ -1,43 +1,55 @@
 export const ACTIONS = {
   CLOSE: {
     primary: false,
-    name: '关闭订单',
+    name: '关闭',
     func: 'close'
   },
   REPRICE: {
     primary: false,
-    name: '订单改价',
+    name: '改价',
     func: 'reprice'
   },
   TAKE: {
     primary: true,
-    name: '接受订单',
+    name: '接单',
     func: 'take'
   },
   SEND: {
     primary: true,
-    name: '订单发货',
+    name: '发货',
     func: 'send'
   },
   RECEIVE: {
     primary: true,
-    name: '确认送达',
+    name: '送达',
     func: 'receive'
   },
   DEAL_REFUND: {
     primary: true,
-    name: '处理退款',
+    name: '退款',
     func: 'refund'
   },
   REMARK: {
     primary: false,
-    name: '订单备注',
+    name: '备注',
     func: 'remark'
   },
   TRACE: {
     primary: false,
-    name: '订单跟踪',
+    name: '跟踪',
     func: 'trace'
+  },
+  PHONE: {
+    inner: true,
+    primary: false,
+    name: '电话',
+    func: 'phone'
+  },
+  PRINT: {
+    inner: true,
+    primary: false,
+    name: '打印',
+    func: 'print'
   }
 };
 export const ACTION_MAP = {

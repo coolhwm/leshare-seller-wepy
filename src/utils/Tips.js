@@ -90,9 +90,13 @@ export default class Tips {
       image: '/images/icons/alert.png',
       mask: true,
       duration: 500
-    })
+    });
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      }, 500);
+    });
   }
-
   /**
    * 错误框
    */

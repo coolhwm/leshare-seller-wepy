@@ -4,9 +4,7 @@ import {ACTIONS, ACTION_MAP} from './order_dict'
 
 export default class order extends base {
   static closeReacon = [
-    '无法联系上买家', '买家误拍或重拍', '买家无诚意完成交易',
-    '已通过银行线下汇款', '已通过同城见面交易', '已通过货到付款交易',
-    '已通过网上银行直接汇款', '已缺货无法交易'
+    '已缺货无法交易', '协商取消交易', '已通过货到付款交易', '无法联系上买家', '买家误拍或重拍', '其他'
   ];
   static statusDict = {
     '10': {
@@ -88,6 +86,14 @@ export default class order extends base {
     const url = `${this.baseUrl}/orders/${orderId}/note`;
     const param = {sellerNote};
     return await this.put(url, param);
+  }
+
+  /**
+   * 订单打印
+   */
+  static async print(orderId) {
+    const url = `${this.baseUrl}/orders/${orderId}/print`;
+    return await this.put(url);
   }
 
   /**
@@ -234,7 +240,6 @@ export default class order extends base {
    * 处理订单详情
    */
   static _processOrderDetail(detail) {
-
     // 支付方式
     detail.shopName = this.shopName;
     // 处理订单支付方式
@@ -254,18 +259,25 @@ export default class order extends base {
     // 处理商品信息
     this._processOrderGoods(detail.orderGoodsInfos);
     // 处理动作
-    this._processOrderAction(detail);
+    this._processOrderAction(detail, true);
     return detail;
   }
 
   /**
    * 处理订单动作
    */
-  static _processOrderAction(order) {
-    order.actions = [ACTIONS.REMARK];
+  static _processOrderAction(order, inner = false) {
+    const basic = [ACTIONS.REMARK];
+    if (inner) {
+      basic.push(ACTIONS.PRINT);
+    }
     const key = `${order.orderType}-${order.paymentType}-${order.status}`;
-    if (ACTION_MAP[key]) {
-      order.actions = order.actions.concat(ACTION_MAP[key]);
+    const actions = ACTION_MAP[key];
+    if (actions) {
+      const display = inner ? actions.filter(v => v.inner != true) : actions;
+      order.actions = basic.concat(display);
+    } else {
+      order.actions = basic;
     }
   }
 
@@ -295,7 +307,11 @@ export default class order extends base {
     const status = order.status;
     order.statusText = statusDict[status];
     order.statusDesc = this.statusDesc[status];
-    order.isAction = status == 1 || status == 2 || status == 3 || status == 4;
+    // 订单关闭
+    if (order.status == 7 && order.orderCloseNote) {
+      const reason = order.orderCloseNote;
+      order.statusDesc = `订单已关闭，关闭原因：${reason.note}`;
+    }
   }
 
   /**

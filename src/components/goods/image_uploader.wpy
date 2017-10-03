@@ -46,6 +46,7 @@
   import wepy from 'wepy';
   import Tips from '../../utils/Tips';
   import SliderPanel from '../../components/common/slider_panel';
+  import WxUtils from '../../utils/WxUtils';
   export default class GoodsImageUploader extends wepy.component {
     props = {
       pictures: {
@@ -56,6 +57,9 @@
       },
       top: {
         default: '455'
+      },
+      maxSize: {
+        default: '5'
       }
     };
     data = {
@@ -67,27 +71,21 @@
       async photo() {
         const size = this.pictures.length;
         if (size >= 5) {
-          Tips.alert('最多选择五张图片');
+          await Tips.alert('最多选择五张图片');
           return;
         }
-
         const param = {
           count: 5 - size,
           sizeType: ['compressed']
         }
-        try {
-          Tips.loading();
-          const {tempFilePaths} = await wepy.chooseImage(param);
-          const pictures = tempFilePaths.map(item => {
-            return {
-              url: item
-            }
-          });
-          this.pictures = this.pictures.concat(pictures);
-          this.$apply();
-        } finally {
-          Tips.loaded();
-        }
+        const tempFilePaths = await WxUtils.chooseImage(param, this.maxSize);
+        const pictures = tempFilePaths.map(item => {
+          return {
+            url: item
+          }
+        });
+        this.pictures = this.pictures.concat(pictures);
+        this.$apply();
       },
       // 打开管理面板
       manage() {
@@ -115,6 +113,11 @@
         if (this.pictures.length < 1) {
           this.isPanelDisplay = false;
         }
+      }
+    };
+    watch = {
+      isPanelDisplay(value) {
+        this.$emit('toggle', value);
       }
     };
     components = {

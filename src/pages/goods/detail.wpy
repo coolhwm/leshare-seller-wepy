@@ -32,6 +32,7 @@
   import Event from '../../utils/Event';
   import Tips from '../../utils/Tips';
   import Placeholder from '../../components/common/placeholder';
+  import WxUtils from '../../utils/WxUtils';
 
   export default class GoodsDetail extends wepy.page {
     def = {
@@ -84,20 +85,14 @@
             count: 10,
             sizeType: ['compressed']
           };
-          try {
-            const {tempFilePaths} = await wepy.chooseImage(param);
-            Tips.loading();
-            for (let path of tempFilePaths) {
-              // const result = await goods.image(path);
-              // const {url} = JSON.parse(result);
-              this.details.push({
-                type: 2,
-                content: path
-              });
-            }
-          } finally {
-            this.loaded();
+          const tempFilePaths = await WxUtils.chooseImage(param, 5);
+          for (let path of tempFilePaths) {
+            this.details.push({
+              type: 2,
+              content: path
+            });
           }
+          this.$apply();
         });
       },
       // 提交信息

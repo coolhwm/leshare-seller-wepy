@@ -56,6 +56,7 @@
       this.categories = await goods.getInnerCategories();
       await this.next();
       Event.listen(Event.GOODS_LIST_UPDATE, this.update.bind(this), this);
+      Event.listen(Event.CATEGORY_LIST_UPDATE, this.updateCategories.bind(this), this);
     };
     // 获取分页参数
     params() {
@@ -63,6 +64,11 @@
         goods_status: this.tab.selectedId,
         category_id: this.tab.categoryId
       };
+    }
+    // 更新分类
+    async updateCategories() {
+      this.categories = await goods.getInnerCategories();
+      this.loaded();
     }
     methods = {
       add() {

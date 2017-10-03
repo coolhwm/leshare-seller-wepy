@@ -1,0 +1,143 @@
+<template>
+  <view class="zan-tab">
+    <view class="zan-tab__bd {{fixed ? 'zan-tab__bd--fixed' : ''}}">
+      <view
+        wx:for="{{tab.list}}"
+        wx:key="id"
+        class="zan-tab__item {{tab.selectedId == item.id ? 'zan-tab__item--selected' : ''}}"
+        data-component-id="{{componentId}}"
+        data-item-id="{{item.id}}"
+        @tap="handleZanTabChange"
+      >
+        <view class="zan-tab__title">
+          <text>{{item.title}}</text>
+        </view>
+      </view>
+      <view
+        class="zan-tab__expand zan-tab__item {{tab.selectedId == 'EXPAND' ? 'zan-tab__item--selected' : ''}}"
+        data-component-id="EXPAND"
+        data-item-id="EXPAND"
+        @tap="handleZanTabChange"
+      >
+        <view class="zan-tab__title">
+          <view class="row">
+            <image class="icon" src="/images/icons/category.png"/>
+            <text class="ml10">{{expandText}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import Tips from '../../utils/Tips';
+  export default class ExpandTab extends wepy.component {
+    props = {
+      tab: {twoWay: true},
+      fixed: {
+        type: Boolean,
+        default: true
+      }
+    };
+    data = {
+      expandText: null
+    }
+
+    methods = {
+      /**
+       * 事件处理函数
+       */
+      async handleZanTabChange(e) {
+        const dataset = e.currentTarget.dataset;
+        const componentId = dataset.componentId;
+        const selectedId = dataset.itemId;
+        if (selectedId == 'EXPAND') {
+          const actions = this.tab.expand.map(v => v.title);
+          const {index, text} = await Tips.action(...actions);
+          const expandId = this.tab.expand[index].id;
+          this.tab.selectedId = 'EXPAND';
+          this.expandText = text;
+          this.$emit('change', {
+            selectedId: expandId
+          });
+          this.$apply();
+        } else {
+          const data = { componentId, selectedId };
+          // 直接修改数据/双向通讯
+          this.tab.selectedId = selectedId;
+          // 发射事件
+          this.$emit('change', data);
+        }
+      }
+    };
+    computed = {
+      expandText() {
+        if (this.tab.selectedId == 'EXPAND') {
+          return this.expandText;
+        } else {
+          return this.tab.expandDefaultText;
+        }
+      }
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  .zan-tab {
+    height: 41px;
+  }
+  .zan-tab__bd {
+    width: 750rpx;
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1rpx solid #e5e5e5;
+    background: #fff;
+  }
+  .zan-tab__bd--fixed {
+    position: fixed;
+    top: 0;
+    z-index: 2;
+  }
+  .zan-tab__item {
+    flex: 1;
+    display: inline-block;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  .zan-tab__title {
+    display: inline-block;
+    color: #666;
+    height: 40px;
+    line-height: 40px;
+    box-sizing: border-box;
+    margin: 0 10px;
+    word-break: keep-all;
+  }
+  .zan-tab__title text{
+    font-size: 28rpx;
+  }
+  .zan-tab__item--selected .zan-tab__title {
+    border-bottom: 2px solid $color-primary;
+  }
+  .zan-tab__item--selected .zan-tab__title text{
+    color: $color-primary;
+  }
+  .zan-tab__bd--scroll {
+    display: block;
+    white-space: nowrap;
+  }
+  .zan-tab__bd--scroll .zan-tab__item {
+    min-width: 80px;
+  }
+  .zan-tab__bd--scroll .zan-tab__text {
+    margin: 0 20px;
+  }
+  .zan-tab__expand{
+    border-left: $border;
+    max-width: 100px;
+    min-width: 100px;
+  }
+</style>

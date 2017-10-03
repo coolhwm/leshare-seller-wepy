@@ -8,7 +8,10 @@
     <view class="info-box column">
       <view class="row-between">
         <text>收货人：{{address.name}} </text>
-        <text>{{address.phone}}</text>
+        <view class="row"  @tap="phone">
+          <image class="icon" src="/images/icons/call.png" />
+          <text class="primary ml10">{{address.phone}}</text>
+        </view>
       </view>
       <view class="mt10">
         <text>地址：{{address.fullAddress}} </text>
@@ -24,6 +27,11 @@
     props = {
       address: {}
     };
+    methods = {
+      phone() {
+        wepy.makePhoneCall({phoneNumber: this.address.phone});
+      }
+    }
   }
 </script>
 
