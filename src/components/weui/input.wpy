@@ -1,18 +1,22 @@
 <template>
-  <view class="weui-cell weui-cell_input">
-    <view class="weui-cell__hd" >
-      <view class="weui-label">{{title}}</view>
+    <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+            <view class="weui-label">{{title}}</view>
+        </view>
+        <view class="weui-cell__bd">
+            <input class="weui-input" id="{{fieldName}}" @input="input" value="{{input[fieldName]}}"
+                   disabled="{{fieldName=='fromLimit1' || fieldName=='fromLimit2'}}"
+                   type="{{type}}" placeholder="{{placeholder}}"/>
+        </view>
+        <view class="weui-cell__ft">
+
+        </view>
     </view>
-    <view class="weui-cell__bd">
-      <input class="weui-input" id="{{fieldName}}" @input="input" value="{{input[fieldName]}}" placeholder="{{placeholder}}"/>
-    </view>
-    <view class="weui-cell__ft">
-    </view>
-  </view>
 </template>
 
 <script>
-  import wepy from 'wepy'
+  import wepy from 'wepy';
+
   export default class InputText extends wepy.component {
     props = {
       input: {
@@ -22,9 +26,16 @@
       type: {
         default: 'text'
       },
+      unit: {
+        default: ''
+      },
       fieldName: {},
-      placeholder: {}
+      placeholder: {},
+      level: {
+        default: 1
+      }
     };
+
     onLoad() {
       if (this.placeholder == null && this.title != null) {
         this.placeholder = `请输入${this.title}`;
@@ -37,11 +48,13 @@
         }
       }
     }
+
     methods = {
       input(e) {
         const value = e.detail.value;
+        const id = e.target.id;
         this.input[this.fieldName] = value;
-        this.$emit('input', value);
+        this.$emit('input', value, id, this.level);
       }
     };
     events = {};
@@ -49,5 +62,5 @@
 </script>
 
 <style lang="scss">
-  @import "../../styles/variable";
+    @import "../../styles/variable";
 </style>
