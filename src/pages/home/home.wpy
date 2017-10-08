@@ -88,13 +88,13 @@
           <image src="/images/home/coupon.png"/>
           <text>卡券管理</text>
         </navigator>
+        <view class="operation-row column-center"  @tap="scan">
+          <image src="/images/home/scan.png"/>
+          <text>扫码核销</text>
+        </view>
         <navigator class="operation-row column-center" url="../customer/list">
           <image src="/images/home/customer.png"/>
           <text>用户管理</text>
-        </navigator>
-        <navigator class="operation-row column-center" open-type="switchTab" url="../shop/index">
-          <image src="/images/home/more.png"/>
-          <text>更多配置</text>
         </navigator>
       </view>
     </view>
@@ -145,6 +145,14 @@
     methods = {
       order(status) {
         Event.emit(Event.ORDER_TAB_UPDATE, status);
+      },
+      async scan() {
+        const {result} = await wepy.scanCode();
+        if (result != null && result != '') {
+          this.$navigate(`/pages/coupon/scan?id=${result}`);
+        } else {
+          Tips.alert('扫描失败');
+        }
       }
     }
     config = {

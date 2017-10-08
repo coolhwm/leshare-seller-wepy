@@ -103,7 +103,7 @@
         this.input = await coupon.info(couponId);
       }
       this.loaded();
-    };
+    }=
     methods = {
       async submit() {
         if (!this.validate()) {

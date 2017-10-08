@@ -1,0 +1,25 @@
+<template>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  // import Tips from '../../utils/Tips';
+
+  export default class CouponScan extends wepy.page {
+    def = {}
+    data = {...this.def};
+    onLoad ({id}) {
+      console.info(id);
+    };
+    events = {};
+    components = {};
+    mixins = [base];
+    config = {
+      navigationBarTitleText: '卡券核销'
+    };
+  }
+</script>
+
+<style lang="scss">
+</style>
