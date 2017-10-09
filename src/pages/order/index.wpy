@@ -62,10 +62,18 @@
       },
       status: '2'
     };
-    async onLoad () {
+    async onLoad (options, {preload}) {
+      // 处理初始化的状态
+      const status = preload.status;
+      if (status) {
+        this.status = status
+        this.tab.selectedId = status;
+      }
+      // 页面加载
       this.page = order.page();
       this.orders = this.page.list;
       await this.next();
+      // 事件监听
       Event.listen(Event.ORDER_LIST_UPDATE, this.update.bind(this), this);
       Event.listen(Event.ORDER_TAB_UPDATE, this.updateStatus.bind(this), this);
     };
@@ -76,6 +84,7 @@
     // 切换状态
     updateStatus(status) {
       this.tab.selectedId = status;
+      this.status = status;
       this.update();
     }
     methods = {

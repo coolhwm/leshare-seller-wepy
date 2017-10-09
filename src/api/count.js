@@ -23,7 +23,7 @@ export default class count extends base {
     const url = `${this.baseUrl}/count/order`;
     const data = await this.get(url);
     const result = {};
-    for (let i = 1; i <= 8; i++) {
+    for (let i = 1; i <= 9; i++) {
       const item = data.find(item => item.status == i);
       result[`n${i}`] = item != null ? item.total : 0;
     }

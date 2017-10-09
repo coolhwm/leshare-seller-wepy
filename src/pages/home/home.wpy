@@ -29,22 +29,28 @@
     </view>
 
     <!--其他统计区域-->
+    <!--TODO 目前是外卖模板-->
     <view>
       <view class="count-box row-around bg-white">
         <navigator class="count-item column-center"  @tap="order('2')" open-type="switchTab" url="../order/index">
           <text class="count-value">{{order.n2}}</text>
+          <text class="muted">待接单订单</text>
+        </navigator>
+        <view class="vr"/>
+        <navigator class="count-item column-center"  @tap="order('9')" open-type="switchTab" url="../order/index">
+          <text class="count-value">{{order.n9}}</text>
           <text class="muted">待发货订单</text>
         </navigator>
         <view class="vr"/>
-        <navigator class="count-item column-center"  @tap="order('1')" open-type="switchTab" url="../order/index">
-          <text class="count-value">{{order.n1}}</text>
-          <text class="muted">待付款订单</text>
+        <navigator class="count-item column-center"  @tap="order('3')" open-type="switchTab" url="../order/index">
+          <text class="count-value">{{order.n3}}</text>
+          <text class="muted">待送达订单</text>
         </navigator>
         <view class="vr"/>
-        <navigator class="count-item column-center" @tap="order('5')" open-type="switchTab" url="../order/index">
-          <text class="count-value">{{order.n5}}</text>
-          <text class="muted">待退款订单</text>
-        </navigator>
+        <!--<navigator class="count-item column-center" @tap="order('5')" open-type="switchTab" url="../order/index">-->
+          <!--<text class="count-value">{{order.n5}}</text>-->
+          <!--<text class="muted">待退款订单</text>-->
+        <!--</navigator>-->
       </view>
       <view class="count-box row-around bg-white">
         <view class="count-item column-center">
@@ -144,6 +150,7 @@
     }
     methods = {
       order(status) {
+        this.$preload('status', status);
         Event.emit(Event.ORDER_TAB_UPDATE, status);
       },
       async scan() {
