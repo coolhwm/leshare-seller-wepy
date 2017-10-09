@@ -7,7 +7,7 @@
 
     <!--店铺名称-->
     <view class="name-box row-center">
-        <image class="icon-lg" src="{{shop.avatar}}"/>
+        <image class="icon-xl" src="{{shop.avatar}}" @tap="avatar"/>
         <input class="shop-name" id="name" placeholder="请输入店铺名称" value="{{shop.name}}" bindinput="input"/>
     </view>
 
@@ -102,6 +102,7 @@
   import ImageUploader from '../../components/goods/image_uploader';
   import Tips from '../../utils/Tips';
   import SliderSelector from '../../components/common/slider_selector';
+  import WxUtils from '../../utils/WxUtils';
 
   export default class ShopEdit extends wepy.page {
     data = {
@@ -175,6 +176,19 @@
       },
       toggle(value) {
         this.uploader = value == 'true';
+      },
+      async avatar() {
+        const param = {
+          count: 1,
+          sizeType: ['compressed']
+        }
+        const file = await WxUtils.chooseImage(param, 2);
+        Tips.loading('上传中');
+        const result = await shop.image(file[0]);
+        const image = JSON.parse(result);
+        this.shop.avatar = image.url;
+        Tips.loaded();
+        this.$apply();
       }
     };
 
