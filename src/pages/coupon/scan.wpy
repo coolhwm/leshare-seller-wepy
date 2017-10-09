@@ -1,20 +1,93 @@
 <template>
+  <Tips />
+  <view wx:if="{{init}}">
+
+    <view wx:if="{{success}}">
+      <!--卡券信息-->
+      <CouponItem :coupon.sync="coupon" disable="true"/>
+
+      <!--提示信息-->
+      <view class="tips-box">
+        <text class="muted">注意：请确认卡券信息，点击立即核销即可使用该卡券</text>
+      </view>
+
+      <!--操作栏-->
+      <ActionBar @tap.user="submit" okText="立即核销" />
+    </view>
+    <view wx:else class="error-tips column-center">
+      <text style="font-size: 30px">核销失败</text>
+      <text class="muted mt20">{{message}}</text>
+    </view>
+  </view>
+
 </template>
 
 <script>
   import wepy from 'wepy';
+  import input from '../../mixins/input';
+  import coupon from '../../api/coupon';
   import base from '../../mixins/base';
-  // import Tips from '../../utils/Tips';
+  import CouponItem from '../../components/coupon/display_item';
+  import ActionBar from '../../components/common/action_bar';
+  import Tips from '../../utils/Tips';
+  import FormTips from '../../components/weui/tips';
 
   export default class CouponScan extends wepy.page {
-    def = {}
+    def = {
+      init: false,
+      success: false,
+      coupon: {},
+      id: null
+    }
     data = {...this.def};
-    onLoad ({id}) {
-      console.info(id);
+    async onLoad ({scan}) {
+      if (scan == null && scan == '') {
+        this.message = '扫描失败，没有检测到二维码';
+        this.loaded();
+        return;
+      }
+      const info = scan.split('#');
+      if (info == null && info.length != 2) {
+        this.message = '扫描失败，请扫描优惠券二维码';
+        this.loaded();
+        return;
+      }
+      const useId = info[1];
+      const couponId = info[0];
+      if (useId == null && couponId == null) {
+        this.message = '扫描失败，请扫描优惠券二维码';
+        this.loaded();
+        return;
+      }
+      this.id = useId;
+      try {
+        this.coupon = await coupon.info(info[0]);
+        this.success = true;
+      } catch (error) {
+        this.message = error.message;
+      }
+      this.loaded();
     };
-    events = {};
-    components = {};
-    mixins = [base];
+    methods = {
+      async submit () {
+        try {
+          await coupon.use(this.id);
+          this.coupon.status = 'USED';
+          await Tips.success('核销成功');
+          this.loaded();
+        } catch (e) {
+          console.warn(e);
+          this.tips('核销失败:' + e.message);
+          Tips.loaded();
+        }
+      }
+    };
+    components = {
+      CouponItem: CouponItem,
+      ActionBar: ActionBar,
+      Tips: FormTips
+    };
+    mixins = [base, input];
     config = {
       navigationBarTitleText: '卡券核销'
     };
@@ -22,4 +95,12 @@
 </script>
 
 <style lang="scss">
+  .tips-box{
+    padding: 20rpx;
+  }
+  .error-tips{
+    position: absolute;
+    top: 150px;
+    width: 100%;
+  }
 </style>

@@ -29,9 +29,12 @@ export default class coupon extends base {
   /**
    * 查询卡券信息
    */
-  static async info(couponId) {
+  static info(couponId) {
     const url = `${this.baseUrl}/coupons/${couponId}`;
-    return await this.get(url);
+    return this.get(url).then(data => {
+      this.processCouponItem(data);
+      return data;
+    });
   }
 
   /**
@@ -40,6 +43,14 @@ export default class coupon extends base {
   static async update(couponId, coupon) {
     const url = `${this.baseUrl}/coupons/${couponId}`;
     return await this.put(url, coupon);
+  }
+
+  /**
+   * 使用卡券
+   */
+  static async use(id) {
+    const url = `${this.baseUrl}/coupons/use/${id}`;
+    return await this.put(url);
   }
 
   /**

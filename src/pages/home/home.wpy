@@ -149,7 +149,7 @@
       async scan() {
         const {result} = await wepy.scanCode();
         if (result != null && result != '') {
-          this.$navigate(`/pages/coupon/scan?id=${result}`);
+          this.$navigate(`/pages/coupon/scan?scan=${result}`);
         } else {
           Tips.alert('扫描失败');
         }
