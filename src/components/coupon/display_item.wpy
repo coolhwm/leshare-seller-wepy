@@ -1,5 +1,5 @@
 <template>
-  <view class="coupon-box row-center " @longtap="remove({{coupon.id}})">
+  <view class="coupon-box row-center  {{coupon.status == 'USED' ? 'coupon-item-disable' : '' }}">
     <!--左侧区域-->
     <view class="main-box column-center">
       <view >
@@ -11,19 +11,18 @@
 
     <!--右侧区域-->
     <view class="info-box column">
-      <view>
-        <view>
-          <text class="sm">{{coupon.name}}</text>
-        </view>
-        <text class="muted xs">{{coupon.beginTime}}-{{coupon.dueTime}}</text>
+      <view class="column">
+          <text class="lg">{{coupon.name}}</text>
+          <text class="muted xs mt10">满{{coupon.limitPrice}}元减{{coupon.price}}元</text>
       </view>
 
       <!--分隔符-->
-      <view class="btn-box row-end" wx:if="{{action == 'true'}}">
-        <view class="zan-btn zan-btn--small" @tap="edit({{coupon.id}})">编辑</view>
-        <view class="zan-btn zan-btn--small  zan-btn--primary" @tap="put({{coupon.id}})" >发放</view>
+      <view class="btn-box">
+        <text class="muted xs">有效期：{{coupon.beginTime}}-{{coupon.dueTime}}</text>
       </view>
     </view>
+
+    <image class="coupon-used-icon" wx:if="{{coupon.status == 'USED'}}" src="/images/icons/coupon_check.png" />
   </view>
 </template>
 
@@ -34,30 +33,9 @@
   import Event from '../../utils/Event';
   export default class CouponItem extends wepy.component {
     props = {
-      coupon: {},
-      action: {
-        default: 'true'
-      }
+      coupon: {}
     };
     data = {};
-    methods = {
-      async remove (couponId) {
-        await Tips.confirm('确认删除该优惠券？');
-        await coupon.remove(couponId);
-        await Tips.success('删除成功');
-        Event.emit(Event.COUPON_LIST_UPDATE);
-      },
-      edit(couponId) {
-        const param = {
-          couponId,
-          mode: 'edit'
-        }
-        this.$root.$navigate('edit', param);
-      },
-      put(couponId) {
-        Tips.alert('敬请期待');
-      }
-    };
     onLoad() {
     }
   }
@@ -100,5 +78,25 @@
         border-top: $border-dot;
       }
     }
+  }
+  /*已使用/已过期情况调整*/
+  .coupon-item-disable{
+    overflow: hidden;
+  }
+  .coupon-item-disable .main-box{
+    background: #C2C2C2;
+  }
+  .coupon-item-disable .main-box text{
+    color: #FFF;
+  }
+  .coupon-item-disable .info-box text{
+    color: #A7A7A7;
+  }
+  .coupon-used-icon{
+    height: 64px;
+    width: 64px;
+    position: absolute;
+    top: 2px;
+    right: -8px;
   }
 </style>

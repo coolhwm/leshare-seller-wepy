@@ -29,22 +29,28 @@
     </view>
 
     <!--其他统计区域-->
+    <!--TODO 目前是外卖模板-->
     <view>
       <view class="count-box row-around bg-white">
         <navigator class="count-item column-center"  @tap="order('2')" open-type="switchTab" url="../order/index">
           <text class="count-value">{{order.n2}}</text>
+          <text class="muted">待接单订单</text>
+        </navigator>
+        <view class="vr"/>
+        <navigator class="count-item column-center"  @tap="order('9')" open-type="switchTab" url="../order/index">
+          <text class="count-value">{{order.n9}}</text>
           <text class="muted">待发货订单</text>
         </navigator>
         <view class="vr"/>
-        <navigator class="count-item column-center"  @tap="order('1')" open-type="switchTab" url="../order/index">
-          <text class="count-value">{{order.n1}}</text>
-          <text class="muted">待付款订单</text>
+        <navigator class="count-item column-center"  @tap="order('3')" open-type="switchTab" url="../order/index">
+          <text class="count-value">{{order.n3}}</text>
+          <text class="muted">待送达订单</text>
         </navigator>
         <view class="vr"/>
-        <navigator class="count-item column-center" @tap="order('5')" open-type="switchTab" url="../order/index">
-          <text class="count-value">{{order.n5}}</text>
-          <text class="muted">待退款订单</text>
-        </navigator>
+        <!--<navigator class="count-item column-center" @tap="order('5')" open-type="switchTab" url="../order/index">-->
+          <!--<text class="count-value">{{order.n5}}</text>-->
+          <!--<text class="muted">待退款订单</text>-->
+        <!--</navigator>-->
       </view>
       <view class="count-box row-around bg-white">
         <view class="count-item column-center">
@@ -88,13 +94,13 @@
           <image src="/images/home/coupon.png"/>
           <text>卡券管理</text>
         </navigator>
+        <view class="operation-row column-center"  @tap="scan">
+          <image src="/images/home/scan.png"/>
+          <text>扫码核销</text>
+        </view>
         <navigator class="operation-row column-center" url="../customer/list">
           <image src="/images/home/customer.png"/>
           <text>用户管理</text>
-        </navigator>
-        <navigator class="operation-row column-center" open-type="switchTab" url="../shop/index">
-          <image src="/images/home/more.png"/>
-          <text>更多配置</text>
         </navigator>
       </view>
     </view>
@@ -112,6 +118,7 @@
   import Event from '../../utils/Event';
   import Tips from '../../utils/Tips';
   import WxUtils from '../../utils/WxUtils';
+  let interval = null;
 
   export default class HomeIndex extends wepy.page {
     def = {
@@ -119,19 +126,62 @@
       month: {},
       order: {},
       shop: {},
-      init: false
+      init: false,
+      show: false
     }
     data = {...this.def};
     async onLoad () {
       WxUtils.checkSDK();
       this.shop = await shop.info();
+      this.show = true;
       await this.reload();
+
     };
+    async onShow() {
+      // 定时刷新
+      this.show = true;
+      interval = setInterval(async () => {
+        await this.reload();
+      }, 10 * 1000);
+      // 立即刷新
+      await this.reload();
+    }
+    onHide() {
+      this.show = false;
+      clearInterval(interval);
+    }
+    onUnload() {
+      // 清理定时器
+      clearInterval(interval);
+    }
     async reload() {
-      this.today = await count.today();
-      this.month = await count.month();
-      this.order = await count.order();
+      Tips.setLoading()
+      // 数据展现
+      const [today, month, order] = await Promise.all([count.today(), count.month(), count.order()]);
+      this.today = today;
+      this.month = month;
+      this.order = order;
       this.loaded();
+      // 差异比对
+      if (this.show) {
+        this.compareOrderStatus(order);
+      }
+      // 写入缓存
+      wepy.setStorageSync('order_count', order);
+    }
+    compareOrderStatus(curStatus) {
+      const preStatus = wepy.getStorageSync('order_count');
+      if (preStatus == '') {
+        return;
+      }
+      // 接单数量比较
+      if (preStatus.n2 < curStatus.n2) {
+        // 新订单通知
+        wepy.playBackgroundAudio({
+          dataUrl: 'http://img.leshare.shop/leshare/new_order.mp3'
+        });
+        Tips.modal('您有新的订单，请及时处理');
+      }
     }
     async onPullDownRefresh () {
       await this.reload();
@@ -144,7 +194,16 @@
     }
     methods = {
       order(status) {
+        this.$preload('status', status);
         Event.emit(Event.ORDER_TAB_UPDATE, status);
+      },
+      async scan() {
+        const {result} = await wepy.scanCode();
+        if (result != null && result != '') {
+          this.$navigate(`/pages/coupon/scan?scan=${result}`);
+        } else {
+          Tips.alert('扫描失败');
+        }
       }
     }
     config = {

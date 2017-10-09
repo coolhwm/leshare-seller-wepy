@@ -29,9 +29,12 @@ export default class coupon extends base {
   /**
    * 查询卡券信息
    */
-  static async info(couponId) {
+  static info(couponId) {
     const url = `${this.baseUrl}/coupons/${couponId}`;
-    return await this.get(url);
+    return this.get(url).then(data => {
+      this.processCouponItem(data);
+      return data;
+    });
   }
 
   /**
@@ -43,9 +46,20 @@ export default class coupon extends base {
   }
 
   /**
+   * 使用卡券
+   */
+  static async use(id) {
+    const url = `${this.baseUrl}/coupons/use/${id}`;
+    return await this.put(url);
+  }
+
+  /**
    * 数据处理
    */
   static processCouponItem(coupon) {
+    if (coupon == null) {
+      return;
+    }
     coupon.beginTime = this._convertTimestapeToDay(coupon.beginTime);
     coupon.dueTime = this._convertTimestapeToDay(coupon.dueTime);
     coupon.name = coupon.name ? coupon.name : '优惠券';
@@ -55,6 +69,9 @@ export default class coupon extends base {
    * 处理时间格式
    */
   static _convertTimestapeToDay(timestape) {
+    if (timestape == null) {
+      return;
+    }
     let temp = timestape;
     if (timestape.indexOf(' ') != -1) {
       temp = timestape.substring(0, timestape.indexOf(' '))
