@@ -118,6 +118,7 @@
   import Event from '../../utils/Event';
   import Tips from '../../utils/Tips';
   import WxUtils from '../../utils/WxUtils';
+  let interval = null;
 
   export default class HomeIndex extends wepy.page {
     def = {
@@ -125,19 +126,62 @@
       month: {},
       order: {},
       shop: {},
-      init: false
+      init: false,
+      show: false
     }
     data = {...this.def};
     async onLoad () {
       WxUtils.checkSDK();
       this.shop = await shop.info();
+      this.show = true;
       await this.reload();
+
     };
+    async onShow() {
+      // 定时刷新
+      this.show = true;
+      interval = setInterval(async () => {
+        await this.reload();
+      }, 10 * 1000);
+      // 立即刷新
+      await this.reload();
+    }
+    onHide() {
+      this.show = false;
+      clearInterval(interval);
+    }
+    onUnload() {
+      // 清理定时器
+      clearInterval(interval);
+    }
     async reload() {
-      this.today = await count.today();
-      this.month = await count.month();
-      this.order = await count.order();
+      Tips.setLoading()
+      // 数据展现
+      const [today, month, order] = await Promise.all([count.today(), count.month(), count.order()]);
+      this.today = today;
+      this.month = month;
+      this.order = order;
       this.loaded();
+      // 差异比对
+      if (this.show) {
+        this.compareOrderStatus(order);
+      }
+      // 写入缓存
+      wepy.setStorageSync('order_count', order);
+    }
+    compareOrderStatus(curStatus) {
+      const preStatus = wepy.getStorageSync('order_count');
+      if (preStatus == '') {
+        return;
+      }
+      // 接单数量比较
+      if (preStatus.n2 < curStatus.n2) {
+        // 新订单通知
+        wepy.playBackgroundAudio({
+          dataUrl: 'http://img.leshare.shop/leshare/new_order.mp3'
+        });
+        Tips.modal('您有新的订单，请及时处理');
+      }
     }
     async onPullDownRefresh () {
       await this.reload();
