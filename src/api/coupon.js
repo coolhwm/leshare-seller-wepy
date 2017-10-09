@@ -57,6 +57,9 @@ export default class coupon extends base {
    * 数据处理
    */
   static processCouponItem(coupon) {
+    if (coupon == null) {
+      return;
+    }
     coupon.beginTime = this._convertTimestapeToDay(coupon.beginTime);
     coupon.dueTime = this._convertTimestapeToDay(coupon.dueTime);
     coupon.name = coupon.name ? coupon.name : '优惠券';
@@ -66,6 +69,9 @@ export default class coupon extends base {
    * 处理时间格式
    */
   static _convertTimestapeToDay(timestape) {
+    if (timestape == null) {
+      return;
+    }
     let temp = timestape;
     if (timestape.indexOf(' ') != -1) {
       temp = timestape.substring(0, timestape.indexOf(' '))

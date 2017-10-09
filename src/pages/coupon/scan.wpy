@@ -37,6 +37,7 @@
       init: false,
       success: false,
       coupon: {},
+      message: '',
       id: null
     }
     data = {...this.def};
@@ -62,6 +63,11 @@
       this.id = useId;
       try {
         this.coupon = await coupon.info(info[0]);
+        if (this.coupon == null) {
+          this.message = '该优惠券不存在或已删除';
+          this.loaded();
+          return;
+        }
         this.success = true;
       } catch (error) {
         this.message = error.message;
