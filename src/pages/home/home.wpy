@@ -142,7 +142,7 @@
       this.show = true;
       interval = setInterval(async () => {
         await this.reload();
-      }, 10 * 1000);
+      }, 60 * 1000);
       // 立即刷新
       await this.reload();
     }
