@@ -131,11 +131,12 @@
     }
     data = {...this.def};
     async onLoad () {
+      console.info('load')
       WxUtils.checkSDK();
       this.shop = await shop.info();
       this.show = true;
       await this.reload();
-
+      Event.listen(Event.USER_LOGOUT, this.clear.bind(this), this);
     };
     async onShow() {
       // 定时刷新
@@ -143,8 +144,15 @@
       interval = setInterval(async () => {
         await this.reload();
       }, 60 * 1000);
+      // 切换店铺刷新信息
+      if (!this.init) {
+        this.shop = await shop.info();
+      }
       // 立即刷新
       await this.reload();
+    }
+    clear() {
+      this.init = false;
     }
     onHide() {
       this.show = false;

@@ -76,7 +76,14 @@
       // 事件监听
       Event.listen(Event.ORDER_LIST_UPDATE, this.update.bind(this), this);
       Event.listen(Event.ORDER_TAB_UPDATE, this.updateStatus.bind(this), this);
+      Event.listen(Event.USER_LOGOUT, this.clear.bind(this), this);
     };
+    async onShow () {
+      if (!this.init) {
+        this.page.reset();
+        await this.next();
+      }
+    }
     // 获取分页参数
     params() {
       return { status: this.status };
@@ -86,6 +93,10 @@
       this.tab.selectedId = status;
       this.status = status;
       this.update();
+    }
+    clear() {
+      this.page.clear();
+      this.init = false;
     }
     methods = {
       switchTap({selectedId}) {

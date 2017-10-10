@@ -178,17 +178,23 @@
         this.uploader = value == 'true';
       },
       async avatar() {
-        const param = {
-          count: 1,
-          sizeType: ['compressed']
+        try {
+          const param = {
+            count: 1,
+            sizeType: ['compressed']
+          }
+          const file = await WxUtils.chooseImage(param, 2);
+          if (file.length == 0) {
+            return;
+          }
+          Tips.loading('上传中');
+          const result = await shop.image(file[0]);
+          const image = JSON.parse(result);
+          this.shop.avatar = image.url;
+          this.$apply();
+        } finally {
+          Tips.loaded();
         }
-        const file = await WxUtils.chooseImage(param, 2);
-        Tips.loading('上传中');
-        const result = await shop.image(file[0]);
-        const image = JSON.parse(result);
-        this.shop.avatar = image.url;
-        Tips.loaded();
-        this.$apply();
       }
     };
 
