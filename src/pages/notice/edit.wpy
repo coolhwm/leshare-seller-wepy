@@ -4,7 +4,21 @@
     <view class="mt10"></view>
     <!--操作表单-->
     <view class="weui-cells-form">
-      <Switch title="发布公告" fieldName="show" :input.sync="input" switchFlag="true" />
+
+      <view class="weui-cell weui-cell_switch">
+        <view class="weui-cell__bd">发布公告</view>
+        <view class="weui-cell__ft" >
+          <switch checked="{{input.show}}" id="show" @change="input" />
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_switch">
+        <view class="weui-cell__bd">首页展现</view>
+        <view class="weui-cell__ft" >
+          <switch checked="{{input.isHome}}" id="isHome" @change="input" />
+        </view>
+      </view>
+
       <Textarea fieldName="content" :input.sync="input"/>
     </view>
 
@@ -39,9 +53,11 @@
       this.mode = mode;
       if (mode == 'create') {
         this.input.show = true;
+        this.input.isHome = false;
       } else if (mode == 'edit') {
         this.input = await notice.info(noticeId);
         this.input.show = this.input.isShow == 1;
+        this.input.isHome = this.input.isHome == 1;
       }
       this.loaded();
     };
@@ -52,6 +68,7 @@
         }
         const data = this.input;
         data.isShow = data.show ? 1 : 2;
+        data.isHome = data.isHome ? 1 : 0;
         if (this.mode == 'create') {
           await notice.create(data);
           await Tips.success('创建成功');
