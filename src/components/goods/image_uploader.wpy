@@ -25,8 +25,8 @@
         <view class="item-header-box">
           <text class="lg mr20">{{index + 1}}</text>
           <image class="icon-xl" src="{{item.url}}"></image>
-          <text class="ml20" wx:if="{{index == 0}}">(商品封面)</text>
-          <text class="muted ml20" wx:else>(细节图片)</text>
+          <text class="ml20" wx:if="{{index == 0}}">(封面)</text>
+          <text class="muted ml20" wx:else>(细节)</text>
         </view>
 
         <!-- 操作区域 -->
@@ -36,7 +36,7 @@
           <image class="icon-lg" src="/images/icons/minus.png" @tap="remove({{index}})"></image>
         </view>
       </view>
-      <text class="muted sm mt10 ml20">提示：请点击按钮改变图片顺序，第一张图片为商品封面</text>
+      <text class="muted sm mt10 ml20">提示：请点击按钮改变图片顺序，第一张图片为封面</text>
     </view>
   </SliderPanel>
 

@@ -1,6 +1,9 @@
 <template>
   <view class="notice-box column">
-    <text>{{notice.content}}</text>
+    <view class="row">
+      <view class="small label primary mr10" wx:if="{{notice.isHome == 1}}">首页</view>
+      <text>{{notice.content}}</text>
+    </view>
     <view class="btn-box row-end">
       <view class="zan-btn zan-btn--small"  @tap="delete({{notice.id}})" >删除</view>
       <view class="zan-btn zan-btn--small  zan-btn--primary"  @tap="edit({{notice.id}})">编辑</view>

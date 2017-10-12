@@ -65,12 +65,14 @@
         await Tips.confirm('是否确认切换店铺？');
         await auth.removeConfig('shop_id');
         this.$redirect('../home/shops');
+        Event.emit(Event.USER_LOGOUT);
       },
       async logout() {
         await Tips.confirm('是否确认退出登录？');
         await auth.removeConfig('shop_id');
         await auth.removeConfig('login_code');
         this.$redirect('../home/index');
+        Event.emit(Event.USER_LOGOUT);
       }
     };
     components = {

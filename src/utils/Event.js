@@ -23,6 +23,8 @@ export default class Event {
   static DELIVER_LIST_UPDATE = 'DELIVER_LIST_UPDATE';
   // 优惠策略更新
   static REDUCE_LIST_UPDATE = 'REDUCE_LIST_UPDATE';
+  // 用户登出
+  static USER_LOGOUT = 'USER_LOGOUT';
   static listen(eventName, callback, observer) {
     WxNotificationCenter.addNotification(eventName, callback, observer);
   }
