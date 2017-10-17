@@ -37,7 +37,7 @@
       <view class="weui-cell">
         <view class="weui-cell__bd" style="min-width: 150rpx;">店铺位置</view>
         <view @tap.stop="chooseLocation" style="min-width: 500rpx;">
-          <view class="weui-cell__ft">{{shop.address}}</view>
+          <view class="weui-cell__ft">{{shop.latitude ? '已选择(点击更换)' : '点击选择'}}</view>
         </view>
       </view>
     </view>
@@ -46,10 +46,10 @@
 
         <view class="weui-cell weui-cell_input">
           <view class="weui-cell__hd" >
-            <view class="weui-label">详细地址</view>
+            <view class="weui-label">店铺地址</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" id="detailAddress"  bindinput="input" value="{{shop.detailAddress}}" placeholder="请输入详细地址"/>
+            <input class="weui-input" id="address"  bindinput="input" value="{{shop.address}}" placeholder="请输入店铺地址"/>
           </view>
           <view class="weui-cell__ft">
           </view>
@@ -130,12 +130,11 @@
         }).then(res => {
           this.shop.latitude = res.latitude;
           this.shop.longitude = res.longitude;
-          let address = res.address;
-          if (address == '' || address == undefined) {
-            address = '请选择店铺地址';
+          let location = res.location;
+          if (location == '' || location == undefined) {
+            location = '请选择店铺地址';
           }
-          this.shop.address = address;
-
+          this.shop.location = location;
           this.$apply();
         });
       },

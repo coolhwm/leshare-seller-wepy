@@ -179,11 +179,14 @@
     }
     compareOrderStatus(curStatus) {
       const preStatus = wepy.getStorageSync('order_count');
+      const auto = this.shop.autoOrder;
       if (preStatus == '') {
         return;
       }
-      // 接单数量比较
-      if (preStatus.n2 < curStatus.n2) {
+      // 手工接单比较待接单订单，自动接单比较已接单订单
+      let hasNewOrder = auto == 0 ? preStatus.n2 < curStatus.n2 : preStatus.n9 < curStatus.n9;
+      // 订单数量比较
+      if (hasNewOrder) {
         // 新订单通知
         wepy.playBackgroundAudio({
           dataUrl: 'http://img.leshare.shop/leshare/new_order.mp3'
