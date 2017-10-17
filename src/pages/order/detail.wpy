@@ -118,11 +118,22 @@
         this.$redirect('/pages/home/index');
         return;
       }
-      const orderId = options.orderId;
-      this.order = await order.detail(orderId);
-      this.address = this.order.receiveAddress;
-      this.express = express.createCurrentTrace(this.order.orderExpress);
-      this.loaded();
+      try {
+        const orderId = options.orderId;
+        this.order = await order.detail(orderId);
+        this.address = this.order.receiveAddress;
+        this.express = express.createCurrentTrace(this.order.orderExpress);
+        this.loaded();
+      } catch (e) {
+        Tips.loaded();
+        if (e.statusCode == '403') {
+          await Tips.alert('请重新登录');
+          this.$redirect('/pages/home/index');
+        } else if (e.serverCode == '20000') {
+          await Tips.alert('请切换为对应店铺');
+          this.$redirect('/pages/home/shops');
+        }
+      }
     };
     close({orderId}) {
       this.$root.$navigate('close', {orderId});
