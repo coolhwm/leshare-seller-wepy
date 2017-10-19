@@ -59,13 +59,11 @@ export default class order extends base {
     '0': '线下支付',
     '1': '在线支付'
   };
-
   static deliveryText = {
     'SELF': '上门自提',
     'CITY': '同城配送',
     'EXPRESS': '快递配送'
   };
-
   static statusDesc = {
     '1': '等待买家付款，超时订单自动关闭',
     '2': '买家已付款，请您尽快发货，超时未接单将自动退款',
