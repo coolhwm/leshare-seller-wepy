@@ -184,7 +184,7 @@
         return;
       }
       // 手工接单比较待接单订单，自动接单比较已接单订单
-      let hasNewOrder = auto == 0 ? preStatus.n2 < curStatus.n2 : preStatus.n9 < curStatus.n9;
+      let hasNewOrder = auto == 0 ? (preStatus.n2 < curStatus.n2) : (preStatus.n9 < curStatus.n9 || preStatus.n3 < curStatus.n3);
       // 订单数量比较
       if (hasNewOrder) {
         // 新订单通知
