@@ -34,6 +34,7 @@ export default class visitor extends base {
     visitor.name = data.nickName;
     visitor.key = '访问时间';
     visitor.value =data.loginTime.substring(0, 16);
+    visitor.avatar = data.avatarUrl;
     return visitor;
   }
 }
