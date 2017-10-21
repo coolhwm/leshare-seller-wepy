@@ -2,40 +2,89 @@
     <view class="container" wx:if="{{init}}">
         <!--TAB 页-->
         <view class="row-around zan-tab__bd">
-            <navigator class="column-center">
-                <text>总访问</text>
-                <text class="lg mt20">{{visitor_count._value.totalNum}}</text>
-            </navigator>
+            <view class="column-center">
+                <text class="muted">总访问</text>
+                <text class="lg mt5">{{count.totalNum}}</text>
+            </view>
             <view class="vr"/>
-            <navigator class="column-center">
-                <text>今日访问</text>
-                <text class="lg mt20">{{visitor_count._value.todayNum}}</text>
-            </navigator>
+            <view class="column-center">
+                <text class="muted">今日访问</text>
+                <text class="lg mt5">{{count.todayNum}}</text>
+            </view>
             <view class="vr"/>
-            <navigator class="column-center">
-                <text>本周访问</text>
-                <text class="lg mt20">{{visitor_count._value.weekNum}}</text>
-            </navigator>
+            <view class="column-center">
+                <text class="muted">本周访问</text>
+                <text class="lg mt5">{{count.weekNum}}</text>
+            </view>
             <view class="vr"/>
-            <navigator class="column-center">
-                <text>本月访问</text>
-                <text class="lg mt20">{{visitor_count._value.monthNum}}</text>
-            </navigator>
+            <view class="column-center">
+                <text class="muted">本月访问</text>
+                <text class="lg mt5">{{count.monthNum}}</text>
+            </view>
         </view>
         <!--客户列表-->
         <view class="visitor-item">
-        <repeat for="{{page.list}}" key="index" index="index" item="item">
-            <CustomerItem :customer.sync="item"></CustomerItem>
-        </repeat>
+            <repeat for="{{page.list}}" key="index" index="index" item="item">
+                <CustomerItem :customer.sync="item"></CustomerItem>
+            </repeat>
         </view>
         <!-- 加载提示 -->
         <Loadmore :page.sync="page"/>
 
         <!--占位符-->
-        <Placeholder :show.sync="isPageEmpty" message="您还没有相关客户信息"/>
+        <Placeholder :show.sync="isPageEmpty" message="您还没有相关访客信息"/>
     </view>
 </template>
 
+
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import pagination from '../../mixins/pagination';
+  import visitor from '../../api/visitor';
+  import Placeholder from '../../components/common/placeholder';
+  import CustomerItem from '../../components/customer/item';
+  import Loadmore from '../../components/weui/loadmore';
+
+  export default class CustomerIndex extends wepy.page {
+    def = {
+      init: false,
+      page: {
+        list: []
+      },
+      count: {}
+    };
+    data = {...this.def};
+
+    async onLoad () {
+      this.count = await visitor.count();
+      this.page = visitor.page();
+      await this.next();
+    };
+
+    params () {
+    }
+
+    methods = {
+      async switchTab () {
+        this.page = visitor.page();
+        await this.next();
+      }
+    };
+    events = {};
+    components = {
+      Placeholder: Placeholder,
+      CustomerItem: CustomerItem,
+      Loadmore: Loadmore
+    };
+    mixins = [base, pagination];
+    config = {
+      navigationBarTitleText: '浏览记录',
+      enablePullDownRefresh: true
+    };
+  }
+</script>
 <style lang="scss">
     @import "../../styles/variable";
 
@@ -54,60 +103,15 @@
 
     .vr {
         width: 1px;
-        height: 50 rpx;
-        background-color: $color-primary;
+        height: 50rpx;
+        background-color: #EFEFEF;
     }
-    .visitor-item{
+
+    .visitor-item {
         margin-top: 110rpx;
     }
+    .mt5{
+        margin-top: 5rpx;
+    }
+
 </style>
-
-<script>
-  import wepy from 'wepy'
-  import base from '../../mixins/base'
-  import pagination from '../../mixins/pagination'
-  import visitor from '../../api/visitor'
-  import Placeholder from '../../components/common/placeholder'
-  import CustomerItem from '../../components/customer/item'
-  import Loadmore from '../../components/weui/loadmore'
-
-  export default class CustomerIndex extends wepy.page {
-    def = {
-      init: false,
-      page: {
-        list: []
-      },
-      visitor_count:{}
-    }
-    data = {...this.def}
-
-    async onLoad (options) {
-      console.log(visitor.count())
-      this.visitor_count = visitor.count()
-      this.page = visitor.page()
-      await this.next()
-      this.$apply()
-    };
-
-    params () {
-    }
-
-    methods = {
-      async switchTab () {
-        this.page = visitor.page()
-        await this.next()
-      }
-    }
-    events = {}
-    components = {
-      Placeholder: Placeholder,
-      CustomerItem: CustomerItem,
-      Loadmore: Loadmore
-    }
-    mixins = [base, pagination]
-    config = {
-      navigationBarTitleText: '浏览人数',
-      enablePullDownRefresh: true
-    }
-  }
-</script>
