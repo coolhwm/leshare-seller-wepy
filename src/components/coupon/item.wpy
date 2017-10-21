@@ -1,5 +1,5 @@
 <template>
-  <view class="coupon-box row-center " @longtap="remove({{coupon.id}})">
+  <view class="coupon-box row-center " @tap="edit({{coupon.id}})">
     <!--左侧区域-->
     <view class="main-box column-center">
       <view >
@@ -12,16 +12,19 @@
     <!--右侧区域-->
     <view class="info-box column">
       <view>
-        <view>
-          <text class="sm">{{coupon.name}}</text>
+        <view class="row">
+            <view class="zan-btn zan-btn--mini {{action.primary ? 'zan-btn--primary' : ''}}" @tap.stop="action">通用</view>
+            <text class="sm">{{coupon.name}}</text>
+            <image class="icon" src="/images/icons/more-gray.png" @tap.stop="edit({{coupon.id}})"></image>
         </view>
         <text class="muted xs">{{coupon.beginTime}}-{{coupon.dueTime}}</text>
       </view>
 
       <!--分隔符-->
-      <view class="btn-box row-end" wx:if="{{action == 'true'}}">
-        <view class="zan-btn zan-btn--small" @tap="edit({{coupon.id}})">编辑</view>
-        <view class="zan-btn zan-btn--small  zan-btn--primary" @tap="put({{coupon.id}})" >发放</view>
+      <view class="row" wx:if="{{action == 'true'}}">
+          <view class="muted mr10">总量:10</view>
+          <view class="muted mr10">已领取:10</view>
+          <view class="muted mr10">已核销:10</view>
       </view>
     </view>
   </view>
@@ -41,17 +44,22 @@
     };
     data = {};
     methods = {
-      async remove (couponId) {
-        await Tips.confirm('确认删除该优惠券？');
-        await coupon.remove(couponId);
-        await Tips.success('删除成功');
-        Event.emit(Event.COUPON_LIST_UPDATE);
+      action(funcName, order) {
+        wepy.showActionSheet({
+          itemList: ['通用', '线下', '线上'],
+          success: function(res) {
+            console.log('通用')
+          },
+          fail: function(res) {
+            console.log(res.errMsg)
+          }
+        })
       },
       edit(couponId) {
         const param = {
           couponId,
           mode: 'edit'
-        }
+        };
         this.$root.$navigate('edit', param);
       },
       put(couponId) {

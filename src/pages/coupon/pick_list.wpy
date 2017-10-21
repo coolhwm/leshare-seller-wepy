@@ -1,0 +1,30 @@
+<style lang="scss">
+    @import "../../styles/variable";
+</style>
+<template>
+    <!--TAB 页-->
+    <ZanTab :tab="tab" handler="onTabChange" @change.user="tabChange"/>
+    <view>PickList</view>
+</template>
+<script>
+    import wepy from 'wepy'
+    import ZanTab from '../../components/zanui/tab';
+    export default class PickList extends wepy.page {
+      data= {
+        tab: {
+          list: [
+            {id: 'onSale', title: '未使用'},
+            {id: 'sellOut', title: '已使用'}
+          ],
+          selectedId: 'onSale',
+          categoryId: '0',
+          scroll: false
+        },
+      };
+      methods= {};
+      components = {
+        ZanTab: ZanTab
+      };
+      onLoad(){};
+    }
+</script>
