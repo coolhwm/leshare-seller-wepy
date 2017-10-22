@@ -10,6 +10,13 @@ export default class coupon extends base {
     const url = `${this.baseUrl}/coupons`;
     return new Page(url, this.processCouponItem.bind(this));
   }
+  /**
+   * 优惠券使用情况分页方法
+   */
+  static pagePick () {
+    // const url = `${this.baseUrl}/coupons`;
+    return this.processCouponPickItem.bind(this);
+  }
 
   /**
    * 新增卡券
@@ -63,6 +70,17 @@ export default class coupon extends base {
     coupon.beginTime = this._convertTimestapeToDay(coupon.beginTime);
     coupon.dueTime = this._convertTimestapeToDay(coupon.dueTime);
     coupon.name = coupon.name ? coupon.name : '优惠券';
+  }
+  /**
+   * 优惠券使用情况数据处理
+   */
+  static processCouponPickItem() {
+    const visitor = {};
+    visitor.name = '';
+    visitor.key = '领取时间';
+    visitor.value ='';
+    visitor.avatar = '';
+    return visitor;
   }
 
   /**
