@@ -3,28 +3,57 @@
 </style>
 <template>
     <!--TAB 页-->
-    <ZanTab :tab="tab" handler="onTabChange" @change.user="tabChange"/>
-    <view>PickList</view>
+    <ZanTab :tab.sync="tab" @change.user="switchTab"/>
+    <!--客户列表-->
+    <repeat for="{{page.list}}" key="index" index="index" item="item">
+        <CustomerItem :pickList.sync="item"></CustomerItem>
+    </repeat>
 </template>
 <script>
-    import wepy from 'wepy'
-    import ZanTab from '../../components/zanui/tab';
-    export default class PickList extends wepy.page {
-      data= {
-        tab: {
-          list: [
-            {id: 'onSale', title: '未使用'},
-            {id: 'sellOut', title: '已使用'}
-          ],
-          selectedId: 'onSale',
-          categoryId: '0',
-          scroll: false
-        },
-      };
-      methods= {};
-      components = {
-        ZanTab: ZanTab
-      };
-      onLoad(){};
+  import wepy from 'wepy';
+  import ZanTab from '../../components/zanui/tab';
+  import base from '../../mixins/base';
+  import pagination from '../../mixins/pagination';
+  import CustomerItem from '../../components/customer/item';
+
+  export default class PickList extends wepy.page {
+    def = {
+      page: {
+        list: [
+          avatar='',
+          name=''
+        ]
+      },
+      tab: {
+        list: [
+          {id: 'notUsed', title: '未使用'},
+          {id: 'used', title: '已使用'}
+        ],
+        selectedId: 'notUsed',
+        categoryId: '0',
+        scroll: false
+      },
+    };
+    data = {...this.def};
+    methods = {
+      switchTab () {
+        this.reload();
+      },
+    };
+    components = {
+      ZanTab: ZanTab,
+      CustomerItem: CustomerItem
+    };
+    mixins = [base, pagination];
+    config = {
+      navigationBarTitleText: '优惠券使用',
+      enablePullDownRefresh: true
+    };
+
+    params () {
+      return {status: this.tab.selectedId};
     }
+
+    async onLoad () {};
+  }
 </script>

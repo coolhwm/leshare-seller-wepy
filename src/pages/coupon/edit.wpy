@@ -70,18 +70,18 @@
                     </picker>
                 </view>
             </view>
+            <view class="weui-cell weui-cell_switch weui-cells-form">
+                <view class="weui-cell__bd">自助核销</view>
+                <view class="weui-cell__ft">
+                    <switch checked="{{input.isSelfUse}}" id="isSelfUse" @change="input"/>
+                </view>
+            </view>
         </view>
         <view class="h-gap"></view>
         <view class="weui-cell weui-cell_switch weui-cells-form">
-            <view class="weui-cell__bd">自助核销</view>
-            <view class="weui-cell__ft">
-                <switch checked="{{shop.autoOrder}}" id="autoOrder" @change="input" />
-            </view>
-        </view>
-        <view class="weui-cell weui-cell_switch weui-cells-form">
             <view class="weui-cell__bd">自动赠送</view>
             <view class="weui-cell__ft">
-                <switch checked="{{shop.autoOrder}}" id="autoOrder" @change="input" />
+                <switch checked="{{input.isPresent}}" id="isPresent" @change="input"/>
             </view>
         </view>
         <view class="weui-cell weui-cell_input weui-cells-form">
@@ -95,7 +95,7 @@
             </view>
         </view>
         <view class="h-gap"></view>
-        <view class="zan-btn">删除</view>
+        <view class="zan-btn" @tap="remove({{couponId}})" wx:if="{{delete}}">删除</view>
         <text class="muted mt20 ml20">提示：已创建的卡券只能编辑名称及投放总量</text>
 
         <!--操作栏-->
@@ -120,14 +120,19 @@
   export default class CouponEdit extends wepy.page {
     def = {
       mode: 'create',
-      init: false
+      init: false,
+      delete:false,
+      couponId:0
     };
     data = {...this.def};
 
     async onLoad ({couponId, mode}) {
+      console.info(couponId);
+      this.couponId = couponId;
       this.mode = mode;
       if (mode == 'edit') {
         this.input = await coupon.info(couponId);
+        this.delete = true;
       }
       this.loaded();
     }
@@ -138,21 +143,43 @@
           return;
         }
         if (this.mode == 'create') {
-          const param = this.input;
-          param.suitLimit = 0;
+          const param = {
+            name: this.input.name,
+            price: this.input.price,
+            perLimit: this.input.perLimit,
+            stock: this.input.stock,
+            beginTime: this.input.beginTime,
+            dueTime: this.input.dueTime,
+            limitPrice: this.input.limitPrice,
+            suitLimit: 0,
+            isSelfUse: this.input.isSelfUse ? 1 : 0,
+            isPresent: this.input.isPresent ? 1 : 0
+          };
           await coupon.create(param);
           await Tips.success('创建成功！');
         } else if (this.mode == 'edit') {
           const param = {
             name: this.input.name,
-            stock: this.input.stock
+            price: this.input.price,
+            perLimit: this.input.perLimit,
+            stock: this.input.stock,
+            limitPrice: this.input.limitPrice,
+            isSelfUse: this.input.isSelfUse ? 0 : 1,
+            isPresent: this.input.isPresent ? 0 : 1
           };
           await coupon.update(this.input.id, param);
           await Tips.success('编辑成功！');
         }
         Event.emit(Event.COUPON_LIST_UPDATE);
         wepy.navigateBack();
-      }
+      },
+      async remove (couponId) {
+        await Tips.confirm('确认删除该优惠券？');
+        await coupon.remove(couponId);
+        await Tips.success('删除成功');
+        Event.emit(Event.COUPON_LIST_UPDATE);
+        wepy.navigateBack();
+      },
     };
 
     validate () {

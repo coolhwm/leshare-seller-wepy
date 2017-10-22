@@ -15,16 +15,19 @@
         <view class="row">
             <view class="zan-btn zan-btn--mini {{action.primary ? 'zan-btn--primary' : ''}}" @tap.stop="action">通用</view>
             <text class="sm">{{coupon.name}}</text>
-            <image class="icon" src="/images/icons/more-gray.png" @tap.stop="edit({{coupon.id}})"></image>
         </view>
         <text class="muted xs">{{coupon.beginTime}}-{{coupon.dueTime}}</text>
       </view>
 
       <!--分隔符-->
-      <view class="row" wx:if="{{action == 'true'}}">
-          <view class="muted mr10">总量:10</view>
-          <view class="muted mr10">已领取:10</view>
-          <view class="muted mr10">已核销:10</view>
+      <view class="btn-box row-between" wx:if="{{action == 'true'}}">
+          <view>
+            <text class="muted mr10 sm">已领取:10</text>
+            <text class="muted mr10 sm">已核销:10</text>
+          </view>
+          <view>
+            <image class="icon" src="/images/icons/more-gray.png" @tap.stop="pick({{coupon.id}})"></image>
+          </view>
       </view>
     </view>
   </view>
@@ -61,6 +64,13 @@
           mode: 'edit'
         };
         this.$root.$navigate('edit', param);
+      },
+      pick(couponId) {
+        const param = {
+          couponId,
+          mode: 'pick_list'
+        };
+        this.$root.$navigate('pick_list', param);
       },
       put(couponId) {
         Tips.alert('敬请期待');
