@@ -136,7 +136,6 @@
     data = {...this.def};
 
     async onLoad ({couponId, mode}) {
-      console.info(couponId);
       this.couponId = couponId;
       this.mode = mode;
       if (mode == 'edit') {
@@ -172,15 +171,12 @@
         } else if (this.mode == 'edit') {
           const param = {
             name: this.input.name,
-            price: this.input.price,
-            perLimit: this.input.perLimit,
             stock: this.input.stock,
-            limitPrice: this.input.limitPrice,
             presentFee: this.input.presentFee,
             isSelfUse: this.input.isSelfUse ? 1 : 0,
             isPresent: this.input.isPresent ? 1 : 0
           };
-          await coupon.update(this.input.id, param);
+          await coupon.update(this.couponId, param);
           await Tips.success('编辑成功！');
         }
         Event.emit(Event.COUPON_LIST_UPDATE);
