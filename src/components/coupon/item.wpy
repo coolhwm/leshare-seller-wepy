@@ -35,9 +35,7 @@
 
 <script>
   import wepy from 'wepy';
-  import Tips from '../../utils/Tips';
-  import coupon from '../../api/coupon';
-  import Event from '../../utils/Event';
+  // import Tips from '../../utils/Tips';
   export default class CouponItem extends wepy.component {
     props = {
       coupon: {},
@@ -47,17 +45,6 @@
     };
     data = {};
     methods = {
-      action(funcName, order) {
-        wepy.showActionSheet({
-          itemList: ['通用', '线下', '线上'],
-          success: function(res) {
-            console.log('通用')
-          },
-          fail: function(res) {
-            console.log(res.errMsg)
-          }
-        })
-      },
       edit(couponId) {
         const param = {
           couponId,
@@ -66,19 +53,14 @@
         this.$root.$navigate('edit', param);
       },
       pick(couponId) {
-        console.log(couponId+"pick");
+        console.log(couponId + 'pick');
         const param = {
           couponId,
           mode: 'pick_list'
         };
         this.$root.$navigate('pick_list', param);
-      },
-      put(couponId) {
-        Tips.alert('敬请期待');
       }
     };
-    onLoad() {
-    }
   }
 </script>
 
