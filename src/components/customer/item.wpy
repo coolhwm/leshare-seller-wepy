@@ -2,7 +2,11 @@
   <view class="cusomer-box row">
     <image class="avatar icon-xl icon-round" src="{{customer.avatar ? customer.avatar : '/images/icons/customer.png'}}"></image>
     <view class="info-box column">
-      <text class="xl">{{customer.name ? customer.name : '微信用户'}}</text>
+      <view class="title-box row">
+        <text class="xl">{{customer.name ? customer.name : '微信用户'}}</text>
+        <text class="ml10 xxs muted">[{{customer.describe}}]</text>
+      </view>
+
       <view class="count-box row">
         <text class="muted">{{customer.key}}</text>
         <text class="major ml10"> {{customer.value}}</text>

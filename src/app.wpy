@@ -58,6 +58,7 @@
         wepy.$instance.globalData.auth[key] = value;
       }
     }
+
     globalData = {
       auth: {},
       shop: {},
@@ -68,6 +69,8 @@
     config = {
       pages: [
         'pages/home/index',
+        'pages/customer/info',
+        'pages/order/index',
         'pages/shop/index',
         'pages/shop/contact',
         'pages/shop/status',
@@ -78,11 +81,11 @@
         'pages/goods/comment',
         'pages/notice/list',
         'pages/notice/edit',
-        'pages/order/index',
         'pages/coupon/list',
         'pages/coupon/edit',
         'pages/coupon/scan',
         'pages/customer/list',
+        'pages/customer/visitor',
         'pages/shop/reduce_list',
         'pages/shop/reduce_edit',
         'pages/shop/edit',
