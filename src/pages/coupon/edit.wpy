@@ -79,6 +79,19 @@
                     </picker>
                 </view>
             </view>
+            <view class="weui-cell weui-cell_input">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">使用场景</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <view @tap="action()" id="supportType" @change="input" value="{{support}}"
+                            disabled="{{mode == 'edit'}}">
+                        <view class="weui-input">
+                            {{support ? support : '请选择使用场景'}}
+                        </view>
+                    </view>
+                </view>
+            </view>
             <view class="weui-cell weui-cell_switch weui-cells-form">
                 <view class="weui-cell__bd">自助核销</view>
                 <view class="weui-cell__ft">
@@ -131,7 +144,8 @@
     def = {
       mode: 'create',
       init: false,
-      couponId: 0
+      couponId: 0,
+      support:''
     };
     data = {...this.def};
 
@@ -140,6 +154,13 @@
       this.mode = mode;
       if (mode == 'edit') {
         this.input = await coupon.info(couponId);
+        if(this.input.supportType == 0){
+          this.support = '通用'
+        }else if(this.input.supportType == 1){
+          this.support = '线上'
+        }else {
+          this.support = '线下'
+        }
         // 调整枚举值
         this.input.isPresent = this.input.isPresent == 1;
         this.input.isSelfUse = this.input.isSelfUse == 1;
@@ -148,6 +169,12 @@
     }
 
     methods = {
+      async action(){
+        const result = await Tips.action('通用', '线上', '线下');
+        this.input.supportType = result.index;
+        this.support = result.text;
+        this.$apply();
+      },
       async submit () {
         if (!this.validate()) {
           return;
@@ -164,7 +191,8 @@
             presentFee: this.input.presentFee,
             suitLimit: 0,
             isSelfUse: this.input.isSelfUse ? 1 : 0,
-            isPresent: this.input.isPresent ? 1 : 0
+            isPresent: this.input.isPresent ? 1 : 0,
+            supportType: this.input.supportType
           };
           await coupon.create(param);
           await Tips.success('创建成功！');

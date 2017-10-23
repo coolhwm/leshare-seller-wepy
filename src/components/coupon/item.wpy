@@ -13,9 +13,9 @@
     <view class="info-box column">
       <view>
         <view class="row">
-            <view class="small label primary" @tap.stop="action()" wx:if="{{coupon.supportType == 0}}">通用</view>
-            <view class="small label primary" @tap.stop="action()" wx:if="{{coupon.supportType == 1}}">线上</view>
-            <view class="small label primary" @tap.stop="action()" wx:if="{{coupon.supportType == 2}}">线下</view>
+            <view class="small label primary" wx:if="{{coupon.supportType == 0}}">通用</view>
+            <view class="small label primary" wx:if="{{coupon.supportType == 1}}">线上</view>
+            <view class="small label primary" wx:if="{{coupon.supportType == 2}}">线下</view>
             <text class="sm">{{coupon.name}}</text>
         </view>
         <text class="muted xs">{{coupon.beginTime}}-{{coupon.dueTime}}</text>
@@ -24,8 +24,8 @@
       <!--分隔符-->
       <view class="btn-box row-between" wx:if="{{action == 'true'}}">
           <view>
-            <text class="muted mr10 sm">已领取:{{coupon.couponCustomerCount.acceptCount}}</text>
-            <text class="muted mr10 sm">已核销:{{coupon.couponCustomerCount.usedCount}}</text>
+            <text class="muted mr10 sm">已领取:{{coupon.couponCustomerCount.acceptCount ? coupon.couponCustomerCount.acceptCount:0}}</text>
+            <text class="muted mr10 sm">已核销:{{coupon.couponCustomerCount.usedCount?coupon.couponCustomerCount.usedCount:0}}</text>
           </view>
           <view>
             <image class="icon" src="/images/icons/more-gray.png" @tap.stop="pick({{coupon.id}})"></image>

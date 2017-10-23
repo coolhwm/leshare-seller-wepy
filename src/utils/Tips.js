@@ -139,7 +139,7 @@ export default class Tips {
    */
   static loaded () {
     if (this.isLoading) {
-      this.isLoading = false
+      this.isLoading = false;
       if (wx.hideLoading) {
         wx.hideLoading();
       } else {
