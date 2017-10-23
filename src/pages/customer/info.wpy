@@ -48,7 +48,7 @@
         <view>
             <repeat for="{{page.list}}" key="index" index="index" item="item">
                 <block wx:if="{{tab.selectedId == 'HIS_ORDER'}}">
-                    <OrderItem :order.sync="item" @tap.user="detail" @receive.user="receive"></OrderItem>
+                    <OrderItem :order.sync="item" @tap.user="detail" action="0"></OrderItem>
                 </block>
                 <block wx:elif="{{tab.selectedId == 'USED_SHOP'}}">
                     <GoodsItem :goods="item" action="0" times="1"></GoodsItem>
@@ -106,15 +106,6 @@
       this.next();
     };
 
-    // 获取分页参数
-    params() {
-      return {
-        goods_status: 'onSale',
-        category_id: 0,
-        status: 'EXPIRED'
-      };
-    }
-
     mixins = [base, pagination];
 
     methods = {
@@ -123,8 +114,7 @@
         this.$apply();
       },
       detail(orderId) {
-        // 暂时没有页面
-        /*this.$navigate('detail', {orderId});*/
+        this.$navigate('../order/detail', {orderId});
       }
     };
 

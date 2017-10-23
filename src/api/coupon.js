@@ -36,7 +36,7 @@ export default class coupon extends base {
         item.status = '已失效';
         break;
       default:
-        item.status = '未知'
+        item.status = '无效'
     }
   }
 

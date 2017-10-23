@@ -81,7 +81,6 @@
         'pages/goods/comment',
         'pages/notice/list',
         'pages/notice/edit',
-
         'pages/coupon/list',
         'pages/coupon/edit',
         'pages/coupon/scan',
