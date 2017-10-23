@@ -84,6 +84,7 @@
         'pages/coupon/scan',
         'pages/coupon/pick_list',
         'pages/customer/list',
+        'pages/customer/visitor',
         'pages/shop/reduce_list',
         'pages/shop/reduce_edit',
         'pages/shop/edit',
