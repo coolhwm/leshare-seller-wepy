@@ -4,7 +4,7 @@
     <view class="info-box column">
       <view class="title-box row">
         <text class="xl">{{customer.name ? customer.name : '微信用户'}}</text>
-        <text class="ml10 xxs muted">[{{customer.describe}}]</text>
+        <text class="ml10 xxs muted">{{customer.describe}}</text>
       </view>
 
       <view class="count-box row">
