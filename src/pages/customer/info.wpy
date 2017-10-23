@@ -123,7 +123,6 @@
       async change() {
         if (this.tab.selectedId == 'HIS_ORDER') {
           this.page = order.hisPage(this.customerId);
-          this.next();
         } else if (this.tab.selectedId == 'USED_SHOP') {
           this.page = await goods.oftenGoodsPage(this.customerId);
         } else if (this.tab.selectedId == 'COUPON') {
