@@ -11,10 +11,10 @@
       </view>
 
       <view class="today-kpi-box row-around">
-        <view class="column-center">
+        <navigator class="column-center" url="../customer/visitor">
           <text>浏览人数</text>
           <text class="lg mt20">{{today.visitShopLog}}</text>
-        </view>
+        </navigator>
         <view class="vr"/>
         <view class="column-center">
           <text>付款订单数</text>
@@ -63,10 +63,10 @@
           <text class="muted">本月成交额</text>
         </view>
         <view class="vr"/>
-        <view class="count-item column-center">
+        <navigator class="count-item column-center" url="../customer/visitor">
           <text class="count-value">{{month.visitShopLog}}</text>
           <text class="muted">本月浏览数</text>
-        </view>
+        </navigator>
       </view>
     </view>
 

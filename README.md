@@ -1,6 +1,8 @@
 ## 1. 项目描述
 基于微信小程序的电商平台卖家端，采用`wepy`框架开发。
 
+> 小程序买家端(外卖)：https://github.com/coolhwm/leshare-food-wepy
+
 *项目截图待补充*
 
 ## 2. 功能清单
