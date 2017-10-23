@@ -33,7 +33,8 @@ export default class visitor extends base {
     const visitor = {};
     visitor.name = data.nickName;
     visitor.key = '访问时间';
-    visitor.value =data.loginTime.substring(0, 16);
+    visitor.value = data.loginTime.substring(0, 16);
+    visitor.describe = data.sceneName;
     visitor.avatar = data.avatarUrl;
     return visitor;
   }

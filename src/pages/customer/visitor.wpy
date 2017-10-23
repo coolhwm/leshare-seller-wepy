@@ -80,7 +80,7 @@
     };
     mixins = [base, pagination];
     config = {
-      navigationBarTitleText: '浏览记录',
+      navigationBarTitleText: '访客记录',
       enablePullDownRefresh: true
     };
   }
