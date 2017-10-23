@@ -21,7 +21,16 @@
                            value="{{input.price}}" type="digit" placeholder="请输入卡券抵扣金额" disabled="{{mode == 'edit'}}"/>
                 </view>
             </view>
-
+            <view class="weui-cell weui-cell_input weui-cells-form">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">订单金额</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input {{mode == 'edit' ? 'muted' : ''}}" id="limitPrice" @input="input"
+                           value="{{input.limitPrice}}" type="digit" placeholder="请输入最低消费金额"
+                           disabled="{{mode == 'edit'}}"/>
+                </view>
+            </view>
             <view class="weui-cell weui-cell_input">
                 <view class="weui-cell__hd">
                     <view class="weui-label">限领张数</view>
@@ -86,11 +95,11 @@
         </view>
         <view class="weui-cell weui-cell_input weui-cells-form">
             <view class="weui-cell__hd">
-                <view class="weui-label">订单金额</view>
+                <view class="weui-label">赠送条件</view>
             </view>
             <view class="weui-cell__bd">
-                <input class="weui-input {{mode == 'edit' ? 'muted' : ''}}" id="limitPrice" @input="input"
-                       value="{{input.limitPrice}}" type="digit" placeholder="请输入最低消费金额"
+                <input class="weui-input {{mode == 'edit' ? 'muted' : ''}}" id="presentFee" @input="input"
+                       value="{{input.presentFee}}" type="digit" placeholder="请输入最低消费金额"
                        disabled="{{mode == 'edit'}}"/>
             </view>
         </view>
@@ -151,6 +160,7 @@
             beginTime: this.input.beginTime,
             dueTime: this.input.dueTime,
             limitPrice: this.input.limitPrice,
+            presentFee:this.input.presentFee,
             suitLimit: 0,
             isSelfUse: this.input.isSelfUse ? 1 : 0,
             isPresent: this.input.isPresent ? 1 : 0
@@ -164,6 +174,7 @@
             perLimit: this.input.perLimit,
             stock: this.input.stock,
             limitPrice: this.input.limitPrice,
+            presentFee:this.input.presentFee,
             isSelfUse: this.input.isSelfUse ? 0 : 1,
             isPresent: this.input.isPresent ? 0 : 1
           };

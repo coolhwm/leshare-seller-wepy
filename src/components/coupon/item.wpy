@@ -13,7 +13,7 @@
     <view class="info-box column">
       <view>
         <view class="row">
-            <view class="zan-btn zan-btn--mini {{action.primary ? 'zan-btn--primary' : ''}}" @tap.stop="action">通用</view>
+            <view class="small label primary">通用</view>
             <text class="sm">{{coupon.name}}</text>
         </view>
         <text class="muted xs">{{coupon.beginTime}}-{{coupon.dueTime}}</text>
@@ -66,6 +66,7 @@
         this.$root.$navigate('edit', param);
       },
       pick(couponId) {
+        console.log(couponId+"pick");
         const param = {
           couponId,
           mode: 'pick_list'

@@ -2,18 +2,20 @@
     @import "../../styles/variable";
 </style>
 <template>
-    <!--TAB 页-->
-    <ZanTab :tab.sync="tab" @change.user="switchTab"/>
-    <!--客户列表-->
-    <repeat for="{{page.list}}" key="index" index="index" item="item">
-        <CustomerItem :customer.sync="item"></CustomerItem>
-    </repeat>
+    <view class="container" wx:if="{{init}}">
+        <!--TAB 页-->
+        <ZanTab :tab.sync="tab" @change.user="switchTab"/>
+        <!--客户列表-->
+        <repeat for="{{page.list}}" key="index" index="index" item="item">
+            <CustomerItem :customer.sync="item"></CustomerItem>
+        </repeat>
 
-    <!-- 加载提示 -->
-    <Loadmore :page.sync="page"/>
+        <!-- 加载提示 -->
+        <Loadmore :page.sync="page"/>
 
-    <!--占位符-->
-    <Placeholder :show.sync="isPageEmpty" message="您还没有相关客户信息"/>
+        <!--占位符-->
+        <Placeholder :show.sync="isPageEmpty" message="您还没有相关客户信息"/>
+    </view>
 </template>
 <script>
   import wepy from 'wepy';
@@ -27,23 +29,17 @@
 
   export default class PickList extends wepy.page {
     def = {
+      init: false,
       page: {
         list: [
-          {
-            name: '',
-            key: '领取时间',
-            value: '2017-10-22',
-            avatar: ''
-          }
         ]
       },
       tab: {
         list: [
-          {id: 'notUsed', title: '未使用'},
-          {id: 'used', title: '已使用'}
+          {id: 'NEVER_USED', title: '未使用'},
+          {id: 'USED', title: '已使用'}
         ],
-        selectedId: 'notUsed',
-        categoryId: '0',
+        selectedId: 'NEVER_USED',
         scroll: false
       },
     };
@@ -69,7 +65,9 @@
       return {status: this.tab.selectedId};
     }
 
-    async onLoad () {
+    async onLoad ({couponId,mode}) {
+      this.page = coupon.pagePick(couponId,this.tab.selectedId);
+      await this.next();
     };
   }
 </script>
