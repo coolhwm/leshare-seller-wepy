@@ -9,7 +9,7 @@
                         <image wx:else class="icon-attention" src="../../images/icons/star.png"></image>
                     </view>
                     <view class="img">
-                        <image src="{{customerInfo.customer.avatarUrl}}"></image>
+                        <image src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '../../images/wechat.png'}}"></image>
                     </view>
                     <view class="text-info">
                         <view class="text-name">{{customerInfo.customer.nickName}}</view>
