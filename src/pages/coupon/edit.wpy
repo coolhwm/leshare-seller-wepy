@@ -98,9 +98,7 @@
                 <view class="weui-label">赠送条件</view>
             </view>
             <view class="weui-cell__bd">
-                <input class="weui-input {{mode == 'edit' ? 'muted' : ''}}" id="presentFee" @input="input"
-                       value="{{input.presentFee}}" type="digit" placeholder="请输入最低消费金额"
-                       disabled="{{mode == 'edit'}}"/>
+                <input class="weui-input" id="presentFee" @input="input" value="{{input.presentFee}}" placeholder="请输入赠送条件"/>
             </view>
         </view>
         <view class="h-gap"></view>
@@ -130,13 +128,12 @@
     def = {
       mode: 'create',
       init: false,
-      delete:false,
-      couponId:0
+      delete: false,
+      couponId: 0
     };
     data = {...this.def};
 
     async onLoad ({couponId, mode}) {
-      console.info(couponId);
       this.couponId = couponId;
       this.mode = mode;
       if (mode == 'edit') {
@@ -160,25 +157,22 @@
             beginTime: this.input.beginTime,
             dueTime: this.input.dueTime,
             limitPrice: this.input.limitPrice,
-            presentFee:this.input.presentFee,
+            presentFee: this.input.presentFee,
             suitLimit: 0,
-            isSelfUse: this.input.isSelfUse ? 1 : 0,
-            isPresent: this.input.isPresent ? 1 : 0
+            isSelfUse: this.input.isSelfUse ? 0 : 1,
+            isPresent: this.input.isPresent ? 0 : 1
           };
           await coupon.create(param);
           await Tips.success('创建成功！');
         } else if (this.mode == 'edit') {
           const param = {
             name: this.input.name,
-            price: this.input.price,
-            perLimit: this.input.perLimit,
             stock: this.input.stock,
-            limitPrice: this.input.limitPrice,
-            presentFee:this.input.presentFee,
+            presentFee: this.input.presentFee,
             isSelfUse: this.input.isSelfUse ? 0 : 1,
             isPresent: this.input.isPresent ? 0 : 1
           };
-          await coupon.update(this.input.id, param);
+          await coupon.update(this.couponId, param);
           await Tips.success('编辑成功！');
         }
         Event.emit(Event.COUPON_LIST_UPDATE);
