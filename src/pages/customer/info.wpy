@@ -100,9 +100,10 @@
     data = {...this.def};
 
     async onLoad(options) {
-      this.customerInfo = await customerInfo.detailInfo(447);
+      this.customerId = options.customerId;
 
-      this.page = order.hisPage(447);
+      this.customerInfo = await customerInfo.detailInfo(this.customerId);
+      this.page = order.hisPage(this.customerId);
       this.next();
     };
 
@@ -121,12 +122,12 @@
     events = {
       async change() {
         if (this.tab.selectedId == 'HIS_ORDER') {
-          this.page = order.hisPage(447);
+          this.page = order.hisPage(this.customerId);
           this.next();
         } else if (this.tab.selectedId == 'USED_SHOP') {
-          this.page = await goods.oftenGoodsPage(447);
+          this.page = await goods.oftenGoodsPage(this.customerId);
         } else if (this.tab.selectedId == 'COUPON') {
-          this.page = await coupon.cutomerCouponPage(447);
+          this.page = await coupon.cutomerCouponPage(this.customerId);
         }
         this.next();
       }
