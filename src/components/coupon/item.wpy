@@ -1,30 +1,36 @@
 <template>
-  <view class="coupon-box row-center " @longtap="remove({{coupon.id}})">
-    <!--左侧区域-->
-    <view class="main-box column-center">
-      <view >
-        <text class="xl">￥</text>
-        <text class="price">{{coupon.price}}</text>
-      </view>
-      <text class="mt10">满{{coupon.limitPrice}}元可用</text>
-    </view>
-
-    <!--右侧区域-->
-    <view class="info-box column">
-      <view>
-        <view>
-          <text class="sm">{{coupon.name}}</text>
+    <view class="coupon-box row-center " @longtap="remove({{coupon.id}})">
+        <!--左侧区域-->
+        <view class="main-box column-center">
+            <view>
+                <text class="xl">￥</text>
+                <text class="price">{{coupon.price}}</text>
+            </view>
+            <text class="mt10">满{{coupon.limitPrice}}元可用</text>
         </view>
-        <text class="muted xs">{{coupon.beginTime}}-{{coupon.dueTime}}</text>
-      </view>
 
-      <!--分隔符-->
-      <view class="btn-box row-end" wx:if="{{action == 'true'}}">
-        <view class="zan-btn zan-btn--small" @tap="edit({{coupon.id}})">编辑</view>
-        <view class="zan-btn zan-btn--small  zan-btn--primary" @tap="put({{coupon.id}})" >发放</view>
-      </view>
+        <!--右侧区域-->
+        <view class="info-box column">
+            <view>
+                <view>
+                    <text class="sm">{{coupon.name}}</text>
+                </view>
+                <text class="muted xs">{{coupon.beginTime}}-{{coupon.dueTime}}</text>
+            </view>
+
+            <!--分隔符-->
+            <view class="btn-box row-end">
+                <block wx:if="{{action}}">
+                    <view class="zan-btn zan-btn--small" @tap="edit({{coupon.id}})">编辑</view>
+                    <view class="zan-btn zan-btn--small  zan-btn--primary" @tap="put({{coupon.id}})">发放</view>
+                </block>
+                <block wx:else>
+                    <text class="muted xs">接收时间：{{coupon.acceptTime}}</text>
+                    <text class="muted xs" style="margin-left: 20rpx">状态：{{coupon.status}}</text>
+                </block>
+            </view>
+        </view>
     </view>
-  </view>
 </template>
 
 <script>
@@ -32,16 +38,17 @@
   import Tips from '../../utils/Tips';
   import coupon from '../../api/coupon';
   import Event from '../../utils/Event';
+
   export default class CouponItem extends wepy.component {
     props = {
       coupon: {},
       action: {
-        default: 'true'
+        default: true
       }
     };
     data = {};
     methods = {
-      async remove (couponId) {
+      async remove(couponId) {
         await Tips.confirm('确认删除该优惠券？');
         await coupon.remove(couponId);
         await Tips.success('删除成功');
@@ -51,54 +58,57 @@
         const param = {
           couponId,
           mode: 'edit'
-        }
+        };
         this.$root.$navigate('edit', param);
       },
       put(couponId) {
         Tips.alert('敬请期待');
       }
     };
+
     onLoad() {
     }
   }
 </script>
 
 <style lang="scss">
-  @import "../../styles/variable";
-  /*父容器*/
-  .coupon-box{
-    position: relative;
-    margin:20rpx 20rpx 0 20rpx;
-    background-color: #FFF;
-    height: 220rpx;
-    border: $border;
-    border-radius: 5px;
-    overflow: hidden;
+    @import "../../styles/variable";
+    /*父容器*/
+    .coupon-box {
+        position: relative;
+        margin: rpx(20) rpx(20) 0 rpx(20);
+        background-color: #FFF;
+        height: rpx(220);
+        border: $border;
+        border-radius: 5px;
+        overflow: hidden;
 
-    .main-box{
-      align-items: center;
-      width: 255rpx;
-      height: 100%;
-      background: linear-gradient(to right, #2F80ED, #1296db);
+        .main-box {
+            align-items: center;
+            width: rpx(255);
+            height: 100%;
+            background: linear-gradient(to right, #2F80ED, #1296db);
 
-      text{color: white}
+            text {
+                color: white
+            }
 
-      text.price{
-        font-size: 75rpx;
-      }
+            text.price {
+                font-size: rpx(75);
+            }
+        }
+
+        .info-box {
+            flex: 1;
+            justify-content: space-between;
+            padding: rpx(10) rpx(20) 0 rpx(20);
+            height: rpx(200);
+
+            .btn-box {
+                padding: 5px 0;
+                margin-top: rpx(5);
+                border-top: $border-dot;
+            }
+        }
     }
-
-    .info-box{
-      flex: 1;
-      justify-content: space-between;
-      padding: 10rpx 20rpx 0 20rpx;
-      height: 200rpx;
-
-      .btn-box{
-        padding: 5px 0;
-        margin-top: 5rpx;
-        border-top: $border-dot;
-      }
-    }
-  }
 </style>

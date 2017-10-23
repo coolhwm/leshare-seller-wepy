@@ -57,6 +57,14 @@ export default class order extends base {
   /**
    * 分页方法
    */
+  static hisPage(customerId) {
+    const url = `${this.baseUrl}/customers/${customerId}/order_list`;
+    return new Page(url);
+  }
+
+  /**
+   * 分页方法
+   */
   static page() {
     const url = `${this.baseUrl}/orders`;
     return new Page(url, this._processOrderListItem.bind(this));
