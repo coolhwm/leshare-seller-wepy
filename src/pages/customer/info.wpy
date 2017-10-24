@@ -58,23 +58,30 @@
           <CouponItem :coupon.sync="item" action="0"></CouponItem>
         </block>
       </repeat>
+
+      <!-- 加载提示 -->
+      <Loadmore :page.sync="page"/>
+
+      <!--占位符-->
+      <Placeholder :show.sync="isPageEmpty" message="暂无记录"/>
     </view>
   </view>
 </template>
 
 <script>
-  import wepy from 'wepy'
-  import ZanTab from '../../components/zanui/tab'
-  import customerInfo from '../../api/customer_info'
-  import base from '../../mixins/base'
-  import pagination from '../../mixins/pagination'
-  import order from '../../api/order'
-  import OrderItem from '../../components/order/item'
-  import coupon from '../../api/coupon'
-  import CouponItem from '../../components/coupon/item'
-  import goods from '../../api/goods'
-  import GoodsItem from '../../components/goods/item'
-  import Loadmore from '../../components/weui/loadmore'
+  import wepy from 'wepy';
+  import ZanTab from '../../components/zanui/tab';
+  import customerInfo from '../../api/customer_info';
+  import base from '../../mixins/base';
+  import pagination from '../../mixins/pagination';
+  import order from '../../api/order';
+  import OrderItem from '../../components/order/item';
+  import coupon from '../../api/coupon';
+  import CouponItem from '../../components/coupon/item';
+  import goods from '../../api/goods';
+  import GoodsItem from '../../components/goods/item';
+  import Loadmore from '../../components/weui/loadmore';
+  import Placeholder from '../../components/common/placeholder';
 
   export default class CustomerInfo extends wepy.page {
     def = {
@@ -97,52 +104,53 @@
       order: {},
       good: {},
       coupon: {}
-    }
-    data = {...this.def}
+    };
+    data = {...this.def};
 
     async onLoad (options) {
-      this.customerId = options.customerId
+      this.customerId = options.customerId;
 
-      this.customerInfo = await customerInfo.detailInfo(this.customerId)
-      this.page = order.hisPage(this.customerId)
-      this.next()
+      this.customerInfo = await customerInfo.detailInfo(this.customerId);
+      this.page = order.hisPage(this.customerId);
+      this.next();
     };
 
-    mixins = [base, pagination]
+    mixins = [base, pagination];
 
     methods = {
       attention () {
-        this.attention = !this.attention
-        this.$apply()
+        this.attention = !this.attention;
+        this.$apply();
       },
       detail (orderId) {
-        this.$navigate('../order/detail', {orderId})
+        this.$navigate('../order/detail', {orderId});
       }
-    }
+    };
 
     events = {
       async change () {
         if (this.tab.selectedId == 'HIS_ORDER') {
-          this.page = order.hisPage(this.customerId)
+          this.page = order.hisPage(this.customerId);
         } else if (this.tab.selectedId == 'USED_SHOP') {
-          this.page = await goods.oftenGoodsPage(this.customerId)
+          this.page = await goods.oftenGoodsPage(this.customerId);
         } else if (this.tab.selectedId == 'COUPON') {
-          this.page = await coupon.cutomerCouponPage(this.customerId)
+          this.page = await coupon.cutomerCouponPage(this.customerId);
         }
-        this.next()
+        this.next();
       }
-    }
+    };
     components = {
       ZanTab: ZanTab,
       OrderItem: OrderItem,
       CouponItem: CouponItem,
       GoodsItem: GoodsItem,
-      Loadmore: Loadmore
-    }
+      Loadmore: Loadmore,
+      Placeholder: Placeholder
+    };
     config = {
       navigationBarTitleText: '客户信息',
       enablePullDownRefresh: true
-    }
+    };
   }
 </script>
 
