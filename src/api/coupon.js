@@ -11,10 +11,15 @@ export default class coupon extends base {
    */
   static async cutomerCouponPage (customerId) {
     const url = `${this.baseUrl}/customers/${customerId}/coupon_list`;
-    return new Page(url, this.processCustomerCouponItem.bind(this));
+    return new Page(url, this._processCustomerCouponItem.bind(this));
   }
 
-  static processCustomerCouponItem(item) {
+  /**
+   * 处理客户优惠券
+   * @param item
+   * @private
+   */
+  static _processCustomerCouponItem(item) {
     if (item.coupon == null) {
       return;
     }
