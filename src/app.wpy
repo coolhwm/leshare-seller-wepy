@@ -69,6 +69,7 @@
     config = {
       pages: [
         'pages/home/index',
+        'pages/customer/address_list',
         'pages/customer/info',
         'pages/order/index',
         'pages/shop/index',
