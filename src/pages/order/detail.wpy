@@ -38,7 +38,12 @@
 
 
     <!--地址展现-->
-    <Address :address.sync="address" />
+    <block wx:if="{{order.orderType == '20'}}">
+      <Address :address.sync="address" />
+    </block>
+    <block wx:else>
+      <InShopStatus :order.sync="order" />
+    </block>
 
     <!--订单项目-->
     <OrderItem :order.sync="order" action="0"></OrderItem>
@@ -49,7 +54,7 @@
         <view class="weui-cell__bd">支付方式</view>
         <view class="weui-cell__ft">{{order.paymentText}}</view>
       </view>
-      <view class="weui-cell">
+      <view class="weui-cell" wx:if="{{order.orderType == '20'}}">
         <view class="weui-cell__bd">配送方式</view>
         <view class="weui-cell__ft">{{order.deliveryText}}</view>
       </view>
@@ -101,6 +106,7 @@
   import express from '../../api/express';
   import Address from '../../components/common/address';
   import OrderItem from '../../components/order/item';
+  import InShopStatus from '../../components/order/inshop_status';
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
   export default class OrderDetail extends wepy.page {
@@ -118,11 +124,22 @@
         this.$redirect('/pages/home/index');
         return;
       }
-      const orderId = options.orderId;
-      this.order = await order.detail(orderId);
-      this.address = this.order.receiveAddress;
-      this.express = express.createCurrentTrace(this.order.orderExpress);
-      this.loaded();
+      try {
+        const orderId = options.orderId;
+        this.order = await order.detail(orderId);
+        this.address = this.order.receiveAddress;
+        this.express = express.createCurrentTrace(this.order.orderExpress);
+        this.loaded();
+      } catch (e) {
+        Tips.loaded();
+        if (e.statusCode == '403') {
+          await Tips.alert('请重新登录');
+          this.$redirect('/pages/home/index');
+        } else if (e.serverCode == '20000') {
+          await Tips.alert('请切换为对应店铺');
+          this.$redirect('/pages/home/shops');
+        }
+      }
     };
     close({orderId}) {
       this.$root.$navigate('close', {orderId});
@@ -208,7 +225,8 @@
     };
     components = {
       Address: Address,
-      OrderItem: OrderItem
+      OrderItem: OrderItem,
+      InShopStatus: InShopStatus
     };
 
     mixins = [base];

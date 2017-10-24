@@ -1,0 +1,231 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <view class="customer-box">
+      <view class="info-box">
+        <view class="info">
+          <view @tap.stop="attention">
+            <image wx:if="{{attention}}" class="icon-attention"
+                   src="../../images/icons/star-fill.png"></image>
+            <image wx:else class="icon-attention" src="../../images/icons/star.png"></image>
+          </view>
+          <view class="img">
+            <image
+              src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '../../images/wechat.png'}}"></image>
+          </view>
+          <view class="text-info">
+            <view class="text-name">{{customerInfo.customer.nickName}}</view>
+            <view class="gray">城市：{{customerInfo.customer.city}}</view>
+            <view class="gray">地址：{{customerInfo.addressList[0].fullAddress}}</view>
+          </view>
+        </view>
+
+        <view class="horizon"></view>
+
+        <view class="count-box row-around bg-white">
+          <view class="count-item column-center">
+            <text class="count-value">2次</text>
+            <text class="muted">最近购买</text>
+          </view>
+          <view class="count-item column-center">
+            <text class="count-value">￥{{customerInfo.countCustomerInfo.totalPrice}}</text>
+            <text class="muted">交易总额</text>
+          </view>
+          <view class="count-item column-center">
+            <text class="count-value">{{customerInfo.countCustomerInfo.totalOrderCount}}次</text>
+            <text class="muted">购买次数</text>
+          </view>
+          <view class="count-item column-center">
+            <text class="count-value">{{customerInfo.countCustomerInfo.totalCouponCount}}张</text>
+            <text class="muted">卡卷数量</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view>
+      <ZanTab :tab.sync="tab" fixed="0"/>
+    </view>
+
+    <view>
+      <repeat for="{{page.list}}" key="index" index="index" item="item">
+        <block wx:if="{{tab.selectedId == 'HIS_ORDER'}}">
+          <OrderItem :order.sync="item" @tap.user="detail" action="0"></OrderItem>
+        </block>
+        <block wx:elif="{{tab.selectedId == 'USED_SHOP'}}">
+          <GoodsItem :goods="item" action="0" times="1"></GoodsItem>
+        </block>
+        <block wx:elif="{{tab.selectedId == 'COUPON'}}">
+          <CouponItem :coupon.sync="item" action="0"></CouponItem>
+        </block>
+      </repeat>
+
+      <!-- 加载提示 -->
+      <Loadmore :page.sync="page"/>
+
+      <!--占位符-->
+      <Placeholder :show.sync="isPageEmpty" message="暂无记录"/>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import ZanTab from '../../components/zanui/tab';
+  import customerInfo from '../../api/customer_info';
+  import base from '../../mixins/base';
+  import pagination from '../../mixins/pagination';
+  import order from '../../api/order';
+  import OrderItem from '../../components/order/item';
+  import coupon from '../../api/coupon';
+  import CouponItem from '../../components/coupon/item';
+  import goods from '../../api/goods';
+  import GoodsItem from '../../components/goods/item';
+  import Loadmore from '../../components/weui/loadmore';
+  import Placeholder from '../../components/common/placeholder';
+
+  export default class CustomerInfo extends wepy.page {
+    def = {
+      init: false,
+      attention: false,
+      customerInfo: {},
+      page: {
+        list: [
+          {orderGoodsInfos: []}
+        ]
+      },
+      tab: {
+        list: [
+          {id: 'HIS_ORDER', title: '历史订单'},
+          {id: 'USED_SHOP', title: '常购商品'},
+          {id: 'COUPON', title: '优惠券'}
+        ],
+        selectedId: 'HIS_ORDER'
+      },
+      order: {},
+      good: {},
+      coupon: {}
+    };
+    data = {...this.def};
+
+    async onLoad (options) {
+      this.customerId = options.customerId;
+
+      this.customerInfo = await customerInfo.detailInfo(this.customerId);
+      this.page = order.hisPage(this.customerId);
+      this.next();
+    };
+
+    mixins = [base, pagination];
+
+    methods = {
+      attention () {
+        this.attention = !this.attention;
+        this.$apply();
+      },
+      detail (orderId) {
+        this.$navigate('../order/detail', {orderId});
+      }
+    };
+
+    events = {
+      async change () {
+        if (this.tab.selectedId == 'HIS_ORDER') {
+          this.page = order.hisPage(this.customerId);
+        } else if (this.tab.selectedId == 'USED_SHOP') {
+          this.page = await goods.oftenGoodsPage(this.customerId);
+        } else if (this.tab.selectedId == 'COUPON') {
+          this.page = await coupon.cutomerCouponPage(this.customerId);
+        }
+        this.next();
+      }
+    };
+    components = {
+      ZanTab: ZanTab,
+      OrderItem: OrderItem,
+      CouponItem: CouponItem,
+      GoodsItem: GoodsItem,
+      Loadmore: Loadmore,
+      Placeholder: Placeholder
+    };
+    config = {
+      navigationBarTitleText: '客户信息',
+      enablePullDownRefresh: true
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  @import "../../styles/base";
+
+  .customer-box {
+    background-color: #eeeeee;
+
+    .icon-attention {
+      @include icon-image(rpx(40));
+      position: relative;
+      top: rpx(30);
+      left: rpx(640);
+    }
+
+    .info-box {
+      background-color: #fff;
+      margin-bottom: rpx(20);
+      border-bottom: $border;
+    }
+
+    .info {
+      width: 100%;
+      display: flex;
+    }
+
+    .img {
+      margin: rpx(35) 0 0 rpx(0);
+
+      image {
+        @include icon-image(rpx(180));
+        border-radius: 50%;
+      }
+    }
+
+    .text-info {
+      margin-left: rpx(20);
+      width: rpx(400);
+      padding: rpx(5);
+      margin-top: rpx(30);
+
+      .text-name {
+        font-size: rpx(40);
+      }
+      .gray {
+        color: $color-muted;
+        font-size: rpx(25);
+        word-break: break-all;
+      }
+    }
+
+    .horizon {
+      width: rpx(650);
+      margin: rpx(30) auto rpx(10) auto;
+      height: 1px;
+      background-color: #ddd;
+    }
+  }
+
+  /*统计区域*/
+  .count-box {
+    padding: rpx(20) 0;
+    text {
+      font-size: $text-lg
+    }
+
+    .count-value {
+      font-size: $text-xxl;
+    }
+
+    .count-item {
+      width: rpx(250);
+    }
+  }
+
+</style>

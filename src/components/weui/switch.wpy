@@ -14,7 +14,9 @@
       input: {
         twoWay: true
       },
-      switchFlag: true,
+      switchFlag: {
+        default: '1'
+      },
       checkedText: {},
       uncheckText: {},
       title: {},
