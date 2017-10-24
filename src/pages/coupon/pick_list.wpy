@@ -1,6 +1,3 @@
-<style lang="scss">
-    @import "../../styles/variable";
-</style>
 <template>
     <view class="container" wx:if="{{init}}">
         <!--TAB 页-->
@@ -13,8 +10,11 @@
         <!-- 加载提示 -->
         <Loadmore :page.sync="page"/>
 
+        <!--操作栏-->
+        <ActionBar @tap.user="add" okText="发放优惠券" cancelText="返回"/>
+
         <!--占位符-->
-        <Placeholder :show.sync="isPageEmpty" message="您还没有相关客户信息"/>
+        <Placeholder :show.sync="isPageEmpty" message="暂无领取记录"/>
     </view>
 </template>
 <script>
@@ -26,13 +26,14 @@
   import CustomerItem from '../../components/customer/item';
   import Loadmore from '../../components/weui/loadmore';
   import Placeholder from '../../components/common/placeholder';
+  import ActionBar from '../../components/common/action_bar';
+  import Event from '../../utils/Event';
 
   export default class PickList extends wepy.page {
     def = {
       init: false,
       page: {
-        list: [
-        ]
+        list: []
       },
       tab: {
         list: [
@@ -42,32 +43,43 @@
         selectedId: 'NEVER_USED',
         scroll: false
       },
+      couponId: 0
     };
     data = {...this.def};
     methods = {
       switchTab () {
         this.reload();
       },
-    };
-    components = {
-      ZanTab: ZanTab,
-      CustomerItem: CustomerItem,
-      Loadmore: Loadmore,
-      Placeholder: Placeholder
-    };
-    mixins = [base, pagination];
-    config = {
-      navigationBarTitleText: '优惠券使用',
-      enablePullDownRefresh: true
+      add () {
+        this.$navigate('customer_list?couponId=' + this.couponId);
+      }
     };
 
     params () {
       return {status: this.tab.selectedId};
     }
 
-    async onLoad ({couponId,mode}) {
-      this.page = coupon.pagePick(couponId,this.tab.selectedId);
+    async onLoad ({couponId, mode}) {
+      this.couponId = couponId;
+      this.page = coupon.pagePick(couponId, this.tab.selectedId);
       await this.next();
+      Event.listen(Event.COUPON_USER_UPDATE, this.update.bind(this), this);
+    };
+
+    components = {
+      ZanTab: ZanTab,
+      CustomerItem: CustomerItem,
+      Loadmore: Loadmore,
+      Placeholder: Placeholder,
+      ActionBar: ActionBar
+    };
+    mixins = [base, pagination];
+    config = {
+      navigationBarTitleText: '优惠券使用',
+      enablePullDownRefresh: true
     };
   }
 </script>
+<style lang="scss">
+    @import "../../styles/variable";
+</style>

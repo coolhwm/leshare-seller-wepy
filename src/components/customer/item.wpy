@@ -1,5 +1,5 @@
 <template>
-  <view class="cusomer-box row">
+  <view class="cusomer-box row" @tap="tap({{customer}})">
     <image class="avatar icon-xl icon-round" src="{{customer.avatar ? customer.avatar : '/images/icons/customer.png'}}"></image>
     <view class="info-box column">
       <view class="title-box row">
@@ -17,12 +17,16 @@
 
 <script>
   import wepy from 'wepy'
-  export default class OrderGoods extends wepy.component {
+  export default class CustomerItem extends wepy.component {
     props = {
       customer: {}
     };
     data = {};
-    methods = {};
+    methods = {
+      tap(customer) {
+        this.$emit('tap', customer);
+      }
+    };
     events = {};
     onLoad() {
     }

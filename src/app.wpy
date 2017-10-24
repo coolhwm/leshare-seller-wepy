@@ -80,6 +80,7 @@
         'pages/notice/edit',
         'pages/order/index',
         'pages/coupon/list',
+        'pages/coupon/customer_list',
         'pages/coupon/edit',
         'pages/coupon/scan',
         'pages/coupon/pick_list',
