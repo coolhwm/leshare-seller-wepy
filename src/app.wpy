@@ -71,6 +71,7 @@
         'pages/shop/index',
         'pages/shop/contact',
         'pages/shop/status',
+        'pages/shop/vip_card',
         'pages/delivery/deliver_list',
         'pages/delivery/deliver_edit',
         'pages/delivery/list',

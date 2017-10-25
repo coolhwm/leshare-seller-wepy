@@ -1,0 +1,235 @@
+<template>
+    <Tips/>
+    <view class="container">
+        <view class="weui-cells weui-cells-form">
+            <view class="weui-cell weui-cell_input">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">会员卡名称</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" id="name" @input="input" value="{{input.name}}" type="text"
+                           placeholder="请输入会员卡名称"/>
+                </view>
+            </view>
+
+            <view class="weui-cell">
+                <view class="weui-cell__bd">会员权益</view>
+                <view class="weui-cell__ft"></view>
+            </view>
+
+            <view class="weui-cell" wx:if="{{!uploader}}">
+                <view class="weui-cell__bd">
+                <textarea class="weui-textarea" id="interests" value="{{input.interests}}" placeholder="请输入会员权益"
+                          style="height: 6.0em" maxlength="100" @input="input"/>
+                    <view class="weui-textarea-counter">{{input.interests ? input.interests.length : 0}}/100</view>
+                </view>
+            </view>
+
+            <view class="weui-cell">
+                <view class="weui-cell__bd">使用须知</view>
+                <view class="weui-cell__ft"></view>
+            </view>
+
+            <view class="weui-cell" wx:if="{{!uploader}}">
+                <view class="weui-cell__bd">
+                <textarea class="weui-textarea" id="notice" value="{{input.notice}}" placeholder="请输入使用须知"
+                          style="height: 6.0em" maxlength="100" @input="input"/>
+                    <view class="weui-textarea-counter">{{input.notice ? input.notice.length : 0}}/100</view>
+                </view>
+            </view>
+
+            <view class="weui-cell weui-cell_input">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">客服电话</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" id="phone" value="{{input.phone}}" @input="input" type="number"
+                           placeholder="请输入客服电话"/>
+                </view>
+            </view>
+            <view class="h-gap bg-color"/>
+            <view class="weui-cell weui-cell_input">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">积分比例</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" id="integral" value="{{input.integral}}" @input="input" type="number"
+                           placeholder="每消费1元积累积分数"/>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_input">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">抵扣比例</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" id="deductible" value="{{input.deductible}}" @input="input" type="number"
+                           placeholder="每抵扣1元消耗积分数"/>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_input">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">抵扣限制</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" id="limit" value="{{input.limit}}" @input="input" type="number"
+                           placeholder="每单最多可以抵扣积分"/>
+                </view>
+            </view>
+        </view>
+        <view class="zan-panel">
+            <view class="zan-btns">
+                <button class="zan-btn zan-btn--fill" @tap="submit">保存</button>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import input from '../../mixins/input';
+  import FormTips from '../../components/weui/tips';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+
+  export default class VipCard extends wepy.page {
+    def = {};
+    data = {...this.def};
+    methods = {
+      async submit () {
+        if (!this.validate()) {
+          return;
+        }
+        const param = {
+          name: this.input.name,
+          interests: this.input.interests,
+          notice: this.input.notice,
+          phone: this.input.phone,
+          integral: this.input.integral,
+          deductible: this.input.deductible,
+          limit: this.input.limit,
+        };
+        //TODO 编辑vip页面 API 接入
+        console.info(param);
+        await Tips.success('创建成功！');
+        wepy.navigateBack();
+      }
+    };
+
+    onload () {
+      this.loaded();
+    };
+
+    validate () {
+      const rules = [
+        {
+          value: this.input.name,
+          method: 'required',
+          message: '会员卡名称不能为空'
+        },
+        {
+          value: this.input.name,
+          method: 'minlength',
+          param: 2,
+          message: '会员卡名称过短'
+        },
+        {
+          value: this.input.name,
+          method: 'maxlength',
+          param: 10,
+          message: '会员卡名称过长'
+        },
+        {
+          value: this.input.interests,
+          method: 'required',
+          message: '会员权益不能为空'
+        },
+        {
+          value: this.input.notice,
+          method: 'required',
+          message: '使用须知不能为空'
+        },
+        {
+          value: this.input.phone,
+          method: 'number',
+          message: '客服联系号码必须是数字'
+        },
+        {
+          value: this.input.phone,
+          method: 'maxlength',
+          param: 20,
+          message: '客服联系号码过长'
+        },
+        {
+          value: this.input.phone,
+          method: 'minlength',
+          param: 7,
+          message: '客服联系号码过短'
+        },
+        {
+          value: this.input.integral,
+          method: 'required',
+          message: '积分比例不能为空'
+        },
+        {
+          value: this.input.integral,
+          method: 'number',
+          message: '积分比例必须是数字'
+        },
+        {
+          value: this.input.integral,
+          method: 'min',
+          param: 0.01,
+          message: '积分比例不能为0或负数'
+        },
+        {
+          value: this.input.deductible,
+          method: 'required',
+          message: '抵扣比例不能为空'
+        },
+        {
+          value: this.input.deductible,
+          method: 'number',
+          message: '抵扣比例必须是数字'
+        },
+        {
+          value: this.input.deductible,
+          method: 'min',
+          param: 0.01,
+          message: '抵扣比例不能为0或负数'
+        },
+        {
+          value: this.input.limit,
+          method: 'required',
+          message: '抵扣限制不能为空'
+        },
+        {
+          value: this.input.limit,
+          method: 'number',
+          message: '抵扣限制必须是数字'
+        },
+        {
+          value: this.input.limit,
+          method: 'min',
+          param: 0.01,
+          message: '抵扣限制不能为0或负数'
+        },
+      ];
+      return this.check(rules);
+    }
+
+    config = {
+      navigationBarTitleText: '会员卡管理'
+    };
+    mixins = [base, input];
+    components = {
+      Tips: FormTips
+    };
+  }
+</script>
+<style lang="scss">
+    @import "../../styles/variable";
+
+    .bg-color {
+        background-color: #F5F5F5;
+    }
+</style>
