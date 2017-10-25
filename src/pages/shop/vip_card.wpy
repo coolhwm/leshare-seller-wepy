@@ -12,32 +12,6 @@
                 </view>
             </view>
 
-            <view class="weui-cell">
-                <view class="weui-cell__bd">会员权益</view>
-                <view class="weui-cell__ft"></view>
-            </view>
-
-            <view class="weui-cell" wx:if="{{!uploader}}">
-                <view class="weui-cell__bd">
-                <textarea class="weui-textarea" id="interests" value="{{input.interests}}" placeholder="请输入会员权益"
-                          style="height: 6.0em" maxlength="100" @input="input"/>
-                    <view class="weui-textarea-counter">{{input.interests ? input.interests.length : 0}}/100</view>
-                </view>
-            </view>
-
-            <view class="weui-cell">
-                <view class="weui-cell__bd">使用须知</view>
-                <view class="weui-cell__ft"></view>
-            </view>
-
-            <view class="weui-cell" wx:if="{{!uploader}}">
-                <view class="weui-cell__bd">
-                <textarea class="weui-textarea" id="notice" value="{{input.notice}}" placeholder="请输入使用须知"
-                          style="height: 6.0em" maxlength="100" @input="input"/>
-                    <view class="weui-textarea-counter">{{input.notice ? input.notice.length : 0}}/100</view>
-                </view>
-            </view>
-
             <view class="weui-cell weui-cell_input">
                 <view class="weui-cell__hd">
                     <view class="weui-label">客服电话</view>
@@ -47,6 +21,23 @@
                            placeholder="请输入客服电话"/>
                 </view>
             </view>
+
+            <view class="weui-cell" wx:if="{{!uploader}}">
+                <view class="weui-cell__bd">
+                <textarea class="weui-textarea" id="interests" value="{{input.interests}}" placeholder="请输入会员权益"
+                          style="height: 4.0em" maxlength="100" @input="input"/>
+                    <view class="weui-textarea-counter">{{input.interests ? input.interests.length : 0}}/100</view>
+                </view>
+            </view>
+
+            <view class="weui-cell" wx:if="{{!uploader}}">
+                <view class="weui-cell__bd">
+                <textarea class="weui-textarea" id="notice" value="{{input.notice}}" placeholder="请输入使用须知"
+                          style="height: 4.0em" maxlength="100" @input="input"/>
+                    <view class="weui-textarea-counter">{{input.notice ? input.notice.length : 0}}/100</view>
+                </view>
+            </view>
+
             <view class="h-gap bg-color"/>
             <view class="weui-cell weui-cell_input">
                 <view class="weui-cell__hd">
