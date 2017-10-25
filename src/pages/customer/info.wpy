@@ -1,53 +1,65 @@
 <template>
   <view class="container" wx:if="{{init}}">
+    <!--客户信息-->
     <view class="customer-box">
-      <view class="info-box">
-        <view class="info">
-          <view class="phone" @tap.stop="phone">
-            <image class="icon" src="/images/icons/call.png"/>
+
+      <!--客户基本信息-->
+      <view class="info-box row-between">
+
+        <!--左侧头像-->
+        <image class="customer-avatar" src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '/images/wechat.png'}}" />
+
+        <!--右侧主区域-->
+        <view class="column">
+          <!--姓名/打电话-->
+          <view class="row-between">
+            <text class="xxl">{{customerInfo.customer.nickName}}</text>
+            <image class="icon" src="/images/icons/call.png" @tap.stop="phone"/>
           </view>
-          <view>
-            <image class="icon-more" @tap.stop="addressList({{customerId}})"
-                   src="../../images/icons/more-gray.png"></image>
+
+          <!--地址信息-->
+          <view class="row-between">
+            <!--地址/电话-->
+            <view class="column address-box">
+              <text>电话：{{customerInfo.address.phone}}</text>
+              <text>地址：{{customerInfo.address.fullAddress}}</text>
+            </view>
+            <!--更多地址-->
+            <image class="icon" @tap.stop="addressList({{customerId}})" src="/images/icons/more-gray.png"></image>
           </view>
-          <view class="img">
-            <image
-                src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '../../images/wechat.png'}}"></image>
-          </view>
-          <view class="text-info">
-            <view class="text-name">{{customerInfo.customer.nickName}}</view>
-            <view class="gray">电话：{{customerInfo.address.phone}}</view>
-            <view class="gray">地址：{{customerInfo.address.fullAddress}}</view>
-          </view>
+
         </view>
+      </view>
 
-        <view class="horizon"></view>
+      <view class="customer-hr"></view>
 
-        <view class="count-box row-around bg-white">
-          <view class="count-item column-center">
-            <text class="count-value">{{customerInfo.countCustomerInfo.lastOrderTime}}</text>
-            <text class="muted">最近购买</text>
-          </view>
-          <view class="count-item column-center">
-            <text class="count-value">￥{{customerInfo.countCustomerInfo.totalPrice}}</text>
-            <text class="muted">交易总额</text>
-          </view>
-          <view class="count-item column-center">
-            <text class="count-value">{{customerInfo.countCustomerInfo.totalOrderCount}}次</text>
-            <text class="muted">购买次数</text>
-          </view>
-          <view class="count-item column-center">
-            <text class="count-value">{{customerInfo.countCustomerInfo.totalCouponCount}}张</text>
-            <text class="muted">卡卷数量</text>
-          </view>
+      <!--客户统计信息-->
+      <view class="count-box row-around bg-white">
+        <view class="count-item column-center">
+          <text class="count-value">{{customerInfo.countCustomerInfo.lastOrderTime}}</text>
+          <text class="muted">最近购买</text>
+        </view>
+        <view class="count-item column-center">
+          <text class="count-value">￥{{customerInfo.countCustomerInfo.totalPrice}}</text>
+          <text class="muted">交易总额</text>
+        </view>
+        <view class="count-item column-center">
+          <text class="count-value">{{customerInfo.countCustomerInfo.totalOrderCount}}次</text>
+          <text class="muted">购买次数</text>
+        </view>
+        <view class="count-item column-center">
+          <text class="count-value">{{customerInfo.countCustomerInfo.totalCouponCount}}张</text>
+          <text class="muted">卡卷数量</text>
         </view>
       </view>
     </view>
 
+    <!--TAB-->
     <view>
       <ZanTab :tab.sync="tab" fixed="0"/>
     </view>
 
+    <!--列表区域-->
     <view>
       <repeat for="{{page.list}}" key="index" index="index" item="item">
         <block wx:if="{{tab.selectedId == 'HIS_ORDER'}}">
@@ -163,82 +175,38 @@
 
 <style lang="scss">
   @import "../../styles/variable";
-  @import "../../styles/base";
+  .customer-box{
+    margin-bottom: 10rpx;
+    border-bottom: $border;
+  }
 
-  .customer-box {
-    background-color: #eeeeee;
+  .info-box {
+    padding: rpx(30);
+    background-color: #FFF;
 
-    .phone {
-      position: relative;
-      top: rpx(30);
-      left: rpx(680);
+    .customer-avatar{
+      @include icon-round(rpx(180));
     }
 
-    .icon-more {
-      @include icon-image(rpx(40));
-      position: relative;
-      top: rpx(105);
-      left: rpx(645);
-    }
-
-    .info-box {
-      background-color: #fff;
-      margin-bottom: rpx(20);
-      border-bottom: $border;
-    }
-
-    .info {
-      width: 100%;
-      display: flex;
-    }
-
-    .img {
-      margin: rpx(35) 0 0 rpx(0);
-
-      image {
-        @include icon-image(rpx(180));
-        border-radius: 50%;
-      }
-    }
-
-    .text-info {
-      margin-left: rpx(20);
-      width: rpx(400);
-      padding: rpx(5);
-      margin-top: rpx(30);
-
-      .text-name {
-        font-size: rpx(40);
-      }
-      .gray {
+    .address-box{
+      max-width: 430rpx;
+      text{
         color: $color-muted;
-        font-size: rpx(25);
+        font-size: $text-sm;
         word-break: break-all;
       }
     }
-
-    .horizon {
-      width: rpx(650);
-      margin: rpx(30) auto rpx(10) auto;
-      height: 1px;
-      background-color: #ddd;
-    }
+  }
+  .customer-hr{
+    width: 100%;
+    border-top: $border;
   }
 
   /*统计区域*/
   .count-box {
     padding: rpx(20) 0;
-    text {
-      font-size: $text-lg
-    }
-
-    .count-value {
-      font-size: $text-xxl;
-    }
-
     .count-item {
       width: rpx(250);
     }
   }
-
 </style>
