@@ -5,7 +5,9 @@
 
     <!--客户列表-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <CustomerItem :customer.sync="item"></CustomerItem>
+      <view @tap.stop="info({{item.id}})">
+        <CustomerItem :customer.sync="item"></CustomerItem>
+      </view>
     </repeat>
 
     <!-- 加载提示 -->
@@ -61,6 +63,9 @@
       async switchTab() {
         this.page = customer.page(this.tab.selectedId);
         await this.next();
+      },
+      info(customerId) {
+        this.$navigate('info', {customerId});
       }
     }
     events = {};

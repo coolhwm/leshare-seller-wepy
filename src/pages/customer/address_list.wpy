@@ -1,0 +1,46 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <repeat for="{{addressList}}" key="index" index="index" item="item">
+      <AddressItem :address.sync="item"></AddressItem>
+    </repeat>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import customerInfo from '../../api/customer_info';
+  import AddressItem from '../../components/common/address';
+
+  export default class AddressList extends wepy.page {
+    def = {
+      init: false,
+      addressList: []
+    };
+    data = {...this.def};
+
+    async onLoad(options) {
+      console.log(options);
+      this.addressList = await customerInfo.addressList(options.customerId);
+
+      this.loaded();
+    };
+
+    mixins = [base];
+
+    methods = {};
+
+    events = {};
+    components = {
+      AddressItem: AddressItem
+    };
+    config = {
+      navigationBarTitleText: '地址列表'
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  @import "../../styles/base";
+</style>
