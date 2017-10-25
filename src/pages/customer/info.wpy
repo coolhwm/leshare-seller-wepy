@@ -18,14 +18,14 @@
           </view>
 
           <!--地址信息-->
-          <view class="row-between">
+          <view class="row-between" @tap.stop="addressList({{customerId}})">
             <!--地址/电话-->
             <view class="column address-box">
               <text>电话：{{customerInfo.address.phone}}</text>
               <text>地址：{{customerInfo.address.fullAddress}}</text>
             </view>
             <!--更多地址-->
-            <image class="icon" @tap.stop="addressList({{customerId}})" src="/images/icons/more-gray.png"></image>
+            <image class="icon" src="/images/icons/more-gray.png"></image>
           </view>
 
         </view>
@@ -124,16 +124,11 @@
 
     async onLoad(options) {
       this.customerId = options.customerId;
-
+      this.tab.selectedId = 'HIS_ORDER';
       this.customerInfo = await customerInfo.detailInfo(this.customerId);
       this.page = order.hisPage(this.customerId);
       this.next();
-
-      this.$apply();
     };
-
-    mixins = [base, pagination];
-
     methods = {
       phone() {
         wepy.makePhoneCall({phoneNumber: this.customerInfo.address.phone});
@@ -145,9 +140,10 @@
         this.$navigate('../order/detail', {orderId});
       }
     };
-
     events = {
       async change() {
+        this.page.clear();
+        this.$apply();
         if (this.tab.selectedId == 'HIS_ORDER') {
           this.page = order.hisPage(this.customerId);
         } else if (this.tab.selectedId == 'OFTEN_GOODS') {
@@ -158,6 +154,7 @@
         this.next();
       }
     };
+    mixins = [base, pagination];
     components = {
       ZanTab: ZanTab,
       OrderItem: OrderItem,

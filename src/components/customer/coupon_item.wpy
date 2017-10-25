@@ -20,7 +20,7 @@
 
       <!--分隔符-->
       <view class="btn-box row-end">
-        <text class="muted xs">接收时间：{{coupon.acceptTime}}</text>
+        <text class="muted xs">领取时间：{{coupon.acceptTime}}</text>
         <text class="muted xs" style="margin-left: 20rpx">状态：{{coupon.status}}</text>
       </view>
     </view>
