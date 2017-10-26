@@ -146,11 +146,11 @@
           goodsSkuInfo: {},
           goodsStocks: [],
           images: []
-        }
+        };
         Tips.loading('保存中');
         // 处理图片信息
         for (let picture of this.pictures) {
-          if (picture.url.substring(0, 6) == 'wxfile') {
+          if (picture.url.substring(0, 6) == 'wxfile' || picture.url.substring(0, 11) == 'http://tmp/') {
             const result = await goods.image(picture.url);
             const image = JSON.parse(result);
             data.images.push(image);

@@ -77,7 +77,7 @@
         const param = {
           count: 5 - size,
           sizeType: ['compressed']
-        }
+        };
         const tempFilePaths = await WxUtils.chooseImage(param, this.maxSize);
         const pictures = tempFilePaths.map(item => {
           return {
