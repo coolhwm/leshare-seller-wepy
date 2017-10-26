@@ -84,21 +84,26 @@ export default class coupon extends base {
    */
   static processCouponNeverUsed (item) {
     const coupon = {};
-    coupon.name = '';
+    if(item.customer){
+      coupon.name = item.customer.nickName;
+      coupon.avatar = item.customer.avatarUrl;
+    }
     coupon.key = '领取时间';
     coupon.value = item.acceptTime;
-    coupon.avatar = '';
     return coupon;
   }
   /**
    * 优惠券使用已使用情况数据处理
    */
   static processCouponUsed (item) {
+    console.log(item);
     const coupon = {};
-    coupon.name = '';
+    if(item.customer){
+      coupon.name = item.customer.nickName;
+      coupon.avatar = item.customer.avatarUrl;
+    }
     coupon.key = '使用时间';
     coupon.value = item.usedTime;
-    coupon.avatar = '';
     return coupon;
   }
 
