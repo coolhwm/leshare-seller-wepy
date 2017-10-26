@@ -10,7 +10,7 @@
         <image class="customer-avatar" src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '/images/wechat.png'}}" />
 
         <!--右侧主区域-->
-        <view class="column">
+        <view class="column main-box">
           <!--姓名/打电话-->
           <view class="row-between">
             <text class="xxl">{{customerInfo.customer.nickName}}</text>
@@ -22,7 +22,7 @@
             <!--地址/电话-->
             <view class="column address-box">
               <text>电话：{{customerInfo.address.phone}}</text>
-              <text>地址：{{customerInfo.address.fullAddress}}</text>
+              <text>地址：{{customerInfo.address.fullAddress ? customerInfo.address.fullAddress : '暂无地址'}}</text>
             </view>
             <!--更多地址-->
             <image class="icon" src="/images/icons/more-gray.png"></image>
@@ -175,6 +175,11 @@
   .customer-box{
     margin-bottom: 10rpx;
     border-bottom: $border;
+  }
+
+  .main-box{
+    flex: 1;
+    padding-left: rpx(25);
   }
 
   .info-box {
