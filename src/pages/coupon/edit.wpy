@@ -372,9 +372,19 @@
           message: '赠送条件必须为整数'
         }
       ];
+      if (this.input.isPresent == 1 && this.input.presentFee == null) {
+        this.tips('赠送条件必须填写');
+        return false;
+      }
       return this.check(rules);
     }
-
+    watch = {
+      input(newValue, oldValue) {
+        if (newValue.isPresent == true && (oldValue.isPresent == false || oldValue.isPresent == 0)) {
+          this.input.presentFee = null;
+        }
+      }
+    };
     components = {
       ActionBar: ActionBar,
       Tips: FormTips
