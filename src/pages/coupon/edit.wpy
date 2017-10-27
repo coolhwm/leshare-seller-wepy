@@ -160,8 +160,8 @@
         this.input.supportType = 0;
         this.support = '通用';
         const myDate = new Date();
-        this.input.beginTime = `${myDate.getFullYear()}-${myDate.getMonth()+1}-${myDate.getDate()}`;
-        this.input.dueTime = `${myDate.getFullYear()}-${myDate.getMonth()+2}-${myDate.getDate()}`;
+        this.input.beginTime = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}`;
+        this.input.dueTime = `${myDate.getFullYear()}-${myDate.getMonth() + 2}-${myDate.getDate()}`;
       }
       this.loaded();
     }
@@ -215,14 +215,13 @@
         await Tips.success('删除成功');
         Event.emit(Event.COUPON_LIST_UPDATE);
         wepy.navigateBack();
-      },
+      }
     };
     computed = {
       support() {
         if (this.input.supportType == null) {
           return '请选择使用场景';
-        }
-        else if (this.input.supportType == 0) {
+        } else if (this.input.supportType == 0) {
           return '通用';
         } else if (this.input.supportType == 1) {
           return '线上';

@@ -64,9 +64,8 @@
     params () {
       return {sort: this.tab.sord};
     }
-
     methods = {
-      async select(customer){
+      async select(customer) {
         const param = {
           couponId: this.couponId.couponId,
           customerId: customer.id

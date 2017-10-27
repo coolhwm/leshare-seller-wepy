@@ -28,9 +28,6 @@
 
 <script>
   import wepy from 'wepy';
-  import Tips from '../../utils/Tips';
-  import coupon from '../../api/coupon';
-  import Event from '../../utils/Event';
   export default class CouponItem extends wepy.component {
     props = {
       coupon: {}

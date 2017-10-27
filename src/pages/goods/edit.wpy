@@ -161,7 +161,7 @@
         Tips.loading('保存中', true);
         // 字段信息
         data.name = this.input.name;
-        data.isRecommend =  this.input.isRecommend ? 1 : 0;
+        data.isRecommend = this.input.isRecommend ? 1 : 0;
         data.globalCid = 1; // 待完善
         data.status = this.input.status ? 0 : 1;
         data.innerCid = this.innerCategories.find(item => item.name == this.input.inner).id;
