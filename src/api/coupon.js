@@ -2,7 +2,6 @@ import base from './base';
 import Page from '../utils/Page';
 
 export default class coupon extends base {
-
   /**
    * 客户历史订单分页
    * @param customerId
@@ -56,15 +55,14 @@ export default class coupon extends base {
    * 优惠券使用情况分页方法
    */
   static pagePick (couponId, type) {
-    if(type=='NEVER_USED'){
+    if (type == 'NEVER_USED') {
       const url = `${this.baseUrl}/coupons/${couponId}/used_info`;
       return new Page(url, this.processCouponNeverUsed.bind(this));
-    }else {
+    } else {
       const url = `${this.baseUrl}/coupons/${couponId}/used_info`;
       return new Page(url, this.processCouponUsed.bind(this));
     }
   }
-
 
   /**
    * 新增卡券
@@ -126,7 +124,7 @@ export default class coupon extends base {
    */
   static processCouponNeverUsed (item) {
     const coupon = {};
-    if(item.customer){
+    if (item.customer) {
       coupon.name = item.customer.nickName;
       coupon.avatar = item.customer.avatarUrl;
     }
@@ -138,9 +136,8 @@ export default class coupon extends base {
    * 优惠券使用已使用情况数据处理
    */
   static processCouponUsed (item) {
-    console.log(item);
     const coupon = {};
-    if(item.customer){
+    if (item.customer) {
       coupon.name = item.customer.nickName;
       coupon.avatar = item.customer.avatarUrl;
     }
