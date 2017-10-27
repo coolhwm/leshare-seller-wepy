@@ -60,7 +60,7 @@ export default class customerInfo extends base {
    * @private
    */
   static _dealAddres(addressList) {
-    if (addressList.length > 0) {
+    if (addressList && addressList.length > 0) {
       let address;
       let arr = addressList.filter(v => v.isDefault == '1');
       if (arr.length > 0) {
