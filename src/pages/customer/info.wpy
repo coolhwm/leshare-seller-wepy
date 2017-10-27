@@ -4,13 +4,13 @@
     <view class="customer-box">
 
       <!--客户基本信息-->
-      <view class="info-box row-between">
+      <view class="customer-info-box row-between">
 
         <!--左侧头像-->
         <image class="customer-avatar" src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '/images/wechat.png'}}" />
 
         <!--右侧主区域-->
-        <view class="column main-box">
+        <view class="column customer-main-box">
           <!--姓名/打电话-->
           <view class="row-between">
             <text class="xxl">{{customerInfo.customer.nickName}}</text>
@@ -128,6 +128,7 @@
       this.customerInfo = await customerInfo.detailInfo(this.customerId);
       this.page = order.hisPage(this.customerId);
       this.next();
+      this.loaded();
     };
     methods = {
       phone() {
@@ -177,12 +178,12 @@
     border-bottom: $border;
   }
 
-  .main-box{
+  .customer-main-box{
     flex: 1;
     padding-left: rpx(25);
   }
 
-  .info-box {
+  .customer-info-box {
     padding: rpx(30);
     background-color: #FFF;
 

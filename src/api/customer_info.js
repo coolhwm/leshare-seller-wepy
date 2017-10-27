@@ -26,15 +26,14 @@ export default class customerInfo extends base {
    * 获取客户详细信息
    */
   static async detailInfo(customerId) {
-    const url = `${this.baseUrl}/customers/${customerId}/detail_info `;
+    const url = `${this.baseUrl}/customers/${customerId}/detail_info`;
     return this.get(url).then(data => {
       let price = data.countCustomerInfo.totalPrice;
       if (price > 1000 * 1000) {
         data.countCustomerInfo.totalPrice = (price / 1000).toFixed(2) + 'k';
       }
-      let date = new Date(data.countCustomerInfo.lastOrderTime);
-      data.countCustomerInfo.lastOrderTime = this._dealDate(date);
-
+      const lastTime = data.countCustomerInfo.lastOrderTime;
+      data.countCustomerInfo.lastOrderTime = this._dealDate(lastTime);
       data.address = this._dealAddres(data.addressList);
       return data;
     });
@@ -47,17 +46,11 @@ export default class customerInfo extends base {
    * @private
    */
   static _dealDate(date) {
-    let month = date.getMonth();
-    let day = date.getDay();
-
-    if (month < 10) {
-      month = '0' + month;
+    try {
+      return date.substring(5, 10).replace('-', '/');
+    } catch (e) {
+      return '-';
     }
-    if (day < 10) {
-      day = '0' + day;
-    }
-
-    return month + '/' + day;
   }
 
   /**
