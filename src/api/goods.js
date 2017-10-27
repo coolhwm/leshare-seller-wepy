@@ -5,6 +5,17 @@ import Page from '../utils/Page';
 import Lang from '../utils/Lang';
 
 export default class goods extends base {
+  /**
+   * 客户常购商品
+   */
+  static oftenGoodsPage(customerId) {
+    const url = `${this.baseUrl}/customers/${customerId}/order_goods_list`;
+    return new Page(url, this._processOftenItem.bind(this));
+  }
+
+  static _processOftenItem(item) {
+    item.name = item.goodsName;
+  }
 
   /**
    * 分页方法
@@ -21,6 +32,7 @@ export default class goods extends base {
     const url = `${this.baseUrl}/goods/inner_category`;
     return await this.get(url);
   }
+
   /**
    *  新增商品分类
    */
@@ -30,9 +42,10 @@ export default class goods extends base {
       name: name,
       pid: 0,
       seq: 0
-    }
+    };
     return await this.post(url, param);
   }
+
   /**
    * 获取单条商品分类信息
    */
@@ -40,9 +53,10 @@ export default class goods extends base {
     let list = await this.getInnerCategories();
     return list.find((item) => item.id == categoryId);
   }
+
   /**
-  *  更新商品分类
-  */
+   *  更新商品分类
+   */
   static async updateInnerCategories(id, name) {
     const url = `${this.baseUrl}/goods/inner_category`;
     const param = {
@@ -50,9 +64,10 @@ export default class goods extends base {
       id: id,
       pid: 0,
       seq: 0
-    }
+    };
     return await this.put(url, param);
   }
+
   /**
    *  删除商品分类
    */
@@ -71,9 +86,10 @@ export default class goods extends base {
       url,
       filePath,
       name: 'image'
-    }
+    };
     return await wepy.uploadFile(param);
   }
+
   /**
    * 创建商品
    */
@@ -81,6 +97,7 @@ export default class goods extends base {
     const url = `${this.baseUrl}/goods`;
     return await this.post(url, goods);
   }
+
   /**
    * 更新商品
    */
@@ -88,6 +105,7 @@ export default class goods extends base {
     const url = `${this.baseUrl}/goods/${goodsId}`;
     return await this.put(url, goods);
   }
+
   /**
    * 删除商品
    */
@@ -95,6 +113,7 @@ export default class goods extends base {
     const url = `${this.baseUrl}/goods/${goodsId}`;
     return await this.delete(url);
   }
+
   /**
    * 商品详情
    */
@@ -103,6 +122,7 @@ export default class goods extends base {
     const data = await this.get(url);
     return this._processGoodsDetail(data);
   }
+
   /**
    * 商品上架
    */
@@ -110,6 +130,7 @@ export default class goods extends base {
     const url = `${this.baseUrl}/goods/${goodsId}/on_sale`;
     return this.put(url);
   }
+
   /**
    * 商品下架
    */
@@ -129,7 +150,7 @@ export default class goods extends base {
       globalCid: goods.globalCid,
       innerCid: goods.innerCid,
       goodsId: goods.id
-    }
+    };
     let skuList;
     const details = goods.goodsDetails ? goods.goodsDetails : [];
     if (goods.goodsSkuInfo == null || goods.goodsSkuInfo.goodsSkuDetails == null) {
@@ -181,7 +202,7 @@ export default class goods extends base {
     const images = item.images;
     // 图片处理
     if (images == null || images.length < 1) {
-      item.imageUrl = '/images/icons/broken.png"'
+      item.imageUrl = '/images/icons/broken.png"';
     } else if (images[0].url == null) {
       item.imageUrl = '/images/icons/broken.png';
     } else {
@@ -215,4 +236,5 @@ export default class goods extends base {
       detail.priceText = `￥${minPrice}`;
     }
   }
+
 }

@@ -28,4 +28,17 @@ $border-dot: 1px dotted #EFF0F2;
 $color-bg-body: #F5F5F5;
 $color-bg-item: #FAFAFA;
 
+//function
 @function rpx($value) {@return $value * 1rpx;}
+
+//mixin
+@mixin icon-image($size){
+  height: $size;
+  width: $size;
+  vertical-align: middle;
+}
+
+@mixin icon-round($size){
+  @include icon-image($size);
+  border-radius: 50%;
+}

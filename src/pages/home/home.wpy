@@ -11,10 +11,10 @@
       </view>
 
       <view class="today-kpi-box row-around">
-        <view class="column-center">
+        <navigator class="column-center" url="../customer/visitor">
           <text>浏览人数</text>
           <text class="lg mt20">{{today.visitShopLog}}</text>
-        </view>
+        </navigator>
         <view class="vr"/>
         <view class="column-center">
           <text>付款订单数</text>
@@ -63,10 +63,10 @@
           <text class="muted">本月成交额</text>
         </view>
         <view class="vr"/>
-        <view class="count-item column-center">
+        <navigator class="count-item column-center" url="../customer/visitor">
           <text class="count-value">{{month.visitShopLog}}</text>
           <text class="muted">本月浏览数</text>
-        </view>
+        </navigator>
       </view>
     </view>
 
@@ -179,11 +179,14 @@
     }
     compareOrderStatus(curStatus) {
       const preStatus = wepy.getStorageSync('order_count');
+      const auto = this.shop.autoOrder;
       if (preStatus == '') {
         return;
       }
-      // 接单数量比较
-      if (preStatus.n2 < curStatus.n2) {
+      // 手工接单比较待接单订单，自动接单比较已接单订单
+      let hasNewOrder = auto == 0 ? (preStatus.n2 < curStatus.n2) : (preStatus.n9 < curStatus.n9 || preStatus.n3 < curStatus.n3);
+      // 订单数量比较
+      if (hasNewOrder) {
         // 新订单通知
         wepy.playBackgroundAudio({
           dataUrl: 'http://img.leshare.shop/leshare/new_order.mp3'

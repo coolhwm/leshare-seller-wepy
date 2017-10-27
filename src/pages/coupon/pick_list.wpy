@@ -1,0 +1,86 @@
+<template>
+    <view class="container" wx:if="{{init}}">
+        <!--TAB 页-->
+        <ZanTab :tab.sync="tab" @change.user="switchTab"/>
+        <!--客户列表-->
+        <repeat for="{{page.list}}" key="index" index="index" item="item">
+            <CustomerItem :customer.sync="item"></CustomerItem>
+        </repeat>
+
+        <!-- 加载提示 -->
+        <Loadmore :page.sync="page"/>
+
+        <!--操作栏-->
+        <ActionBar @tap.user="add" okText="发放优惠券" cancelText="返回"/>
+
+        <!--占位符-->
+        <Placeholder :show.sync="isPageEmpty" message="暂无领取记录"/>
+    </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import coupon from '../../api/coupon';
+  import ZanTab from '../../components/zanui/tab';
+  import base from '../../mixins/base';
+  import pagination from '../../mixins/pagination';
+  import CustomerItem from '../../components/customer/item';
+  import Loadmore from '../../components/weui/loadmore';
+  import Placeholder from '../../components/common/placeholder';
+  import ActionBar from '../../components/common/action_bar';
+  import Event from '../../utils/Event';
+
+  export default class PickList extends wepy.page {
+    def = {
+      init: false,
+      page: {
+        list: []
+      },
+      tab: {
+        list: [
+          {id: 'NEVER_USED', title: '未使用'},
+          {id: 'USED', title: '已使用'}
+        ],
+        selectedId: 'NEVER_USED',
+        scroll: false
+      },
+      couponId: 0
+    };
+    data = {...this.def};
+    methods = {
+      switchTab ({selectedId}) {
+        this.page = coupon.pagePick(this.couponId, selectedId);
+        this.reload();
+      },
+      add () {
+        this.$navigate('customer_list?couponId=' + this.couponId);
+      }
+    };
+
+    params () {
+      return {status: this.tab.selectedId};
+    }
+
+    async onLoad ({couponId, mode}) {
+      this.couponId = couponId;
+      this.page = coupon.pagePick(couponId, this.tab.selectedId);
+      await this.next();
+      Event.listen(Event.COUPON_USER_UPDATE, this.update.bind(this), this);
+    };
+
+    components = {
+      ZanTab: ZanTab,
+      CustomerItem: CustomerItem,
+      Loadmore: Loadmore,
+      Placeholder: Placeholder,
+      ActionBar: ActionBar
+    };
+    mixins = [base, pagination];
+    config = {
+      navigationBarTitleText: '优惠券使用',
+      enablePullDownRefresh: true
+    };
+  }
+</script>
+<style lang="scss">
+    @import "../../styles/variable";
+</style>

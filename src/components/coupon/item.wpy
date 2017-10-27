@@ -1,5 +1,5 @@
 <template>
-  <view class="coupon-box row-center " @longtap="remove({{coupon.id}})">
+  <view class="coupon-box row-center " @tap="edit({{coupon.id}})">
     <!--左侧区域-->
     <view class="main-box column-center">
       <view >
@@ -12,16 +12,24 @@
     <!--右侧区域-->
     <view class="info-box column">
       <view>
-        <view>
-          <text class="sm">{{coupon.name}}</text>
+        <view class="row">
+            <view class="small label primary" wx:if="{{coupon.supportType == 0}}">通用</view>
+            <view class="small label primary" wx:if="{{coupon.supportType == 1}}">线上</view>
+            <view class="small label primary" wx:if="{{coupon.supportType == 2}}">线下</view>
+            <text class="sm">{{coupon.name}}</text>
         </view>
         <text class="muted xs">{{coupon.beginTime}}-{{coupon.dueTime}}</text>
       </view>
 
       <!--分隔符-->
-      <view class="btn-box row-end" wx:if="{{action == 'true'}}">
-        <view class="zan-btn zan-btn--small" @tap="edit({{coupon.id}})">编辑</view>
-        <view class="zan-btn zan-btn--small  zan-btn--primary" @tap="put({{coupon.id}})" >发放</view>
+      <view class="btn-box row-between" wx:if="{{action == 'true'}}" @tap.stop="pick({{coupon.id}})">
+          <view>
+            <text class="muted mr20 sm">已领取: {{coupon.couponCustomerCount.acceptCount ? coupon.couponCustomerCount.acceptCount:0}}</text>
+            <text class="muted sm">已核销: {{coupon.couponCustomerCount.usedCount?coupon.couponCustomerCount.usedCount:0}}</text>
+          </view>
+          <view>
+            <image class="icon" src="/images/icons/more-gray.png" ></image>
+          </view>
       </view>
     </view>
   </view>
@@ -29,9 +37,6 @@
 
 <script>
   import wepy from 'wepy';
-  import Tips from '../../utils/Tips';
-  import coupon from '../../api/coupon';
-  import Event from '../../utils/Event';
   export default class CouponItem extends wepy.component {
     props = {
       coupon: {},
@@ -41,25 +46,21 @@
     };
     data = {};
     methods = {
-      async remove (couponId) {
-        await Tips.confirm('确认删除该优惠券？');
-        await coupon.remove(couponId);
-        await Tips.success('删除成功');
-        Event.emit(Event.COUPON_LIST_UPDATE);
-      },
       edit(couponId) {
         const param = {
           couponId,
           mode: 'edit'
-        }
+        };
         this.$root.$navigate('edit', param);
       },
-      put(couponId) {
-        Tips.alert('敬请期待');
+      pick(couponId) {
+        const param = {
+          couponId,
+          mode: 'pick_list'
+        };
+        this.$root.$navigate('pick_list', param);
       }
     };
-    onLoad() {
-    }
   }
 </script>
 

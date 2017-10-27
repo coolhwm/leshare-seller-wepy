@@ -29,19 +29,41 @@ export default class order extends base {
       '7': '交易关闭',
       '8': '卖家已退款',
       '9': '店家已接单'
+    },
+    '30': {
+      '0': '全部',
+      '1': '等待买家付款',
+      '2': '等待店家接单',
+      '3': '店家配餐中',
+      '4': '等待买家评价',
+      '5': '申请退款中',
+      '6': '交易成功',
+      '7': '交易关闭',
+      '8': '卖家已退款',
+      '9': '店家已接单'
+    },
+    '33': {
+      '0': '全部',
+      '1': '等待买家付款',
+      '2': '等待店家接单',
+      '3': '店家配餐中',
+      '4': '等待买家评价',
+      '5': '申请退款中',
+      '6': '交易成功',
+      '7': '交易关闭',
+      '8': '卖家已退款',
+      '9': '店家已接单'
     }
   }
   static paymentDict = {
     '0': '线下支付',
     '1': '在线支付'
   };
-
   static deliveryText = {
     'SELF': '上门自提',
     'CITY': '同城配送',
     'EXPRESS': '快递配送'
   };
-
   static statusDesc = {
     '1': '等待买家付款，超时订单自动关闭',
     '2': '买家已付款，请您尽快发货，超时未接单将自动退款',
@@ -52,6 +74,14 @@ export default class order extends base {
     '7': '本交易已取消',
     '8': '您已退货成功',
     '9': '您已接单，请尽快配送'
+  }
+
+  /**
+   * 分页方法
+   */
+  static hisPage(customerId) {
+    const url = `${this.baseUrl}/customers/${customerId}/order_list`;
+    return new Page(url, this._processOrderListItem.bind(this));
   }
 
   /**

@@ -1,0 +1,221 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <!--客户信息-->
+    <view class="customer-box">
+
+      <!--客户基本信息-->
+      <view class="customer-info-box row-between">
+
+        <!--左侧头像-->
+        <image class="customer-avatar" src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '/images/icons/customer.png'}}" />
+
+        <!--右侧主区域-->
+        <view class="column customer-main-box">
+          <!--姓名/打电话-->
+          <view class="row-between">
+            <text class="xxl">{{customerInfo.customer.nickName}}</text>
+            <image class="icon" src="/images/icons/call.png" @tap.stop="phone"/>
+          </view>
+
+          <!--地址信息-->
+          <view class="row-between" @tap.stop="addressList({{customerId}})">
+            <!--地址/电话-->
+            <view class="column address-box">
+              <text>电话：{{customerInfo.address  ? customerInfo.address.phone : '暂无电话'}}</text>
+              <text>地址：{{customerInfo.address ? customerInfo.address.fullAddress : '暂无地址'}}</text>
+            </view>
+            <!--更多地址-->
+            <image class="icon" src="/images/icons/more-gray.png"></image>
+          </view>
+
+        </view>
+      </view>
+
+      <view class="customer-hr"></view>
+
+      <!--客户统计信息-->
+      <view class="count-box row-around bg-white">
+        <view class="count-item column-center">
+          <text class="count-value">{{customerInfo.countCustomerInfo.lastOrderTime}}</text>
+          <text class="muted">最近购买</text>
+        </view>
+        <view class="count-item column-center">
+          <text class="count-value">￥{{customerInfo.countCustomerInfo.totalPrice}}</text>
+          <text class="muted">交易总额</text>
+        </view>
+        <view class="count-item column-center">
+          <text class="count-value">{{customerInfo.countCustomerInfo.totalOrderCount}}次</text>
+          <text class="muted">购买次数</text>
+        </view>
+        <view class="count-item column-center">
+          <text class="count-value">{{customerInfo.countCustomerInfo.totalCouponCount}}张</text>
+          <text class="muted">卡卷数量</text>
+        </view>
+      </view>
+    </view>
+
+    <!--TAB-->
+    <view>
+      <ZanTab :tab.sync="tab" fixed="0"/>
+    </view>
+
+    <!--列表区域-->
+    <view>
+      <repeat for="{{page.list}}" key="index" index="index" item="item">
+        <block wx:if="{{tab.selectedId == 'HIS_ORDER'}}">
+          <OrderItem :order.sync="item" @tap.user="detail" action="0"></OrderItem>
+        </block>
+        <block wx:elif="{{tab.selectedId == 'OFTEN_GOODS'}}">
+          <OftenGoods :goods="item"></OftenGoods>
+        </block>
+        <block wx:elif="{{tab.selectedId == 'COUPON'}}">
+          <CouponItem :coupon.sync="item"></CouponItem>
+        </block>
+      </repeat>
+
+      <!-- 加载提示 -->
+      <Loadmore :page.sync="page" emptyText="暂无记录"/>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import ZanTab from '../../components/zanui/tab';
+  import customerInfo from '../../api/customer_info';
+  import base from '../../mixins/base';
+  import pagination from '../../mixins/pagination';
+  import order from '../../api/order';
+  import OrderItem from '../../components/order/item';
+  import coupon from '../../api/coupon';
+  import CouponItem from '../../components/customer/coupon_item';
+  import goods from '../../api/goods';
+  import OftenGoods from '../../components/customer/often_goods';
+  import Loadmore from '../../components/weui/loadmore';
+  import Placeholder from '../../components/common/placeholder';
+  import Tips from '../../utils/Tips';
+
+  export default class CustomerInfo extends wepy.page {
+    def = {
+      init: false,
+      attention: false,
+      customerInfo: {},
+      customerId: '',
+      page: {
+        list: [
+          {orderGoodsInfos: []}
+        ]
+      },
+      tab: {
+        list: [
+          {id: 'HIS_ORDER', title: '历史订单'},
+          {id: 'OFTEN_GOODS', title: '常购商品'},
+          {id: 'COUPON', title: '优惠券'}
+        ],
+        selectedId: 'HIS_ORDER'
+      },
+      order: {},
+      good: {},
+      coupon: {}
+    };
+    data = {...this.def};
+
+    async onLoad(options) {
+      this.customerId = options.customerId;
+      this.tab.selectedId = 'HIS_ORDER';
+      this.customerInfo = await customerInfo.detailInfo(this.customerId);
+      this.page = order.hisPage(this.customerId);
+      this.next();
+      this.loaded();
+    };
+    methods = {
+      phone() {
+        if (this.customerInfo.address) {
+          wepy.makePhoneCall({phoneNumber: this.customerInfo.address.phone});
+        } else {
+          Tips.alert('该用户没有电话');
+        }
+      },
+      addressList(customerId) {
+        if (!this.customerInfo.addressList) {
+          Tips.alert('该用户没有地址');
+          return;
+        }
+        this.$navigate('./address_list', {customerId});
+      },
+      detail(orderId) {
+        this.$navigate('../order/detail', {orderId});
+      }
+    };
+    events = {
+      async change() {
+        this.page.clear();
+        this.$apply();
+        if (this.tab.selectedId == 'HIS_ORDER') {
+          this.page = order.hisPage(this.customerId);
+        } else if (this.tab.selectedId == 'OFTEN_GOODS') {
+          this.page = await goods.oftenGoodsPage(this.customerId);
+        } else if (this.tab.selectedId == 'COUPON') {
+          this.page = await coupon.cutomerCouponPage(this.customerId);
+        }
+        this.next();
+      }
+    };
+    mixins = [base, pagination];
+    components = {
+      ZanTab: ZanTab,
+      OrderItem: OrderItem,
+      CouponItem: CouponItem,
+      OftenGoods: OftenGoods,
+      Loadmore: Loadmore,
+      Placeholder: Placeholder
+    };
+    config = {
+      navigationBarTitleText: '客户信息',
+      enablePullDownRefresh: true
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  .customer-box{
+    margin-bottom: 10rpx;
+    border-bottom: $border;
+  }
+
+  .customer-main-box{
+    flex: 1;
+    padding-left: rpx(25);
+  }
+
+  .customer-info-box {
+    padding: rpx(30);
+    background-color: #FFF;
+
+    .customer-avatar{
+      @include icon-round(rpx(180));
+    }
+
+    .address-box{
+      max-width: 430rpx;
+      text{
+        color: $color-muted;
+        font-size: $text-sm;
+        word-break: break-all;
+      }
+    }
+  }
+  .customer-hr{
+    width: 100%;
+    border-top: $border;
+  }
+
+  /*统计区域*/
+  .count-box {
+    padding: rpx(20) 0;
+    .count-item {
+      width: rpx(250);
+    }
+  }
+</style>

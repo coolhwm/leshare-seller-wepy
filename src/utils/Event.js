@@ -11,6 +11,8 @@ export default class Event {
   static GOODS_LIST_UPDATE = 'GOODS_LIST_UPDATE';
   // 卡券列表更新事件
   static COUPON_LIST_UPDATE = 'COUPON_LIST_UPDATE';
+  // 卡券用户更新事件
+  static COUPON_USER_UPDATE = 'COUPON_USER_UPDATE';
   // 公告列表更新事件
   static NOTICE_LIST_UPDATE = 'NOTICE_LIST_UPDATE';
   // 分类列表更新事件

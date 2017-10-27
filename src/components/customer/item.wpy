@@ -1,8 +1,12 @@
 <template>
-  <view class="cusomer-box row">
+  <view class="cusomer-box row" @tap="tap({{customer}})">
     <image class="avatar icon-xl icon-round" src="{{customer.avatar ? customer.avatar : '/images/icons/customer.png'}}"></image>
     <view class="info-box column">
-      <text class="xl">{{customer.name ? customer.name : '微信用户'}}</text>
+      <view class="title-box row">
+        <text class="xl">{{customer.name ? customer.name : '微信用户'}}</text>
+        <text class="ml10 xxs muted">{{customer.describe}}</text>
+      </view>
+
       <view class="count-box row">
         <text class="muted">{{customer.key}}</text>
         <text class="major ml10"> {{customer.value}}</text>
@@ -13,12 +17,16 @@
 
 <script>
   import wepy from 'wepy'
-  export default class OrderGoods extends wepy.component {
+  export default class CustomerItem extends wepy.component {
     props = {
       customer: {}
     };
     data = {};
-    methods = {};
+    methods = {
+      tap(customer) {
+        this.$emit('tap', customer);
+      }
+    };
     events = {};
     onLoad() {
     }
