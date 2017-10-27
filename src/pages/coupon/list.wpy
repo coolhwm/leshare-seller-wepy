@@ -46,7 +46,7 @@
         ],
         selectedId: 'USED'
       }
-    }
+    };
     data = {...this.def};
     async onLoad () {
       this.page = coupon.page();
@@ -63,7 +63,7 @@
       add() {
         this.$navigate('edit?mode=create');
       }
-    }
+    };
     components = {
       Placeholder: Placeholder,
       ZanTab: ZanTab,

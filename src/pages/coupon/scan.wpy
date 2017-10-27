@@ -68,6 +68,11 @@
           this.loaded();
           return;
         }
+        if (this.coupon.supportType == 1) {
+          this.message = '该优惠券只能在线下单使用';
+          this.loaded();
+          return;
+        }
         this.success = true;
       } catch (error) {
         this.message = error.message;
