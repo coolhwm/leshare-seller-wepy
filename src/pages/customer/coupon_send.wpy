@@ -1,0 +1,92 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <!--列表区域-->
+    <view>
+      <repeat for="{{page.list}}" key="index" index="index" item="item">
+        <CouponItem :coupon.sync="item"></CouponItem>
+      </repeat>
+
+      <!-- 加载提示 -->
+      <Loadmore :page.sync="page" emptyText="暂无记录"/>
+
+      <!--操作栏-->
+      <ActionBar @tap.user="submit" okText="保存" cancelText="返回"/>
+
+      <!--占位符-->
+      <Placeholder :show.sync="isPageEmpty" message="您还没有可发放的卡卷"/>
+
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import pagination from '../../mixins/pagination';
+  import coupon from '../../api/coupon';
+  import CouponItem from '../../components/customer/coupon_item';
+  import Loadmore from '../../components/weui/loadmore';
+  import Placeholder from '../../components/common/placeholder';
+  import ActionBar from '../../components/common/action_bar';
+  import Event from '../../utils/Event';
+  import Tips from '../../utils/Tips';
+
+  export default class CustomerInfo extends wepy.page {
+    def = {
+      init: false,
+      customerId: '',
+      page: {},
+      sendCoupon: []
+    };
+    data = {...this.def};
+
+    async onLoad(options) {
+      this.customerId = 447;
+      this.page = coupon.page();
+      this.next();
+    };
+
+    methods = {
+      submit() {
+        Tips.success('发放成功');
+        Event.emit(Event.CUSOMTER_COUPON_UPDATE, this.sendCoupon);
+
+        wepy.navigateBack();
+      }
+    };
+
+    params() {
+      return {status: 'USED'};
+    }
+
+    events = {
+      select(data) {
+        if (data.selected) {
+          this.sendCoupon.push(data);
+        } else {
+          let index = this.sendCoupon.findIndex(v => {
+            return v.couponId == data.couponId;
+          });
+          if (index != -1) {
+            this.sendCoupon.splice(index, 1);
+          }
+        }
+      }
+    };
+    mixins = [pagination];
+    components = {
+      CouponItem: CouponItem,
+      ActionBar: ActionBar,
+      Loadmore: Loadmore,
+      Placeholder: Placeholder
+    };
+    config = {
+      navigationBarTitleText: '发放优惠券',
+      enablePullDownRefresh: true
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+
+</style>
