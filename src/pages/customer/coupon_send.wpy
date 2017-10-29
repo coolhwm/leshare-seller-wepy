@@ -9,9 +9,6 @@
       <!-- 加载提示 -->
       <Loadmore :page.sync="page" emptyText="暂无记录"/>
 
-      <!--操作栏-->
-      <ActionBar @tap.user="submit" okText="保存" cancelText="返回"/>
-
       <!--占位符-->
       <Placeholder :show.sync="isPageEmpty" message="您还没有可发放的卡卷"/>
 
@@ -22,6 +19,7 @@
 <script>
   import wepy from 'wepy';
   import pagination from '../../mixins/pagination';
+  import customerInfo from '../../api/customer_info';
   import coupon from '../../api/coupon';
   import CouponItem from '../../components/customer/coupon_item';
   import Loadmore from '../../components/weui/loadmore';
@@ -40,35 +38,32 @@
     data = {...this.def};
 
     async onLoad(options) {
-      this.customerId = 447;
+      this.customerId = options.customerId;
       this.page = coupon.page();
       this.next();
     };
 
-    methods = {
-      submit() {
-        Tips.success('发放成功');
-        Event.emit(Event.CUSOMTER_COUPON_UPDATE, this.sendCoupon);
-
-        wepy.navigateBack();
-      }
-    };
+    methods = {};
 
     params() {
       return {status: 'USED'};
     }
 
     events = {
-      select(data) {
-        if (data.selected) {
-          this.sendCoupon.push(data);
+      async select(couponId) {
+        let params = {
+          customerId: this.customerId,
+          couponId: couponId
+        };
+
+        let data = await customerInfo.sendCoupon(params);
+
+        if (data.result == 'SUCCESS') {
+          Tips.success('发放成功');
+
+          Event.emit(Event.CUSOMTER_COUPON_UPDATE);
         } else {
-          let index = this.sendCoupon.findIndex(v => {
-            return v.couponId == data.couponId;
-          });
-          if (index != -1) {
-            this.sendCoupon.splice(index, 1);
-          }
+          Tips.error('发放失败');
         }
       }
     };

@@ -2,6 +2,16 @@ import base from './base';
 import Page from '../utils/Page';
 
 export default class customerInfo extends base {
+
+  /**
+   * 根据客户发放优惠券
+   * @param params(couponId, cusomterId)
+   */
+  static async sendCoupon(params) {
+    const url = `${this.baseUrl}/coupons/send`;
+    return await this.post(url, params);
+  }
+
   /**
    * 获取客户地址
    * @param customerId

@@ -7,7 +7,8 @@
       <view class="customer-info-box row-between">
 
         <!--左侧头像-->
-        <image class="customer-avatar" src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '/images/icons/customer.png'}}" />
+        <image class="customer-avatar"
+               src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '/images/icons/customer.png'}}"/>
 
         <!--右侧主区域-->
         <view class="column customer-main-box">
@@ -21,7 +22,7 @@
           <view class="row-between" @tap.stop="addressList({{customerId}})">
             <!--地址/电话-->
             <view class="column address-box">
-              <text>电话：{{customerInfo.address  ? customerInfo.address.phone : '暂无电话'}}</text>
+              <text>电话：{{customerInfo.address ? customerInfo.address.phone : '暂无电话'}}</text>
               <text>地址：{{customerInfo.address ? customerInfo.address.fullAddress : '暂无地址'}}</text>
             </view>
             <!--更多地址-->
@@ -136,16 +137,18 @@
 
       Event.listen(Event.CUSOMTER_COUPON_UPDATE, this.updateInfo.bind(this), this);
     };
+
     updateInfo(params) {
-      this.page.list = [...this.page.list, ...params];
-      this.customerInfo.countCustomerInfo.totalCouponCount += params.length;
+      this.update();
+      this.customerInfo.countCustomerInfo.totalCouponCount++;
 
       this.$apply();
     }
 
     methods = {
       send() {
-        this.$navigate('./coupon_send');
+        const customerId = this.customerId;
+        this.$navigate('./coupon_send', {customerId});
       },
       phone() {
         if (this.customerInfo.address) {
@@ -198,12 +201,13 @@
 
 <style lang="scss">
   @import "../../styles/variable";
-  .customer-box{
-    margin-bottom: 10rpx;
+
+  .customer-box {
+    margin-bottom: rpx(10);
     border-bottom: $border;
   }
 
-  .customer-main-box{
+  .customer-main-box {
     flex: 1;
     padding-left: rpx(25);
   }
@@ -212,20 +216,21 @@
     padding: rpx(30);
     background-color: #FFF;
 
-    .customer-avatar{
+    .customer-avatar {
       @include icon-round(rpx(180));
     }
 
-    .address-box{
-      max-width: 430rpx;
-      text{
+    .address-box {
+      max-width: rpx(430);
+      text {
         color: $color-muted;
         font-size: $text-sm;
         word-break: break-all;
       }
     }
   }
-  .customer-hr{
+
+  .customer-hr {
     width: 100%;
     border-top: $border;
   }

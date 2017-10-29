@@ -21,24 +21,14 @@
         <text class="muted xs">{{coupon.beginTime}}-{{coupon.dueTime}}</text>
       </view>
 
-      <!--勾选iamge-->
-      <view wx:if="{{selectAction != 0}}">
-        <!--卡卷选择-->
-        <view class="img-select" @tap="select">
-          <block wx:if="{{coupon.selected}}">
-            <image src="../../images/icons/selected.png"></image>
-          </block>
-          <block wx:else>
-            <image src="../../images/icons/un-selected.png"></image>
-          </block>
-        </view>
-      </view>
-      <view wx:else>
-        <!--分隔符-->
-        <view class="btn-box row-end">
+      <view class="btn-box row-end">
+        <block wx:if="{{selectAction != '0'}}">
+          <view class="zan-btn zan-btn--small  zan-btn--primary" @tap="sendCoupon({{}})">发放</view>
+        </block>
+        <block wx:else>
           <text class="muted xs">领取时间：{{coupon.acceptTime}}</text>
           <text class="muted xs" style="margin-left: 20rpx">状态：{{coupon.status}}</text>
-        </view>
+        </block>
       </view>
     </view>
   </view>
@@ -46,7 +36,6 @@
 
 <script>
   import wepy from 'wepy';
-  import DateUtil from '../../utils/DateUtil';
   import Tips from '../../utils/Tips';
 
   export default class CouponItem extends wepy.component {
@@ -61,29 +50,11 @@
     };
     data = {};
     methods = {
-      async select() {
-        if (!this.coupon.selected) {
-          await Tips.confirm('确定给该用户发放优惠券？');
-        }
-        this.coupon.selected = !this.coupon.selected;
-        // 发射事件
-        let data = {
-          selected: this.coupon.selected,
-          couponId: this.coupon.id,
-          customerId: this.customerId,
-          price: this.coupon.price,
-          limitPrice: this.coupon.price,
-          name: this.coupon.name,
-          shopId: this.coupon.shopId,
-          supportType: this.coupon.supportType,
-          status: this.coupon.status,
-          beginTime: this.coupon.beginTime,
-          dueTime: this.coupon.dueTime,
-          status: '进行中',
-          acceptTime: DateUtil.test(new Date(), 'yyyy.MM.dd'),
-        };
+      async sendCoupon() {
+        await Tips.confirm('确定给该用户发放优惠券？');
 
-        this.$emit('select', data);
+        // 发射事件
+        this.$emit('select', this.coupon.id);
       }
     };
 
