@@ -36,10 +36,10 @@ export default class coupon extends base {
         item.status = '未使用';
         break;
       case 'EXPIRED':
-        item.status = '已失效';
+        item.status = '已过期';
         break;
       default:
-        item.status = '无效'
+        item.status = '已失效'
     }
   }
 
