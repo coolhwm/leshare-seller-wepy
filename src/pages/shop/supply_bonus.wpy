@@ -1,0 +1,11 @@
+<template>
+    <view>SupplyBonus</view>
+</template>
+<script>
+  import wepy from 'wepy';
+
+  export default class SupplyBonus extends wepy.page {
+
+  }
+</script>
+<style></style>

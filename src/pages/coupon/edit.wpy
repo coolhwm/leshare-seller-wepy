@@ -1,6 +1,6 @@
 <template>
     <Tips/>
-    <view class="container">
+    <view class="container" wx:if="{{init}}">
         <view class="h-gap"></view>
         <view class="weui-cells weui-cells-form">
             <view class="weui-cell weui-cell_input">

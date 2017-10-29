@@ -113,4 +113,28 @@ export default class shop extends base {
     const url = `${this.baseUrl}/reduce_rule`;
     return this.put(url, reduce);
   }
+
+  /**
+   * 会员卡信息
+   */
+  static async memberCardInfo() {
+    const url = `${this.baseUrl}/memberCards`;
+    return await this.get(url);
+  }
+
+  /**
+   * 添加会员卡
+   */
+  static async memberCardCreate(cardParam) {
+    const url = `${this.baseUrl}/memberCards`;
+    return this.post(url,cardParam);
+  }
+
+  /**
+   * 编辑会员卡
+   */
+  static async memberCardUpdate(cardParam) {
+    const url = `${this.baseUrl}/memberCards`;
+    return this.put(url,cardParam);
+  }
 }
