@@ -178,7 +178,6 @@
           this.page = await goods.oftenGoodsPage(this.customerId);
         } else if (this.tab.selectedId == 'COUPON') {
           this.page = await coupon.cutomerCouponPage(this.customerId);
-          console.log(this.page);
         }
         this.next();
       }
