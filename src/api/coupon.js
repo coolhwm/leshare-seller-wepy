@@ -30,16 +30,16 @@ export default class coupon extends base {
 
     switch (item.status) {
       case 'USED':
-        item.status = '进行中';
+        item.status = '已使用';
         break;
       case 'NEVER_USED':
-        item.status = '未开始';
+        item.status = '未使用';
         break;
       case 'EXPIRED':
-        item.status = '已失效';
+        item.status = '已过期';
         break;
       default:
-        item.status = '无效'
+        item.status = '已失效'
     }
   }
 
