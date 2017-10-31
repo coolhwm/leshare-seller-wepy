@@ -62,6 +62,10 @@
 
     <!--列表区域-->
     <view>
+
+      <view class="zan-btns" wx:if="{{tab.selectedId == 'COUPON'}}">
+        <button class="zan-btn zan-btn--fill" @tap="send">发放优惠券</button>
+      </view>
       <repeat for="{{page.list}}" key="index" index="index" item="item">
         <block wx:if="{{tab.selectedId == 'HIS_ORDER'}}">
           <OrderItem :order.sync="item" @tap.user="detail" action="0"></OrderItem>
@@ -76,12 +80,6 @@
 
       <!-- 加载提示 -->
       <Loadmore :page.sync="page" emptyText="暂无记录"/>
-
-      <view class="zan-panel" wx:if="{{tab.selectedId == 'COUPON'}}">
-        <view class="zan-btns">
-          <button class="zan-btn zan-btn--fill" @tap="send">发放卡卷</button>
-        </view>
-      </view>
     </view>
   </view>
 </template>

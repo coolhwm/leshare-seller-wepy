@@ -51,20 +51,19 @@
 
     events = {
       async select(couponId) {
-        let params = {
+        const params = {
           customerId: this.customerId,
           couponId: couponId
         };
-
-        let data = await customerInfo.sendCoupon(params);
-
+        const data = await customerInfo.sendCoupon(params);
         if (data.result == 'SUCCESS') {
-          Tips.success('发放成功');
+          await Tips.success('发放成功');
 
           Event.emit(Event.CUSOMTER_COUPON_UPDATE);
         } else {
-          Tips.error('发放失败');
+          await Tips.error('发放失败');
         }
+        wepy.navigateBack();
       }
     };
     mixins = [pagination];
