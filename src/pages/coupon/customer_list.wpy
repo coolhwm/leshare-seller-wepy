@@ -65,7 +65,7 @@
     }
 
     methods = {
-      async select(customer){
+      async select(customer) {
         await Tips.confirm('确认发放该优惠券？');
         //TODO API 调用
         await Tips.success('发放成功');

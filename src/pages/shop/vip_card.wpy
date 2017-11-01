@@ -23,31 +23,38 @@
                 </view>
             </view>
 
-            <view class="weui-cell" wx:if="{{!uploader}}">
-                <view class="weui-cell__bd">
-                <textarea class="weui-textarea" id="description" value="{{input.description}}" placeholder="请输入使用说明"
-                          style="height: 4.0em" maxlength="100" @input="input"/>
-                    <view class="weui-textarea-counter">{{input.description ? input.description.length : 0}}/100</view>
-                </view>
+            <view class="weui-cell row-between" @tap="textArea('description')">
+                <view class="weui-label">使用说明</view>
+                <image class="icon_size row-end" src="/images/icons/more-gray.png"/>
             </view>
 
-            <view class="weui-cell" wx:if="{{!uploader}}">
-                <view class="weui-cell__bd">
-                <textarea class="weui-textarea" id="notice" value="{{input.notice}}" placeholder="请输入使用提醒"
-                          style="height: 4.0em" maxlength="100" @input="input"/>
-                    <view class="weui-textarea-counter">{{input.notice ? input.notice.length : 0}}/100</view>
-                </view>
+            <view class="weui-cell row-between" @tap="textArea('notice')">
+                <view class="weui-label">使用提醒</view>
+                <image class="icon_size row-end" src="/images/icons/more-gray.png"/>
             </view>
 
             <view class="h-gap bg-color"/>
-            <view class="weui-cell weui-cell_switch weui-cells-form">
+            <view class="weui-cell weui-cell_switch">
                 <view class="weui-cell__bd">积分规则</view>
                 <view class="weui-cell__ft">
                     <switch checked="{{input.supplyBonus}}" id="supplyBonus" @change="input"/>
                 </view>
             </view>
-            <view class="mt20 mb20 margin-right row-end" wx:if="{{input.supplyBonus}}">
-                <view @tap="supply">规则配置 ></view>
+            <view class="weui-cell row-between" wx:if="{{input.supplyBonus}}" @tap="toSupplyBonus">
+                <view class="weui-label">规则配置</view>
+                <image class="icon_size row-end" src="/images/icons/more-gray.png"/>
+            </view>
+
+            <view class="h-gap bg-color"/>
+            <view class="weui-cell weui-cell_switch">
+                <view class="weui-cell__bd">会员等级</view>
+                <view class="weui-cell__ft">
+                    <switch checked="{{input.supplyDiscount}}" id="supplyDiscount" @change="input"/>
+                </view>
+            </view>
+            <view class="weui-cell row-between" wx:if="{{input.supplyDiscount}}" @tap="toSupplyDiscount">
+                <view class="weui-label">等级配置</view>
+                <image class="icon_size row-end" src="/images/icons/more-gray.png"/>
             </view>
         </view>
         <view class="zan-panel">
@@ -65,52 +72,71 @@
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
   import shop from '../../api/shop';
+  import Vip from '../../api/vip_card';
 
   export default class VipCard extends wepy.page {
     def = {
       card: {},
       shop: {},
-      mode: 'create'
+      mode: '',
+      bonusRule: {},
+      discountRules: {},
+      description: '',
+      notice: ''
     };
     data = {...this.def};
     methods = {
-      supply () {
-        wepy.navigateTo({
-          url: 'supply_bonus'
-        });
+      textArea (type) {
+        const param = {};
+        if (type == 'description') {
+          param.type = type;
+          param.context = this.card.description;
+        } else {
+          param.type = type;
+          param.context = this.card.notice;
+        }
+        this.$navigate('context?param=' + JSON.stringify(param));
+      },
+      toSupplyDiscount() {
+        this.$navigate('supply_discount?discount=' + JSON.stringify(this.card.discountRules));
+      },
+      toSupplyBonus () {
+        this.$navigate('supply_bonus?bonus=' + JSON.stringify(this.card.bonusRule));
       },
       async submit () {
+        let param = {};
         if (!this.validate()) {
           return;
         }
         if (this.mode == 'create') {
-          const param = {
+          let param = {
             color: '#509FC9',
             brandName: this.shop.name,
             autoActivate: 1,
             supplyBalance: 0,
-            supplyDiscount: 0,
             quantity: 0,
-            date_type: 0,
+            dateType: 0,
             fixedTerm: 0,
-            title: this.input.title,
-            description: this.input.description,
-            notice: this.input.notice,
-            servicePhone: this.input.servicePhone,
-            supplyBonus: this.input.supplyBonus,
+            bonusRule: this.bonusRule,
+            discountRules: this.discountRules,
+            description: this.description,
+            notice: this.notice,
+            supplyBonus: this.input.supplyBonus ? 1 : 0,
+            supplyDiscount: this.input.supplyDiscount ? 1 : 0
           };
-          await shop.memberCardCreate(param);
+          param = this.input;
+          await Vip.memberCardCreate(param);
           await Tips.success('创建成功！');
         } else {
-          const param = {
-            brandName: this.shop.name,
-            title: this.input.title,
-            description: this.input.description,
-            notice: this.input.notice,
-            servicePhone: this.input.servicePhone,
-            supplyBonus: this.input.supplyBonus,
-          };
-          await shop.memberCardUpdate(param);
+          param = this.input;
+          param.supplyBonus = this.input.supplyBonus ? 1 : 0;
+          param.supplyDiscount = this.input.supplyDiscount ? 1 : 0;
+          param.bonusRule = this.bonusRule;
+          param.discountRules = this.discountRules;
+          param.description = this.description;
+          param.notice = this.notice;
+          console.log(param);
+          await Vip.memberCardUpdate(param);
           await Tips.success('编辑成功！');
         }
         wepy.navigateBack();
@@ -119,15 +145,39 @@
 
     async onLoad () {
       this.shop = await shop.info();
-      this.card = await shop.memberCardInfo();
+      this.card = await Vip.memberCardInfo();
+      this.bonusRule = this.card.bonusRule;
+      this.discountRules = this.card.discountRules;
+      this.description = this.card.description;
+      this.notice = this.card.notice;
       if (!this.card) {
         this.mode = 'create';
       } else {
         this.mode = 'update';
         this.input = this.card;
+        this.input.supplyBonus = this.input.supplyBonus == 1;
+        this.input.supplyDiscount = this.input.supplyDiscount == 1;
       }
       this.loaded();
+      Event.listen(Event.SHOP_BONUS_UPDATE, this.bonusUpdate.bind(this), this);
+      Event.listen(Event.SHOP_CONTEXT_UPDATE, this.contextUpdate.bind(this), this);
+      Event.listen(Event.SHOP_DISCOUNT_UPDATE, this.discountUpdate.bind(this), this);
     };
+
+    bonusUpdate (data) {
+      this.bonusRule = data;
+    }
+    contextUpdate (param) {
+      console.log(param);
+      if (param.type == 'description') {
+        this.description = param.context;
+      } else {
+        this.notice = param.context;
+      }
+    }
+    discountUpdate(param) {
+      this.discountRules = param;
+    }
 
     validate () {
       const rules = [
@@ -149,16 +199,6 @@
           message: '会员卡名称过长'
         },
         {
-          value: this.input.description,
-          method: 'required',
-          message: '会员权益不能为空'
-        },
-        {
-          value: this.input.notice,
-          method: 'required',
-          message: '使用须知不能为空'
-        },
-        {
           value: this.input.servicePhone,
           method: 'number',
           message: '客服联系号码必须是数字'
@@ -174,55 +214,7 @@
           method: 'minlength',
           param: 7,
           message: '客服联系号码过短'
-        },
-//        {
-//          value: this.input.integral,
-//          method: 'required',
-//          message: '积分比例不能为空'
-//        },
-//        {
-//          value: this.input.integral,
-//          method: 'number',
-//          message: '积分比例必须是数字'
-//        },
-//        {
-//          value: this.input.integral,
-//          method: 'min',
-//          param: 0.01,
-//          message: '积分比例不能为0或负数'
-//        },
-//        {
-//          value: this.input.deductible,
-//          method: 'required',
-//          message: '抵扣比例不能为空'
-//        },
-//        {
-//          value: this.input.deductible,
-//          method: 'number',
-//          message: '抵扣比例必须是数字'
-//        },
-//        {
-//          value: this.input.deductible,
-//          method: 'min',
-//          param: 0.01,
-//          message: '抵扣比例不能为0或负数'
-//        },
-//        {
-//          value: this.input.limit,
-//          method: 'required',
-//          message: '抵扣限制不能为空'
-//        },
-//        {
-//          value: this.input.limit,
-//          method: 'number',
-//          message: '抵扣限制必须是数字'
-//        },
-//        {
-//          value: this.input.limit,
-//          method: 'min',
-//          param: 0.01,
-//          message: '抵扣限制不能为0或负数'
-//        },
+        }
       ];
       return this.check(rules);
     }
@@ -243,7 +235,8 @@
         background-color: #F5F5F5;
     }
 
-    .margin-right {
-        margin-right: 40 rpx;
+    .icon_size {
+        width: rpx(60);
+        height: rpx(60);
     }
 </style>

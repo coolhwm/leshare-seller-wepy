@@ -119,7 +119,7 @@
       innerCategories: [],
       init: false,
       isInnerDisplay: 'false'
-    }
+    };
     data = {...this.def};
     async onLoad ({goodsId, mode}) {
       this.mode = mode;
@@ -146,7 +146,7 @@
           goodsSkuInfo: {},
           goodsStocks: [],
           images: []
-        }
+        };
         Tips.loading('保存中');
         // 处理图片信息
         for (let picture of this.pictures) {
@@ -161,7 +161,7 @@
         Tips.loading('保存中', true);
         // 字段信息
         data.name = this.input.name;
-        data.isRecommend =  this.input.isRecommend ? 1 : 0;
+        data.isRecommend = this.input.isRecommend ? 1 : 0;
         data.globalCid = 1; // 待完善
         data.status = this.input.status ? 0 : 1;
         data.innerCid = this.innerCategories.find(item => item.name == this.input.inner).id;
@@ -175,7 +175,7 @@
           const stock = {
             sku: null,
             stock: sku.stock
-          }
+          };
           data.goodsSkuInfo = null;
           data.stock = sku.stock;
           data.goodsStocks.push(stock);
@@ -235,7 +235,7 @@
       details() {
         const param = {
           details: JSON.stringify(this.details)
-        }
+        };
 
         this.$navigate('detail', param);
       }

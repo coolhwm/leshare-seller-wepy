@@ -1,0 +1,96 @@
+<template>
+    <view class="sku-box row mt10">
+        <view class="info-box">
+            <view class="weui-cells-form">
+                <view class="weui-cell weui-cell_input">
+                    <view class="weui-cell__hd">
+                        <view class="weui-label">级别名称</view>
+                    </view>
+                    <view class="weui-cell__bd">
+                        <input class="weui-input" id="levelName" @input="input({{index}})" value="{{info.levelName}}"
+                               placeholder="请填写级别名称"/>
+                    </view>
+                    <view class="weui-cell__ft">
+                    </view>
+            </view>
+                <view class="weui-cell weui-cell_input">
+                    <view class="weui-cell__hd">
+                        <view class="weui-label">消费折扣</view>
+                    </view>
+                    <view class="weui-cell__bd">
+                        <input class="weui-input" id="discount" type="digit" @input="input({{index}})"
+                               value="{{info.discount}}" placeholder="请填写消费价格"/>
+                    </view>
+                    <view class="weui-cell__ft">
+                    </view>
+                </view>
+                <view class="weui-cell weui-cell_input">
+                    <view class="weui-cell__hd">
+                        <view class="weui-label">升级条件</view>
+                    </view>
+                    <view class="weui-cell__bd">
+                        <input class="weui-input" id="upgradeFee" type="number" @input="input({{index}})"
+                               value="{{info.upgradeFee}}" placeholder="请填写升级条件"/>
+                    </view>
+                    <view class="weui-cell__ft">
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <view class="op-box column-center" wx:if="{{discounEditable}}" @tap="remove({{index}})">
+            <image class="icon" src="/images/icons/minus.png" wx:if="{{index != 0}}"></image>
+        </view>
+    </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+  export default class Discount extends wepy.component {
+    props = {
+      index: {},
+      info: {},
+      discounEditable: {
+        default: false
+      }
+    };
+    data = {};
+    methods = {
+      input (index, e) {
+        const level = index + 1;
+        const fieldName = e.currentTarget.id;
+        const fieldValue = e.detail.value;
+        this.$emit('change', {index, fieldName, fieldValue, level});
+      },
+      remove (index) {
+        this.$emit('remove', index);
+      }
+    };
+    events = {};
+
+    onLoad () {
+    }
+  }
+</script>
+
+<style lang="scss">
+    @import "../../styles/variable";
+
+    .sku-box {
+        border-bottom: $border;
+        background-color: white;
+
+        .info-box {
+            flex: 1;
+            .weui-cells-form {
+                border-bottom: none;
+            }
+        }
+
+        .op-box {
+            width: 100rpx;
+            height: 100%;
+        }
+    }
+</style>

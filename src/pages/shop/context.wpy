@@ -1,0 +1,97 @@
+<template>
+    <view class="container" wx:if="{{init}}">
+        <Tips/>
+        <text class="xl ml30 mt10 mb10 muted">{{support}}</text>
+        <view class="weui-cells weui-cells-form">
+            <view class="weui-cell">
+                <view class="weui-cell__bd">
+                    <textarea class="weui-textarea" id="context" value="{{input.context}}" placeholder="请输入{{support}}"
+                              style="height: 6.3em" maxlength="200" @input="input"/>
+                    <view class="weui-textarea-counter">{{input.context ? input.context.length : 0}}/200</view>
+                </view>
+            </view>
+        </view>
+        <!--操作栏-->
+        <ActionBar okText="保存" cancelText="返回" @tap.user="submit"/>
+    </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import input from '../../mixins/input';
+  import Event from '../../utils/Event';
+  import Tips from '../../utils/Tips';
+  import FormTips from '../../components/weui/tips';
+  import ActionBar from '../../components/common/action_bar';
+
+  export default class Context extends wepy.page {
+    def = {
+      init: false,
+      type: ''
+    };
+    data = {...this.def};
+    methods = {
+      async submit () {
+        const param = {
+          type: this.type,
+          context: this.input.context
+        };
+        await Tips.success('编辑完成！');
+        Event.emit(Event.SHOP_CONTEXT_UPDATE, param);
+        wepy.navigateBack();
+      }
+    };
+
+    async onLoad (options) {
+      const param = JSON.parse(options.param);
+      this.type = param.type;
+      this.input.context = param.context;
+      this.init = true;
+    };
+
+    computed = {
+      support () {
+        if (this.type == 'description') {
+          return '使用说明';
+        } else {
+          return '使用提醒';
+        }
+      }
+    };
+    validate () {
+      if (this.type == 'description') {
+        const rules = [
+          {
+            value: this.input.description,
+            method: 'required',
+            message: '会员权益不能为空'
+          }
+        ];
+        return this.check(rules);
+      } else {
+        const rules = [
+          {
+            value: this.input.notice,
+            method: 'required',
+            message: '使用须知不能为空'
+          }
+        ];
+        return this.check(rules);
+      }
+    }
+
+    config = {navigationBarTitleText: '内容编辑'};
+    mixins = [input];
+    components = {
+      ActionBar: ActionBar,
+      Tips: FormTips
+    };
+  }
+</script>
+<style lang="scss">
+    @import "../../styles/variable";
+
+    .ml30 {
+        margin-left: rpx(30);
+        font-weight: bold;
+    }
+</style>

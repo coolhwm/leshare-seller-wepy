@@ -221,8 +221,7 @@
       support() {
         if (this.input.supportType == null) {
           return '请选择使用场景';
-        }
-        else if (this.input.supportType == 0) {
+        } else if (this.input.supportType == 0) {
           return '通用';
         } else if (this.input.supportType == 1) {
           return '线上';
