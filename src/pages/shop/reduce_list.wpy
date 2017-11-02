@@ -46,9 +46,7 @@
       add() {
         this.$navigate('reduce_edit?mode=create');
       }
-    }
-    computed = {
-    }
+    };
     events = {};
     components = {
       Placeholder: Placeholder,

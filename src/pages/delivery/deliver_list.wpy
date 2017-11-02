@@ -47,9 +47,7 @@
       add() {
         this.$navigate('deliver_edit?mode=create');
       }
-    }
-    computed = {
-    }
+    };
     events = {};
     components = {
       Placeholder: Placeholder,
