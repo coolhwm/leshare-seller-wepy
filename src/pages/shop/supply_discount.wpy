@@ -29,7 +29,6 @@
     data = {...this.def};
 
     async onLoad (options) {
-      console.log(options);
       this.discounts = JSON.parse(options.discount);
       const discounts = [];
       this.discounts.forEach((item, index) => {
@@ -37,7 +36,9 @@
         data.discount /= 100;
         discounts.push(data);
       });
-      this.discounts = discounts;
+      this.discounts = discounts.sort(function(a, b) {
+        return a.level - b.level;
+      });
       this.init = true;
     };
 
@@ -53,7 +54,6 @@
           data.level = index + 1;
           discounts.push(data);
         });
-        console.log(discounts);
         await Tips.success('保存成功');
         Event.emit(Event.SHOP_DISCOUNT_UPDATE, discounts);
         wepy.navigateBack();
