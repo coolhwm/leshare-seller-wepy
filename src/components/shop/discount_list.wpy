@@ -1,0 +1,70 @@
+<template>
+    <!--SKU区域// 组件化-->
+    <repeat for="{{discountList}}" key="sku" index="index" item="item">
+        <Sku :info.sync="item" index.sync="index" :discounEditable.sync="discounEditable" @remove.user="remove"
+             @change.user="change"/>
+    </repeat>
+
+    <!--添加商品型号-->
+    <view class="sku-add-btn row-end" @tap="add">
+        <image class="icon" src="/images/icons/plus.png"></image>
+        <text class="ml10">添加会员等级</text>
+    </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import Sku from './discount';
+
+  export default class DiscountList extends wepy.component {
+    props = {
+      discountList: {
+        twoWay: true
+      }
+    };
+    data = {
+      discounEditable: true,
+      level: []
+    };
+    components = {
+      Sku: Sku
+    };
+    methods = {
+      add () {
+        this.discountList.push({});
+      },
+      remove (index) {
+        this.discountList.splice(index, 1);
+      },
+      change (info) {
+        this.level = info.level;
+        this.discountList[info.index][info.fieldName] = info.fieldValue;
+      }
+    };
+    watch = {
+      discountList () {
+        this.resetDiscounEditable();
+        this.$apply();
+      }
+    };
+
+    resetDiscounEditable () {
+      this.discounEditable = this.discountList.length > 1;
+    }
+
+    events = {};
+
+    onLoad () {
+      this.resetDiscounEditable();
+    }
+  }
+</script>
+
+<style lang="scss">
+    @import "../../styles/variable";
+
+    .sku-add-btn {
+        padding: 10px 20px;
+    }
+
+</style>

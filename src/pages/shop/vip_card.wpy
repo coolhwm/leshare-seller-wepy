@@ -1,0 +1,242 @@
+<template>
+    <Tips/>
+    <view class="container">
+        <view class="weui-cells weui-cells-form">
+            <view class="weui-cell weui-cell_input">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">会员卡名称</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" id="title" @input="input" value="{{input.title}}" type="text"
+                           placeholder="请输入会员卡名称"/>
+                </view>
+            </view>
+
+            <view class="weui-cell weui-cell_input">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">客服电话</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" id="servicePhone" value="{{input.servicePhone}}" @input="input"
+                           type="number"
+                           placeholder="请输入客服电话"/>
+                </view>
+            </view>
+
+            <view class="weui-cell row-between" @tap="textArea('description')">
+                <view class="weui-label">使用说明</view>
+                <image class="icon_size row-end" src="/images/icons/more-gray.png"/>
+            </view>
+
+            <view class="weui-cell row-between" @tap="textArea('notice')">
+                <view class="weui-label">使用提醒</view>
+                <image class="icon_size row-end" src="/images/icons/more-gray.png"/>
+            </view>
+
+            <view class="h-gap bg-color"/>
+            <view class="weui-cell weui-cell_switch">
+                <view class="weui-cell__bd">积分规则</view>
+                <view class="weui-cell__ft">
+                    <switch checked="{{input.supplyBonus}}" id="supplyBonus" @change="input"/>
+                </view>
+            </view>
+            <view class="weui-cell row-between" wx:if="{{input.supplyBonus}}" @tap="toSupplyBonus">
+                <view class="weui-label">规则配置</view>
+                <image class="icon_size row-end" src="/images/icons/more-gray.png"/>
+            </view>
+
+            <view class="h-gap bg-color"/>
+            <view class="weui-cell weui-cell_switch">
+                <view class="weui-cell__bd">会员等级</view>
+                <view class="weui-cell__ft">
+                    <switch checked="{{input.supplyDiscount}}" id="supplyDiscount" @change="input"/>
+                </view>
+            </view>
+            <view class="weui-cell row-between" wx:if="{{input.supplyDiscount}}" @tap="toSupplyDiscount">
+                <view class="weui-label">等级配置</view>
+                <image class="icon_size row-end" src="/images/icons/more-gray.png"/>
+            </view>
+        </view>
+        <view class="zan-panel">
+            <view class="zan-btns">
+                <button class="zan-btn zan-btn--fill" @tap="submit">保存</button>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import input from '../../mixins/input';
+  import FormTips from '../../components/weui/tips';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+  import shop from '../../api/shop';
+  import Vip from '../../api/vip_card';
+
+  export default class VipCard extends wepy.page {
+    def = {
+      card: {},
+      shop: {},
+      mode: '',
+      bonusRule: {},
+      discountRules: {},
+      description: '',
+      notice: ''
+    };
+    data = {...this.def};
+    methods = {
+      textArea (type) {
+        const param = {};
+        if (type == 'description') {
+          param.type = type;
+          param.context = this.card.description;
+        } else {
+          param.type = type;
+          param.context = this.card.notice;
+        }
+        this.$navigate('context?param=' + JSON.stringify(param));
+      },
+      toSupplyDiscount() {
+        this.$navigate('supply_discount?discount=' + JSON.stringify(this.card.discountRules));
+      },
+      toSupplyBonus () {
+        this.$navigate('supply_bonus?bonus=' + JSON.stringify(this.card.bonusRule));
+      },
+      async submit () {
+        let param = {};
+        if (!this.validate()) {
+          return;
+        }
+        if (this.mode == 'create') {
+          let param = {
+            color: '#509FC9',
+            brandName: this.shop.name,
+            autoActivate: 1,
+            supplyBalance: 0,
+            quantity: 0,
+            dateType: 0,
+            fixedTerm: 0,
+            bonusRule: this.bonusRule,
+            discountRules: this.discountRules,
+            description: this.description,
+            notice: this.notice,
+            supplyBonus: this.input.supplyBonus ? 1 : 0,
+            supplyDiscount: this.input.supplyDiscount ? 1 : 0
+          };
+          param = this.input;
+          await Vip.memberCardCreate(param);
+          await Tips.success('创建成功！');
+        } else {
+          param = this.input;
+          param.supplyBonus = this.input.supplyBonus ? 1 : 0;
+          param.supplyDiscount = this.input.supplyDiscount ? 1 : 0;
+          param.bonusRule = this.bonusRule;
+          param.discountRules = this.discountRules;
+          param.description = this.description;
+          param.notice = this.notice;
+          console.log(param);
+          await Vip.memberCardUpdate(param);
+          await Tips.success('编辑成功！');
+        }
+        wepy.navigateBack();
+      }
+    };
+
+    async onLoad () {
+      this.shop = await shop.info();
+      this.card = await Vip.memberCardInfo();
+      this.bonusRule = this.card.bonusRule;
+      this.discountRules = this.card.discountRules;
+      this.description = this.card.description;
+      this.notice = this.card.notice;
+      if (!this.card) {
+        this.mode = 'create';
+      } else {
+        this.mode = 'update';
+        this.input = this.card;
+        this.input.supplyBonus = this.input.supplyBonus == 1;
+        this.input.supplyDiscount = this.input.supplyDiscount == 1;
+      }
+      this.loaded();
+      Event.listen(Event.SHOP_BONUS_UPDATE, this.bonusUpdate.bind(this), this);
+      Event.listen(Event.SHOP_CONTEXT_UPDATE, this.contextUpdate.bind(this), this);
+      Event.listen(Event.SHOP_DISCOUNT_UPDATE, this.discountUpdate.bind(this), this);
+    };
+
+    bonusUpdate (data) {
+      this.bonusRule = data;
+    }
+    contextUpdate (param) {
+      console.log(param);
+      if (param.type == 'description') {
+        this.description = param.context;
+      } else {
+        this.notice = param.context;
+      }
+    }
+    discountUpdate(param) {
+      this.discountRules = param;
+    }
+
+    validate () {
+      const rules = [
+        {
+          value: this.input.title,
+          method: 'required',
+          message: '会员卡名称不能为空'
+        },
+        {
+          value: this.input.title,
+          method: 'minlength',
+          param: 2,
+          message: '会员卡名称过短'
+        },
+        {
+          value: this.input.title,
+          method: 'maxlength',
+          param: 10,
+          message: '会员卡名称过长'
+        },
+        {
+          value: this.input.servicePhone,
+          method: 'number',
+          message: '客服联系号码必须是数字'
+        },
+        {
+          value: this.input.servicePhone,
+          method: 'maxlength',
+          param: 20,
+          message: '客服联系号码过长'
+        },
+        {
+          value: this.input.servicePhone,
+          method: 'minlength',
+          param: 7,
+          message: '客服联系号码过短'
+        }
+      ];
+      return this.check(rules);
+    }
+
+    config = {
+      navigationBarTitleText: '会员卡管理'
+    };
+    mixins = [base, input];
+    components = {
+      Tips: FormTips
+    };
+  }
+</script>
+<style lang="scss">
+    @import "../../styles/variable";
+
+    .bg-color {
+        background-color: #F5F5F5;
+    }
+
+    .icon_size {
+        width: rpx(60);
+        height: rpx(60);
+    }
+</style>
