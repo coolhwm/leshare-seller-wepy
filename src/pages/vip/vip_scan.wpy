@@ -1,0 +1,61 @@
+<template>
+    <Tips/>
+    <view class="container" wx:if="{{init}}">
+        <VipCard :member.sync="member"/>
+        <view class="weui-cells weui-cells-form">
+            <view class="weui-cell weui-cell_input">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">消费金额</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" id="price" @input="input" value="{{input.price}}" type="text"
+                           placeholder="请输入消费金额"/>
+                </view>
+            </view>
+            <view class="weui-cell">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">累计积分</view>
+                </view>
+                <text class="">12</text>
+            </view>
+        </view>
+
+        <!--操作栏-->
+        <ActionBar @tap.user="add" okText="确定" cancelText="返回"/>
+    </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import input from '../../mixins/input';
+  import base from '../../mixins/base';
+  import Member from '../../api/member';
+  import VipCard from '../../components/vip/vip_card';
+  import ActionBar from '../../components/common/action_bar';
+  import FormTips from '../../components/weui/tips';
+
+  export default class VipScan extends wepy.page {
+    def = {
+      member: {},
+      bonus: {}
+    };
+    data = {...this.def};
+    async onLoad () {
+      this.member = await Member.memberInfo('3126908540477');
+      console.log(this.member);
+    };
+    components = {
+      Tips: FormTips,
+      VipCard: VipCard,
+      ActionBar: ActionBar
+    };
+    config = {
+      navigationBarTitleText: '会员卡核销'
+    };
+    mixins = [base, input];
+  }
+</script>
+
+<style lang="scss">
+    @import "../../styles/variable";
+</style>

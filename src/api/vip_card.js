@@ -1,5 +1,4 @@
 import base from './base';
-import wepy from 'wepy';
 
 export default class Vip extends base {
   /**

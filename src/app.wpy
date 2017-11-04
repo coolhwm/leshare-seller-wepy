@@ -110,7 +110,9 @@
         'pages/order/reprice',
         'pages/order/detail',
         'pages/order/close',
-        'pages/order/remark'
+        'pages/order/remark',
+        'pages/vip/vip_scan',
+        'pages/vip/vip_detail'
       ],
       window: {
         backgroundTextStyle: 'dark',

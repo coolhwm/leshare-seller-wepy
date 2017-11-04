@@ -1,87 +1,96 @@
 <template>
-  <view class="container" wx:if="{{init}}">
-    <!--客户信息-->
-    <view class="customer-box">
+    <view class="container" wx:if="{{init}}">
+        <!--客户信息-->
+        <view class="customer-box">
 
-      <!--客户基本信息-->
-      <view class="customer-info-box row-between">
+            <!--客户基本信息-->
+            <view class="customer-info-box row-between">
 
-        <!--左侧头像-->
-        <image class="customer-avatar"
-               src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '/images/icons/customer.png'}}"/>
+                <!--左侧头像-->
+                <image class="customer-avatar"
+                       src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '/images/icons/customer.png'}}"/>
 
-        <!--右侧主区域-->
-        <view class="column customer-main-box">
-          <!--姓名/打电话-->
-          <view class="row-between">
-            <text class="xxl">{{customerInfo.customer.nickName}}</text>
-            <image class="icon" src="/images/icons/call.png" @tap.stop="phone"/>
-          </view>
+                <!--右侧主区域-->
+                <view class="column customer-main-box">
+                    <!--姓名/打电话-->
+                    <view class="row-between">
+                        <text class="xxl">{{customerInfo.customer.nickName}}</text>
+                        <image class="icon" src="/images/icons/call.png" @tap.stop="phone"/>
+                    </view>
 
-          <!--地址信息-->
-          <view class="row-between" @tap.stop="addressList({{customerId}})">
-            <!--地址/电话-->
-            <view class="column address-box">
-              <text>电话：{{customerInfo.address ? customerInfo.address.phone : '暂无电话'}}</text>
-              <text>地址：{{customerInfo.address ? customerInfo.address.fullAddress : '暂无地址'}}</text>
+                    <!--地址信息-->
+                    <view class="row-between" @tap.stop="addressList({{customerId}})">
+                        <!--地址/电话-->
+                        <view class="column address-box">
+                            <text>电话：{{customerInfo.address ? customerInfo.address.phone : '暂无电话'}}</text>
+                            <text>地址：{{customerInfo.address ? customerInfo.address.fullAddress : '暂无地址'}}</text>
+                        </view>
+                        <!--更多地址-->
+                        <image class="icon" src="/images/icons/more-gray.png"></image>
+                    </view>
+
+                </view>
             </view>
-            <!--更多地址-->
-            <image class="icon" src="/images/icons/more-gray.png"></image>
-          </view>
 
+            <view class="customer-hr"></view>
+            <view class="row-between vip-column" @tap="moreVip">
+                <image class="card-image" src="/images/icons/vip_card.png"/>
+                <view class="row-between">
+                    <text class="muted">会员等级 : 普通会员</text>
+                    <view class="vertical-line"/>
+                    <text class="muted">当前积分 : 100</text>
+                </view>
+                <image class="more-image" src="/images/icons/more-gray.png"/>
+            </view>
+            <view class="customer-hr"></view>
+            <!--客户统计信息-->
+            <view class="count-box row-around bg-white">
+                <view class="count-item column-center">
+                    <text class="count-value">{{customerInfo.countCustomerInfo.lastOrderTime}}</text>
+                    <text class="muted">最近购买</text>
+                </view>
+                <view class="count-item column-center">
+                    <text class="count-value">￥{{customerInfo.countCustomerInfo.totalPrice}}</text>
+                    <text class="muted">交易总额</text>
+                </view>
+                <view class="count-item column-center">
+                    <text class="count-value">{{customerInfo.countCustomerInfo.totalOrderCount}}次</text>
+                    <text class="muted">购买次数</text>
+                </view>
+                <view class="count-item column-center">
+                    <text class="count-value">{{customerInfo.countCustomerInfo.totalCouponCount}}张</text>
+                    <text class="muted">卡卷数量</text>
+                </view>
+            </view>
         </view>
-      </view>
 
-      <view class="customer-hr"></view>
+        <!--TAB-->
+        <view>
+            <ZanTab :tab.sync="tab" fixed="0"/>
+        </view>
 
-      <!--客户统计信息-->
-      <view class="count-box row-around bg-white">
-        <view class="count-item column-center">
-          <text class="count-value">{{customerInfo.countCustomerInfo.lastOrderTime}}</text>
-          <text class="muted">最近购买</text>
+        <!--列表区域-->
+        <view>
+
+            <view class="zan-btns" wx:if="{{tab.selectedId == 'COUPON'}}">
+                <button class="zan-btn zan-btn--fill" @tap="send">发放优惠券</button>
+            </view>
+            <repeat for="{{page.list}}" key="index" index="index" item="item">
+                <block wx:if="{{tab.selectedId == 'HIS_ORDER'}}">
+                    <OrderItem :order.sync="item" @tap.user="detail" action="0"></OrderItem>
+                </block>
+                <block wx:elif="{{tab.selectedId == 'OFTEN_GOODS'}}">
+                    <OftenGoods :goods="item"></OftenGoods>
+                </block>
+                <block wx:elif="{{tab.selectedId == 'COUPON'}}">
+                    <CouponItem selectAction="0" :coupon.sync="item"></CouponItem>
+                </block>
+            </repeat>
+
+            <!-- 加载提示 -->
+            <Loadmore :page.sync="page" emptyText="暂无记录"/>
         </view>
-        <view class="count-item column-center">
-          <text class="count-value">￥{{customerInfo.countCustomerInfo.totalPrice}}</text>
-          <text class="muted">交易总额</text>
-        </view>
-        <view class="count-item column-center">
-          <text class="count-value">{{customerInfo.countCustomerInfo.totalOrderCount}}次</text>
-          <text class="muted">购买次数</text>
-        </view>
-        <view class="count-item column-center">
-          <text class="count-value">{{customerInfo.countCustomerInfo.totalCouponCount}}张</text>
-          <text class="muted">卡卷数量</text>
-        </view>
-      </view>
     </view>
-
-    <!--TAB-->
-    <view>
-      <ZanTab :tab.sync="tab" fixed="0"/>
-    </view>
-
-    <!--列表区域-->
-    <view>
-
-      <view class="zan-btns" wx:if="{{tab.selectedId == 'COUPON'}}">
-        <button class="zan-btn zan-btn--fill" @tap="send">发放优惠券</button>
-      </view>
-      <repeat for="{{page.list}}" key="index" index="index" item="item">
-        <block wx:if="{{tab.selectedId == 'HIS_ORDER'}}">
-          <OrderItem :order.sync="item" @tap.user="detail" action="0"></OrderItem>
-        </block>
-        <block wx:elif="{{tab.selectedId == 'OFTEN_GOODS'}}">
-          <OftenGoods :goods="item"></OftenGoods>
-        </block>
-        <block wx:elif="{{tab.selectedId == 'COUPON'}}">
-          <CouponItem selectAction="0" :coupon.sync="item"></CouponItem>
-        </block>
-      </repeat>
-
-      <!-- 加载提示 -->
-      <Loadmore :page.sync="page" emptyText="暂无记录"/>
-    </view>
-  </view>
 </template>
 
 <script>
@@ -126,7 +135,7 @@
     };
     data = {...this.def};
 
-    async onLoad(options) {
+    async onLoad (options) {
       this.customerId = options.customerId;
       this.tab.selectedId = 'HIS_ORDER';
       this.customerInfo = await customerInfo.detailInfo(this.customerId);
@@ -136,7 +145,7 @@
       Event.listen(Event.CUSOMTER_COUPON_UPDATE, this.updateInfo.bind(this), this);
     };
 
-    updateInfo(params) {
+    updateInfo (params) {
       this.update();
       this.customerInfo.countCustomerInfo.totalCouponCount++;
 
@@ -144,30 +153,33 @@
     }
 
     methods = {
-      send() {
+      moreVip () {
+        this.$navigate('/pages/vip/vip_scan');
+      },
+      send () {
         const customerId = this.customerId;
         this.$navigate('./coupon_send', {customerId});
       },
-      phone() {
+      phone () {
         if (this.customerInfo.address) {
           wepy.makePhoneCall({phoneNumber: this.customerInfo.address.phone});
         } else {
           Tips.alert('该用户没有电话');
         }
       },
-      addressList(customerId) {
+      addressList (customerId) {
         if (!this.customerInfo.addressList) {
           Tips.alert('该用户没有地址');
           return;
         }
         this.$navigate('./address_list', {customerId});
       },
-      detail(orderId) {
+      detail (orderId) {
         this.$navigate('../order/detail', {orderId});
       }
     };
     events = {
-      async change() {
+      async change () {
         this.page.clear();
         this.$apply();
         if (this.tab.selectedId == 'HIS_ORDER') {
@@ -197,46 +209,70 @@
 </script>
 
 <style lang="scss">
-  @import "../../styles/variable";
+    @import "../../styles/variable";
 
-  .customer-box {
-    margin-bottom: rpx(10);
-    border-bottom: $border;
-  }
-
-  .customer-main-box {
-    flex: 1;
-    padding-left: rpx(25);
-  }
-
-  .customer-info-box {
-    padding: rpx(30);
-    background-color: #FFF;
-
-    .customer-avatar {
-      @include icon-round(rpx(180));
+    .customer-box {
+        margin-bottom: rpx(10);
+        border-bottom: $border;
     }
 
-    .address-box {
-      max-width: rpx(430);
-      text {
-        color: $color-muted;
-        font-size: $text-sm;
-        word-break: break-all;
-      }
+    .customer-main-box {
+        flex: 1;
+        padding-left: rpx(25);
     }
-  }
 
-  .customer-hr {
-    width: 100%;
-    border-top: $border;
-  }
+    .customer-info-box {
+        padding: rpx(30);
+        background-color: #FFF;
 
-  /*统计区域*/
-  .count-box {
-    padding: rpx(20) 0;
-    .count-item {
-      width: rpx(250);
+        .customer-avatar {
+            @include icon-round(rpx(180));
+        }
+
+        .address-box {
+            max-width: rpx(430);
+            text {
+                color: $color-muted;
+                font-size: $text-sm;
+                word-break: break-all;
+            }
+        }
     }
-  }
+
+    .customer-hr {
+        width: 100%;
+        border-top: $border;
+    }
+
+    /*统计区域*/
+    .count-box {
+        padding: rpx(20) 0;
+        .count-item {
+            width: rpx(250);
+        }
+    }
+
+    .vip-column {
+        background-color: white;
+        padding: rpx(20) rpx(30);
+        .card-image {
+            width: rpx(50);
+            height: rpx(50);
+            margin-right: rpx(20);
+        }
+        .more-image {
+            width: rpx(50);
+            height: rpx(50);
+            margin-left: rpx(40);
+        }
+        .vertical-line {
+            width: rpx(2);
+            height: rpx(30);
+            background-color: $color-muted;
+        }
+    }
+
+    .row-between {
+        flex: 1;
+    }
 </style>
