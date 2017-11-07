@@ -23,6 +23,7 @@
 </template>
 <script>
   import wepy from 'wepy';
+  import base from '../../mixins/base';
   import Discount from '../../components/vip/discount';
   import FormTips from '../../components/weui/tips';
   import input from '../../mixins/input';
@@ -32,12 +33,12 @@
   export default class SupplyDiscount extends wepy.page {
     def = {
       init: false,
-      discounts: [{}],
-      param: {}
+      discounts: [{}]
     };
     data = {...this.def};
 
     async onLoad (options) {
+      console.info('onload');
       this.discounts = JSON.parse(options.discount);
       const discounts = [];
       this.discounts.forEach(item => {
@@ -47,7 +48,7 @@
       });
       this.discounts = discounts;
       Event.listen(Event.VIP_CATEGORY_UPDATA, this.categoryUpdate.bind(this), this);
-      this.init = true;
+      this.loaded();
     };
 
     categoryUpdate ({list, index}) {
@@ -165,7 +166,7 @@
     config = {
       navigationBarTitleText: '会员等级编辑'
     };
-    mixins = [input];
+    mixins = [input, base];
   }
 </script>
 <style lang="scss">
