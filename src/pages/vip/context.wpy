@@ -12,7 +12,7 @@
             </view>
         </view>
         <!--操作栏-->
-        <ActionBar okText="保存" cancelText="返回" @tap.user="submit"/>
+        <ActionBar okText="确定" cancelText="返回" @tap.user="submit"/>
     </view>
 </template>
 <script>
