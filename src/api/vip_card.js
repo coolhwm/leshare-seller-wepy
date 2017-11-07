@@ -1,10 +1,10 @@
 import base from './base';
 
-export default class Vip extends base {
+export default class vip extends base {
   /**
    * 会员卡信息
    */
-  static async memberCardInfo () {
+  static async info () {
     const url = `${this.baseUrl}/memberCards`;
     return await this.get(url);
   }
@@ -12,7 +12,7 @@ export default class Vip extends base {
   /**
    * 添加会员卡
    */
-  static async memberCardCreate (cardParam) {
+  static async create (cardParam) {
     const url = `${this.baseUrl}/memberCards`;
     return this.post(url, cardParam);
   }
@@ -20,7 +20,7 @@ export default class Vip extends base {
   /**
    * 编辑会员卡
    */
-  static async memberCardUpdate (cardParam) {
+  static async update (cardParam) {
     const url = `${this.baseUrl}/memberCards`;
     return this.put(url, cardParam);
   }

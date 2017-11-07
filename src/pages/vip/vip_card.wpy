@@ -18,19 +18,19 @@
                 </view>
                 <view class="weui-cell__bd">
                     <input class="weui-input" id="servicePhone" value="{{input.servicePhone}}" @input="input"
-                           type="number"
+                           type="number" maxlength="11"
                            placeholder="请输入客服电话"/>
                 </view>
             </view>
 
             <view class="weui-cell row-between" @tap="textArea('description')">
                 <view class="weui-label">使用说明</view>
-                <image class="icon_size row-end" src="/images/icons/more-gray.png"/>
+                <image class="icon-lg" src="/images/icons/more-gray.png"/>
             </view>
 
             <view class="weui-cell row-between" @tap="textArea('notice')">
                 <view class="weui-label">使用提醒</view>
-                <image class="icon_size row-end" src="/images/icons/more-gray.png"/>
+                <image class="icon-lg" src="/images/icons/more-gray.png"/>
             </view>
 
             <view class="h-gap bg-color"/>
@@ -42,7 +42,7 @@
             </view>
             <view class="weui-cell row-between" wx:if="{{input.supplyBonus}}" @tap="toSupplyBonus">
                 <view class="weui-label">规则配置</view>
-                <image class="icon_size row-end" src="/images/icons/more-gray.png"/>
+                <image class="icon-lg" src="/images/icons/more-gray.png"/>
             </view>
 
             <view class="h-gap bg-color"/>
@@ -54,7 +54,7 @@
             </view>
             <view class="weui-cell row-between" wx:if="{{input.supplyDiscount}}" @tap="toSupplyDiscount">
                 <view class="weui-label">等级配置</view>
-                <image class="icon_size row-end" src="/images/icons/more-gray.png"/>
+                <image class="icon-lg" src="/images/icons/more-gray.png"/>
             </view>
         </view>
         <view class="zan-panel">
@@ -72,17 +72,13 @@
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
   import shop from '../../api/shop';
-  import Vip from '../../api/vip_card';
+  import vip from '../../api/vip_card';
 
   export default class VipCard extends wepy.page {
     def = {
       card: {},
       shop: {},
-      mode: '',
-      bonusRule: {},
-      discountRules: {},
-      description: '',
-      notice: ''
+      mode: ''
     };
     data = {...this.def};
     methods = {
@@ -104,12 +100,11 @@
         this.$navigate('supply_bonus?bonus=' + JSON.stringify(this.card.bonusRule));
       },
       async submit () {
-        let param = {};
         if (!this.validate()) {
           return;
         }
         if (this.mode == 'create') {
-          let param = {
+          const param = {
             color: '#509FC9',
             brandName: this.shop.name,
             autoActivate: 1,
@@ -124,18 +119,18 @@
             supplyBonus: this.input.supplyBonus ? 1 : 0,
             supplyDiscount: this.input.supplyDiscount ? 1 : 0
           };
-          param = this.input;
-          await Vip.memberCardCreate(param);
+          Object.assign(param, this.input);
+          await vip.create(param);
           await Tips.success('创建成功！');
         } else {
-          param = this.input;
+          const param = this.input;
           param.supplyBonus = this.input.supplyBonus ? 1 : 0;
           param.supplyDiscount = this.input.supplyDiscount ? 1 : 0;
-          param.bonusRule = this.bonusRule;
-          param.discountRules = this.discountRules;
-          param.description = this.description;
-          param.notice = this.notice;
-          await Vip.memberCardUpdate(param);
+          param.bonusRule = this.card.bonusRule;
+          param.discountRules = this.card.discountRules;
+          param.description = this.card.description;
+          param.notice = this.card.notice;
+          await vip.update(param);
           await Tips.success('编辑成功！');
         }
         wepy.navigateBack();
@@ -144,11 +139,7 @@
 
     async onLoad () {
       this.shop = await shop.info();
-      this.card = await Vip.memberCardInfo();
-      this.bonusRule = this.card.bonusRule;
-      this.discountRules = this.card.discountRules;
-      this.description = this.card.description;
-      this.notice = this.card.notice;
+      this.card = await vip.info();
       if (!this.card) {
         this.mode = 'create';
       } else {
@@ -162,19 +153,18 @@
       Event.listen(Event.SHOP_CONTEXT_UPDATE, this.contextUpdate.bind(this), this);
       Event.listen(Event.SHOP_DISCOUNT_UPDATE, this.discountUpdate.bind(this), this);
     };
-
-    bonusUpdate (data) {
-      this.bonusRule = data;
-    };
     contextUpdate (param) {
       if (param.type == 'description') {
-        this.description = param.context;
+        this.card.description = param.context;
       } else {
-        this.notice = param.context;
+        this.card.notice = param.context;
       }
     };
+    bonusUpdate (data) {
+      this.card.bonusRule = data;
+    };
     discountUpdate(param) {
-      this.discountRules = param;
+      this.card.discountRules = param;
     };
 
     validate () {
@@ -198,20 +188,8 @@
         },
         {
           value: this.input.servicePhone,
-          method: 'number',
-          message: '客服联系号码必须是数字'
-        },
-        {
-          value: this.input.servicePhone,
-          method: 'maxlength',
-          param: 20,
-          message: '客服联系号码过长'
-        },
-        {
-          value: this.input.servicePhone,
-          method: 'minlength',
-          param: 7,
-          message: '客服联系号码过短'
+          method: 'tel',
+          message: '电话号码格式不正确'
         }
       ];
       return this.check(rules);
@@ -231,10 +209,5 @@
 
     .bg-color {
         background-color: #F5F5F5;
-    }
-
-    .icon_size {
-        width: rpx(60);
-        height: rpx(60);
     }
 </style>
