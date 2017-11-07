@@ -109,10 +109,10 @@
         'pages/order/remark',
         'pages/vip/vip_scan',
         'pages/vip/vip_detail',
-        'pages/vip/category',
+        'pages/vip/discount_category',
         'pages/vip/vip_card',
         'pages/vip/supply_bonus',
-        'pages/vip/context',
+        'pages/vip/vip_context',
         'pages/vip/supply_discount'
       ],
       window: {

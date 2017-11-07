@@ -12,7 +12,7 @@
     props = {
       url: {},
       title: {},
-      describe: {},
+      describe: {}
     };
     methods = {
       tap (url) {

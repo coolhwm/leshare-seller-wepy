@@ -94,7 +94,6 @@
   import wepy from 'wepy';
   import base from '../../mixins/base';
   import input from '../../mixins/input';
-  import Tips from '../../utils/Tips';
   import FormTips from '../../components/weui/tips';
   import Event from '../../utils/Event';
 

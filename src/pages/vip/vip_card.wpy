@@ -91,7 +91,7 @@
           param.type = type;
           param.context = this.card.notice;
         }
-        this.$navigate('context?param=' + JSON.stringify(param));
+        this.$navigate('vip_context?param=' + JSON.stringify(param));
       },
       toSupplyDiscount() {
         this.$navigate('supply_discount?discount=' + JSON.stringify(this.card.discountRules));
