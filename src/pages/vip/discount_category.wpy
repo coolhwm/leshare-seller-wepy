@@ -4,7 +4,7 @@
       <CategoryItem :category.sync="item"/>
     </repeat>
 
-    <ActionBar @tap.user="add" okText="确定" cancelText="返回"/>
+    <ActionBar @tap.user="submit" okText="确定" cancelText="返回"/>
   </view>
 </template>
 <script>
@@ -20,38 +20,30 @@
     def = {
       init: false,
       category: {},
-      discountsRule: {},
-      id: 0
+      index: null
     };
     data = {...this.def};
     methods = {
-      add () {
-        this.discountsRule[this.id].discountCategoryLists = [];
-        let list = this.discountsRule[this.id].discountCategoryLists;
-        this.category.forEach((item, index) => {
-          if (item.checked) {
-            list.push({categoryId: item.id})
-          }
+      submit () {
+        const result = this.category.filter(item => item.checked).map(item => {
+          return {categoryId: item.id};
         });
         Tips.success('保存');
-        Event.emit(Event.VIP_CATEGORY_UPDATA, this.discountsRule);
+        Event.emit(Event.VIP_CATEGORY_UPDATA, {
+          list: result,
+          index: this.index
+        });
         wepy.navigateBack();
       }
     };
 
-    async onLoad (options) {
-      const info = JSON.parse(options.info);
-      this.id = info.id;
-      this.discountsRule = info.discounts;
+    async onLoad (options, {preload}) {
+      const params = preload.data.discountCategoryLists;
       this.category = await category.getInnerCategories();
-      const categoryId = this.discountsRule[this.id].discountCategoryLists;
-      this.category.forEach((item, index) => {
-        for (let id of categoryId) {
-          if (id.categoryId == item.id) {
-            this.category[index].checked = true;
-          }
-        }
+      this.category.forEach(item => {
+        item.checked = params.some(param => param.categoryId == item.id);
       });
+      this.index = preload.data.index;
       this.loaded();
       this.init = true;
     };

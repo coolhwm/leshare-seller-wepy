@@ -6,7 +6,7 @@
     </view>
     <repeat for="{{discounts}}" key="discounts" index="index" item="item">
       <Discount :info.sync="item" index.sync="index" @remove.user="remove"
-                @change.user="change" @choose.user="choose"/>
+                @change.user="change" @category.user="category"/>
     </repeat>
 
     <!--添加商品型号-->
@@ -50,8 +50,8 @@
       this.init = true;
     };
 
-    categoryUpdate (info) {
-      this.discounts = info;
+    categoryUpdate ({list, index}) {
+      this.discounts[index].discountCategoryLists = list;
     };
 
     methods = {
@@ -70,10 +70,11 @@
         Event.emit(Event.SHOP_DISCOUNT_UPDATE, discounts);
         wepy.navigateBack();
       },
-      async choose (id) {
-        this.param.discounts = this.discounts;
-        this.param.id = id;
-        this.$navigate('discount_category?info=' + JSON.stringify(this.param));
+      async category ({discountCategoryLists}, index) {
+        this.$preload('data', {
+          discountCategoryLists, index
+        });
+        this.$navigate('discount_category');
       },
       add () {
         this.discounts.push({});

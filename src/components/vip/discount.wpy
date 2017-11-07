@@ -29,7 +29,7 @@
                    value="{{info.upgradeFee}}" placeholder="请填写升级条件"/>
           </view>
         </view>
-        <view class="weui-cell row" @tap="choose({{index}})">
+        <view class="weui-cell row" @tap="category({{info}}, {{index}})">
           <view class="mr10">折扣商品类型</view>
           <image class="icon" src="/images/icons/more-gray.png"/>
         </view>
@@ -52,8 +52,8 @@
     };
     data = {};
     methods = {
-      choose(index) {
-        this.$emit('choose', index);
+      category(disount, index) {
+        this.$emit('category', disount, index);
       },
       input (index, e) {
         const fieldName = e.currentTarget.id;
@@ -68,24 +68,26 @@
 </script>
 
 <style lang="scss">
-    @import "../../styles/variable";
-    .weui-cells-form{
-        border: 0rpx;
-    }
-    .sku-box {
-        border-bottom: $border;
-        background-color: white;
+  @import "../../styles/variable";
 
-        .info-box {
-            flex: 1;
-            .weui-cells-form {
-                border-bottom: none;
-            }
-        }
+  .weui-cells-form {
+    border: 0rpx;
+  }
 
-        .op-box {
-            width: 100rpx;
-            height: 100%;
-        }
+  .sku-box {
+    border-bottom: $border;
+    background-color: white;
+
+    .info-box {
+      flex: 1;
+      .weui-cells-form {
+        border-bottom: none;
+      }
     }
+
+    .op-box {
+      width: 100rpx;
+      height: 100%;
+    }
+  }
 </style>
