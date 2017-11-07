@@ -4,7 +4,16 @@
         <view class="title">
             <text class="title-size">会员等级</text>
         </view>
-        <DiscountList :discountList.sync="discounts"/>
+        <repeat for="{{discounts}}" key="discounts" index="index" item="item">
+            <Discount :info.sync="item" index.sync="index" :discounEditable.sync="discounEditable" @remove.user="remove"
+                      @change.user="change" @choose.user="choose"/>
+        </repeat>
+
+        <!--添加商品型号-->
+        <view class="sku-add-btn row-end" @tap="add">
+            <image class="icon" src="/images/icons/plus.png"/>
+            <text class="ml10">添加会员等级</text>
+        </view>
         <view class="zan-panel">
             <view class="zan-btns">
                 <button class="zan-btn zan-btn--fill" @tap="submit">保存</button>
@@ -14,7 +23,7 @@
 </template>
 <script>
   import wepy from 'wepy';
-  import DiscountList from '../../components/shop/discount_list';
+  import Discount from '../../components/vip/discount';
   import FormTips from '../../components/weui/tips';
   import input from '../../mixins/input';
   import Tips from '../../utils/Tips';
@@ -24,12 +33,13 @@
     def = {
       init: false,
       discounts: [{}],
-      num: 1
+      num: 1,
+      discounEditable: true,
+      param: {}
     };
     data = {...this.def};
 
     async onLoad (options) {
-      console.log(options);
       this.discounts = JSON.parse(options.discount);
       const discounts = [];
       this.discounts.forEach((item, index) => {
@@ -38,7 +48,12 @@
         discounts.push(data);
       });
       this.discounts = discounts;
+      Event.listen(Event.VIP_CATEGORY_UPDATA, this.categoryUpdate.bind(this), this);
       this.init = true;
+    };
+
+    categoryUpdate (info) {
+      this.discounts = info;
     };
 
     methods = {
@@ -53,10 +68,23 @@
           data.level = index + 1;
           discounts.push(data);
         });
-        console.log(discounts);
         await Tips.success('保存成功');
         Event.emit(Event.SHOP_DISCOUNT_UPDATE, discounts);
         wepy.navigateBack();
+      },
+      async choose (id) {
+        this.param.discounts = this.discounts;
+        this.param.id = id;
+        this.$navigate('category?info=' + JSON.stringify(this.param));
+      },
+      add () {
+        this.discounts.push({});
+      },
+      remove (index) {
+        this.discounts.splice(index, 1);
+      },
+      change (info) {
+        this.discounts[info.index][info.fieldName] = info.fieldValue;
       }
     };
 
@@ -132,17 +160,31 @@
     }
 
     components = {
-      DiscountList: DiscountList,
+      Discount: Discount,
       Tips: FormTips
     };
     config = {
       navigationBarTitleText: '会员等级编辑'
     };
-    mixins = [input]
+    mixins = [input];
+    watch = {
+      discountList () {
+        this.resetDiscounEditable();
+        this.$apply();
+      }
+    };
+
+    resetDiscounEditable () {
+      this.discounEditable = this.discountList.length > 1;
+    };
   }
 </script>
 <style lang="scss">
     @import "../../styles/variable";
+
+    .sku-add-btn {
+        padding: 10px 20px;
+    }
 
     .title {
         height: 30rpx;
