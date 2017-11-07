@@ -58,6 +58,7 @@
         wepy.$instance.globalData.auth[key] = value;
       }
     }
+
     globalData = {
       auth: {},
       shop: {},
@@ -68,13 +69,13 @@
     config = {
       pages: [
         'pages/home/index',
+        'pages/customer/address_list',
+        'pages/customer/coupon_send',
+        'pages/customer/info',
+        'pages/order/index',
         'pages/shop/index',
         'pages/shop/contact',
         'pages/shop/status',
-        'pages/shop/vip_card',
-        'pages/shop/supply_bonus',
-        'pages/shop/context',
-        'pages/shop/supply_discount',
         'pages/delivery/deliver_list',
         'pages/delivery/deliver_edit',
         'pages/delivery/list',
@@ -82,7 +83,6 @@
         'pages/goods/comment',
         'pages/notice/list',
         'pages/notice/edit',
-        'pages/order/index',
         'pages/coupon/list',
         'pages/coupon/customer_list',
         'pages/coupon/edit',
@@ -106,7 +106,14 @@
         'pages/order/reprice',
         'pages/order/detail',
         'pages/order/close',
-        'pages/order/remark'
+        'pages/order/remark',
+        'pages/vip/vip_scan',
+        'pages/vip/vip_detail',
+        'pages/vip/category',
+        'pages/vip/vip_card',
+        'pages/vip/supply_bonus',
+        'pages/vip/context',
+        'pages/vip/supply_discount'
       ],
       window: {
         backgroundTextStyle: 'dark',

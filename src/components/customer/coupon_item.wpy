@@ -1,0 +1,117 @@
+<template>
+  <view class="coupon-box row-center " @longtap="remove({{coupon.id}})">
+    <!--左侧区域-->
+    <view class="main-box column-center">
+      <view>
+        <text class="xl">￥</text>
+        <text class="price">{{coupon.price}}</text>
+      </view>
+      <text class="mt10">满{{coupon.limitPrice}}元可用</text>
+    </view>
+
+    <!--右侧区域-->
+    <view class="info-box column">
+      <view>
+        <view>
+          <view class="small label primary" wx:if="{{coupon.supportType == 0}}">通用</view>
+          <view class="small label primary" wx:if="{{coupon.supportType == 1}}">线上</view>
+          <view class="small label primary" wx:if="{{coupon.supportType == 2}}">线下</view>
+          <text class="sm">{{coupon.name}}</text>
+        </view>
+        <text class="muted xs">{{coupon.beginTime}}-{{coupon.dueTime}}</text>
+      </view>
+
+      <view class="btn-box row-end">
+        <block wx:if="{{selectAction != '0'}}">
+          <view class="zan-btn zan-btn--small  zan-btn--primary" @tap="sendCoupon({{}})">发放</view>
+        </block>
+        <block wx:else>
+          <text class="muted xs">领取时间：{{coupon.acceptTime}}</text>
+          <text class="muted xs" style="margin-left: 20rpx">状态：{{coupon.status}}</text>
+        </block>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import Tips from '../../utils/Tips';
+
+  export default class CouponItem extends wepy.component {
+    props = {
+      coupon: {},
+      action: {
+        default: true
+      },
+      selectAction: {
+        default: true
+      }
+    };
+    data = {};
+    methods = {
+      async sendCoupon() {
+        await Tips.confirm('确定给该用户发放优惠券？');
+
+        // 发射事件
+        this.$emit('select', this.coupon.id);
+      }
+    };
+
+    onLoad() {
+
+    }
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  /*父容器*/
+  .coupon-box {
+    position: relative;
+    margin: rpx(20) rpx(20) 0 rpx(20);
+    background-color: #FFF;
+    height: rpx(220);
+    border: $border;
+    border-radius: 5px;
+    overflow: hidden;
+
+    .main-box {
+      align-items: center;
+      width: rpx(255);
+      height: 100%;
+      background: linear-gradient(to right, #2F80ED, #1296db);
+
+      text {
+        color: white
+      }
+
+      text.price {
+        font-size: rpx(75);
+      }
+    }
+
+    .info-box {
+      flex: 1;
+      justify-content: space-between;
+      padding: rpx(10) rpx(20) 0 rpx(20);
+      height: rpx(200);
+
+      .img-select {
+        position: relative;
+        top: rpx(-15);
+        left: rpx(350);
+
+        image {
+          @include icon-image(rpx(50));
+        }
+      }
+
+      .btn-box {
+        padding: 5px 0;
+        margin-top: rpx(5);
+        border-top: $border-dot;
+      }
+    }
+  }
+</style>

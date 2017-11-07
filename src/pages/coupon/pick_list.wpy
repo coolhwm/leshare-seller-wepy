@@ -47,7 +47,8 @@
     };
     data = {...this.def};
     methods = {
-      switchTab () {
+      switchTab ({selectedId}) {
+        this.page = coupon.pagePick(this.couponId, selectedId);
         this.reload();
       },
       add () {

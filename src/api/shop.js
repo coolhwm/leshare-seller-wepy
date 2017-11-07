@@ -14,7 +14,7 @@ export default class shop extends base {
   /**
    * 店铺分类
    */
-  static async getShopCategories() {
+  static async getShopCategories () {
     const url = `${this.baseUrl}/shop_parent_categories/0`;
     return await this.get(url);
   }
@@ -39,14 +39,14 @@ export default class shop extends base {
   /**
    * 上传图片
    */
-  static async image(filePath) {
+  static async image (filePath) {
     // const url = `${this.baseUrl}/images`;
     const url = `${this.baseUrl}/images`;
     const param = {
       url,
       filePath,
       name: 'image'
-    }
+    };
     return await wepy.uploadFile(param);
   }
 
@@ -93,7 +93,7 @@ export default class shop extends base {
   /**
    * 创建
    */
-  static createReduce(reduce) {
+  static createReduce (reduce) {
     const url = `${this.baseUrl}/reduce_rule`;
     return this.post(url, reduce);
   }
@@ -101,7 +101,7 @@ export default class shop extends base {
   /**
    * 删除
    */
-  static removeReduce(id) {
+  static removeReduce (id) {
     const url = `${this.baseUrl}/reduce_rule/${id}`;
     return this.delete(url);
   }
@@ -109,32 +109,8 @@ export default class shop extends base {
   /**
    * 更新
    */
-  static updateReduce(reduce) {
+  static updateReduce (reduce) {
     const url = `${this.baseUrl}/reduce_rule`;
     return this.put(url, reduce);
-  }
-
-  /**
-   * 会员卡信息
-   */
-  static async memberCardInfo() {
-    const url = `${this.baseUrl}/memberCards`;
-    return await this.get(url);
-  }
-
-  /**
-   * 添加会员卡
-   */
-  static async memberCardCreate(cardParam) {
-    const url = `${this.baseUrl}/memberCards`;
-    return this.post(url,cardParam);
-  }
-
-  /**
-   * 编辑会员卡
-   */
-  static async memberCardUpdate(cardParam) {
-    const url = `${this.baseUrl}/memberCards`;
-    return this.put(url,cardParam);
   }
 }

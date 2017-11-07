@@ -10,18 +10,14 @@
                         <input class="weui-input" id="levelName" @input="input({{index}})" value="{{info.levelName}}"
                                placeholder="请填写级别名称"/>
                     </view>
-                    <view class="weui-cell__ft">
-                    </view>
-            </view>
+                </view>
                 <view class="weui-cell weui-cell_input">
                     <view class="weui-cell__hd">
                         <view class="weui-label">消费折扣</view>
                     </view>
                     <view class="weui-cell__bd">
-                        <input class="weui-input" id="discount" type="digit" @input="input({{index}})"
+                        <input class="weui-input" id="discount" type="number" @input="input({{index}})"
                                value="{{info.discount}}" placeholder="请填写消费价格"/>
-                    </view>
-                    <view class="weui-cell__ft">
                     </view>
                 </view>
                 <view class="weui-cell weui-cell_input">
@@ -32,8 +28,10 @@
                         <input class="weui-input" id="upgradeFee" type="number" @input="input({{index}})"
                                value="{{info.upgradeFee}}" placeholder="请填写升级条件"/>
                     </view>
-                    <view class="weui-cell__ft">
-                    </view>
+                </view>
+                <view class="weui-cell row-between" @tap="choose({{index}})">
+                    <view class="weui-label">选择类型</view>
+                    <image class="icon-lg" src="/images/icons/more-gray.png"/>
                 </view>
             </view>
         </view>
@@ -57,11 +55,13 @@
     };
     data = {};
     methods = {
+      choose(index) {
+        this.$emit('choose', index)
+      },
       input (index, e) {
-        const level = index + 1;
         const fieldName = e.currentTarget.id;
         const fieldValue = e.detail.value;
-        this.$emit('change', {index, fieldName, fieldValue, level});
+        this.$emit('change', {index, fieldName, fieldValue});
       },
       remove (index) {
         this.$emit('remove', index);
@@ -76,7 +76,9 @@
 
 <style lang="scss">
     @import "../../styles/variable";
-
+    .weui-cells-form{
+        border: 0rpx;
+    }
     .sku-box {
         border-bottom: $border;
         background-color: white;

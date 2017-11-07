@@ -32,6 +32,7 @@
   import Loadmore from '../../components/weui/loadmore';
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
+  import coupon from '../../api/coupon';
 
   export default class CustomerIndex extends wepy.page {
     def = {
@@ -63,11 +64,14 @@
     params () {
       return {sort: this.tab.sord};
     }
-
     methods = {
       async select(customer) {
-        await Tips.confirm('确认发放该优惠券？');
-        //TODO API 调用
+        const param = {
+          couponId: this.couponId.couponId,
+          customerId: customer.id
+        };
+        await Tips.confirm('？');
+        await coupon.send(param);
         await Tips.success('发放成功');
         Event.emit(Event.COUPON_USER_UPDATE);
         wepy.navigateBack();

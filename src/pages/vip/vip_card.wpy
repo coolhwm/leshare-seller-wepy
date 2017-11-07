@@ -135,7 +135,6 @@
           param.discountRules = this.discountRules;
           param.description = this.description;
           param.notice = this.notice;
-          console.log(param);
           await Vip.memberCardUpdate(param);
           await Tips.success('编辑成功！');
         }
@@ -166,18 +165,17 @@
 
     bonusUpdate (data) {
       this.bonusRule = data;
-    }
+    };
     contextUpdate (param) {
-      console.log(param);
       if (param.type == 'description') {
         this.description = param.context;
       } else {
         this.notice = param.context;
       }
-    }
+    };
     discountUpdate(param) {
       this.discountRules = param;
-    }
+    };
 
     validate () {
       const rules = [

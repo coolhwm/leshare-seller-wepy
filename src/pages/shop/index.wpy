@@ -14,7 +14,7 @@
 
             <NavDelivery title="运费模板" url="../delivery/list"/>
 
-            <NavVip title="会员卡管理" url="../shop/vip_card"/>
+            <NavVip title="会员卡管理" url="../vip/vip_card"/>
 
             <NavDeliver title="配送员管理" url="../delivery/deliver_list"/>
 

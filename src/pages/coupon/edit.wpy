@@ -160,8 +160,8 @@
         this.input.supportType = 0;
         this.support = '通用';
         const myDate = new Date();
-        this.input.beginTime = `${myDate.getFullYear()}-${myDate.getMonth()+1}-${myDate.getDate()}`;
-        this.input.dueTime = `${myDate.getFullYear()}-${myDate.getMonth()+2}-${myDate.getDate()}`;
+        this.input.beginTime = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}`;
+        this.input.dueTime = `${myDate.getFullYear()}-${myDate.getMonth() + 2}-${myDate.getDate()}`;
       }
       this.loaded();
     }
@@ -215,7 +215,7 @@
         await Tips.success('删除成功');
         Event.emit(Event.COUPON_LIST_UPDATE);
         wepy.navigateBack();
-      },
+      }
     };
     computed = {
       support() {
@@ -372,9 +372,19 @@
           message: '赠送条件必须为整数'
         }
       ];
+      if (this.input.isPresent == 1 && this.input.presentFee == null) {
+        this.tips('赠送条件必须填写');
+        return false;
+      }
       return this.check(rules);
     }
-
+    watch = {
+      input(newValue, oldValue) {
+        if (newValue.isPresent == true && (oldValue.isPresent == false || oldValue.isPresent == 0)) {
+          this.input.presentFee = null;
+        }
+      }
+    };
     components = {
       ActionBar: ActionBar,
       Tips: FormTips

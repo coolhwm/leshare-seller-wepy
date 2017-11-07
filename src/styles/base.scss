@@ -130,11 +130,6 @@ view.bg-white{background-color: white}
 
 
 //******图片样式******/
-@mixin icon-image($size){
-  height: $size;
-  width: $size;
-  vertical-align: middle;
-}
 .icon {
   @include icon-image(20px);
 }

@@ -105,15 +105,12 @@
         }
         await Tips.success('创建成功！');
         this.input.cardId = 0;
-        console.log(this.input);
         Event.emit(Event.SHOP_BONUS_UPDATE, this.input);
         wepy.navigateBack();
       }
     };
     async onLoad(options) {
-      console.log(options);
       this.input = JSON.parse(options.bonus);
-      console.log(options.bonus);
     };
     validate () {
       const rules = [

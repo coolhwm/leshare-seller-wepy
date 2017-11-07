@@ -164,7 +164,7 @@
           value.mailNo = null;
         }
       }
-    }
+    };
     computed = {
       // 计算主面板是否显示
       panelDisplay() {
@@ -177,7 +177,7 @@
           return '请选择';
         }
       }
-    }
+    };
     mixins = [input];
     components = {
       Address: Address,

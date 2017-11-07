@@ -1,0 +1,70 @@
+<template>
+    <view class="container weui-cells weui-cells-form" wx:if="{{init}}">
+        <repeat for="{{category}}" key="item" item="item">
+            <CategoryItem :category.sync="item"/>
+        </repeat>
+
+        <ActionBar @tap.user="add" okText="确定" cancelText="返回"/>
+    </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import category from '../../api/goods';
+  import base from '../../mixins/base';
+  import CategoryItem from '../../components/vip/category_item';
+  import ActionBar from '../../components/common/action_bar';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+
+  export default class Category extends wepy.page {
+    def = {
+      init: false,
+      category: {},
+      discountsRule: {},
+      id: 0
+    };
+    data = {...this.def};
+    methods = {
+      add () {
+        this.category.forEach((item, index) => {
+          if (item.checked) {
+            this.discountsRule[this.id].discountCategoryLists.push({categoryId: item.id});
+          }
+        });
+        Tips.success('保存');
+        Event.emit(Event.VIP_CATEGORY_UPDATA, this.discountsRule);
+        wepy.navigateBack();
+      }
+    };
+
+    async onLoad (options) {
+      const info = JSON.parse(options.info);
+      this.id = info.id;
+      this.discountsRule = info.discounts;
+      this.category = await category.getInnerCategories();
+      console.log(this.discountsRule);
+      this.category.forEach((item, index) => {
+        this.discountsRule.forEach((ditem, dindex) => {
+          if (item.id == item) {
+            this.category[index] = true;
+          }
+        });
+      });
+      this.loaded();
+      this.init = true;
+    };
+
+    mixins = [base];
+    components = {
+      CategoryItem: CategoryItem,
+      ActionBar: ActionBar
+    };
+    config = {
+      navigationBarTitleText: '优惠类型'
+    };
+  }
+</script>
+
+<style lang="scss">
+    @import "../../styles/variable";
+</style>

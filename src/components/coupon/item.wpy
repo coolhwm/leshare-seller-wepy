@@ -22,13 +22,13 @@
       </view>
 
       <!--分隔符-->
-      <view class="btn-box row-between" wx:if="{{action == 'true'}}">
+      <view class="btn-box row-between" wx:if="{{action == 'true'}}" @tap.stop="pick({{coupon.id}})">
           <view>
-            <text class="muted mr10 sm">已领取:{{coupon.couponCustomerCount.acceptCount ? coupon.couponCustomerCount.acceptCount:0}}</text>
-            <text class="muted mr10 sm">已核销:{{coupon.couponCustomerCount.usedCount?coupon.couponCustomerCount.usedCount:0}}</text>
+            <text class="muted mr20 sm">已领取: {{coupon.couponCustomerCount.acceptCount ? coupon.couponCustomerCount.acceptCount:0}}</text>
+            <text class="muted sm">已核销: {{coupon.couponCustomerCount.usedCount?coupon.couponCustomerCount.usedCount:0}}</text>
           </view>
           <view>
-            <image class="icon" src="/images/icons/more-gray.png" @tap.stop="pick({{coupon.id}})"></image>
+            <image class="icon" src="/images/icons/more-gray.png" ></image>
           </view>
       </view>
     </view>

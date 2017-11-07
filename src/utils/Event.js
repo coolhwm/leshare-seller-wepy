@@ -23,14 +23,18 @@ export default class Event {
   static SHOP_INFO_UPDATE = 'SHOP_INFO_UPDATE';
   // 积分保存成功
   static SHOP_BONUS_UPDATE = 'SHOP_BONUS_UPDATE';
-  // 积分保存成功
+  // 会员等级保存成功
   static SHOP_DISCOUNT_UPDATE = 'SHOP_DISCOUNT_UPDATE';
+  // 优惠类别保存成功
+  static VIP_CATEGORY_UPDATA = 'VIP_CATEGORY_UPDATA';
   // 输入内容
   static SHOP_CONTEXT_UPDATE = 'SHOP_CONTEXT_UPDATE';
   // 配送员更新
   static DELIVER_LIST_UPDATE = 'DELIVER_LIST_UPDATE';
   // 优惠策略更新
   static REDUCE_LIST_UPDATE = 'REDUCE_LIST_UPDATE';
+  // 客户信息与卡卷更新
+  static CUSOMTER_COUPON_UPDATE = 'CUSOMTER_COUPON_UPDATE';
   // 用户登出
   static USER_LOGOUT = 'USER_LOGOUT';
   static listen(eventName, callback, observer) {
