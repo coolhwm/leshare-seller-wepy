@@ -16,7 +16,7 @@
         </view>
         <view class="zan-panel">
             <view class="zan-btns">
-                <button class="zan-btn zan-btn--fill" @tap="submit">保存</button>
+                <button class="zan-btn zan-btn--fill" @tap="submit">确定</button>
             </view>
         </view>
     </view>

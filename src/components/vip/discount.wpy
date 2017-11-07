@@ -29,9 +29,9 @@
                                value="{{info.upgradeFee}}" placeholder="请填写升级条件"/>
                     </view>
                 </view>
-                <view class="weui-cell row-between" @tap="choose({{index}})">
-                    <view class="weui-label">选择类型</view>
-                    <image class="icon-lg" src="/images/icons/more-gray.png"/>
+                <view class="weui-cell row" @tap="choose({{index}})">
+                    <view class="mr10">折扣商品类型</view>
+                    <image class="icon" src="/images/icons/more-gray.png"/>
                 </view>
             </view>
         </view>
