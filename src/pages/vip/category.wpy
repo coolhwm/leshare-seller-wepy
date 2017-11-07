@@ -26,9 +26,11 @@
     data = {...this.def};
     methods = {
       add () {
+        this.discountsRule[this.id].discountCategoryLists = [];
+        let list = this.discountsRule[this.id].discountCategoryLists;
         this.category.forEach((item, index) => {
           if (item.checked) {
-            this.discountsRule[this.id].discountCategoryLists.push({categoryId: item.id});
+            list.push({categoryId: item.id})
           }
         });
         Tips.success('保存');
@@ -42,13 +44,13 @@
       this.id = info.id;
       this.discountsRule = info.discounts;
       this.category = await category.getInnerCategories();
-      console.log(this.discountsRule);
+      const categoryId = this.discountsRule[this.id].discountCategoryLists;
       this.category.forEach((item, index) => {
-        this.discountsRule.forEach((ditem, dindex) => {
-          if (item.id == item) {
-            this.category[index] = true;
+        for (let id of categoryId) {
+          if (id.categoryId == item.id) {
+            this.category[index].checked = true;
           }
-        });
+        }
       });
       this.loaded();
       this.init = true;
