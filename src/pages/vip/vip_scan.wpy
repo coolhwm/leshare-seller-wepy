@@ -1,28 +1,28 @@
 <template>
-    <Tips/>
-    <view class="container" wx:if="{{init}}">
-        <VipCard :member.sync="member"/>
-        <view class="weui-cells weui-cells-form">
-            <view class="weui-cell weui-cell_input">
-                <view class="weui-cell__hd">
-                    <view class="weui-label">消费金额</view>
-                </view>
-                <view class="weui-cell__bd">
-                    <input class="weui-input" id="price" @input="input" value="{{input.price}}" type="text"
-                           placeholder="请输入消费金额"/>
-                </view>
-            </view>
-            <view class="weui-cell">
-                <view class="weui-cell__hd">
-                    <view class="weui-label">累计积分</view>
-                </view>
-                <text class="">12</text>
-            </view>
+  <Tips/>
+  <view class="container" wx:if="{{init}}">
+    <VipCard :member.sync="member"/>
+    <view class="weui-cells weui-cells-form">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">消费金额</view>
         </view>
-
-        <!--操作栏-->
-        <ActionBar @tap.user="add" okText="确定" cancelText="返回"/>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="price" @input="input" value="{{input.price}}" type="text"
+                 placeholder="请输入消费金额"/>
+        </view>
+      </view>
+      <view class="weui-cell">
+        <view class="weui-cell__hd">
+          <view class="weui-label">累计积分</view>
+        </view>
+        <text class="">12</text>
+      </view>
     </view>
+
+    <!--操作栏-->
+    <ActionBar @tap.user="add" okText="确定" cancelText="返回"/>
+  </view>
 </template>
 
 <script>

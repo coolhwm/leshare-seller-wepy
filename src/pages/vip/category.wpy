@@ -1,11 +1,11 @@
 <template>
-    <view class="container weui-cells weui-cells-form" wx:if="{{init}}">
-        <repeat for="{{category}}" key="item" item="item">
-            <CategoryItem :category.sync="item"/>
-        </repeat>
+  <view class="container weui-cells weui-cells-form" wx:if="{{init}}">
+    <repeat for="{{category}}" key="item" item="item">
+      <CategoryItem :category.sync="item"/>
+    </repeat>
 
-        <ActionBar @tap.user="add" okText="确定" cancelText="返回"/>
-    </view>
+    <ActionBar @tap.user="add" okText="确定" cancelText="返回"/>
+  </view>
 </template>
 <script>
   import wepy from 'wepy';

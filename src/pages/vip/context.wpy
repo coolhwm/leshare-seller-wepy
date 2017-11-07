@@ -1,19 +1,19 @@
 <template>
-    <view class="container" wx:if="{{init}}">
-        <Tips/>
-        <text class="xl ml30 mt10 mb10 muted">{{support}}</text>
-        <view class="weui-cells weui-cells-form">
-            <view class="weui-cell">
-                <view class="weui-cell__bd">
+  <view class="container" wx:if="{{init}}">
+    <Tips/>
+    <text class="xl ml30 mt10 mb10 muted">{{support}}</text>
+    <view class="weui-cells weui-cells-form">
+      <view class="weui-cell">
+        <view class="weui-cell__bd">
                     <textarea class="weui-textarea" id="context" value="{{input.context}}" placeholder="请输入{{support}}"
                               style="height: 6.3em" maxlength="200" @input="input"/>
-                    <view class="weui-textarea-counter">{{input.context ? input.context.length : 0}}/200</view>
-                </view>
-            </view>
+          <view class="weui-textarea-counter">{{input.context ? input.context.length : 0}}/200</view>
         </view>
-        <!--操作栏-->
-        <ActionBar okText="确定" cancelText="返回" @tap.user="submit"/>
+      </view>
     </view>
+    <!--操作栏-->
+    <ActionBar okText="确定" cancelText="返回" @tap.user="submit"/>
+  </view>
 </template>
 <script>
   import wepy from 'wepy';

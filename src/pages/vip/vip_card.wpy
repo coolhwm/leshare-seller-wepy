@@ -1,68 +1,68 @@
 <template>
-    <Tips/>
-    <view class="container">
-        <view class="weui-cells weui-cells-form">
-            <view class="weui-cell weui-cell_input">
-                <view class="weui-cell__hd">
-                    <view class="weui-label">会员卡名称</view>
-                </view>
-                <view class="weui-cell__bd">
-                    <input class="weui-input" id="title" @input="input" value="{{input.title}}" type="text"
-                           placeholder="请输入会员卡名称"/>
-                </view>
-            </view>
-
-            <view class="weui-cell weui-cell_input">
-                <view class="weui-cell__hd">
-                    <view class="weui-label">客服电话</view>
-                </view>
-                <view class="weui-cell__bd">
-                    <input class="weui-input" id="servicePhone" value="{{input.servicePhone}}" @input="input"
-                           type="number" maxlength="11"
-                           placeholder="请输入客服电话"/>
-                </view>
-            </view>
-
-            <view class="weui-cell row-between" @tap="textArea('description')">
-                <view class="weui-label">使用说明</view>
-                <image class="icon-lg" src="/images/icons/more-gray.png"/>
-            </view>
-
-            <view class="weui-cell row-between" @tap="textArea('notice')">
-                <view class="weui-label">使用提醒</view>
-                <image class="icon-lg" src="/images/icons/more-gray.png"/>
-            </view>
-
-            <view class="h-gap bg-color"/>
-            <view class="weui-cell weui-cell_switch">
-                <view class="weui-cell__bd">积分规则</view>
-                <view class="weui-cell__ft">
-                    <switch checked="{{input.supplyBonus}}" id="supplyBonus" @change="input"/>
-                </view>
-            </view>
-            <view class="weui-cell row-between" wx:if="{{input.supplyBonus}}" @tap="toSupplyBonus">
-                <view class="weui-label">规则配置</view>
-                <image class="icon-lg" src="/images/icons/more-gray.png"/>
-            </view>
-
-            <view class="h-gap bg-color"/>
-            <view class="weui-cell weui-cell_switch">
-                <view class="weui-cell__bd">会员等级</view>
-                <view class="weui-cell__ft">
-                    <switch checked="{{input.supplyDiscount}}" id="supplyDiscount" @change="input"/>
-                </view>
-            </view>
-            <view class="weui-cell row-between" wx:if="{{input.supplyDiscount}}" @tap="toSupplyDiscount">
-                <view class="weui-label">等级配置</view>
-                <image class="icon-lg" src="/images/icons/more-gray.png"/>
-            </view>
+  <Tips/>
+  <view class="container">
+    <view class="weui-cells weui-cells-form">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">会员卡名称</view>
         </view>
-        <view class="zan-panel">
-            <view class="zan-btns">
-                <button class="zan-btn zan-btn--fill" @tap="submit">保存</button>
-            </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="title" @input="input" value="{{input.title}}" type="text"
+                 placeholder="请输入会员卡名称"/>
         </view>
+      </view>
+
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">客服电话</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="servicePhone" value="{{input.servicePhone}}" @input="input"
+                 type="number" maxlength="11"
+                 placeholder="请输入客服电话"/>
+        </view>
+      </view>
+
+      <view class="weui-cell row-between" @tap="textArea('description')">
+        <view class="weui-label">使用说明</view>
+        <image class="icon-lg" src="/images/icons/more-gray.png"/>
+      </view>
+
+      <view class="weui-cell row-between" @tap="textArea('notice')">
+        <view class="weui-label">使用提醒</view>
+        <image class="icon-lg" src="/images/icons/more-gray.png"/>
+      </view>
+
+      <view class="h-gap bg-color"/>
+      <view class="weui-cell weui-cell_switch">
+        <view class="weui-cell__bd">积分规则</view>
+        <view class="weui-cell__ft">
+          <switch checked="{{input.supplyBonus}}" id="supplyBonus" @change="input"/>
+        </view>
+      </view>
+      <view class="weui-cell row-between" wx:if="{{input.supplyBonus}}" @tap="toSupplyBonus">
+        <view class="weui-label">规则配置</view>
+        <image class="icon-lg" src="/images/icons/more-gray.png"/>
+      </view>
+
+      <view class="h-gap bg-color"/>
+      <view class="weui-cell weui-cell_switch">
+        <view class="weui-cell__bd">会员等级</view>
+        <view class="weui-cell__ft">
+          <switch checked="{{input.supplyDiscount}}" id="supplyDiscount" @change="input"/>
+        </view>
+      </view>
+      <view class="weui-cell row-between" wx:if="{{input.supplyDiscount}}" @tap="toSupplyDiscount">
+        <view class="weui-label">等级配置</view>
+        <image class="icon-lg" src="/images/icons/more-gray.png"/>
+      </view>
     </view>
+    <view class="zan-panel">
+      <view class="zan-btns">
+        <button class="zan-btn zan-btn--fill" @tap="submit">保存</button>
+      </view>
+    </view>
+  </view>
 </template>
 <script>
   import wepy from 'wepy';
