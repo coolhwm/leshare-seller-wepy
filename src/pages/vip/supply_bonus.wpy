@@ -7,7 +7,7 @@
         <view class="weui-cell weui-cell_input">
             <view class="weui-label">每消费</view>
             <view class="weui-cell__ft">
-                <input class="weui-input" id="costBonusUnit" type="number" @input="input" value="{{input.costBonusUnit}}"
+                <input class="weui-input" id="costBonusUnit" type="number" maxlength="6" @input="input" value="{{input.costBonusUnit}}"
                        placeholder="消费金额"/>
             </view>
             <view class="unit">元</view>
@@ -15,7 +15,7 @@
         <view class="weui-cell weui-cell_input">
             <view class="weui-label">增加</view>
             <view class="weui-cell__ft">
-                <input class="weui-input" id="increaseBonus" type="number" @input="input" value="{{input.increaseBonus}}"
+                <input class="weui-input" id="increaseBonus" type="number" maxlength="6" @input="input" value="{{input.increaseBonus}}"
                        placeholder="增加积分"/>
             </view>
             <view class="unit">积分</view>
@@ -23,7 +23,7 @@
         <view class="weui-cell weui-cell_input">
             <view class="weui-label">最多使用</view>
             <view class="weui-cell__ft">
-                <input class="weui-input" id="maxIncreaseBonus" type="number" @input="input"
+                <input class="weui-input" id="maxIncreaseBonus" type="number" maxlength="6" @input="input"
                        value="{{input.maxIncreaseBonus}}" placeholder="最多能使用的积分"/>
             </view>
             <view class="unit">积分</view>
@@ -37,7 +37,7 @@
         <view class="weui-cell weui-cell_input">
             <view class="weui-label">每使用</view>
             <view class="weui-cell__ft">
-                <input class="weui-input" id="costMoneyUnit" type="number" @input="input" value="{{input.costMoneyUnit}}"
+                <input class="weui-input" id="costMoneyUnit" type="number" maxlength="6" @input="input" value="{{input.costMoneyUnit}}"
                        placeholder="使用积分"/>
             </view>
             <view class="unit">积分</view>
@@ -45,7 +45,7 @@
         <view class="weui-cell weui-cell_input">
             <view class="weui-label">抵扣</view>
             <view class="weui-cell__ft">
-                <input class="weui-input" id="reduceMoney" type="number" @input="input" value="{{input.reduceMoney}}"
+                <input class="weui-input" id="reduceMoney" type="number" maxlength="6" @input="input" value="{{input.reduceMoney}}"
                        placeholder="抵扣金额"/>
             </view>
             <view class="unit">元</view>
@@ -53,7 +53,7 @@
         <view class="weui-cell weui-cell_input">
             <view class="weui-label">最多使用</view>
             <view class="weui-cell__ft">
-                <input class="weui-input" id="maxReduceBonus" type="number" @input="input"
+                <input class="weui-input" id="maxReduceBonus" type="number" maxlength="6" @input="input"
                        value="{{input.maxReduceBonus}}" placeholder="最多能使用的积分"/>
             </view>
             <view class="unit">积分</view>
@@ -61,7 +61,7 @@
         <view class="weui-cell weui-cell_input">
             <view class="weui-label">订单需满</view>
             <view class="weui-cell__ft">
-                <input class="weui-input" id="limitMoney" type="number" @input="input"
+                <input class="weui-input" id="limitMoney" type="number" maxlength="6" @input="input"
                        value="{{input.limitMoney}}" placeholder="订单金额达到"/>
             </view>
             <view class="unit">元</view>
@@ -74,7 +74,7 @@
         <view class="weui-cell weui-cell_input">
             <view class="weui-label">初始积分</view>
             <view class="weui-cell__ft">
-                <input class="weui-input" id="initIncreaseBonus" type="number" @input="input"
+                <input class="weui-input" id="initIncreaseBonus" type="number" maxlength="6" @input="input"
                        value="{{input.initIncreaseBonus}}" placeholder="初始积分"/>
             </view>
             <view class="content"></view>
@@ -82,7 +82,7 @@
     </view>
     <view class="zan-panel">
         <view class="zan-btns">
-            <button class="zan-btn zan-btn--fill" @tap="submit">保存</button>
+            <button class="zan-btn zan-btn--fill" @tap="submit">确定</button>
         </view>
     </view>
 </template>
@@ -103,7 +103,6 @@
         if (!this.validate()) {
           return;
         }
-        await Tips.success('创建成功！');
         this.input.cardId = 0;
         Event.emit(Event.SHOP_BONUS_UPDATE, this.input);
         wepy.navigateBack();
@@ -133,8 +132,8 @@
         {
           value: this.input.costBonusUnit,
           method: 'max',
-          param: 1000,
-          message: '消费金额不能超过1000'
+          param: 1000000,
+          message: '消费金额数过高'
         },
         {
           value: this.input.increaseBonus,
@@ -155,8 +154,8 @@
         {
           value: this.input.increaseBonus,
           method: 'max',
-          param: 1000,
-          message: '增加积分不能超过1000'
+          param: 1000000,
+          message: '增加积分数过高'
         },
         {
           value: this.input.maxIncreaseBonus,
@@ -177,8 +176,8 @@
         {
           value: this.input.maxIncreaseBonus,
           method: 'max',
-          param: 1000,
-          message: '最多使用积分数不能超过1000'
+          param: 1000000,
+          message: '最多使用积分数过高'
         },
         {
           value: this.input.costMoneyUnit,
@@ -199,8 +198,8 @@
         {
           value: this.input.costMoneyUnit,
           method: 'max',
-          param: 1000,
-          message: '使用积分不能超过1000'
+          param: 1000000,
+          message: '使用积分数过高'
         },
         {
           value: this.input.reduceMoney,
@@ -221,8 +220,8 @@
         {
           value: this.input.reduceMoney,
           method: 'max',
-          param: 1000,
-          message: '最多使用积分数不能超过1000'
+          param: 1000000,
+          message: '最多使用积分数过高'
         },
         {
           value: this.input.maxReduceBonus,
@@ -243,8 +242,8 @@
         {
           value: this.input.maxReduceBonus,
           method: 'max',
-          param: 1000,
-          message: '最多使用积分数不能超过1000'
+          param: 1000000,
+          message: '最多使用积分数过高'
         },
         {
           value: this.input.limitMoney,
@@ -265,8 +264,8 @@
         {
           value: this.input.limitMoney,
           method: 'max',
-          param: 1000,
-          message: '订单金额最不能超过1000'
+          param: 1000000,
+          message: '订单金额最过高'
         },
         {
           value: this.input.initIncreaseBonus,
@@ -287,8 +286,8 @@
         {
           value: this.input.initIncreaseBonus,
           method: 'max',
-          param: 1000,
-          message: '初始积分最不能超过1000'
+          param: 1000000,
+          message: '初始积分值过高'
         }
       ];
       return this.check(rules);
