@@ -177,13 +177,12 @@
   }
 
   .title {
-    height: 30 rpx;
-    padding: 10 rpx 0 rpx 20 rpx 30 rpx;
+    height: 30rpx;
+    padding: 10rpx 0rpx 20rpx 30rpx;
     align-content: center;
     .title-size {
-      font-size: 30 rpx;
+      font-size: 30rpx;
       color: $color-muted;
-      font-weight: bold;
     }
   }
 </style>
