@@ -36,7 +36,7 @@
       </view>
     </view>
 
-    <view class="op-box column-center" wx:if="{{discounEditable}}" @tap="remove({{index}})">
+    <view class="op-box column-center" @tap="remove({{index}})">
       <image class="icon" src="/images/icons/minus.png" wx:if="{{index != 0}}"></image>
     </view>
   </view>
@@ -48,15 +48,12 @@
   export default class Discount extends wepy.component {
     props = {
       index: {},
-      info: {},
-      discounEditable: {
-        default: false
-      }
+      info: {}
     };
     data = {};
     methods = {
       choose(index) {
-        this.$emit('choose', index)
+        this.$emit('choose', index);
       },
       input (index, e) {
         const fieldName = e.currentTarget.id;
@@ -67,10 +64,6 @@
         this.$emit('remove', index);
       }
     };
-    events = {};
-
-    onLoad () {
-    }
   }
 </script>
 
