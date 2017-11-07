@@ -1,96 +1,96 @@
 <template>
-    <view class="container" wx:if="{{init}}">
-        <!--客户信息-->
-        <view class="customer-box">
+  <view class="container" wx:if="{{init}}">
+    <!--客户信息-->
+    <view class="customer-box">
 
-            <!--客户基本信息-->
-            <view class="customer-info-box row-between">
+      <!--客户基本信息-->
+      <view class="customer-info-box row-between">
 
-                <!--左侧头像-->
-                <image class="customer-avatar"
-                       src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '/images/icons/customer.png'}}"/>
+        <!--左侧头像-->
+        <image class="customer-avatar"
+               src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '/images/icons/customer.png'}}"/>
 
-                <!--右侧主区域-->
-                <view class="column customer-main-box">
-                    <!--姓名/打电话-->
-                    <view class="row-between">
-                        <text class="xxl">{{customerInfo.customer.nickName}}</text>
-                        <image class="icon" src="/images/icons/call.png" @tap.stop="phone"/>
-                    </view>
+        <!--右侧主区域-->
+        <view class="column customer-main-box">
+          <!--姓名/打电话-->
+          <view class="row-between">
+            <text class="xxl">{{customerInfo.customer.nickName}}</text>
+            <image class="icon" src="/images/icons/call.png" @tap.stop="phone"/>
+          </view>
 
-                    <!--地址信息-->
-                    <view class="row-between" @tap.stop="addressList({{customerId}})">
-                        <!--地址/电话-->
-                        <view class="column address-box">
-                            <text>电话：{{customerInfo.address ? customerInfo.address.phone : '暂无电话'}}</text>
-                            <text>地址：{{customerInfo.address ? customerInfo.address.fullAddress : '暂无地址'}}</text>
-                        </view>
-                        <!--更多地址-->
-                        <image class="icon" src="/images/icons/more-gray.png"></image>
-                    </view>
-
-                </view>
+          <!--地址信息-->
+          <view class="row-between" @tap.stop="addressList({{customerId}})">
+            <!--地址/电话-->
+            <view class="column address-box">
+              <text>电话：{{customerInfo.address ? customerInfo.address.phone : '暂无电话'}}</text>
+              <text>地址：{{customerInfo.address ? customerInfo.address.fullAddress : '暂无地址'}}</text>
             </view>
+            <!--更多地址-->
+            <image class="icon" src="/images/icons/more-gray.png"></image>
+          </view>
 
-            <view class="customer-hr"></view>
-            <view class="row-between vip-column" @tap="moreVip">
-                <image class="card-image" src="/images/icons/vip_card.png"/>
-                <view class="row-between">
-                    <text class="muted">会员等级 : 普通会员</text>
-                    <view class="vertical-line"/>
-                    <text class="muted">当前积分 : 100</text>
-                </view>
-                <image class="more-image" src="/images/icons/more-gray.png"/>
-            </view>
-            <view class="customer-hr"></view>
-            <!--客户统计信息-->
-            <view class="count-box row-around bg-white">
-                <view class="count-item column-center">
-                    <text class="count-value">{{customerInfo.countCustomerInfo.lastOrderTime}}</text>
-                    <text class="muted">最近购买</text>
-                </view>
-                <view class="count-item column-center">
-                    <text class="count-value">￥{{customerInfo.countCustomerInfo.totalPrice}}</text>
-                    <text class="muted">交易总额</text>
-                </view>
-                <view class="count-item column-center">
-                    <text class="count-value">{{customerInfo.countCustomerInfo.totalOrderCount}}次</text>
-                    <text class="muted">购买次数</text>
-                </view>
-                <view class="count-item column-center">
-                    <text class="count-value">{{customerInfo.countCustomerInfo.totalCouponCount}}张</text>
-                    <text class="muted">卡卷数量</text>
-                </view>
-            </view>
         </view>
+      </view>
 
-        <!--TAB-->
-        <view>
-            <ZanTab :tab.sync="tab" fixed="0"/>
+      <view class="customer-hr"></view>
+      <view class="row-between vip-column" @tap="moreVip">
+        <image class="card-image" src="/images/icons/vip_card.png"/>
+        <view class="row-between">
+          <text class="muted">会员等级 : 普通会员</text>
+          <view class="vertical-line"/>
+          <text class="muted">当前积分 : 100</text>
         </view>
-
-        <!--列表区域-->
-        <view>
-
-            <view class="zan-btns" wx:if="{{tab.selectedId == 'COUPON'}}">
-                <button class="zan-btn zan-btn--fill" @tap="send">发放优惠券</button>
-            </view>
-            <repeat for="{{page.list}}" key="index" index="index" item="item">
-                <block wx:if="{{tab.selectedId == 'HIS_ORDER'}}">
-                    <OrderItem :order.sync="item" @tap.user="detail" action="0"></OrderItem>
-                </block>
-                <block wx:elif="{{tab.selectedId == 'OFTEN_GOODS'}}">
-                    <OftenGoods :goods="item"></OftenGoods>
-                </block>
-                <block wx:elif="{{tab.selectedId == 'COUPON'}}">
-                    <CouponItem selectAction="0" :coupon.sync="item"></CouponItem>
-                </block>
-            </repeat>
-
-            <!-- 加载提示 -->
-            <Loadmore :page.sync="page" emptyText="暂无记录"/>
+        <image class="more-image" src="/images/icons/more-gray.png"/>
+      </view>
+      <view class="customer-hr"></view>
+      <!--客户统计信息-->
+      <view class="count-box row-around bg-white">
+        <view class="count-item column-center">
+          <text class="count-value">{{customerInfo.countCustomerInfo.lastOrderTime}}</text>
+          <text class="muted">最近购买</text>
         </view>
+        <view class="count-item column-center">
+          <text class="count-value">￥{{customerInfo.countCustomerInfo.totalPrice}}</text>
+          <text class="muted">交易总额</text>
+        </view>
+        <view class="count-item column-center">
+          <text class="count-value">{{customerInfo.countCustomerInfo.totalOrderCount}}次</text>
+          <text class="muted">购买次数</text>
+        </view>
+        <view class="count-item column-center">
+          <text class="count-value">{{customerInfo.countCustomerInfo.totalCouponCount}}张</text>
+          <text class="muted">卡卷数量</text>
+        </view>
+      </view>
     </view>
+
+    <!--TAB-->
+    <view>
+      <ZanTab :tab.sync="tab" fixed="0"/>
+    </view>
+
+    <!--列表区域-->
+    <view>
+
+      <view class="zan-btns" wx:if="{{tab.selectedId == 'COUPON'}}">
+        <button class="zan-btn zan-btn--fill" @tap="send">发放优惠券</button>
+      </view>
+      <repeat for="{{page.list}}" key="index" index="index" item="item">
+        <block wx:if="{{tab.selectedId == 'HIS_ORDER'}}">
+          <OrderItem :order.sync="item" @tap.user="detail" action="0"></OrderItem>
+        </block>
+        <block wx:elif="{{tab.selectedId == 'OFTEN_GOODS'}}">
+          <OftenGoods :goods="item"></OftenGoods>
+        </block>
+        <block wx:elif="{{tab.selectedId == 'COUPON'}}">
+          <CouponItem selectAction="0" :coupon.sync="item"></CouponItem>
+        </block>
+      </repeat>
+
+      <!-- 加载提示 -->
+      <Loadmore :page.sync="page" emptyText="暂无记录"/>
+    </view>
+  </view>
 </template>
 
 <script>
