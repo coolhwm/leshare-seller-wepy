@@ -29,21 +29,26 @@
   import wepy from 'wepy';
   import input from '../../mixins/input';
   import base from '../../mixins/base';
-  import Member from '../../api/member';
+  import member from '../../api/member';
   import VipCard from '../../components/vip/vip_card';
   import ActionBar from '../../components/common/action_bar';
   import FormTips from '../../components/weui/tips';
 
   export default class VipScan extends wepy.page {
     def = {
+      init: false,
       member: {},
       bonus: {}
     };
     data = {...this.def};
+
     async onLoad () {
-      this.member = await Member.memberInfo('3126908540477');
-      console.log(this.member);
+      this.member = await member.memberInfo('3126908540477');
+      this.bonus = await member.bonusInfo(this.member.customerId);
+      this.loaded();
+      this.init = true;
     };
+
     components = {
       Tips: FormTips,
       VipCard: VipCard,

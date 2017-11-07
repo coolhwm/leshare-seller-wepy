@@ -23,8 +23,10 @@ export default class Event {
   static SHOP_INFO_UPDATE = 'SHOP_INFO_UPDATE';
   // 积分保存成功
   static SHOP_BONUS_UPDATE = 'SHOP_BONUS_UPDATE';
-  // 积分保存成功
+  // 会员等级保存成功
   static SHOP_DISCOUNT_UPDATE = 'SHOP_DISCOUNT_UPDATE';
+  // 优惠类别保存成功
+  static VIP_CATEGORY_UPDATA = 'VIP_CATEGORY_UPDATA';
   // 输入内容
   static SHOP_CONTEXT_UPDATE = 'SHOP_CONTEXT_UPDATE';
   // 配送员更新

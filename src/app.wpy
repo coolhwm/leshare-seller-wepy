@@ -76,10 +76,6 @@
         'pages/shop/index',
         'pages/shop/contact',
         'pages/shop/status',
-        'pages/shop/vip_card',
-        'pages/shop/supply_bonus',
-        'pages/shop/context',
-        'pages/shop/supply_discount',
         'pages/delivery/deliver_list',
         'pages/delivery/deliver_edit',
         'pages/delivery/list',
@@ -112,7 +108,12 @@
         'pages/order/close',
         'pages/order/remark',
         'pages/vip/vip_scan',
-        'pages/vip/vip_detail'
+        'pages/vip/vip_detail',
+        'pages/vip/category',
+        'pages/vip/vip_card',
+        'pages/vip/supply_bonus',
+        'pages/vip/context',
+        'pages/vip/supply_discount'
       ],
       window: {
         backgroundTextStyle: 'dark',
