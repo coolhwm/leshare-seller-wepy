@@ -1,22 +1,22 @@
 <template>
   <Tips/>
-  <view class="container" wx:if="{{init}}">
-    <VipCard :member.sync="member"/>
+  <view class="container box-bg" wx:if="{{init}}">
+    <VipCard :member.sync="customerMember" :memberCardInfo.sync="memberCardInfo" :customerInfo.sync="customerInfo"/>
     <view class="weui-cells weui-cells-form">
       <view class="weui-cell weui-cell_input">
         <view class="weui-cell__hd">
           <view class="weui-label">消费金额</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" id="price" @input="input" value="{{input.price}}" type="text"
-                 placeholder="请输入消费金额"/>
+          <input class="weui-input" id="price" @input="input" value="{{input.price}}"
+                 type="number" maxlength="6" placeholder="请输入消费金额"/>
         </view>
       </view>
       <view class="weui-cell">
         <view class="weui-cell__hd">
           <view class="weui-label">累计积分</view>
         </view>
-        <text class="">12</text>
+        <text>{{bonus ? bonus : 0}}</text>
       </view>
     </view>
 
@@ -29,26 +29,45 @@
   import wepy from 'wepy';
   import input from '../../mixins/input';
   import base from '../../mixins/base';
-  import member from '../../api/member';
   import VipCard from '../../components/vip/vip_card';
   import ActionBar from '../../components/common/action_bar';
   import FormTips from '../../components/weui/tips';
-
+  import member from '../../api/member'
+  import Event from '../../utils/Event'
+  import Tips from '../../utils/Tips'
   export default class VipScan extends wepy.page {
     def = {
       init: false,
-      member: {},
-      bonus: {}
+      customerInfo: {},
+      customerMember: {},
+      memberCardInfo: {},
+      bonus: null
     };
     data = {...this.def};
 
-    async onLoad () {
-      this.member = await member.memberInfo('3126908540477');
-      this.bonus = await member.bonusInfo(this.member.customerId);
+    async onLoad (options, {preload}) {
+      this.memberCardInfo = await member.cardInfo();
+      this.customerInfo = preload.data.customerInfo;
+      this.customerMember = preload.data.customerMember;
+      // 扫描二维码进入
+      // 用户信息进入
       this.loaded();
-      this.init = true;
     };
-
+    methods = {
+      async add () {
+        const param = {
+          addBonus: this.bonus,
+          cardNumber: this.customerMember.memberNumber,
+          costMoney: this.input.price,
+          type: 'OFFLINE_ORDER_ADD'
+        };
+        console.log(param);
+        this.memberCardInfo = await member.memberAdd(param);
+        Tips.success('保存成功');
+        Event.emit(Event.SHOP_CUSTOMER_UPDATE);
+        wepy.navigateBack();
+      }
+    };
     components = {
       Tips: FormTips,
       VipCard: VipCard,
@@ -58,9 +77,25 @@
       navigationBarTitleText: '会员卡核销'
     };
     mixins = [base, input];
+    watch = {
+      input (input) {
+        const bonusRule = this.memberCardInfo.bonusRule;
+        if (bonusRule != null) {
+          if ((input.price % bonusRule.costBonusUnit) == 0) {
+            this.bonus = (bonusRule.increaseBonus / bonusRule.costBonusUnit) * input.price;
+          } else {
+            this.bonus = (bonusRule.increaseBonus / bonusRule.costBonusUnit) * (input.price - (input.price % bonusRule.costBonusUnit));
+          }
+          this.$apply();
+        }
+      }
+    }
   }
 </script>
 
 <style lang="scss">
     @import "../../styles/variable";
+  .box-bg{
+    background-color: #FFF;
+  }
 </style>

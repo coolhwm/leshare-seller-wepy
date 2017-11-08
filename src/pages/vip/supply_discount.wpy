@@ -38,7 +38,6 @@
     data = {...this.def};
 
     async onLoad (options) {
-      console.info('onload');
       this.discounts = JSON.parse(options.discount);
       const discounts = [];
       this.discounts.forEach(item => {

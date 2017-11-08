@@ -1,15 +1,15 @@
 <template>
   <!-- 会员卡区域 -->
-  <view class="vip-box column-between" @tap="vipDetail">
+  <view class="vip-box column-between" @tap="vipDetail({{member}},{{customerInfo}},{{memberCardInfo}})">
     <view class="row">
       <view class="title row">
         <image class="avatar icon-xl icon-round"
-               src="{{customer.avatar ? customer.avatar : '/images/icons/customer_white.png'}}"/>
+               src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl : '/images/icons/customer_white.png'}}"/>
         <view class="info-box column">
           <view class="title-box">
-            <text class="xl">{{customer.name ? customer.name : '微信用户'}}</text>
+            <text class="xl">{{customerInfo.customer.nickName ? customerInfo.customer.nickName : '微信用户'}}</text>
           </view>
-          <text class="xl">会员等级: {{member.levelName}}</text>
+          <text class="xl">会员等级: {{member.levelName ? member.levelName : '暂无等级'}}</text>
         </view>
       </view>
       <image class="canvas" src="/images/icons/canvas.png" @tap.stop="canvas"/>
@@ -31,18 +31,25 @@
   export default class VipCard extends wepy.component {
     props = {
       member: {},
-      type: {}
+      type: {},
+      customerInfo: {},
+      memberCardInfo: {}
     };
     data = {
       registe: false,
       info: {}
     };
     methods = {
-      vipDetail () {
+      async vipDetail (member, customerInfo, memberCardInfo) {
         if (this.type == 'detail') {
           return;
         }
-        this.$root.$navigate('/pages/vip/vip_detail?member=' + JSON.stringify(this.member));
+        const params = {
+          member: member,
+          customerInfo: customerInfo,
+          memberCardInfo: memberCardInfo
+        };
+        this.$root.$navigate('/pages/vip/vip_detail?params=' + JSON.stringify(params));
       },
       canvas () {
         if (this.member.codeUrl != null) {
@@ -53,9 +60,6 @@
         }
       }
     };
-
-    async onLoad () {
-    }
   }
 </script>
 
@@ -63,31 +67,31 @@
     @import "../../styles/variable";
 
     .vip-box {
-        position: relative;
-        padding: 15px;
-        text {
-            color: #FFF
-        }
-        background-color: #509FC9;
-        margin: 30rpx;
-        border-radius: 15rpx;
-        height: 300rpx;
+      position: relative;
+      padding: 10px;
+      text {
+        color: $color-bg-item
+      }
+      background-color: #509FC9;
+      margin: 15rpx;
+      border-radius: 15rpx;
+      height: 300rpx;
     }
 
     .title {
-        width: 520rpx;
+      width: 550rpx;
     }
 
     .canvas {
-        width: 70rpx;
-        height: 70rpx;
+      width: 70rpx;
+      height: 70rpx;
     }
 
     .column-between {
-        align-items: flex-start;
+      align-items: flex-start;
     }
 
     .info-box {
-        margin-left: 20rpx;
+      margin-left: 20rpx;
     }
 </style>

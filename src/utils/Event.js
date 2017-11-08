@@ -25,6 +25,8 @@ export default class Event {
   static SHOP_BONUS_UPDATE = 'SHOP_BONUS_UPDATE';
   // 会员等级保存成功
   static SHOP_DISCOUNT_UPDATE = 'SHOP_DISCOUNT_UPDATE';
+  // 客户管理更新
+  static SHOP_CUSTOMER_UPDATE = 'SHOP_CUSTOMER_UPDATE';
   // 优惠类别保存成功
   static VIP_CATEGORY_UPDATA = 'VIP_CATEGORY_UPDATA';
   // 输入内容
