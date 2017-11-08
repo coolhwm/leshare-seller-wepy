@@ -61,10 +61,14 @@
           costMoney: this.input.price,
           type: 'OFFLINE_ORDER_ADD'
         };
-        console.log(param);
-        this.memberCardInfo = await member.memberAdd(param);
+        await member.memberAdd(param);
+        this.$apply();
         Tips.success('保存成功');
-        Event.emit(Event.SHOP_CUSTOMER_UPDATE);
+        const params = {
+          bonus: this.bonus,
+          customerMember: this.customerMember
+        };
+        Event.emit(Event.SHOP_CUSTOMER_UPDATE, params);
         wepy.navigateBack();
       }
     };

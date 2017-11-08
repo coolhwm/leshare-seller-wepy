@@ -145,11 +145,16 @@
       this.page = order.hisPage(this.customerId);
       this.next();
       Event.listen(Event.CUSOMTER_COUPON_UPDATE, this.updateInfo.bind(this), this);
-      Event.listen(Event.SHOP_CUSTOMER_UPDATE, this.update.bind(this), this);
+      Event.listen(Event.SHOP_CUSTOMER_UPDATE, this.updateMemberInfo.bind(this), this);
     };
     updateInfo (params) {
       this.update();
       this.customerInfo.countCustomerInfo.totalCouponCount++;
+      this.$apply();
+    }
+    async updateMemberInfo (params) {
+      this.update();
+      this.customerMember.bonus = params.customerMember.bonus + params.bonus;
       this.$apply();
     }
 
