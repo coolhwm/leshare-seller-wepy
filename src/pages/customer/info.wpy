@@ -153,9 +153,7 @@
       this.$apply();
     }
     async updateMemberInfo (params) {
-      this.update();
-      this.customerMember.bonus = params.customerMember.bonus + params.bonus;
-      this.$apply();
+      await this.reload();
     }
 
     methods = {
