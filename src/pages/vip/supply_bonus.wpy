@@ -7,8 +7,8 @@
     <view class="weui-cell weui-cell_input">
       <view class="weui-label">每消费</view>
       <view class="weui-cell__ft">
-        <input class="weui-input" id="costBonusUnit" type="number" maxlength="6" @input="input"
-               value="{{input.costBonusUnit}}"
+        <input class="weui-input" id="costMoneyUnit" type="number" maxlength="6" @input="input"
+               value="{{input.costMoneyUnit}}"
                placeholder="消费金额"/>
       </view>
       <view class="unit">元</view>
@@ -23,10 +23,10 @@
       <view class="unit">积分</view>
     </view>
     <view class="weui-cell weui-cell_input">
-      <view class="weui-label">最多使用</view>
+      <view class="weui-label">最多累计</view>
       <view class="weui-cell__ft">
         <input class="weui-input" id="maxIncreaseBonus" type="number" maxlength="6" @input="input"
-               value="{{input.maxIncreaseBonus}}" placeholder="最多能使用的积分"/>
+               value="{{input.maxIncreaseBonus}}" placeholder="单笔订单最多能累计的积分"/>
       </view>
       <view class="unit">积分</view>
     </view>
@@ -39,8 +39,8 @@
     <view class="weui-cell weui-cell_input">
       <view class="weui-label">每使用</view>
       <view class="weui-cell__ft">
-        <input class="weui-input" id="costMoneyUnit" type="number" maxlength="6" @input="input"
-               value="{{input.costMoneyUnit}}"
+        <input class="weui-input" id="costBonusUnit" type="number" maxlength="6" @input="input"
+               value="{{input.costBonusUnit}}"
                placeholder="使用积分"/>
       </view>
       <view class="unit">积分</view>
