@@ -38,7 +38,7 @@ export default class Member extends base {
    * 历史积分信息
    */
   static async bonusPage(customerId) {
-    const url = `${this.baseUrl}/members/bonus_detail?customer_id=${customerId}`;
+    const url = `${this.baseUrl}/members/bonus_detail?by=create_time&sort=desc&customer_id=${customerId}`;
     return new Page(url, this.processBonusTransformation.bind(this));
   }
   static processBonusTransformation (bonusInfo) {
