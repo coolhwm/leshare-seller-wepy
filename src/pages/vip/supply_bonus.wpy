@@ -307,15 +307,19 @@
 </script>
 
 <style lang="scss">
-    @import "../../styles/variable";
-    .title-box{
-        padding: 15rpx 20rpx;
-        display: flex;
-        align-items: center;
-        text{color: $color-muted}
+  @import "../../styles/variable";
+
+  .title-box {
+    padding: 15rpx 20rpx;
+    display: flex;
+    align-items: center;
+    text {
+      color: $color-muted
     }
-    .unit{
-        margin-left: 10px;
-        width: 100rpx;
-    }
+  }
+
+  .unit {
+    margin-left: 10px;
+    width: 100rpx;
+  }
 </style>

@@ -55,6 +55,9 @@
     };
     methods = {
       async add () {
+        if (!this.validate()) {
+          return;
+        }
         const param = {
           addBonus: this.bonus,
           cardNumber: this.customerMember.memberNumber,
@@ -80,6 +83,17 @@
     config = {
       navigationBarTitleText: '会员卡核销'
     };
+    validate () {
+      const rules = [
+        {
+          value: this.input.price,
+          method: 'min',
+          param: 0,
+          message: '优惠券面值不能为0或负数'
+        }
+      ];
+      return this.check(rules);
+    }
     mixins = [base, input];
     watch = {
       input (input) {

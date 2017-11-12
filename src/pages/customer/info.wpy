@@ -33,14 +33,19 @@
       </view>
 
       <view class="customer-hr"></view>
-      <view class="row-between vip-column" @tap="moreVip">
+      <view class="row-between vip-column" @tap="moreVip" wx:if="{{customerMember != null}}">
         <image class="card-image" src="/images/icons/vip_card.png"/>
         <view class="row-between">
-          <text class="muted">会员等级 : {{customerMember.levelName ? customerMember.levelName : '暂无等级'}}</text>
+          <text class="muted">会员等级 : {{customerMember.levelName}}</text>
           <view class="vertical-line"/>
-          <text class="muted">当前积分 : {{customerMember.bonus ? customerMember.bonus : '暂无积分'}}</text>
+          <text class="muted">当前积分 : {{customerMember.bonus}}</text>
+          <image class="more-image" src="/images/icons/more-gray.png"/>
         </view>
-        <image class="more-image" src="/images/icons/more-gray.png"/>
+        <text class="muted" wx:if="{{customerMember == null}}">暂未注册</text>
+      </view>
+      <view class="row vip-column" @tap="moreVip" wx:if="{{customerMember == null}}">
+        <image class="card-image" src="/images/icons/vip_card.png"/>
+        <text class="muted ml20">暂未注册</text>
       </view>
       <view class="customer-hr"></view>
       <!--客户统计信息-->
@@ -85,6 +90,9 @@
         <block wx:elif="{{tab.selectedId == 'COUPON'}}">
           <CouponItem selectAction="0" :coupon.sync="item"></CouponItem>
         </block>
+        <block wx:elif="{{tab.selectedId == 'HIS_BONUS'}}">
+          <BonusItem :bonusInfo.sync="item"></BonusItem>
+        </block>
       </repeat>
 
       <!-- 加载提示 -->
@@ -103,6 +111,7 @@
   import OrderItem from '../../components/order/item';
   import coupon from '../../api/coupon';
   import CouponItem from '../../components/customer/coupon_item';
+  import BonusItem from '../../components/vip/bonus_item';
   import goods from '../../api/goods';
   import member from '../../api/member';
   import OftenGoods from '../../components/customer/often_goods';
@@ -127,7 +136,8 @@
         list: [
           {id: 'HIS_ORDER', title: '历史订单'},
           {id: 'OFTEN_GOODS', title: '常购商品'},
-          {id: 'COUPON', title: '优惠券'}
+          {id: 'COUPON', title: '优惠券'},
+          {id: 'HIS_BONUS', title: '历史积分'}
         ],
         selectedId: 'HIS_ORDER'
       },
@@ -202,6 +212,8 @@
           this.page = await goods.oftenGoodsPage(this.customerId);
         } else if (this.tab.selectedId == 'COUPON') {
           this.page = await coupon.cutomerCouponPage(this.customerId);
+        } else if (this.tab.selectedId == 'HIS_BONUS') {
+          this.page = await member.bonusPage(this.customerId);
         }
         this.next();
       }
@@ -213,7 +225,8 @@
       CouponItem: CouponItem,
       OftenGoods: OftenGoods,
       Loadmore: Loadmore,
-      Placeholder: Placeholder
+      Placeholder: Placeholder,
+      BonusItem: BonusItem
     };
     config = {
       navigationBarTitleText: '客户信息',

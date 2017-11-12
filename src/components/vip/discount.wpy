@@ -20,7 +20,7 @@
                    value="{{info.discount}}" placeholder="请填写消费价格"/>
           </view>
         </view>
-        <view class="weui-cell weui-cell_input">
+        <view class="weui-cell weui-cell_input" wx:if="{{index != 0}}">
           <view class="weui-cell__hd">
             <view class="weui-label">升级条件</view>
           </view>

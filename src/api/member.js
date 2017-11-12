@@ -1,4 +1,5 @@
 import base from './base';
+import Page from '../utils/Page';
 
 export default class Member extends base {
   /**
@@ -34,10 +35,23 @@ export default class Member extends base {
   }
 
   /**
-   * 获取历史积分数据
+   * 历史积分信息
    */
-  static async bonusDetailInfo (customerId) {
+  static async bonusPage(customerId) {
     const url = `${this.baseUrl}/members/bonus_detail?customer_id=${customerId}`;
-    return await this.get(url);
+    return new Page(url, this.processBonusTransformation.bind(this));
+  }
+  static processBonusTransformation (bonusInfo) {
+    const comment = {};
+    if (bonusInfo.addBonus > 0) {
+      comment.costMoney = `消费金额：￥ ${bonusInfo.costMoney.toFixed(2)}`;
+    } else {
+      comment.costMoney = `抵扣金额：￥ ${bonusInfo.costMoney.toFixed(2)}`;
+    }
+    comment.addBonus = bonusInfo.addBonus;
+    comment.createTime = bonusInfo.createTime;
+    comment.orderId = bonusInfo.orderId;
+    comment.typeDesc = bonusInfo.typeDesc;
+    return comment;
   }
 }
