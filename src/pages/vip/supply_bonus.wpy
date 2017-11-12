@@ -283,8 +283,8 @@
         {
           value: this.input.initIncreaseBonus,
           method: 'min',
-          param: 0.01,
-          message: '初始积分不能为0或负数'
+          param: 0,
+          message: '初始积分不能为为负数'
         },
         {
           value: this.input.initIncreaseBonus,
