@@ -99,10 +99,10 @@
       input (input) {
         const bonusRule = this.memberCardInfo.bonusRule;
         if (bonusRule != null) {
-          if ((input.price % bonusRule.costBonusUnit) == 0) {
-            this.bonus = (bonusRule.increaseBonus / bonusRule.costBonusUnit) * input.price;
+          if ((input.price % bonusRule.costMoneyUnit) == 0) {
+            this.bonus = (bonusRule.increaseBonus / bonusRule.costMoneyUnit) * input.price;
           } else {
-            this.bonus = (bonusRule.increaseBonus / bonusRule.costBonusUnit) * (input.price - (input.price % bonusRule.costBonusUnit));
+            this.bonus = (bonusRule.increaseBonus / bonusRule.costMoneyUnit) * (input.price - (input.price % bonusRule.costMoneyUnit));
           }
           this.$apply();
         }
