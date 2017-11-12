@@ -147,13 +147,14 @@
       Event.listen(Event.CUSOMTER_COUPON_UPDATE, this.updateInfo.bind(this), this);
       Event.listen(Event.SHOP_CUSTOMER_UPDATE, this.updateMemberInfo.bind(this), this);
     };
-    updateInfo (params) {
+    updateInfo () {
       this.update();
       this.customerInfo.countCustomerInfo.totalCouponCount++;
       this.$apply();
     }
     async updateMemberInfo (params) {
-      await this.reload();
+      this.customerMember = await member.customerInfo(this.customerId);
+      this.$apply();
     }
 
     methods = {
