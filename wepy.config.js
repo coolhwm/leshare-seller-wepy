@@ -1,4 +1,5 @@
-const prod = process.env.NODE_ENV === 'production'
+// const prod = true;
+const prod = false;
 
 module.exports = {
   wpyExt: '.wpy',
@@ -7,10 +8,13 @@ module.exports = {
     }
   },
   eslint: true,
+  'autoprefixer': {
+    filter: /\.(wxss|css)$/,
+    config: {
+      browsers: ['last 11 iOS versions']
+    }
+  },
   compilers: {
-    less: {
-      compress: true
-    },
     sass: {
       outputStyle: 'expanded'
     },
@@ -29,15 +33,12 @@ module.exports = {
   },
   plugins: {
   }
-}
+};
 
 if (prod) {
   delete module.exports.compilers.babel.sourcesMap;
   // 压缩sass
-  module.exports.compilers['sass'] = {outputStyle: 'compressed'}
-
-  // 压缩less
-  module.exports.compilers['less'] = {compress: true}
+  module.exports.compilers['sass'] = {outputStyle: 'compressed'};
 
   // 压缩js
   module.exports.plugins = {

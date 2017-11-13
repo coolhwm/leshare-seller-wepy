@@ -42,5 +42,4 @@
 
 <style lang="scss">
   @import "../../styles/variable";
-  @import "../../styles/base";
 </style>
