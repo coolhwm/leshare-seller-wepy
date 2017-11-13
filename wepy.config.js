@@ -1,5 +1,4 @@
-// const prod = true;
-const prod = false;
+const prod = process.env.NODE_ENV === 'production';
 
 module.exports = {
   wpyExt: '.wpy',
