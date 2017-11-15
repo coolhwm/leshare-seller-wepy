@@ -33,6 +33,7 @@
   import ActionBar from '../../components/common/action_bar';
   import FormTips from '../../components/weui/tips';
   import member from '../../api/member'
+  import userInfo from '../../api/customer_info'
   import Event from '../../utils/Event'
   import Tips from '../../utils/Tips'
   export default class VipScan extends wepy.page {
@@ -41,16 +42,25 @@
       customerInfo: {},
       customerMember: {},
       memberCardInfo: {},
-      bonus: null
+      bonus: null,
+      scene: null
     };
     data = {...this.def};
 
     async onLoad (options, {preload}) {
-      this.memberCardInfo = await member.cardInfo();
-      this.customerInfo = preload.data.customerInfo;
-      this.customerMember = preload.data.customerMember;
       // 扫描二维码进入
+      if (options.scene) {
+        this.scene = options.scene;
+        this.customerMember = await member.Info(options.scene);
+        this.customerInfo = await userInfo.detailInfo(this.customerMember.customerId);
+        this.memberCardInfo = await member.cardInfo();
+      }
       // 用户信息进入
+      if (preload) {
+        this.memberCardInfo = await member.cardInfo();
+        this.customerInfo = preload.data.customerInfo;
+        this.customerMember = preload.data.customerMember;
+      }
       this.loaded();
     };
     methods = {
@@ -71,8 +81,12 @@
           bonus: this.bonus,
           customerMember: this.customerMember
         };
-        Event.emit(Event.SHOP_CUSTOMER_UPDATE, params);
-        wepy.navigateBack();
+        if (this.scene) {
+          wepy.navigateBack();
+        } else {
+          Event.emit(Event.SHOP_CUSTOMER_UPDATE, params);
+          wepy.navigateBack();
+        }
       }
     };
     components = {
