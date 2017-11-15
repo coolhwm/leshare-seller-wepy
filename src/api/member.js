@@ -27,7 +27,7 @@ export default class Member extends base {
   }
 
   /**
-   * 获取买家会员数据
+   * 获取买家会员卡数据
    */
   static async cardInfo () {
     const url = `${this.baseUrl}/memberCards`;
