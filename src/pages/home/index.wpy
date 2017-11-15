@@ -51,7 +51,7 @@
     def = {
       init: false
     };
-    data = {...this.def}
+    data = {...this.def};
     async onLoad () {
       try {
         const loginCode = auth.getConfig('login_code');

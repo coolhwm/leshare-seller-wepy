@@ -37,6 +37,8 @@ export default class Event {
   static REDUCE_LIST_UPDATE = 'REDUCE_LIST_UPDATE';
   // 客户信息与卡卷更新
   static CUSOMTER_COUPON_UPDATE = 'CUSOMTER_COUPON_UPDATE';
+  // 用户会员卡信息更新
+  static CUSOMTER_MEMEBER_UPDATE = 'CUSOMTER_MEMEBER_UPDATE';
   // 用户登出
   static USER_LOGOUT = 'USER_LOGOUT';
   static listen(eventName, callback, observer) {
