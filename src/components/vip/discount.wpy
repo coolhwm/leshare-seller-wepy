@@ -30,7 +30,7 @@
           </view>
         </view>
         <view class="weui-cell row" @tap="category({{info}}, {{index}})">
-          <view class="mr10">折扣商品类型</view>
+          <view class="mr10">折扣商品类型（{{info.discountCategoryLists.length}}）</view>
           <image class="icon" src="/images/icons/more-gray.png"/>
         </view>
       </view>
