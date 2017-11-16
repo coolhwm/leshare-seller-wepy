@@ -54,4 +54,12 @@ export default class Member extends base {
     comment.typeDesc = bonusInfo.typeDesc;
     return comment;
   }
+
+  /**
+   * 卖家为用户开通会员卡
+   */
+  static async registe(param) {
+    const url = `${this.baseUrl}/members`;
+    return this.post(url, param);
+  }
 }
