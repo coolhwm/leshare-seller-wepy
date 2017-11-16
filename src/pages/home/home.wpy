@@ -130,8 +130,7 @@
       show: false
     };
     data = {...this.def};
-    async onLoad (option) {
-      console.log(option.scene);
+    async onLoad () {
       console.info('load');
       WxUtils.checkSDK();
       this.shop = await shop.info();
@@ -210,13 +209,11 @@
         Event.emit(Event.ORDER_TAB_UPDATE, status);
       },
       async scan() {
-        const {result} = await wepy.scanCode();
-        const {path} = await wepy.scanCode();
-        console.log(path);
-        if (result != null && result != '') {
-          this.$navigate(`/pages/coupon/scan?scan=${result}`);
-        } else if (path != null && path != '') {
-          const arr = path.split('=');
+        const data = await wepy.scanCode();
+        if (data.result != null && data.result != '') {
+          this.$navigate(`/pages/coupon/scan?scan=${data.result}`);
+        } else if (data.path != null && data.path != '') {
+          const arr = data.path.split('=');
           this.$navigate('/pages/vip/vip_scan?scene=' + arr[1]);
         } else {
           Tips.alert('扫描失败');
