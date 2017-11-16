@@ -76,7 +76,7 @@
         };
         await member.memberAdd(param);
         this.$apply();
-        Tips.success('保存成功');
+        Tips.success('保存');
         const params = {
           bonus: this.bonus,
           customerMember: this.customerMember
