@@ -10,11 +10,7 @@
         <view class="weui-cell__bd">
           <input class="weui-input" id="phone" type="number" value="{{input.phone}}" @input="input" maxlength="11" placeholder="请输入手机号" />
         </view>
-        <view class="weui-cell__ft">
-          <VCode  @tap.user="code" />
-        </view>
       </view>
-
       <view class="weui-cell weui-cells_after-title">
         <view class="weui-cell__hd">
           <view class="weui-label">性别</view>
@@ -52,7 +48,6 @@
   import input from '../../mixins/input';
   import FormTips from '../../components/weui/tips';
   import member from '../../api/member';
-  import VCode from '../../components/weui/vcode';
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
 
@@ -78,14 +73,11 @@
         }
         this.registeInfo = this.input;
         try {
-          const param = {
-            phone: this.phone,
-            sex:
-          };
-          await member.registe(param);
+          console.log(this.registeInfo);
+          await member.registe(this.registeInfo);
           await Tips.success('注册成功');
-          Event.emit(Event.REGISTE_MEMBER_UPDATE);
-          wepy.navigateBack();
+//          Event.emit(Event.REGISTE_MEMBER_UPDATE);
+//          wepy.navigateBack();
         } catch (error) {
           this.tips(error.message);
           Tips.loaded();
@@ -94,8 +86,7 @@
     };
     components = {
       ActionBar: ActionBar,
-      Tips: FormTips,
-      VCode: VCode
+      Tips: FormTips
     };
     config = {
       navigationBarTitleText: '注册会员'
@@ -116,10 +107,6 @@
           value: this.input.phone,
           method: 'tel',
           message: '请输入正确的手机格式'
-        }, {
-          value: this.input.code,
-          method: 'required',
-          message: '请输入手机验证码'
         }, {
           value: this.input.sex,
           method: 'required',

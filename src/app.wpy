@@ -114,6 +114,7 @@
         'pages/vip/vip_card',
         'pages/vip/supply_bonus',
         'pages/vip/vip_context',
+        'pages/vip/registe_member',
         'pages/vip/supply_discount'
       ],
       window: {
