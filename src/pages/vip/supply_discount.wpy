@@ -74,6 +74,9 @@
           const data = {...item};
           data.discount *= 100;
           data.level = index + 1;
+          if (index == 0) {
+            data.upgradeFee = 0;
+          }
           discounts.push(data);
         });
         await Tips.success('保存成功');
