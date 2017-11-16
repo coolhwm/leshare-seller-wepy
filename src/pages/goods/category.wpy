@@ -9,7 +9,7 @@
     <ActionBar @tap.user="add" okText="新增分类" cancelText="返回" />
 
     <!--占位符-->
-    <Placeholder :show.sync="isPageEmpty" message="您还没有分类"/>
+    <Placeholder :show.sync="isPageEmpty" message="尚未配置分类"/>
   </view>
 </template>
 
@@ -30,23 +30,24 @@
     def = {
       init: false,
       list: [
-      ]
-    }
+      ],
+      isPageEmpty: false
+    };
     data = {...this.def};
     async onLoad () {
-      this.list = await goods.getInnerCategories();
-      this.loaded();
+      await this.update();
       Event.listen(Event.CATEGORY_LIST_UPDATE, this.update.bind(this), this);
     };
     async update () {
       this.list = await goods.getInnerCategories();
+      this.isPageEmpty = this.list == null || this.list.length == 0;
       this.loaded();
     }
     methods = {
       add() {
         this.$navigate('category_edit?mode=create');
       }
-    }
+    };
     events = {};
     components = {
       Placeholder: Placeholder,

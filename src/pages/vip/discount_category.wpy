@@ -70,4 +70,8 @@
 
 <style lang="scss">
     @import "../../styles/variable";
+  .container{
+    background-color: white;
+    border-bottom: $border;
+  }
 </style>
