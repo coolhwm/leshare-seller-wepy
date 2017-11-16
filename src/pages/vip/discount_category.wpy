@@ -1,8 +1,10 @@
 <template>
-  <view class="container weui-cells weui-cells-form" wx:if="{{init}}">
+  <view class="container" wx:if="{{init}}">
     <repeat for="{{category}}" key="item" item="item">
       <CategoryItem :category.sync="item"/>
     </repeat>
+
+    <Placeholder :show.sync="isEmpty" message="尚未配置商品分类"/>
 
     <ActionBar @tap.user="submit" okText="确定" cancelText="返回"/>
   </view>
@@ -13,22 +15,24 @@
   import base from '../../mixins/base';
   import CategoryItem from '../../components/vip/category_item';
   import ActionBar from '../../components/common/action_bar';
+  import Placeholder from '../../components/common/placeholder'
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
 
   export default class Category extends wepy.page {
     def = {
       init: false,
-      category: {},
-      index: null
+      category: [],
+      index: null,
+      isEmpty: false
     };
     data = {...this.def};
     methods = {
-      submit () {
+      async submit () {
         const result = this.category.filter(item => item.checked).map(item => {
           return {categoryId: item.id};
         });
-        Tips.success('保存');
+        await Tips.success('保存成功');
         Event.emit(Event.VIP_CATEGORY_UPDATA, {
           list: result,
           index: this.index
@@ -38,20 +42,25 @@
     };
 
     async onLoad (options, {preload}) {
-      const params = preload.data.discountCategoryLists;
       this.category = await category.getInnerCategories();
-      this.category.forEach(item => {
-        item.checked = params.some(param => param.categoryId == item.id);
-      });
       this.index = preload.data.index;
+      if (this.category != null && this.category.length > 0) {
+        const params = preload.data.discountCategoryLists;
+        this.category.forEach(item => {
+          item.checked = params.some(param => param.categoryId == item.id);
+        });
+      } else {
+        this.category = [];
+        this.isEmpty = true;
+      }
       this.loaded();
-      this.init = true;
     };
 
     mixins = [base];
     components = {
       CategoryItem: CategoryItem,
-      ActionBar: ActionBar
+      ActionBar: ActionBar,
+      Placeholder: Placeholder
     };
     config = {
       navigationBarTitleText: '优惠类型'

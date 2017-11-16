@@ -52,8 +52,8 @@
     };
     data = {};
     methods = {
-      category(disount, index) {
-        this.$emit('category', disount, index);
+      category(discount, index) {
+        this.$emit('category', discount, index);
       },
       input (index, e) {
         const fieldName = e.currentTarget.id;
