@@ -45,11 +45,11 @@
 <script>
   import wepy from 'wepy';
   import ActionBar from '../../components/common/action_bar';
+  import base from '../../mixins/base';
   import input from '../../mixins/input';
   import FormTips from '../../components/weui/tips';
   import member from '../../api/member';
   import Tips from '../../utils/Tips';
-  import Event from '../../utils/Event';
 
   export default class RegisteMember extends wepy.page {
     def = {
@@ -63,7 +63,7 @@
     data = {...this.def};
 
     onLoad () {
-      this.init = true;
+      this.loaded();
     };
 
     methods = {
@@ -73,11 +73,8 @@
         }
         this.registeInfo = this.input;
         try {
-          console.log(this.registeInfo);
           await member.registe(this.registeInfo);
           await Tips.success('注册成功');
-//          Event.emit(Event.REGISTE_MEMBER_UPDATE);
-//          wepy.navigateBack();
         } catch (error) {
           this.tips(error.message);
           Tips.loaded();
@@ -91,7 +88,7 @@
     config = {
       navigationBarTitleText: '注册会员'
     };
-    mixins = [input];
+    mixins = [base, input];
 
     validate () {
       const rules = [
