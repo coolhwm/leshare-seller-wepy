@@ -114,7 +114,9 @@
         'pages/vip/vip_card',
         'pages/vip/supply_bonus',
         'pages/vip/vip_context',
-        'pages/vip/supply_discount'
+        'pages/vip/supply_discount',
+        'pages/manusl/index',
+        'pages/manusl/customer_order'
       ],
       window: {
         backgroundTextStyle: 'dark',

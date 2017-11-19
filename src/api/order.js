@@ -54,7 +54,7 @@ export default class order extends base {
       '8': '卖家已退款',
       '9': '店家已接单'
     }
-  }
+  };
   static paymentDict = {
     '0': '线下支付',
     '1': '在线支付'
@@ -74,7 +74,7 @@ export default class order extends base {
     '7': '本交易已取消',
     '8': '您已退货成功',
     '9': '您已接单，请尽快配送'
-  }
+  };
 
   /**
    * 分页方法
@@ -252,11 +252,12 @@ export default class order extends base {
    * 处理订单列表数据
    */
   static _processOrderListItem(order) {
+    console.log(order);
     // const status = order.status;
     // order.statusText = this.statusDict[status];
     // 处理动作
     this._processOrderAction(order);
-    this._processOrderStatusDesc(order)
+    this._processOrderStatusDesc(order);
     // 所有情况均展现动作条
     order.isAction = true;
     // 处理订单价格

@@ -6,7 +6,7 @@
 
     <!--订单列表-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <OrderItem :order.sync="item" @tap.user="detail" @receive.user="receive"></OrderItem>
+      <OrderItem :order.sync="item" @tap.user="detail" action="0"/>
     </repeat>
 
     <!-- 加载提示 -->
@@ -30,7 +30,6 @@
   import OrderItem from '../../components/order/item';
   import Placeholder from '../../components/common/placeholder';
   import Loadmore from '../../components/weui/loadmore';
-  import Tips from '../../utils/Tips';
 
   export default class OrderIndex extends wepy.page {
     // 页面数据
@@ -62,20 +61,11 @@
       },
       status: '2'
     };
-    async onLoad (options, {preload}) {
-      // 处理初始化的状态
-      const status = preload ? preload.status : null;
-      if (status) {
-        this.status = status;
-        this.tab.selectedId = status;
-      }
+    async onLoad (options) {
       // 页面加载
-      this.page = order.page();
-      this.orders = this.page.list;
+      this.page = order.hisPage(options.customerId);
       await this.next();
       // 事件监听
-      Event.listen(Event.ORDER_LIST_UPDATE, this.update.bind(this), this);
-      Event.listen(Event.ORDER_TAB_UPDATE, this.updateStatus.bind(this), this);
       Event.listen(Event.USER_LOGOUT, this.clear.bind(this), this);
     };
     async onShow () {
@@ -88,12 +78,6 @@
     params() {
       return { status: this.status };
     }
-    // 切换状态
-    updateStatus(status) {
-      this.tab.selectedId = status;
-      this.status = status;
-      this.update();
-    }
     clear() {
       this.page.clear();
       this.init = false;
@@ -104,22 +88,11 @@
         this.reload();
       },
       detail(orderId) {
-        this.$navigate('detail', {orderId});
-      },
-      async receive(orderId) {
-        await Tips.confirm('是否确认客户已收到货品？');
-        try {
-          await order.confirmOrder(orderId);
-          await Tips.success('订单已完成');
-        } catch (e) {
-          console.warn(e);
-          await Tips.success('操作失败');
-        }
-        Event.emit(Event.ORDER_LIST_UPDATE);
+        this.$navigate('../order/detail', {orderId});
       }
     };
     config = {
-      navigationBarTitleText: '订单管理',
+      navigationBarTitleText: '历史订单',
       enablePullDownRefresh: true
     };
     components = {

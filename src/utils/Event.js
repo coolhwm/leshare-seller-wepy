@@ -23,6 +23,8 @@ export default class Event {
   static SHOP_INFO_UPDATE = 'SHOP_INFO_UPDATE';
   // 积分保存成功
   static SHOP_BONUS_UPDATE = 'SHOP_BONUS_UPDATE';
+  // 手工下单用户信息刷新
+  static MANUSL_USER_UPDATE = 'MANUSL_USER_UPDATE';
   // 会员等级保存成功
   static SHOP_DISCOUNT_UPDATE = 'SHOP_DISCOUNT_UPDATE';
   // 客户管理更新

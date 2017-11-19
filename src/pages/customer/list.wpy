@@ -31,6 +31,7 @@
   import Placeholder from '../../components/common/placeholder';
   import CustomerItem from '../../components/customer/item';
   import Loadmore from '../../components/weui/loadmore';
+  import Event from '../../utils/Event'
 
   export default class CustomerIndex extends wepy.page {
     def = {
@@ -49,10 +50,12 @@
         order: true,
         sord: 'desc',
         scroll: false
-      }
-    }
+      },
+      type: null
+    };
     data = {...this.def};
     async onLoad (options) {
+      this.type = options.type;
       this.page = customer.page(this.tab.selectedId);
       await this.next();
     };
@@ -65,9 +68,14 @@
         await this.next();
       },
       info(customerId) {
-        this.$navigate('info', {customerId});
+        if (this.type == 'manusl') {
+          Event.emit(Event.MANUSL_USER_UPDATE, customerId);
+          wepy.navigateBack();
+        } else {
+          this.$navigate('info', {customerId});
+        }
       }
-    }
+    };
     events = {};
     components = {
       ZanTab: ZanTab,

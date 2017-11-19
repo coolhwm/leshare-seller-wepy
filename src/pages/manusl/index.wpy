@@ -1,0 +1,201 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <view class="weui-cells weui-cells_after-title" wx:if="{{!customerId}}">
+      <view class="weui-select" @tap="chooseUser">
+        <image class="icon mr20" src="/images/icons/plus.png"/>请选择用户
+      </view>
+    </view>
+    <!--客户基本信息-->
+    <view class="customer-info-box row-between" wx:if="{{customerId}}" @tap="chooseUser">
+      <!--左侧头像-->
+      <image class="customer-avatar"
+             src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '/images/icons/customer.png'}}"/>
+      <!--右侧主区域-->
+      <view class="column customer-main-box">
+        <!--姓名/打电话-->
+        <view class="row-between">
+          <text class="xxl muted">{{customerInfo.customer.nickName ? customerInfo.customer.nickName : '微信用户'}}</text>
+        </view>
+        <!--地址信息-->
+        <view class="row-between">
+          <!--地址/电话-->
+          <view class="column address-box">
+            <text>电话：{{customerInfo.address ? customerInfo.address.phone : '暂无电话'}}</text>
+            <text>地址：{{customerInfo.address ? customerInfo.address.fullAddress : '暂无地址'}}</text>
+          </view>
+        </view>
+      </view>
+      <!--更多地址-->
+      <image class="icon" src="/images/icons/more-gray.png"/>
+    </view>
+    <!--功能区域-->
+    <ShopNav :badegText.sync="badegText" :title.sync="title"  navText="用户订单" :navUrl.sync="navUrl" wx:if="{{customerId}}"/>
+
+    <!--主内容区域-->
+    <view class="main-box row">
+      <!--分类侧边栏-->
+      <SideTab :tab.sync="categories" @change.user="switchTab" />
+      <!--右侧滚动-->
+      <scroll-view scroll-y class="goods-box" bindscrolltolower="onReachBottom">
+        <!--分类名称-->
+        <view class="goods-title row">
+          <text class="weak">{{selectedCategoryName}}</text>
+        </view>
+        <!--商品列表-->
+        <view class="goods-list">
+          <repeat for="{{page.list}}" key="index" index="index" item="item">
+            <GoodsItem :goods.sync="item" @plus.user="plus" @minus.user="minus" @detail.user="detail"/>
+          </repeat>
+        </view>
+        <Loadmore :page.sync="page" emptyText="暂无商品"/>
+      </scroll-view>
+    </view>
+
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import pagination from '../../mixins/pagination';
+  import customerInfo from '../../api/customer_info';
+  import mausl from '../../api/mausl'
+  import Event from '../../utils/Event';
+  import ShopNav from '../../components/manusl/nav';
+  import SideTab from '../../components/manusl/side_tab';
+  import GoodsItem from '../../components/manusl/goods_simple_item';
+  import Loadmore from '../../components/weui/loadmore';
+  import Tips from '../../utils/Tips';
+  import Cache from '../../utils/Cache';
+  export default class ManuslIndex extends wepy.page {
+    def = {
+      init: false,
+      customerId: null,
+      customerInfo: {},
+      badegText: '商城',
+      title: '卖家下单',
+      navUrl: null,
+      categories: {},
+      page: {
+        list: []
+      }
+    };
+    data = {...this.def};
+    async onLoad (option) {
+      // 加载商品分类
+      this.categories = await Cache.categories();
+      // 加载商品
+      this.page = mausl.page();
+      await this.next();
+      // 监听事件
+      Event.listen(Event.MANUSL_USER_UPDATE, this.updateUserInfo.bind(this), this);
+    };
+    // 更新用户信息
+    async updateUserInfo(customerId) {
+      this.customerId = customerId;
+      this.customerInfo = await customerInfo.detailInfo(this.customerId);
+      this.navUrl = `/pages/manusl/customer_order?customerId=${this.customerId}`;
+      this.loaded();
+    };
+    // 分页加载完毕
+    onPageLoad() {
+      this.pages[this.categories.selectedId] = this.page;
+      this.setGoodsNum();
+      this.setCategoryNum();
+    };
+    // 分页参数
+    params() {
+      return {category_id: this.categories.selectedId};
+    };
+    methods = {
+      // 跳转到用户列表
+      chooseUser() {
+        this.$root.$navigate('/pages/customer/list?type=manusl');
+      },
+      // 点击分类
+      switchTab() {
+        Tips.setLoading();
+        const selectedId = this.categories.selectedId;
+        // 先判断缓存中是否存在商品列表
+        if (this.pages[selectedId] && this.pages[selectedId].list.length > 0) {
+          this.page = this.pages[selectedId];
+          this.setGoodsNum();
+          this.loaded();
+        } else {
+          this.page = mausl.page();
+          this.reload();
+        }
+      },
+      async selectSku(sku) {
+        const plus = this.methods.plus.bind(this);
+        plus(sku);
+      }
+    };
+    computed = {
+      selectedCategoryName() {
+        if (this.init && this.categories && this.categories.list) {
+          const selectedId = this.categories.selectedId;
+          return this.categories.list.find(item => item.id == selectedId).title;
+        }
+      }
+    };
+    components = {
+      ShopNav: ShopNav,
+      SideTab: SideTab,
+      GoodsItem: GoodsItem,
+      Loadmore: Loadmore
+    };
+    mixins = [base, pagination];
+    config = {
+      navigationBarTitleText: '手工下单'
+    };
+  }
+</script>
+<style lang="scss">
+  @import "../../styles/variable";
+  .customer-main-box {
+    flex: 1;
+    padding-left: rpx(25);
+  }
+
+  .customer-info-box {
+    padding: rpx(30);
+    background-color: white;
+    border-bottom: $border;
+    .customer-avatar {
+      height: 160rpx;
+      width: 160rpx;
+      border-radius: 50%;
+      border: 2px solid $color-muted;
+    }
+
+    .address-box {
+      max-width: rpx(430);
+      text {
+        color: $color-muted;
+        font-size: $text-sm;
+        word-break: break-all;
+      }
+    }
+  }
+  .main-box{
+    width: 100%;
+    position: absolute;
+    top: 145px;
+    bottom: 55px;
+
+    .goods-box{
+      flex: 1;
+      height: 100%;
+      .goods-title{
+        height: 30px;
+        padding-left: 20rpx;
+        align-items: center;
+        border-bottom: $border;
+      }
+      .goods-list{
+        background-color: #FFF;
+        padding-left: 10px;
+      }
+    }
+  }
+</style>
