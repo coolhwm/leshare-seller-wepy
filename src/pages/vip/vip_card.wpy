@@ -89,14 +89,10 @@
     data = {...this.def};
     methods = {
       textArea (type) {
-        const param = {};
-        if (type == 'description') {
-          param.type = type;
-          param.context = this.card.description;
-        } else {
-          param.type = type;
-          param.context = this.card.notice;
-        }
+        const param = {
+          type: type,
+          context: this.card[type] ? this.card[type] : ''
+        };
         this.$navigate('vip_context?param=' + JSON.stringify(param));
       },
       toSupplyDiscount() {
