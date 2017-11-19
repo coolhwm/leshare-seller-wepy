@@ -70,7 +70,7 @@
           couponId: this.couponId.couponId,
           customerId: customer.id
         };
-        await Tips.confirm('？');
+        await Tips.confirm('确定发放？');
         await coupon.send(param);
         await Tips.success('发放成功');
         Event.emit(Event.COUPON_USER_UPDATE);

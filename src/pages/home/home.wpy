@@ -210,6 +210,7 @@
       },
       async scan() {
         const data = await wepy.scanCode();
+        console.info(data);
         if (data.result != null && data.result != '') {
           this.$navigate(`/pages/coupon/scan?scan=${data.result}`);
         } else if (data.path != null && data.path != '') {

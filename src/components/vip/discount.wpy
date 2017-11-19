@@ -16,8 +16,8 @@
             <view class="weui-label">消费折扣</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" id="discount" type="number" @input="input({{index}})"
-                   value="{{info.discount}}" placeholder="请填写消费价格"/>
+            <input class="weui-input" id="discount" type="digit" @input="input({{index}})"
+                   value="{{info.discount}}" placeholder="折扣率，9折为0.9"/>
           </view>
         </view>
         <view class="weui-cell weui-cell_input" wx:if="{{index != 0}}">
@@ -26,11 +26,11 @@
           </view>
           <view class="weui-cell__bd">
             <input class="weui-input" id="upgradeFee" type="number" @input="input({{index}})"
-                   value="{{info.upgradeFee}}" placeholder="请填写升级条件"/>
+                   value="{{info.upgradeFee}}" placeholder="升级所需累计消费额"/>
           </view>
         </view>
         <view class="weui-cell row" @tap="category({{info}}, {{index}})">
-          <view class="mr10">折扣商品类型</view>
+          <view class="mr10">折扣商品类型({{info.discountCategoryLists.length}})</view>
           <image class="icon" src="/images/icons/more-gray.png"/>
         </view>
       </view>
@@ -52,8 +52,8 @@
     };
     data = {};
     methods = {
-      category(disount, index) {
-        this.$emit('category', disount, index);
+      category(discount, index) {
+        this.$emit('category', discount, index);
       },
       input (index, e) {
         const fieldName = e.currentTarget.id;

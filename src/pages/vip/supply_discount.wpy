@@ -37,21 +37,31 @@
     };
     data = {...this.def};
 
-    async onLoad (options) {
-      this.discounts = JSON.parse(options.discount);
-      const discounts = [];
-      this.discounts.forEach(item => {
-        const data = {...item};
-        data.discount /= 100;
-        discounts.push(data);
-      });
-      this.discounts = discounts;
+    async onLoad ({discount}) {
+      if (discount != null && discount != 'null') {
+        this.discounts = JSON.parse(discount);
+        const discounts = [];
+        this.discounts.forEach(item => {
+          const data = {...item};
+          data.discount /= 100;
+          discounts.push(data);
+        });
+        this.discounts = discounts;
+      }
+      if (this.discounts.length == 0) {
+        this.discounts[0] = {
+          upgradeFee: 0,
+          discountCategoryLists: []
+        };
+      }
       Event.listen(Event.VIP_CATEGORY_UPDATA, this.categoryUpdate.bind(this), this);
       this.loaded();
     };
 
     categoryUpdate ({list, index}) {
-      this.discounts[index].discountCategoryLists = list;
+      if (list != null && index != null) {
+        this.discounts[index].discountCategoryLists = list;
+      }
     };
 
     methods = {
@@ -64,6 +74,9 @@
           const data = {...item};
           data.discount *= 100;
           data.level = index + 1;
+          if (index == 0) {
+            data.upgradeFee = 0;
+          }
           discounts.push(data);
         });
         await Tips.success('保存成功');
@@ -77,7 +90,9 @@
         this.$navigate('discount_category');
       },
       add () {
-        this.discounts.push({});
+        this.discounts.push({
+          discountCategoryLists: []
+        });
       },
       remove (index) {
         this.discounts.splice(index, 1);

@@ -50,7 +50,7 @@
     async onLoad (options, {preload}) {
       // 扫描二维码进入
       if (options.scene) {
-        this.scene = options.scene;
+        this.scene = decodeURIComponent(options.scene);
         this.customerMember = await member.Info(options.scene);
         this.customerInfo = await userInfo.detailInfo(this.customerMember.customerId);
         this.memberCardInfo = await member.cardInfo();
@@ -76,7 +76,7 @@
         };
         await member.memberAdd(param);
         this.$apply();
-        Tips.success('保存成功');
+        await Tips.success('保存成功');
         const params = {
           bonus: this.bonus,
           customerMember: this.customerMember

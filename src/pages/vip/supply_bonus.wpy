@@ -111,8 +111,10 @@
         wepy.navigateBack();
       }
     };
-    async onLoad(options) {
-      this.input = JSON.parse(options.bonus);
+    async onLoad({bonus}) {
+      if (bonus != null && bonus != 'null') {
+        this.input = JSON.parse(bonus);
+      }
     };
     validate () {
       const rules = [
