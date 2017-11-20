@@ -23,6 +23,10 @@
     <!--操作栏-->
     <ActionBar @tap.user="add" okText="确定" cancelText="返回"/>
   </view>
+
+  <view class="message-box row-center" wx:if="{{message}}">
+    {{message}}
+  </view>
 </template>
 
 <script>
@@ -43,25 +47,32 @@
       customerMember: {},
       memberCardInfo: {},
       bonus: null,
-      scene: null
+      scene: null,
+      message: null
     };
     data = {...this.def};
 
     async onLoad (options, {preload}) {
-      // 扫描二维码进入
-      if (options.scene) {
-        this.scene = decodeURIComponent(options.scene);
-        this.customerMember = await member.Info(options.scene);
-        this.customerInfo = await userInfo.detailInfo(this.customerMember.customerId);
-        this.memberCardInfo = await member.cardInfo();
+      try {
+        // 扫描二维码进入
+        if (options.scene) {
+          this.scene = decodeURIComponent(options.scene);
+          this.customerMember = await member.Info(options.scene);
+          this.customerInfo = await userInfo.detailInfo(this.customerMember.customerId);
+          this.memberCardInfo = await member.cardInfo();
+        }
+        // 用户信息进入
+        if (preload) {
+          this.memberCardInfo = await member.cardInfo();
+          this.customerInfo = preload.data.customerInfo;
+          this.customerMember = preload.data.customerMember;
+        }
+        this.loaded();
+      } catch (e) {
+        this.message = e.message;
+        this.$apply();
+        Tips.error(e.message);
       }
-      // 用户信息进入
-      if (preload) {
-        this.memberCardInfo = await member.cardInfo();
-        this.customerInfo = preload.data.customerInfo;
-        this.customerMember = preload.data.customerMember;
-      }
-      this.loaded();
     };
     methods = {
       async add () {
@@ -129,5 +140,10 @@
     @import "../../styles/variable";
   .box-bg{
     background-color: #FFF;
+  }
+  .message-box{
+    font-size: $text-xxl;
+    color: $color-muted;
+    height: 300px;
   }
 </style>

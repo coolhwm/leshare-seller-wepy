@@ -38,6 +38,9 @@ export default class customerInfo extends base {
   static async detailInfo(customerId) {
     const url = `${this.baseUrl}/customers/${customerId}/detail_info`;
     return this.get(url).then(data => {
+      if (data.message) {
+        return Promise.reject(new Error(data.message));
+      }
       let price = data.countCustomerInfo.totalPrice;
       if (price > 1000 * 1000) {
         data.countCustomerInfo.totalPrice = (price / 1000).toFixed(2) + 'k';
