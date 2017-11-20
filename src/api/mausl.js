@@ -43,9 +43,7 @@ export default class goods extends base {
   /** ********************* 数据处理方法 ***********************/
 
   static _createGoodsCategories (data) {
-    console.log(data);
     const list = [];
-
     if (data != null) {
       list.push(...data.map(item => {
         return {
@@ -56,7 +54,7 @@ export default class goods extends base {
     }
     return {
       list: list,
-      selectedId: '-1',
+      selectedId: 9,
       scroll: false
     };
   }
@@ -239,6 +237,79 @@ export default class goods extends base {
       item.imageUrl = '/images/goods/broken.png';
     } else {
       item.imageUrl = images[0].url + '/medium';
+    }
+  }
+  /**
+   * 购物车下单
+   */
+  static createCartTrade (goodsList, param) {
+    const orderGoodsInfos = [];
+    let price = 0;
+    // 根据购物车信息，构造订单的商品列表
+    for (let i in goodsList) {
+      const goods = goodsList[i];
+      const info = {
+        goodsId: goods.goodsId,
+        goodsName: goods.goodsName,
+        imageUrl: goods.goodsImage,
+        goodsPrice: goods.goodsPrice,
+        count: goods.goodsNum,
+        innerCid: goods.innerCid,
+        skuText: goods.skuText,
+        goodsSku: goods.goodsSku,
+        goodsSellPrice: goods.originalPrice,
+        discount: goods.discount,
+        discountRate: goods.discountRate,
+        discountText: goods.discountText
+      };
+      orderGoodsInfos.push(info);
+      price += goods.goodsPrice * goods.goodsNum;
+    }
+    let finalPrice = price;
+    let reduceFee = 0;
+    if (param && param.reduce) {
+      reduceFee = param.reduce.fee;
+      finalPrice -= reduceFee;
+      if (finalPrice < 0) {
+        finalPrice = 0;
+      }
+    }
+    finalPrice = finalPrice.toFixed(2);
+    // 构造交易对象
+    const trade = {
+      orderType: param.orderType,
+      dealPrice: price.toFixed(2),
+      reduceFee: reduceFee,
+      finalPrice: finalPrice,
+      postFee: (0).toFixed(2),
+      paymentType: '1',
+      paymentText: '在线支付',
+      orderGoodsInfos: orderGoodsInfos,
+      shopName: this.shopName
+    };
+    if (param.orderType == '30') {
+      trade.arriveTime = '立即出餐';
+    }
+    return trade;
+  }
+  /**
+   * 上报FORM
+   */
+  static reportFormId(id, delay = 3000) {
+    try {
+      const url = `${this.baseUrl}/visit_shops/form_id`;
+      const param = [{
+        formId: id
+      }];
+      if (delay > 0) {
+        setTimeout(() => {
+          this.post(url, param, false);
+        }, delay);
+      } else {
+        this.post(url, param, false);
+      }
+    } catch (e) {
+      console.warn('formid上报错误', e);
     }
   }
 }

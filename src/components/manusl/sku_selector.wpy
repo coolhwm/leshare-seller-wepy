@@ -1,5 +1,5 @@
 <template>
-  <!--<CoverPanel :display.sync="display" zIndex="1000000"/>-->
+  <CoverPanel :display.sync="display" zIndex="1000000"/>
   <!--弹出窗口-->
   <view class="wrap" wx:if="{{display == 'true'}}">
     <view class="modal-panel column">
@@ -38,7 +38,7 @@
 
 <script>
   import wepy from 'wepy';
-//  import CoverPanel from 'cover_panel';
+  import CoverPanel from './cover_panel';
   import Sku from '../../utils/Sku';
   import Tips from '../../utils/Tips';
   import DisplayBadge from './discount_badge';
@@ -109,8 +109,8 @@
       }
     };
     components = {
-      DisplayBadge: DisplayBadge
-//      CoverPanel: CoverPanel
+      DisplayBadge: DisplayBadge,
+      CoverPanel: CoverPanel
     };
   }
 </script>
