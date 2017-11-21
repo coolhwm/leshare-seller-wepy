@@ -1,0 +1,253 @@
+<template>
+  <Tips/>
+  <view class="container" wx:if="{{init}}">
+    <view class="weui-cells weui-cells-form">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">会员卡名称</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="title" @input="input" value="{{input.title}}" type="text"
+                 placeholder="请输入会员卡名称"/>
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">客服电话</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="servicePhone" value="{{input.servicePhone}}" @input="input"
+                 type="number" maxlength="11"
+                 placeholder="请输入客服电话"/>
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="textArea('description')">
+        <view class="weui-cell__bd">使用说明</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access">{{descriptionText}}</view>
+      </view>
+      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="textArea('notice')">
+        <view class="weui-cell__bd">使用提醒</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access">{{noticeText}}</view>
+      </view>
+    </view>
+
+    <view class="mt10"></view>
+    <view class="weui-cells weui-cells-form">
+      <view class="weui-cell weui-cell_switch">
+        <view class="weui-cell__bd">积分规则</view>
+        <view class="weui-cell__ft">
+          <switch checked="{{input.supplyBonus}}" id="supplyBonus" @change="input"/>
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_access" wx:if="{{input.supplyBonus}}" @tap="toSupplyBonus">
+        <view class="weui-cell__bd">规则配置</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access">{{bounsText}}</view>
+      </view>
+    </view>
+
+    <view class="mt10"></view>
+    <view class="weui-cells weui-cells-form">
+      <view class="weui-cell weui-cell_switch">
+        <view class="weui-cell__bd">会员等级</view>
+        <view class="weui-cell__ft">
+          <switch checked="{{input.supplyDiscount}}" id="supplyDiscount" @change="input"/>
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_access" wx:if="{{input.supplyDiscount}}" @tap="toSupplyDiscount">
+        <view class="weui-cell__bd">等级配置</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access">{{levelText}}</view>
+      </view>
+    </view>
+    <view class="zan-panel">
+      <view class="zan-btns">
+        <button class="zan-btn zan-btn--fill" @tap="submit">保存</button>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import input from '../../mixins/input';
+  import FormTips from '../../components/weui/tips';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+  import shop from '../../api/shop';
+  import vip from '../../api/vip_card';
+
+  export default class VipCard extends wepy.page {
+    def = {
+      init: false,
+      card: {},
+      shop: {},
+      mode: ''
+    };
+    data = {...this.def};
+    methods = {
+      textArea (type) {
+        const param = {
+          type: type,
+          context: this.card[type] ? this.card[type] : ''
+        };
+        this.$navigate('vip_context?param=' + JSON.stringify(param));
+      },
+      toSupplyDiscount() {
+        this.$navigate('supply_discount?discount=' + JSON.stringify(this.card.discountRules));
+      },
+      toSupplyBonus () {
+        this.$navigate('supply_bonus?bonus=' + JSON.stringify(this.card.bonusRule));
+      },
+      async submit () {
+        // 当前表单校验
+        if (!this.validate()) {
+          return;
+        }
+        if (this.mode == 'create') {
+          const param = {
+            color: '#509FC9',
+            brandName: this.shop.name,
+            autoActivate: 1,
+            supplyBalance: 0,
+            quantity: 0,
+            dateType: 0,
+            fixedTerm: 0,
+            bonusRule: this.bonusRule,
+            discountRules: this.discountRules,
+            description: this.description,
+            notice: this.notice,
+            supplyBonus: this.input.supplyBonus ? 1 : 0,
+            supplyDiscount: this.input.supplyDiscount ? 1 : 0
+          };
+          Object.assign(param, this.input);
+          await vip.create(param);
+        } else {
+          const param = this.input;
+          param.supplyBonus = this.input.supplyBonus ? 1 : 0;
+          param.supplyDiscount = this.input.supplyDiscount ? 1 : 0;
+          param.bonusRule = this.card.bonusRule;
+          param.discountRules = this.card.discountRules;
+          param.description = this.card.description;
+          param.notice = this.card.notice;
+          await vip.update(param);
+        }
+        await Tips.success('保存成功');
+        wepy.navigateBack();
+      }
+    };
+
+    async onLoad () {
+      this.shop = await shop.info();
+      this.card = await vip.info();
+      if (!this.card) {
+        this.mode = 'create';
+      } else {
+        this.mode = 'update';
+        this.input = this.card;
+        this.input.supplyBonus = this.input.supplyBonus == 1;
+        this.input.supplyDiscount = this.input.supplyDiscount == 1;
+      }
+      this.loaded();
+      Event.listen(Event.SHOP_BONUS_UPDATE, this.bonusUpdate.bind(this), this);
+      Event.listen(Event.SHOP_CONTEXT_UPDATE, this.contextUpdate.bind(this), this);
+      Event.listen(Event.SHOP_DISCOUNT_UPDATE, this.discountUpdate.bind(this), this);
+      // 会员卡开启提醒
+      if (this.shop.supportMember != 1) {
+        await Tips.alert('请先开启会员卡功能');
+      }
+    };
+    contextUpdate ({type, context}) {
+      this.card[type] = context;
+    };
+    bonusUpdate (data) {
+      this.card.bonusRule = data;
+    };
+    discountUpdate(param) {
+      this.card.discountRules = param;
+    };
+    validate () {
+      const {supplyBonus, supplyDiscount, discountRules, bonusRule} = this.input;
+      if (supplyBonus && bonusRule == null) {
+        this.tips('请填写积分规则');
+        return false;
+      }
+      if (supplyDiscount && discountRules.length == 0) {
+        this.tips('请填写折扣规则');
+        return false;
+      }
+      const rules = [
+        {
+          value: this.input.title,
+          method: 'required',
+          message: '会员卡名称不能为空'
+        },
+        {
+          value: this.input.title,
+          method: 'minlength',
+          param: 2,
+          message: '会员卡名称过短'
+        },
+        {
+          value: this.input.title,
+          method: 'maxlength',
+          param: 10,
+          message: '会员卡名称过长'
+        },
+        {
+          value: this.input.servicePhone,
+          method: 'tel',
+          message: '电话号码格式不正确'
+        }
+      ];
+      return this.check(rules);
+    }
+    computed = {
+      descriptionText() {
+        return this.previewText('description')
+      },
+      noticeText() {
+        return this.previewText('notice')
+      },
+      bounsText() {
+        if (this.card && this.card.bonusRule) {
+          const {costBonusUnit, reduceMoney, costMoneyUnit, increaseBonus} = this.card.bonusRule;
+          return `${costMoneyUnit}元得${increaseBonus}分/${costBonusUnit}分抵${reduceMoney}元`;
+        } else {
+          return '尚未配置';
+        }
+      },
+      levelText() {
+        if (this.card && this.card.discountRules && this.card.discountRules.length > 0) {
+          return `已配置${this.card.discountRules.length}个级别`;
+        } else {
+          return '尚未配置';
+        }
+      }
+    };
+    previewText(key) {
+      if (this.card && this.card[key]) {
+        const value = this.card[key];
+        return value.length > 13 ? value.substring(0, 13) + '...' : value;
+      } else {
+        return '';
+      }
+    }
+    config = {
+      navigationBarTitleText: '会员卡管理'
+    };
+    mixins = [base, input];
+    components = {
+      Tips: FormTips
+    };
+  }
+</script>
+<style lang="scss">
+    @import "../../styles/variable";
+
+    .bg-color {
+        background-color: #F5F5F5;
+    }
+</style>

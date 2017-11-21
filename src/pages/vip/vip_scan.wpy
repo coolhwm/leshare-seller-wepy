@@ -1,0 +1,154 @@
+<template>
+  <Tips/>
+  <view class="container box-bg" wx:if="{{init}}">
+    <VipCard :member.sync="customerMember" :memberCardInfo.sync="memberCardInfo" :customerInfo.sync="customerInfo"/>
+    <view class="weui-cells weui-cells-form">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">消费金额</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="price" @input="input" value="{{input.price}}"
+                 type="number" maxlength="6" placeholder="请输入消费金额"/>
+        </view>
+      </view>
+      <view class="weui-cell">
+        <view class="weui-cell__hd">
+          <view class="weui-label">累计积分</view>
+        </view>
+        <text>{{bonus ? bonus : 0}}</text>
+      </view>
+    </view>
+
+    <!--操作栏-->
+    <ActionBar @tap.user="add" okText="确定" cancelText="返回"/>
+  </view>
+
+  <view class="message-box row-center" wx:if="{{message}}">
+    {{message}}
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import auth from '../../api/auth';
+  import input from '../../mixins/input';
+  import base from '../../mixins/base';
+  import VipCard from '../../components/vip/vip_card';
+  import ActionBar from '../../components/common/action_bar';
+  import FormTips from '../../components/weui/tips';
+  import member from '../../api/member'
+  import userInfo from '../../api/customer_info'
+  import Event from '../../utils/Event'
+  import Tips from '../../utils/Tips'
+  export default class VipScan extends wepy.page {
+    def = {
+      init: false,
+      customerInfo: {},
+      customerMember: {},
+      memberCardInfo: {},
+      bonus: null,
+      scene: null,
+      message: null
+    };
+    data = {...this.def};
+
+    async onLoad (options, {preload}) {
+      if (!auth.isLogin()) {
+        this.$redirect('/pages/home/index');
+        return;
+      }
+      try {
+        // 扫描二维码进入
+        if (options.scene) {
+          this.scene = decodeURIComponent(options.scene);
+          this.customerMember = await member.Info(options.scene);
+          this.customerInfo = await userInfo.detailInfo(this.customerMember.customerId);
+          this.memberCardInfo = await member.cardInfo();
+        }
+        // 用户信息进入
+        if (preload) {
+          this.memberCardInfo = await member.cardInfo();
+          this.customerInfo = preload.data.customerInfo;
+          this.customerMember = preload.data.customerMember;
+        }
+        this.loaded();
+      } catch (e) {
+        this.message = e.message;
+        this.$apply();
+        Tips.error(e.message);
+      }
+    };
+    methods = {
+      async add () {
+        if (!this.validate()) {
+          return;
+        }
+        const param = {
+          addBonus: this.bonus,
+          cardNumber: this.customerMember.memberNumber,
+          costMoney: this.input.price,
+          type: 'OFFLINE_ORDER_ADD'
+        };
+        await member.memberAdd(param);
+        this.$apply();
+        await Tips.success('保存成功');
+        const params = {
+          bonus: this.bonus,
+          customerMember: this.customerMember
+        };
+        if (this.scene) {
+          wepy.navigateBack();
+        } else {
+          Event.emit(Event.SHOP_CUSTOMER_UPDATE, params);
+          wepy.navigateBack();
+        }
+      }
+    };
+    components = {
+      Tips: FormTips,
+      VipCard: VipCard,
+      ActionBar: ActionBar
+    };
+    config = {
+      navigationBarTitleText: '会员卡核销'
+    };
+    validate () {
+      const rules = [
+        {
+          value: this.input.price,
+          method: 'min',
+          param: 0,
+          message: '优惠券面值不能为0或负数'
+        }
+      ];
+      return this.check(rules);
+    }
+    mixins = [base, input];
+    watch = {
+      input (input) {
+        const bonusRule = this.memberCardInfo.bonusRule;
+        if (bonusRule != null) {
+          if ((input.price % bonusRule.costMoneyUnit) == 0) {
+            this.bonus = (bonusRule.increaseBonus / bonusRule.costMoneyUnit) * input.price;
+          } else {
+            this.bonus = (bonusRule.increaseBonus / bonusRule.costMoneyUnit) * (input.price - (input.price % bonusRule.costMoneyUnit));
+          }
+          this.$apply();
+        }
+      }
+    }
+  }
+</script>
+
+<style lang="scss">
+    @import "../../styles/variable";
+  .box-bg{
+    background-color: #FFF;
+  }
+  .message-box{
+    font-size: $text-xxl;
+    color: $color-muted;
+    height: 300px;
+  }
+</style>

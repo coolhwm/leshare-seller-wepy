@@ -128,10 +128,10 @@
       shop: {},
       init: false,
       show: false
-    }
+    };
     data = {...this.def};
     async onLoad () {
-      console.info('load')
+      console.info('load');
       WxUtils.checkSDK();
       this.shop = await shop.info();
       this.show = true;
@@ -163,7 +163,7 @@
       clearInterval(interval);
     }
     async reload() {
-      Tips.setLoading()
+      Tips.setLoading();
       // 数据展现
       const [today, month, order] = await Promise.all([count.today(), count.month(), count.order()]);
       this.today = today;
@@ -209,14 +209,18 @@
         Event.emit(Event.ORDER_TAB_UPDATE, status);
       },
       async scan() {
-        const {result} = await wepy.scanCode();
-        if (result != null && result != '') {
-          this.$navigate(`/pages/coupon/scan?scan=${result}`);
+        const data = await wepy.scanCode();
+        console.info(data);
+        if (data.result != null && data.result != '') {
+          this.$navigate(`/pages/coupon/scan?scan=${data.result}`);
+        } else if (data.path != null && data.path != '') {
+          const arr = data.path.split('=');
+          this.$navigate('/pages/vip/vip_scan?scene=' + arr[1]);
         } else {
           Tips.alert('扫描失败');
         }
       }
-    }
+    };
     config = {
       enablePullDownRefresh: true,
       navigationBarTitleText: '    '

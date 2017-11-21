@@ -1,0 +1,105 @@
+<template>
+  <!-- 会员卡区域 -->
+  <view class="vip-box column-between flex-start" @tap="vipDetail({{member}},{{customerInfo}},{{memberCardInfo}})">
+    <view class="row">
+      <view class="title row">
+        <!--头像-->
+        <image class="avatar" src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl : '/images/icons/customer_white.png'}}"/>
+
+        <!--用户信息-->
+        <view class="info-box column">
+          <text class="xl">{{customerInfo.customer.nickName ? customerInfo.customer.nickName : '微信用户'}}</text>
+          <view class="cost-box row">
+            <text>{{member.levelName}}</text>
+            <text class="ml10 xxs">已累计消费{{member.totalCost}}元</text>
+          </view>
+        </view>
+      </view>
+      <image class="icon-qrcode" src="/images/icons/canvas.png" @tap.stop="canvas"/>
+    </view>
+    <view class="column">
+      <text>会员积分：{{member.bonus == 0 ? '暂无积分' : member.bonus}}</text>
+      <text>会员卡号：{{member.memberNumber}}</text>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+  export default class VipCard extends wepy.component {
+    props = {
+      member: {},
+      type: {},
+      customerInfo: {},
+      memberCardInfo: {}
+    };
+    methods = {
+      async vipDetail (member, customerInfo, memberCardInfo) {
+        if (this.type == 'detail') {
+          return;
+        }
+        const params = {
+          member: member,
+          customerInfo: customerInfo,
+          memberCardInfo: memberCardInfo
+        };
+        this.$root.$navigate('/pages/vip/vip_detail?params=' + JSON.stringify(params));
+      },
+      canvas () {
+        if (this.member.codeUrl != null) {
+          wepy.previewImage({
+            current: this.member.codeUrl, // 当前显示图片的http链接
+            urls: [this.member.codeUrl] // 需要预览的图片http链接列表
+          });
+        }
+      }
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  .flex-start {
+    align-items: flex-start;
+  }
+  .registe-btn {
+    border: 1px solid white;
+    border-radius: 10px;
+    padding: 5px 15px;
+  }
+  .avatar{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #FFF;
+    border: 2px solid #FFF;
+    box-shadow: 0 0 5px gray;
+  }
+  .icon-qrcode{
+    width: 40px;
+    height: 40px;
+  }
+  .vip-box {
+    box-shadow: 0 0 2px gray;
+    position: relative;
+    padding: 30rpx;
+    margin: 20rpx;
+    height: 300rpx;
+    background-color: #509FC9;
+    border-radius: 15rpx;
+    text {
+      color: white;
+    }
+    .title {
+      width: 560rpx;
+    }
+    .info-box {
+      margin-left: 30rpx;
+    }
+    .cost-box{
+      margin-top: 10rpx;
+      align-items:center;
+    }
+  }
+</style>

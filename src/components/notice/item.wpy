@@ -2,7 +2,7 @@
   <view class="notice-box column">
     <view class="row">
       <view class="small label primary mr10" wx:if="{{notice.isHome == 1}}">首页</view>
-      <text>{{notice.content}}</text>
+      <text class="notice-content">{{notice.content}}</text>
     </view>
     <view class="btn-box row-end">
       <view class="zan-btn zan-btn--small"  @tap="delete({{notice.id}})" >删除</view>
@@ -31,7 +31,7 @@
         const param = {
           mode: 'edit',
           noticeId
-        }
+        };
         this.$root.$navigate('edit', param)
       }
     }
@@ -51,6 +51,9 @@
       margin-top: 10rpx;
       padding-top: 20rpx;
       border-top: $border-dot;
+    }
+    .notice-content {
+      flex: 1;
     }
   }
 </style>

@@ -141,4 +141,10 @@ export default class Validate {
   static optional(value) {
     return !this.required(value) && 'dependency-mismatch'
   }
+  /**
+   * 判断升级条件
+   */
+  static upgradeFee(value, param) {
+    return (param - value) > 0 || param == null;
+  }
 }

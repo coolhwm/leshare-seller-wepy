@@ -1,0 +1,202 @@
+<template>
+  <Tips/>
+  <view class="container" wx:if="{{init}}">
+    <view class="title">
+      <text class="title-size">会员等级</text>
+    </view>
+    <repeat for="{{discounts}}" key="discounts" index="index" item="item">
+      <Discount :info.sync="item" index.sync="index" @remove.user="remove"
+                @change.user="change" @category.user="category"/>
+    </repeat>
+
+    <!--添加商品型号-->
+    <view class="sku-add-btn row-end" @tap="add">
+      <image class="icon" src="/images/icons/plus.png"/>
+      <text class="ml10">添加会员等级</text>
+    </view>
+    <view class="zan-panel">
+      <view class="zan-btns">
+        <button class="zan-btn zan-btn--fill" @tap="submit">确定</button>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import Discount from '../../components/vip/discount';
+  import FormTips from '../../components/weui/tips';
+  import input from '../../mixins/input';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+
+  export default class SupplyDiscount extends wepy.page {
+    def = {
+      init: false,
+      discounts: [{}]
+    };
+    data = {...this.def};
+
+    async onLoad ({discount}) {
+      if (discount != null && discount != 'null') {
+        this.discounts = JSON.parse(discount);
+        const discounts = [];
+        this.discounts.forEach(item => {
+          const data = {...item};
+          data.discount /= 100;
+          discounts.push(data);
+        });
+        this.discounts = discounts;
+      }
+      if (this.discounts.length == 0) {
+        this.discounts[0] = {
+          upgradeFee: 0,
+          discountCategoryLists: []
+        };
+      }
+      Event.listen(Event.VIP_CATEGORY_UPDATA, this.categoryUpdate.bind(this), this);
+      this.loaded();
+    };
+
+    categoryUpdate ({list, index}) {
+      if (list != null && index != null) {
+        this.discounts[index].discountCategoryLists = list;
+      }
+    };
+
+    methods = {
+      async submit () {
+        if (!this.validate()) {
+          return;
+        }
+        const discounts = [];
+        this.discounts.forEach((item, index) => {
+          const data = {...item};
+          data.discount *= 100;
+          data.level = index + 1;
+          if (index == 0) {
+            data.upgradeFee = 0;
+          }
+          discounts.push(data);
+        });
+        await Tips.success('保存成功');
+        Event.emit(Event.SHOP_DISCOUNT_UPDATE, discounts);
+        wepy.navigateBack();
+      },
+      async category ({discountCategoryLists}, index) {
+        this.$preload('data', {
+          discountCategoryLists, index
+        });
+        this.$navigate('discount_category');
+      },
+      add () {
+        this.discounts.push({
+          discountCategoryLists: []
+        });
+      },
+      remove (index) {
+        this.discounts.splice(index, 1);
+      },
+      change (info) {
+        this.discounts[info.index][info.fieldName] = info.fieldValue;
+      }
+    };
+
+    validate () {
+      const levelName = this.discounts.map(item => item.levelName);
+      const discount = this.discounts.map(item => item.discount);
+      const upgradeFee = this.discounts.map(item => item.upgradeFee);
+      let i = 0;
+      let rules = [
+        {
+          value: upgradeFee,
+          method: 'required',
+          message: '升级条件不能为空'
+        },
+        {
+          value: upgradeFee[i],
+          method: 'upgradeFee',
+          param: upgradeFee[i + 1],
+          message: '高级的升级条件不能小于或等于低级的升级条件'
+        },
+        {
+          value: upgradeFee,
+          method: 'min',
+          param: 0,
+          message: '升级条件不能小于0'
+        },
+        {
+          value: levelName,
+          method: 'required',
+          message: '会员等级不能为空'
+        },
+        {
+          value: levelName,
+          method: 'minlength',
+          param: 2,
+          message: '会员等级太短'
+        },
+        {
+          value: levelName,
+          method: 'maxlength',
+          param: 20,
+          message: '会员等级太长'
+        },
+        {
+          value: levelName,
+          method: 'noDuplicate',
+          message: '会员等级不能重复'
+        },
+        {
+          value: discount,
+          method: 'required',
+          message: '消费折扣不能为空'
+        },
+        {
+          value: discount,
+          method: 'number',
+          message: '消费折扣必须为数字'
+        },
+        {
+          value: discount,
+          method: 'min',
+          param: 0,
+          message: '消费折扣不能小于0'
+        },
+        {
+          value: discount,
+          method: 'max',
+          param: 1,
+          message: '消费折扣不能高于1'
+        }
+      ];
+      return this.check(rules);
+    }
+
+    components = {
+      Discount: Discount,
+      Tips: FormTips
+    };
+    config = {
+      navigationBarTitleText: '会员等级编辑'
+    };
+    mixins = [input, base];
+  }
+</script>
+<style lang="scss">
+  @import "../../styles/variable";
+
+  .sku-add-btn {
+    padding: 10px 20px;
+  }
+
+  .title {
+    height: 30rpx;
+    padding: 10rpx 0rpx 20rpx 30rpx;
+    align-content: center;
+    .title-size {
+      font-size: 30rpx;
+      color: $color-muted;
+    }
+  }
+</style>

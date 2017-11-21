@@ -2,6 +2,16 @@ import base from './base';
 import Page from '../utils/Page';
 
 export default class customerInfo extends base {
+
+  /**
+   * 根据客户发放优惠券
+   * @param params(couponId, cusomterId)
+   */
+  static async sendCoupon(params) {
+    const url = `${this.baseUrl}/coupons/send`;
+    return await this.post(url, params);
+  }
+
   /**
    * 获取客户地址
    * @param customerId
@@ -28,6 +38,9 @@ export default class customerInfo extends base {
   static async detailInfo(customerId) {
     const url = `${this.baseUrl}/customers/${customerId}/detail_info`;
     return this.get(url).then(data => {
+      if (data.message) {
+        return Promise.reject(new Error(data.message));
+      }
       let price = data.countCustomerInfo.totalPrice;
       if (price > 1000 * 1000) {
         data.countCustomerInfo.totalPrice = (price / 1000).toFixed(2) + 'k';

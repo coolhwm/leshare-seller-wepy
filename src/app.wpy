@@ -1,6 +1,7 @@
 <style lang="scss">
     @import "./styles/base";
     @import "./styles/zent";
+    @import "./styles/weui.wxss";
     @import "./styles/weui-extend";
 </style>
 
@@ -62,6 +63,7 @@
     globalData = {
       auth: {},
       shop: {},
+      app_code: '1jAB5uZLs57cH1gq6ujRnOdVLDqu2qle',
       // baseUrl: 'https://api.leshare.shop/v2/seller'
       // baseUrl: 'http://192.168.31.124:9999/v2/seller'
       baseUrl: 'http://106.14.195.68:9999/v2/seller'
@@ -70,6 +72,7 @@
       pages: [
         'pages/home/index',
         'pages/customer/address_list',
+        'pages/customer/coupon_send',
         'pages/customer/info',
         'pages/order/index',
         'pages/shop/index',
@@ -105,7 +108,14 @@
         'pages/order/reprice',
         'pages/order/detail',
         'pages/order/close',
-        'pages/order/remark'
+        'pages/order/remark',
+        'pages/vip/vip_scan',
+        'pages/vip/vip_detail',
+        'pages/vip/discount_category',
+        'pages/vip/vip_card',
+        'pages/vip/supply_bonus',
+        'pages/vip/vip_context',
+        'pages/vip/supply_discount'
       ],
       window: {
         backgroundTextStyle: 'dark',

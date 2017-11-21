@@ -1,35 +1,37 @@
 <template>
 
-  <view class="container" wx:if="{{init}}">
+    <view class="container" wx:if="{{init}}">
 
-    <!-- 头图区域 -->
-    <AvatarPanel :info.sync="shop" />
+        <!-- 头图区域 -->
+        <AvatarPanel :info.sync="shop"/>
 
-    <view class="h-gap" />
+        <view class="h-gap"/>
 
-    <view class="weui-cells-form">
-      <NavStatus title="营业状态" url="../shop/status" :describe.sync="statusText" />
+        <view class="weui-cells-form">
+            <NavStatus title="营业状态" url="../shop/status" :describe.sync="statusText"/>
 
-      <NavNotice title="店铺公告" url="../notice/list" />
+            <NavNotice title="店铺公告" url="../notice/list"/>
 
-      <NavDelivery title="运费模板" url="../delivery/list" />
+            <NavDelivery title="运费模板" url="../delivery/list"/>
 
-      <NavDeliver title="配送员管理" url="../delivery/deliver_list" />
+            <NavVip title="会员卡管理" url="../vip/vip_card"/>
 
-      <NavReduce title="优惠管理" url="../shop/reduce_list" />
+            <NavDeliver title="配送员管理" url="../delivery/deliver_list"/>
 
-      <NavCategory title="分类管理" url="../goods/category" />
+            <NavReduce title="优惠管理" url="../shop/reduce_list"/>
 
-      <NavShops title="切换店铺" @tap.user="shops" />
+            <NavCategory title="分类管理" url="../goods/category"/>
 
-      <NavLogout title="切换账号" @tap.user="logout" />
+            <NavShops title="切换店铺" @tap.user="shops"/>
+
+            <NavLogout title="切换账号" @tap.user="logout"/>
+        </view>
+
+        <Copyright/>
+
     </view>
 
-    <Copyright />
-
-  </view>
-
-  <view class="tab-border" />
+    <view class="tab-border"/>
 </template>
 
 <script>
@@ -48,26 +50,31 @@
       init: false,
       shop: {},
       status: {},
-      statusText: ''
+      statusText: '',
+      shopName: ''
     };
+
     async onLoad () {
       await this.load();
       Event.listen(Event.SHOP_INFO_UPDATE, this.load.bind(this), this);
     };
+
     async load () {
       this.shop = await shop.info();
+      this.shopName = this.shop.name;
       this.status = await shop.getStatus();
       this.statusText = this.status.statusText;
       this.loaded();
     };
+
     methods = {
-      async shops() {
+      async shops () {
         await Tips.confirm('是否确认切换店铺？');
         await auth.removeConfig('shop_id');
         this.$redirect('../home/shops');
         Event.emit(Event.USER_LOGOUT);
       },
-      async logout() {
+      async logout () {
         await Tips.confirm('是否确认退出登录？');
         await auth.removeConfig('shop_id');
         await auth.removeConfig('login_code');
@@ -80,6 +87,7 @@
       NavStatus: Navigator,
       NavNotice: Navigator,
       NavDelivery: Navigator,
+      NavVip: Navigator,
       NavDeliver: Navigator,
       NavReduce: Navigator,
       NavCategory: Navigator,
@@ -95,6 +103,6 @@
 </script>
 
 <style lang="scss">
-  @import "../../styles/variable";
+    @import "../../styles/variable";
 
 </style>

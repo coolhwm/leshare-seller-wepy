@@ -119,7 +119,7 @@
       innerCategories: [],
       init: false,
       isInnerDisplay: 'false'
-    }
+    };
     data = {...this.def};
     async onLoad ({goodsId, mode}) {
       this.mode = mode;
@@ -175,7 +175,7 @@
           const stock = {
             sku: null,
             stock: sku.stock
-          }
+          };
           data.goodsSkuInfo = null;
           data.stock = sku.stock;
           data.goodsStocks.push(stock);
@@ -235,7 +235,7 @@
       details() {
         const param = {
           details: JSON.stringify(this.details)
-        }
+        };
 
         this.$navigate('detail', param);
       }

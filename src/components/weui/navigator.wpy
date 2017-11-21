@@ -1,12 +1,13 @@
 <template>
-  <view url="{{url}}" class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="tap({{url}})">
-    <view class="weui-cell__bd">{{title}}</view>
-    <view class="weui-cell__ft weui-cell__ft_in-access">{{describe}}</view>
-  </view>
+    <view url="{{url}}" class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="tap({{url}})">
+        <view class="weui-cell__bd">{{title}}</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access">{{describe}}</view>
+    </view>
 </template>
 
 <script>
-  import wepy from 'wepy'
+  import wepy from 'wepy';
+
   export default class Navigator extends wepy.component {
     props = {
       url: {},
@@ -14,7 +15,7 @@
       describe: {}
     };
     methods = {
-      tap(url) {
+      tap (url) {
         if (this.url != null) {
           this.$root.$navigate(url);
         }
@@ -25,5 +26,5 @@
 </script>
 
 <style lang="scss">
-  @import "../../styles/variable";
+    @import "../../styles/variable";
 </style>

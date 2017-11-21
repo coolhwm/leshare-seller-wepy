@@ -107,7 +107,7 @@ export default class Tips {
       image: '/images/icons/error.png',
       mask: true,
       duration: 500
-    })
+    });
     // 隐藏结束回调
     if (onHide) {
       setTimeout(() => {
