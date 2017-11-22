@@ -4,7 +4,7 @@ import Page from '../utils/Page';
 /**
  * 商品服务类
  */
-export default class goods extends base {
+export default class mausl extends base {
   /**
    * 返回分页对象
    */
@@ -39,9 +39,25 @@ export default class goods extends base {
     const url = `${this.baseUrl}/goods/${goodsId}`;
     return this.get(url, {}).then(data => this._processGoodsDetail(data));
   }
+  /**
+   * 创建订单
+   */
+  static createOrder (trade, address) {
+    const url = `${this.baseUrl}/orders`;
+    return this.post(url, trade);
+  }
 
   /** ********************* 数据处理方法 ***********************/
-
+  /**
+   * 处理订单地址
+   */
+  static _processOrderAddress (order, address) {
+    if (order.orderType == '20') {
+      order.receiveName = `${address.name} ${address.sexText}`;
+      order.receivePhone = address.phone;
+      order.address = address.fullAddress;
+    }
+  }
   static _createGoodsCategories (data) {
     const list = [];
     if (data != null) {

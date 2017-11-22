@@ -118,7 +118,8 @@
         'pages/vip/supply_discount',
         'pages/manusl/index',
         'pages/manusl/customer_order',
-        'pages/manusl/order'
+        'pages/manusl/order',
+        'pages/manusl/trade'
       ],
       window: {
         backgroundTextStyle: 'dark',

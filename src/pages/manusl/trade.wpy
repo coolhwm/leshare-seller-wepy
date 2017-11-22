@@ -1,0 +1,445 @@
+<template>
+  <Tips/>
+
+  <view class="container" wx:if="{{init}}">
+
+    <!--客户基本信息-->
+    <view class="customer-info-box row-between">
+      <!--左侧头像-->
+      <image class="customer-avatar"
+             src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '/images/icons/customer.png'}}"/>
+      <!--右侧主区域-->
+      <view class="column customer-main-box">
+        <!--姓名/打电话-->
+        <view class="row">
+          <text class="xxl mr20 muted">{{customerInfo.customer.nickName ? customerInfo.customer.nickName : '微信用户'}}</text>
+          <text class="lg ml20 muted">{{customerInfo.address ? customerInfo.address.phone : '暂无电话'}}</text>
+        </view>
+        <!--地址信息-->
+        <view class="row-between">
+          <!--地址/电话-->
+          <view class="row address-box">
+            <text class="address-text">地址：{{customerInfo.address ? customerInfo.address.fullAddress : '暂无地址'}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="mt10"></view>
+
+    <!--订单项目-->
+    <OrderItem :order.sync="trade" :shop.sync="shop" action="0"></OrderItem>
+
+    <!--订单详情-->
+    <view class="weui-cells weui-cells_after-title weui-cells-merge-top" >
+
+      <!--堂食才有预约时间-->
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">订单时间</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker mode="date" id="placeTime" @change="input" value="{{input.placeTime}}">
+            <view class="weui-input {{mode == 'edit' ? 'muted' : ''}}">
+              {{input.placeTime ? input.placeTime : '请选择订单时间'}}
+            </view>
+          </picker>
+        </view>
+      </view>
+      <!--订单状态：待付款、已付款、配送中、已完成-->
+      <view class="weui-cell weui-cell_access" @tap="orderStutas">
+        <view class="weui-cell__bd">订单状态</view>
+        <text class="weui-cell__ft weui-cell__ft_in-access">{{trade.orderStutas}} </text>
+      </view>
+      <!--外卖才能在线支付-->
+      <view class="weui-cell weui-cell_access" @tap="paymentType">
+        <view class="weui-cell__bd">支付方式</view>
+        <view class="weui-cell__ft {{shop.offPay == 1 && trade.orderType == '20' ? 'weui-cell__ft_in-access' : ''}}">{{trade.paymentText}}</view>
+      </view>
+
+      <!--外卖才有配送方式-->
+      <view class="weui-cell weui-cell_access" @tap="delivery">
+        <view class="weui-cell__bd">配送方式</view>
+        <text class="weui-cell__ft {{delilveryCount > 1 ? 'weui-cell__ft_in-access' : ''}}">同城配送</text>
+      </view>
+
+    </view>
+    <view class="mt10"/>
+    <!--信息汇总-->
+    <view class="weui-cells weui-cells_after-title weui-cells-merge-top">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">商品金额</view>
+        </view>
+        <view class="weui-cell__bd row">
+          <view class="major-color mr10">￥</view>
+          <input class="weui-input major-color" id="dealPrice" type="number" maxlength="6"
+                 @input="input" value="{{input.dealPrice}}" placeholder="请输入商品金额"/>
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">优惠金额</view>
+        </view>
+        <view class="weui-cell__bd row">
+          <view class="major-color mr10">￥</view>
+          <input class="weui-input major-color" id="freePrice" type="number" maxlength="6"
+                 @input="input" value="{{input.reduceFee}}" placeholder="请输入商品金额"/>
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">配送费</view>
+        </view>
+        <view class="weui-cell__bd row">
+          <view class="major-color mr10">￥</view>
+          <input class="weui-input major-color" id="postFee" type="number" maxlength="6"
+                 @input="input" value="{{input.postFee}}" placeholder="请输入商品金额"/>
+        </view>
+    </view>
+      <view class="final-box" wx:if="{{trade.status}}">
+        <text class="lg">实付款：</text>
+        <text class="lg major">￥{{trade.finalPrice}}</text>
+      </view>
+    </view>
+
+    <view class="mt10"/>
+    <!--备注信息-->
+    <view class="remark-box weui-cells weui-cells_after-title weui-cells-merge-top">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd" >
+          <view class="weui-label">订单备注</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="message"  @input="input" value="{{trade.message}}" placeholder="请输入订单备注"/>
+        </view>
+        <view class="weui-cell__ft">
+        </view>
+      </view>
+    </view>
+
+    <!--操作底栏-->
+    <view class="tarde-action-bar row-end">
+      <view>
+        <text>待支付 </text>
+        <text class="major mr20">￥{{trade.finalPrice}}</text>
+      </view>
+      <form class="trade-confirm-button {{confirmStatus? '' : 'trade-confirm-disable' }} row-center" report-submit @submit="confirm" >
+        <button plain form-type="submit" >{{confirmText}}</button>
+      </form>
+    </view>
+    <view class="tarde-action-bar-placeholder">
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base'
+  import input from '../../mixins/input'
+  import mausl from '../../api/mausl'
+  import FormTips from '../../components/weui/tips';
+  import ActionBar from '../../components/common/action_bar';
+  import ActionSheet from '../../components/weui/action_sheet';
+  import OrderItem from '../../components/manusl/customer_item';
+  import InShopTab from '../../components/order/inshop_status';
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+  import WxUtils from '../../utils/WxUtils';
+  import Cache from '../../utils/Cache';
+
+  export default class OrderTrade extends wepy.page {
+    def = {
+      init: false,
+      shop: {},
+      trade: {
+        orderGoodsInfos: []
+      },
+      selectedAddress: null,
+      delilveries: [],
+      selectedDelivery: null,
+      coupons: [],
+      selectedCoupon: null,
+      confirmStatus: false,
+      confirmText: '立即下单',
+      reduce: null,
+      vip: null,
+      goodsList: null,
+      isAddressListDisplay: false,
+      bonusPicker: null,
+      selectedBonus: null,
+      customerInfo: {}
+    };
+    data = {...this.def};
+
+    async onLoad (params, {preload}) {
+      const isOpen = await this.checkShopStatus();
+      this.customerInfo = JSON.parse(params.userInfo);
+      if (!this.customerInfo || !isOpen) { return; }
+      // 订单数据
+      this.trade = preload.trade;
+      console.log(this.trade.orderGoodsInfos);
+      this.trade.customerId = this.customerInfo.countCustomerInfo.customerId;
+      this.input = this.trade;
+      this.input.freePrice = '0.00';
+      this.goodsList = this.trade.orderGoodsInfos;
+      // 店铺信息
+      this.shop = await Cache.shop();
+      this.trade.shopName = this.shop.name;
+      this.loaded();
+    };
+    methods = {
+      /**
+       * 切换到店方式
+       */
+      switchInShopType(type) {
+        this.trade.orderType = type;
+      },
+      /**
+       * 选择配送方式
+       */
+      async delivery() {
+        if (this.delilveries.length <= 1) {
+          return;
+        }
+        const actions = this.delilveries.map(item => `${item.name} ￥${item.fee}`);
+        const {index} = await Tips.action(...actions);
+        this.selectedDelivery = this.delilveries[index];
+        this.selectedBonus = null;
+        this.updateTradePrice();
+        this.$apply();
+      },
+      /**
+       * 选择订单状态待付款、已付款、配送中、已完成
+       */
+      async orderStutas() {
+        const {text} = await Tips.action('待付款', '已付款', '配送中', '已完成');
+        this.trade.orderStutas = text;
+        this.$apply();
+      },
+      /**
+       * 选择付款方式
+       */
+      async paymentType () {
+        const trade = this.trade;
+        Tips.actionWithFunc(['在线支付', '线下支付'],
+          () => {
+            trade.paymentText = '在线支付';
+            trade.paymentType = 1;
+            this.$apply();
+          },
+          () => {
+            trade.paymentText = '线下支付';
+            trade.paymentType = 0;
+            this.$apply();
+          });
+      },
+      /**
+       * 确定下单
+       */
+      async confirm({detail}) {
+        // 检查店铺状态
+        const isOpen = await this.checkShopStatus();
+        if (!isOpen) { return; }
+        // 检查是否可以购买
+        if (!this.confirmStatus) {
+          Tips.alert(this.confirmText);
+          return;
+        }
+        // 数据准备
+        if (this.trade.orderType == 20) {
+          this.trade.deliveryType = 'CITY';
+        }
+        // 表单ID
+        this.trade.formId = detail.formId;
+        // 创建订单
+        await mausl.createOrder(this.trade);
+        // 清空购物车
+        Event.emit(Event.CART_LIST_CLEAR);
+        WxUtils.backOrRedirect('/pages/manusl/index');
+      }
+    };
+    /**
+     * 检查店铺状态
+     */
+    async checkShopStatus() {
+      // 检查店铺状态
+      const status = await Cache.status();
+      Tips.loaded();
+      if (!status) {
+        await Tips.modal('店铺已休息');
+        wepy.navigateBack();
+      }
+      return status;
+    }
+    /**
+     * 更新订单价格
+     */
+    updateTradePrice() {
+      const trade = this.trade;
+      trade.finalPrice = 0;
+      // 商品总价
+      trade.finalPrice += trade.dealPrice ? parseFloat(trade.dealPrice) : 0;
+      // 运费
+      trade.finalPrice += trade.postFee ? parseFloat(trade.postFee) : 0;
+      // 优惠券
+      trade.finalPrice -= trade.couponPrice ? parseFloat(trade.couponPrice) : 0;
+      // 积分
+      trade.finalPrice -= trade.bonusPrice ? parseFloat(trade.bonusPrice) : 0;
+      // 满减
+      trade.reduceFee = this.reduceFee;
+      trade.finalPrice -= this.reduceFee;
+      // 防止价格小于0
+      if (trade.finalPrice < 0) {
+        trade.finalPrice = 0;
+      }
+      trade.finalPrice = trade.finalPrice.toFixed(2);
+    }
+    computed = {
+      // 配送费用文字
+      delilveryText() {
+        let confirmStatus = false;
+        let deliveryText = '暂不支持配送';
+        let confirmText = '立即下单';
+        const orderType = this.trade.orderType;
+        if (orderType != '20') {
+          confirmStatus = true;
+          confirmText = '立即下单';
+        } else {
+          if (!this.selectedAddress) {
+            deliveryText = '请选择收货地址';
+            confirmText = '请选择地址';
+          } else if (this.delilveries.length < 1) {
+            confirmText = deliveryText = '暂不支持配送';
+          } else if (!this.selectedDelivery) {
+            confirmText = deliveryText = '请选择配送方式';
+          } else if (this.selectedDelivery.limitPrice > this.trade.dealPrice) {
+            deliveryText = `${this.selectedDelivery.name} 起送价￥${this.selectedDelivery.limitPrice}`;
+            confirmText = `起送价￥${this.selectedDelivery.limitPrice}`;
+          } else {
+            const fee = this.selectedDelivery.fee > 0 ? `￥${this.selectedDelivery.fee}` : '免配送费';
+            deliveryText = `${this.selectedDelivery.name} ${fee}`;
+            confirmStatus = true;
+            confirmText = '立即下单';
+          }
+        }
+        // 刷新视图
+        this.confirmStatus = confirmStatus;
+        this.confirmText = confirmText;
+        return deliveryText;
+      },
+      // 配送方式数量
+      delilveryCount() {
+        if (this.delilveries) {
+          return this.delilveries.length;
+        } else {
+          return 0;
+        }
+      },
+      // 减免金额
+      reduceFee () {
+        if (!this.reduce) {
+          return 0;
+        }
+        const dealPrice = this.trade.dealPrice;
+        let reduceFee = 0;
+        this.reduce.list.forEach(item => {
+          if (dealPrice >= item.limitPrice && item.fee > reduceFee) {
+            reduceFee = item.fee;
+          }
+        });
+        return reduceFee.toFixed(2);
+      }
+    };
+    components = {
+      Tips: FormTips,
+      ActionBar: ActionBar,
+      ActionSheet: ActionSheet,
+      OrderItem: OrderItem,
+      InShopTab: InShopTab
+    };
+    mixins = [base, input];
+    config = {
+      navigationBarTitleText: '订单详情'
+    }
+  }
+</script>
+
+
+<style lang="scss">
+  @import "../../styles/variable";
+  .customer-main-box {
+    flex: 1;
+    padding-left: rpx(25);
+    .address-text{
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+
+  .customer-info-box {
+    padding: rpx(30);
+    background-color: white;
+    .customer-avatar {
+      height: 100rpx;
+      width: 100rpx;
+      border-radius: 50%;
+    }
+
+    .address-box {
+      max-width: rpx(430);
+      text {
+        color: $color-muted;
+        font-size: $text-sm;
+        word-break: break-all;
+      }
+    }
+  }
+  .remark-box{
+    border-top: $border;
+    margin-bottom: 10rpx;
+  }
+
+  .major-color{
+    color: $color-major;
+  }
+  /*购买栏*/
+  .tarde-action-bar{
+    position: fixed;
+    z-index: 10000;
+    bottom: 0;
+    height: 100rpx;
+    width: 100%;
+    background-color: #FFF;
+    border-top: $border;
+
+    text{
+      font-size: $text-xxl;
+    }
+
+    /*操作底栏*/
+    .trade-confirm-button{
+      height: 100%;
+      width: 280rpx;
+      line-height: 100rpx;
+      text-align: center;
+      background-color: $color-primary;
+      color: #FFF;
+      button{
+        color: #FFF;
+      }
+    }
+
+    .trade-confirm-disable{
+      background-color: #B0B0B0;
+    }
+  }
+  .tarde-action-bar-placeholder{
+    width: 100%;
+    height: 100rpx;
+  }
+
+</style>

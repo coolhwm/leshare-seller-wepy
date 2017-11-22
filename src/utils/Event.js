@@ -43,6 +43,12 @@ export default class Event {
   static CUSOMTER_MEMEBER_UPDATE = 'CUSOMTER_MEMEBER_UPDATE';
   // 用户登出
   static USER_LOGOUT = 'USER_LOGOUT';
+  // 购物车清空
+  static CART_LIST_CLEAR = 'CART_LIST_CLEAR';
+  // 购物车重置
+  static CART_LIST_RESET = 'CART_LIST_RESET';
+  // 购物车增加
+  static CART_LIST_ADD = 'CART_LIST_ADD';
   static listen(eventName, callback, observer) {
     WxNotificationCenter.addNotification(eventName, callback, observer);
   }

@@ -61,7 +61,7 @@
 <script>
   import wepy from 'wepy';
   import base from '../../mixins/base';
-  import pagination from '../../mixins/pagination';
+  import pagination from '../../mixins/pagination.wpy';
   import customerInfo from '../../api/customer_info';
   import mausl from '../../api/mausl'
   import Event from '../../utils/Event';
@@ -92,13 +92,11 @@
       skuGoods: {}
     };
     data = {...this.def};
-    async onLoad (option) {
-      // 重新判断店铺状态
-      Tips.setLoading();
-      await this.setShopTitle();
-      this.loaded();
+    async onLoad (option, {preload}) {
       // 加载商品分类
       this.categories = await Cache.categories();
+      // 设置页面标题
+      await this.setShopTitle();
       // -- 需要实时加载的信息
       // 购物车
       const carts = wepy.getStorageSync('carts');
@@ -108,6 +106,10 @@
       await this.next();
       // 监听事件
       Event.listen(Event.MANUSL_USER_UPDATE, this.updateUserInfo.bind(this), this);
+      Event.listen(Event.CART_LIST_CLEAR, this.doClearCart.bind(this), this);
+      Event.listen(Event.CART_LIST_RESET, this.doResetCart.bind(this), this);
+      Event.listen(Event.CART_LIST_ADD, this.doAddCart.bind(this), this);
+      this.loaded();
     };
     // 更新用户信息
     async updateUserInfo(customerId) {
@@ -118,7 +120,15 @@
     };
     async onShow () {
       if (this.init) {
+        // 重新判断店铺状态
+        Tips.setLoading();
+        await this.setShopTitle();
+        this.loaded();
       }
+    }
+    // 页面风险
+    onShareAppMessage () {
+      return {};
     }
     // 设置页面标题
     async setShopTitle() {
@@ -304,10 +314,13 @@
        * 确认购买
        */
       async buy (param) {
+        if (this.customerId == null) {
+          Tips.error('请选择用户');
+          return;
+        }
         const trade = mausl.createCartTrade(this.carts, param);
-        mausl.reportFormId(param.formId);
         this.$preload('trade', trade);
-        this.$navigate(`./order`);
+        this.$navigate(`./trade?userInfo=` + JSON.stringify(this.customerInfo));
       },
       /**
        * 商品详情
