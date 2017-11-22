@@ -174,12 +174,12 @@
     data = {...this.def};
 
     async onLoad (params, {preload}) {
+      console.log(preload);
       const isOpen = await this.checkShopStatus();
       this.customerInfo = JSON.parse(params.userInfo);
       if (!this.customerInfo || !isOpen) { return; }
       // 订单数据
       this.trade = preload.trade;
-      console.log(this.trade.orderGoodsInfos);
       this.trade.customerId = this.customerInfo.countCustomerInfo.customerId;
       this.input = this.trade;
       this.input.freePrice = '0.00';

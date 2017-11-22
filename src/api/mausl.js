@@ -76,27 +76,6 @@ export default class mausl extends base {
   }
 
   /**
-   * 处理商品详情
-   */
-  static _processGoodsDetail (detail) {
-    // 解析预览图
-    this._processGoodsPreview(detail);
-
-    // 解析SKU规格
-    this._processSkuLable(detail);
-
-    // 处理价格范围区间
-    this._processGoodsPriceRange(detail);
-
-    // 处理价格标签
-    this._processGoodsPriceLabel(detail);
-
-    // 处理运费
-    this._processGoodsPostFeeText(detail);
-    return detail;
-  }
-
-  /**
    * 处理折扣价格
    */
   static _processGoodsDiscount(goods, discount) {
@@ -252,7 +231,7 @@ export default class mausl extends base {
     } else if (images[0].url == null) {
       item.imageUrl = '/images/goods/broken.png';
     } else {
-      item.imageUrl = images[0].url + '/medium';
+      item.imageUrl = images[0].url;
     }
   }
   /**

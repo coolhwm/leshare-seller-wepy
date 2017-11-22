@@ -252,7 +252,6 @@ export default class order extends base {
    * 处理订单列表数据
    */
   static _processOrderListItem(order) {
-    console.log(order);
     // const status = order.status;
     // order.statusText = this.statusDict[status];
     // 处理动作

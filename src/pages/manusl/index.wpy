@@ -44,7 +44,7 @@
         <!--商品列表-->
         <view class="goods-list">
           <repeat for="{{page.list}}" key="index" index="index" item="item">
-            <GoodsItem :goods.sync="item" @plus.user="plus" @minus.user="minus" @detail.user="detail"/>
+            <GoodsItem :goods.sync="item" @plus.user="plus" @minus.user="minus"/>
           </repeat>
         </view>
         <Loadmore :page.sync="page" emptyText="暂无商品"/>
@@ -321,12 +321,6 @@
         const trade = mausl.createCartTrade(this.carts, param);
         this.$preload('trade', trade);
         this.$navigate(`./trade?userInfo=` + JSON.stringify(this.customerInfo));
-      },
-      /**
-       * 商品详情
-       */
-      async detail({id}) {
-        this.$navigate(`/pages/goods/detail?goodsId=${id}`);
       }
     };
     findGoods(goodsId) {
