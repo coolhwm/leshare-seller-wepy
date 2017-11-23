@@ -12,7 +12,8 @@
       <view class="column customer-main-box">
         <!--姓名/打电话-->
         <view class="row">
-          <text class="xxl mr20 muted">{{customerInfo.customer.nickName ? customerInfo.customer.nickName : '微信用户'}}</text>
+          <text class="xxl mr20 muted">{{customerInfo.customer.nickName ? customerInfo.customer.nickName : '微信用户'}}
+          </text>
           <text class="lg ml20 muted">{{customerInfo.address ? customerInfo.address.phone : '暂无电话'}}</text>
         </view>
         <!--地址信息-->
@@ -31,7 +32,7 @@
     <OrderItem :order.sync="trade" :shop.sync="shop" action="0"></OrderItem>
 
     <!--订单详情-->
-    <view class="weui-cells weui-cells_after-title weui-cells-merge-top" >
+    <view class="weui-cells weui-cells_after-title weui-cells-merge-top">
 
       <!--堂食才有预约时间-->
       <view class="weui-cell weui-cell_input">
@@ -54,13 +55,15 @@
       <!--外卖才能在线支付-->
       <view class="weui-cell weui-cell_access" @tap="paymentType">
         <view class="weui-cell__bd">支付方式</view>
-        <view class="weui-cell__ft {{shop.offPay == 1 && trade.orderType == '20' ? 'weui-cell__ft_in-access' : ''}}">{{trade.paymentText}}</view>
+        <view class="weui-cell__ft {{shop.offPay == 1 && trade.orderType == '20' ? 'weui-cell__ft_in-access' : ''}}">
+          {{trade.paymentText}}
+        </view>
       </view>
 
       <!--外卖才有配送方式-->
       <view class="weui-cell weui-cell_access" @tap="delivery">
         <view class="weui-cell__bd">配送方式</view>
-        <text class="weui-cell__ft {{delilveryCount > 1 ? 'weui-cell__ft_in-access' : ''}}">同城配送</text>
+        <text class="weui-cell__ft {{delilveryCount > 1 ? 'weui-cell__ft_in-access' : ''}}">{{delilveryText}}</text>
       </view>
 
     </view>
@@ -83,7 +86,7 @@
         </view>
         <view class="weui-cell__bd row">
           <view class="major-color mr10">￥</view>
-          <input class="weui-input major-color" id="freePrice" type="number" maxlength="6"
+          <input class="weui-input major-color" id="reduceFee" type="number" maxlength="6"
                  @input="input" value="{{input.reduceFee}}" placeholder="请输入商品金额"/>
         </view>
       </view>
@@ -96,10 +99,6 @@
           <input class="weui-input major-color" id="postFee" type="number" maxlength="6"
                  @input="input" value="{{input.postFee}}" placeholder="请输入商品金额"/>
         </view>
-    </view>
-      <view class="final-box" wx:if="{{trade.status}}">
-        <text class="lg">实付款：</text>
-        <text class="lg major">￥{{trade.finalPrice}}</text>
       </view>
     </view>
 
@@ -107,11 +106,11 @@
     <!--备注信息-->
     <view class="remark-box weui-cells weui-cells_after-title weui-cells-merge-top">
       <view class="weui-cell weui-cell_input">
-        <view class="weui-cell__hd" >
+        <view class="weui-cell__hd">
           <view class="weui-label">订单备注</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" id="message"  @input="input" value="{{trade.message}}" placeholder="请输入订单备注"/>
+          <input class="weui-input" id="message" @input="input" value="{{trade.message}}" placeholder="请输入订单备注"/>
         </view>
         <view class="weui-cell__ft">
         </view>
@@ -124,8 +123,9 @@
         <text>待支付 </text>
         <text class="major mr20">￥{{trade.finalPrice}}</text>
       </view>
-      <form class="trade-confirm-button {{confirmStatus? '' : 'trade-confirm-disable' }} row-center" report-submit @submit="confirm" >
-        <button plain form-type="submit" >{{confirmText}}</button>
+      <form class="trade-confirm-button {{confirmStatus? '' : 'trade-confirm-disable' }} row-center" report-submit
+            @submit="confirm">
+        <button plain form-type="submit">{{confirmText}}</button>
       </form>
     </view>
     <view class="tarde-action-bar-placeholder">
@@ -174,7 +174,6 @@
     data = {...this.def};
 
     async onLoad (params, {preload}) {
-      console.log(preload);
       const isOpen = await this.checkShopStatus();
       this.customerInfo = JSON.parse(params.userInfo);
       if (!this.customerInfo || !isOpen) { return; }
