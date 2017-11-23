@@ -4,7 +4,7 @@
     <view class="container box-bg">
       <VipCard :member.sync="customerMember" :vipCard.sync="memberCardInfo" :userInfo.sync="customerInfo"
             @detail.user="detail"/>
-      <view class="weui-cells weui-cells-form">
+      <view class="weui-cells weui-cells-form"  wx:if="{{result == null}}">
         <view class="weui-cell weui-cell_input">
           <view class="weui-cell__hd">
             <view class="weui-label">消费金额</view>
@@ -19,6 +19,16 @@
             <view class="weui-label">累计积分</view>
           </view>
           <text>{{bonus ? bonus : 0}}</text>
+        </view>
+      </view>
+      <view class="weui-cells weui-cells-form"  wx:else>
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__hd">
+            <view class="weui-label">消费完成</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input"  value="{{result}}" disabled/>
+          </view>
         </view>
       </view>
     </view>
@@ -39,8 +49,7 @@
     </view>
 
     <!--操作栏-->
-    <ActionBar @tap.user="add" okText="确定" cancelText="返回"/>
-
+    <ActionBar @tap.user="add" :okText.sync="okText" cancelText="返回"/>
   </view>
 </template>
 
@@ -64,7 +73,8 @@
       memberCardInfo: {},
       bonus: null,
       scene: null,
-      message: null
+      message: null,
+      result: null
     };
     data = {...this.def};
 
@@ -85,8 +95,10 @@
         // 用户信息进入
         if (preload) {
           this.memberCardInfo = await member.cardInfo();
-          this.customerInfo = preload.data.customerInfo;
+          const {customer} = preload.data.customerInfo;
+          this.customerInfo = customer;
           this.customerMember = preload.data.customerMember;
+          this.sence = this.customerMember.memberNumber;
         }
         this.loaded();
       } catch (e) {
@@ -100,6 +112,10 @@
         if (!this.validate()) {
           return;
         }
+        if (this.result) {
+          await this.scan();
+          return;
+        }
         const param = {
           addBonus: this.bonus,
           cardNumber: this.customerMember.memberNumber,
@@ -108,22 +124,33 @@
         };
         await member.memberAdd(param);
         this.$apply();
-        await Tips.success('保存成功');
+        await Tips.success('消费已完成');
         const params = {
           bonus: this.bonus,
           customerMember: this.customerMember
         };
-        if (this.scene) {
-          wepy.navigateBack();
-        } else {
-          Event.emit(Event.SHOP_CUSTOMER_UPDATE, params);
-          wepy.navigateBack();
-        }
+        this.result = `累计消费${this.input.price}元` + (this.bonus > 0 ? `，累计积分${this.bonus}` : '');
+        this.customerMember = await member.Info(this.scene);
+        this.input.price = null;
+        this.$apply();
+        Event.emit(Event.SHOP_CUSTOMER_UPDATE, params);
       },
       detail () {
         this.$navigate(`/pages/customer/info?customerId=${this.customerInfo.id}`);
       }
     };
+    async scan() {
+      const data = await wepy.scanCode();
+      console.info(data);
+      if (data.result != null && data.result != '') {
+        this.$redirect(`/pages/coupon/scan?scan=${data.result}`);
+      } else if (data.path != null && data.path != '') {
+        const arr = data.path.split('=');
+        this.$redirect('/pages/vip/vip_scan?scene=' + arr[1]);
+      } else {
+        Tips.alert('扫描失败');
+      }
+    }
     components = {
       Tips: FormTips,
       VipCard: VipCard,
@@ -136,14 +163,23 @@
       const rules = [
         {
           value: this.input.price,
+          method: 'number',
+          param: 0.01,
+          message: '消费金额必须为数字'
+        },
+        {
+          value: this.input.price,
           method: 'min',
-          param: 0,
-          message: '优惠券面值不能为0或负数'
+          param: 0.01,
+          message: '消费金额不能为0或负数'
         }
       ];
       return this.check(rules);
     }
     computed = {
+      okText () {
+        return this.result ? '继续扫描' : '确定';
+      },
       bonusRuleText() {
         if (this.memberCardInfo == null) return;
         const rule = this.memberCardInfo.bonusRule;
@@ -203,11 +239,14 @@
     color: $color-muted;
     height: 300px;
   }
-  .tips-box{
+  .tips-box, .result-box{
     margin-top: 20rpx;
     padding: 20rpx;
     text{
       color: $color-muted;
     }
+  }
+  .result-box{
+    border-top: $border;
   }
 </style>
