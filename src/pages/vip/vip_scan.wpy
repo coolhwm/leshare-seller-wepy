@@ -1,31 +1,46 @@
 <template>
   <Tips/>
-  <view class="container box-bg" wx:if="{{init}}">
-    <VipCard :member.sync="customerMember" :memberCardInfo.sync="memberCardInfo" :customerInfo.sync="customerInfo"/>
-    <view class="weui-cells weui-cells-form">
-      <view class="weui-cell weui-cell_input">
-        <view class="weui-cell__hd">
-          <view class="weui-label">消费金额</view>
+  <view wx:if="{{init}}">
+    <view class="container box-bg">
+      <VipCard :member.sync="customerMember" :vipCard.sync="memberCardInfo" :userInfo.sync="customerInfo"
+            @detail.user="detail"/>
+      <view class="weui-cells weui-cells-form">
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__hd">
+            <view class="weui-label">消费金额</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" id="price" @input="input" value="{{input.price}}"
+                   type="number" maxlength="6" placeholder="请输入消费金额"/>
+          </view>
         </view>
-        <view class="weui-cell__bd">
-          <input class="weui-input" id="price" @input="input" value="{{input.price}}"
-                 type="number" maxlength="6" placeholder="请输入消费金额"/>
+        <view class="weui-cell" wx:if="{{memberCardInfo.supplyBalance == 1}}">
+          <view class="weui-cell__hd">
+            <view class="weui-label">累计积分</view>
+          </view>
+          <text>{{bonus ? bonus : 0}}</text>
         </view>
       </view>
-      <view class="weui-cell">
-        <view class="weui-cell__hd">
-          <view class="weui-label">累计积分</view>
-        </view>
-        <text>{{bonus ? bonus : 0}}</text>
-      </view>
+    </view>
+
+    <view class="tips-box column">
+      <block wx:if="{{discountRuleText.length > 0}}">
+        <text>• 会员折扣</text>
+        <text wx:for="{{discountRuleText}}" class="ml20">- {{item}}</text>
+      </block>
+      <block wx:if="{{bonusRuleText.length > 0}}">
+        <text>• 会员积分</text>
+        <text wx:for="{{bonusRuleText}}" class="ml20">- {{item}}</text>
+      </block>
+    </view>
+
+    <view class="message-box row-center" wx:if="{{message}}">
+      {{message}}
     </view>
 
     <!--操作栏-->
     <ActionBar @tap.user="add" okText="确定" cancelText="返回"/>
-  </view>
 
-  <view class="message-box row-center" wx:if="{{message}}">
-    {{message}}
   </view>
 </template>
 
@@ -63,7 +78,8 @@
         if (options.scene) {
           this.scene = decodeURIComponent(options.scene);
           this.customerMember = await member.Info(options.scene);
-          this.customerInfo = await userInfo.detailInfo(this.customerMember.customerId);
+          const {customer} = await userInfo.detailInfo(this.customerMember.customerId);
+          this.customerInfo = customer;
           this.memberCardInfo = await member.cardInfo();
         }
         // 用户信息进入
@@ -103,6 +119,9 @@
           Event.emit(Event.SHOP_CUSTOMER_UPDATE, params);
           wepy.navigateBack();
         }
+      },
+      detail () {
+        this.$navigate(`/pages/customer/info?customerId=${this.customerInfo.id}`);
       }
     };
     components = {
@@ -124,6 +143,39 @@
       ];
       return this.check(rules);
     }
+    computed = {
+      bonusRuleText() {
+        if (this.memberCardInfo == null) return;
+        const rule = this.memberCardInfo.bonusRule;
+        let describes = [];
+        // 开启积分规则
+        if (this.memberCardInfo.supplyBonus == 1 && this.memberCardInfo.bonusRule != null) {
+          // 有初始积分的情况
+          if (rule.initIncreaseBonus > 0) {
+            describes.push(`注册绑定手机开卡即送 ${rule.initIncreaseBonus} 积分`);
+          }
+          describes.push(`每消费 ${rule.costMoneyUnit} 元可获得 ${rule.increaseBonus} 积分`);
+          describes.push(`每使用 ${rule.costBonusUnit} 积分，抵扣 ${rule.reduceMoney} 元现金，每笔订单最多使用 ${rule.maxReduceBonus} 积分，订单需满 ${rule.limitMoney} 元`);
+        }
+        return describes;
+      },
+      discountRuleText() {
+        if (this.memberCardInfo == null) return;
+        const rules = this.memberCardInfo.discountRules;
+        if (this.memberCardInfo.supplyDiscount == 0 || rules == null) return;
+        const describes = [];
+        // 有折扣的情况
+        for (let rule of rules) {
+          const {upgradeFee, discount, levelName} = rule;
+          if (discount == 100) continue;
+          const upgradeText = upgradeFee == 0 ? '完成注册' : `消费满${upgradeFee}元`;
+          const discountText = (discount / 10).toFixed(1);
+          const describe = `${levelName}：${upgradeText}，部分商品${discountText}折优惠`;
+          describes.push(describe);
+        }
+        return describes;
+      }
+    };
     mixins = [base, input];
     watch = {
       input (input) {
@@ -150,5 +202,12 @@
     font-size: $text-xxl;
     color: $color-muted;
     height: 300px;
+  }
+  .tips-box{
+    margin-top: 20rpx;
+    padding: 20rpx;
+    text{
+      color: $color-muted;
+    }
   }
 </style>

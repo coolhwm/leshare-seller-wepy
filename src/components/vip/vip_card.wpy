@@ -1,60 +1,111 @@
 <template>
+  <!-- 会员卡注册区域 -->
+  <view class="vip-box column-between" wx:if="{{member == null}}">
+    <view class="column-center">
+      <image class="avatar"  src="{{userInfo.avatarUrl ? userInfo.avatarUrl : '/images/icons/customer_white.png'}}"/>
+      <text>{{userInfo.nickName ? userInfo.nickName : '微信用户'}}</text>
+
+    </view>
+    <view class="column-center">
+      <text class="registe-btn" @tap="regist">会员注册</text>
+      <text class="xxs mt10">立即注册会员可享受积分与折扣特权</text>
+    </view>
+  </view>
+
   <!-- 会员卡区域 -->
-  <view class="vip-box column-between flex-start" @tap="vipDetail({{member}},{{customerInfo}},{{memberCardInfo}})">
-    <view class="row">
-      <view class="title row">
+  <view class="vip-box column-between flex-start" @tap="vipDetail({{member}},{{userInfo}},{{vipCard}})" wx:if="{{member != null}}">
+
+    <view class="row-between" style="width: 100%">
+      <view class="row">
         <!--头像-->
-        <image class="avatar" src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl : '/images/icons/customer_white.png'}}"/>
+        <image class="avatar" src="{{userInfo.avatarUrl ? userInfo.avatarUrl : '/images/icons/customer_white.png'}}"/>
 
         <!--用户信息-->
         <view class="info-box column">
-          <text class="xl">{{customerInfo.customer.nickName ? customerInfo.customer.nickName : '微信用户'}}</text>
+          <text class="user-name">{{userInfo.nickName ? userInfo.nickName : '微信用户'}}</text>
+          <text class="sm">{{levelName}}</text>
           <view class="cost-box row">
-            <text>{{member.levelName}}</text>
-            <text class="ml10 xxs">已累计消费{{member.totalCost}}元</text>
+            <text class="sm">累计消费: {{member.totalCost}}元</text>
+            <text class="ml20 sm" wx:if="{{vipCard.supplyBonus == 1}}">积分: {{member.bonus}}</text>
           </view>
         </view>
       </view>
-      <image class="icon-qrcode" src="/images/icons/canvas.png" @tap.stop="canvas"/>
+      <image class="icon-qrcode" src="/images/icons/qrcode.png"
+             @tap.stop="canvas({{member}},{{userInfo}},{{vipCard}})"/>
     </view>
-    <view class="column">
-      <text>会员积分：{{member.bonus == 0 ? '暂无积分' : member.bonus}}</text>
-      <text>会员卡号：{{member.memberNumber}}</text>
+    <view class="row" style="width: 100%">
+      <text class="xxl">{{numberText}}</text>
+
+      <!--<view class="row-between">-->
+        <!---->
+      <!--</view>-->
+      <!--<view class="card-title">-->
+        <!--<text>{{vipCard.title}}</text>-->
+      <!--</view>-->
     </view>
+
   </view>
 </template>
-
 <script>
   import wepy from 'wepy';
+  import base from '../../mixins/base'
 
   export default class VipCard extends wepy.component {
     props = {
       member: {},
-      type: {},
-      customerInfo: {},
-      memberCardInfo: {}
+      vipCard: {},
+      userInfo: {},
+      type: {}
     };
     methods = {
-      async vipDetail (member, customerInfo, memberCardInfo) {
-        if (this.type == 'detail') {
-          return;
-        }
+      regist () {
+        this.$root.$navigate('/pages/customer/registe_member');
+      },
+      vipDetail(member, userInfo, vipCard) {
+        this.$emit('detail', userInfo);
+//        if (this.type == 'detail') {
+//          return;
+//        }
+//        const params = {
+//          member: member,
+//          userInfo: userInfo,
+//          vipCard: vipCard
+//        };
+//        this.$root.$preload('param', params);
+//        this.$root.$navigate('/pages/customer/vip_detail');
+      },
+      canvas(member, userInfo, vipCard) {
         const params = {
           member: member,
-          customerInfo: customerInfo,
-          memberCardInfo: memberCardInfo
+          userInfo: userInfo,
+          vipCard: vipCard
         };
-        this.$root.$navigate('/pages/vip/vip_detail?params=' + JSON.stringify(params));
-      },
-      canvas () {
-        if (this.member.codeUrl != null) {
-          wepy.previewImage({
-            current: this.member.codeUrl, // 当前显示图片的http链接
-            urls: [this.member.codeUrl] // 需要预览的图片http链接列表
-          });
-        }
+        this.$root.$preload('param', params);
+        this.$root.$navigate('/pages/customer/vip_info');
       }
     };
+    computed = {
+      levelName () {
+        if (this.member && this.vipCard && this.vipCard.supplyDiscount == 1 && this.member.discountRule) {
+          return this.member.discountRule.levelName;
+        } else {
+          return '注册会员';
+        }
+      },
+      numberText() {
+        if (this.member == null || this.member.memberNumber == null) return;
+        const number = this.member.memberNumber;
+        let text = '';
+        for (let i = 0; i < number.length; i++) {
+          text += number[i];
+          if ((i + 1) % 4 == 0) {
+            text += ' ';
+          }
+        }
+        return text;
+      }
+    };
+    mixins = [base]
   }
 </script>
 
@@ -69,16 +120,16 @@
     padding: 5px 15px;
   }
   .avatar{
-    width: 60px;
-    height: 60px;
+    width: 120rpx;
+    height: 120rpx;
     border-radius: 50%;
     background-color: #FFF;
     border: 2px solid #FFF;
     box-shadow: 0 0 5px gray;
   }
   .icon-qrcode{
-    width: 40px;
-    height: 40px;
+    width: 80rpx;
+    height: 80rpx;
   }
   .vip-box {
     box-shadow: 0 0 2px gray;
@@ -91,15 +142,24 @@
     text {
       color: white;
     }
-    .title {
-      width: 560rpx;
-    }
     .info-box {
       margin-left: 30rpx;
+
+      .user-name{
+        font-size: 36rpx;
+      }
     }
     .cost-box{
       margin-top: 10rpx;
       align-items:center;
+    }
+    .card-title{
+      border-bottom: 1px solid white;
+      padding: 0 5px;
+      text{
+        font-size: $text-xxl;
+        font-weight: bold;
+      }
     }
   }
 </style>
