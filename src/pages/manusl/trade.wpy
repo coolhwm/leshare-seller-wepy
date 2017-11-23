@@ -29,21 +29,25 @@
     <view class="mt10"></view>
 
     <!--订单项目-->
-    <OrderItem :order.sync="trade" :shop.sync="shop" action="0"></OrderItem>
+    <OrderItem :order.sync="trade" :shop.sync="shop" action="0"/>
 
     <!--订单详情-->
     <view class="weui-cells weui-cells_after-title weui-cells-merge-top">
 
       <!--堂食才有预约时间-->
-      <view class="weui-cell weui-cell_input">
-        <view class="weui-cell__hd">
-          <view class="weui-label">订单时间</view>
+      <view class="weui-cell weui-cell_access">
+        <view class="weui-cell__bd">订单日期</view>
+        <view class="weui-cell__ft">
+          <picker mode="date" id="placeDate" @change="input" value="{{input.placeDate}}">
+              {{input.placeDate ? input.placeDate : '请选择订单日期'}}
+          </picker>
         </view>
-        <view class="weui-cell__bd">
-          <picker mode="date" id="placeTime" @change="input" value="{{input.placeTime}}">
-            <view class="weui-input {{mode == 'edit' ? 'muted' : ''}}">
+      </view>
+      <view class="weui-cell weui-cell_access">
+        <view class="weui-cell__bd">订单时间</view>
+        <view class="weui-cell__ft">
+          <picker mode="time" id="placeTime" @change="input" value="{{input.placeTime}}">
               {{input.placeTime ? input.placeTime : '请选择订单时间'}}
-            </view>
           </picker>
         </view>
       </view>
@@ -55,15 +59,13 @@
       <!--外卖才能在线支付-->
       <view class="weui-cell weui-cell_access" @tap="paymentType">
         <view class="weui-cell__bd">支付方式</view>
-        <view class="weui-cell__ft {{shop.offPay == 1 && trade.orderType == '20' ? 'weui-cell__ft_in-access' : ''}}">
-          {{trade.paymentText}}
-        </view>
+        <view class="weui-cell__ft weui-cell__ft_in-access">{{trade.paymentText}}</view>
       </view>
 
       <!--外卖才有配送方式-->
       <view class="weui-cell weui-cell_access" @tap="delivery">
         <view class="weui-cell__bd">配送方式</view>
-        <text class="weui-cell__ft {{delilveryCount > 1 ? 'weui-cell__ft_in-access' : ''}}">{{delilveryText}}</text>
+        <text class="weui-cell__ft weui-cell__ft_in-access">{{trade.delilveryText}}</text>
       </view>
 
     </view>
@@ -85,9 +87,9 @@
           <view class="weui-label">优惠金额</view>
         </view>
         <view class="weui-cell__bd row">
-          <view class="major-color mr10">￥</view>
-          <input class="weui-input major-color" id="reduceFee" type="number" maxlength="6"
-                 @input="input" value="{{input.reduceFee}}" placeholder="请输入商品金额"/>
+          <view class="major-color mr10">- ￥</view>
+          <input class="weui-input major-color" id="couponPrice" type="number" maxlength="6"
+                 @input="input" value="{{input.couponPrice}}" placeholder="请输入优惠金额"/>
         </view>
       </view>
       <view class="weui-cell weui-cell_input">
@@ -95,9 +97,9 @@
           <view class="weui-label">配送费</view>
         </view>
         <view class="weui-cell__bd row">
-          <view class="major-color mr10">￥</view>
+          <view class="major-color mr10">+￥</view>
           <input class="weui-input major-color" id="postFee" type="number" maxlength="6"
-                 @input="input" value="{{input.postFee}}" placeholder="请输入商品金额"/>
+                 @input="input" value="{{input.postFee}}" placeholder="请输入配送金额"/>
         </view>
       </view>
     </view>
@@ -119,13 +121,14 @@
 
     <!--操作底栏-->
     <view class="tarde-action-bar row-end">
-      <view>
+      <view wx:if="{{confirmStatus}}">
         <text>待支付 </text>
         <text class="major mr20">￥{{trade.finalPrice}}</text>
       </view>
-      <form class="trade-confirm-button {{confirmStatus? '' : 'trade-confirm-disable' }} row-center" report-submit
+      <text class="xxl mr20 muted" wx:if="{{!confirmStatus}}">{{confirmText}}</text>
+      <form class="trade-confirm-button {{confirmStatus ? '' : 'trade-confirm-disable' }} row-center" report-submit
             @submit="confirm">
-        <button plain form-type="submit">{{confirmText}}</button>
+        <button plain form-type="submit">立即下单</button>
       </form>
     </view>
     <view class="tarde-action-bar-placeholder">
@@ -156,36 +159,42 @@
       trade: {
         orderGoodsInfos: []
       },
-      selectedAddress: null,
       delilveries: [],
       selectedDelivery: null,
-      coupons: [],
       selectedCoupon: null,
-      confirmStatus: false,
-      confirmText: '立即下单',
-      reduce: null,
-      vip: null,
+      confirmText: null,
       goodsList: null,
-      isAddressListDisplay: false,
-      bonusPicker: null,
-      selectedBonus: null,
-      customerInfo: {}
+      customerInfo: {},
+      deliveryInfo: {},
+      confirmStatus: true
     };
     data = {...this.def};
 
     async onLoad (params, {preload}) {
+      // 默认值
+      this.trade = preload.trade;
+      this.input = this.trade;
+      const myDate = new Date();
+      this.input.placeDate = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}`;
+      this.input.placeTime = `${myDate.getHours()}:${myDate.getMinutes()}`;
+      this.trade.couponPrice = '0.00';
+      this.trade.orderStutas = '已完成';
+      this.trade.delilveryText = '同城配送';
+      this.trade.delilveryType = 'CITY';
+      this.trade.status = 6;
+      // 查看店铺状态
       const isOpen = await this.checkShopStatus();
+      // 用户信息
       this.customerInfo = JSON.parse(params.userInfo);
       if (!this.customerInfo || !isOpen) { return; }
       // 订单数据
-      this.trade = preload.trade;
       this.trade.customerId = this.customerInfo.countCustomerInfo.customerId;
-      this.input = this.trade;
-      this.input.freePrice = '0.00';
       this.goodsList = this.trade.orderGoodsInfos;
       // 店铺信息
       this.shop = await Cache.shop();
       this.trade.shopName = this.shop.name;
+      // 配送信息
+      this.deliveryInfo = await mausl.deliveryInfo();
       this.loaded();
     };
     methods = {
@@ -196,25 +205,20 @@
         this.trade.orderType = type;
       },
       /**
-       * 选择配送方式
-       */
-      async delivery() {
-        if (this.delilveries.length <= 1) {
-          return;
-        }
-        const actions = this.delilveries.map(item => `${item.name} ￥${item.fee}`);
-        const {index} = await Tips.action(...actions);
-        this.selectedDelivery = this.delilveries[index];
-        this.selectedBonus = null;
-        this.updateTradePrice();
-        this.$apply();
-      },
-      /**
-       * 选择订单状态待付款、已付款、配送中、已完成
+       * 选择订单状态待付款1、已付款2、配送中3、已完成6
        */
       async orderStutas() {
         const {text} = await Tips.action('待付款', '已付款', '配送中', '已完成');
         this.trade.orderStutas = text;
+        if (this.trade.orderStutas == '待付款') {
+          this.trade.status = 1;
+        } else if (this.trade.orderStutas == '已付款') {
+          this.trade.status = 2;
+        } else if (this.trade.orderStutas == '配送中') {
+          this.trade.status = 3;
+        } else if (this.trade.orderStutas == '已完成') {
+          this.trade.status = 6;
+        }
         this.$apply();
       },
       /**
@@ -235,24 +239,35 @@
           });
       },
       /**
+       * 选择配送方式
+       */
+      async delivery() {
+        this.deliveryInfo.forEach(item => {
+          this.delilveries = item;
+        });
+        const {text} = await Tips.action(this.delilveries.name);
+        this.trade.delilveryText = text;
+        this.deliveryInfo.find(item => {
+          if (item.name == this.trade.delilveryText) {
+            this.trade.delilveryType = item.type;
+          }
+        });
+        this.$apply();
+      },
+      /**
        * 确定下单
        */
       async confirm({detail}) {
+        if (!this.validate()) {
+          return;
+        }
         // 检查店铺状态
         const isOpen = await this.checkShopStatus();
         if (!isOpen) { return; }
-        // 检查是否可以购买
-        if (!this.confirmStatus) {
-          Tips.alert(this.confirmText);
-          return;
-        }
-        // 数据准备
-        if (this.trade.orderType == 20) {
-          this.trade.deliveryType = 'CITY';
-        }
         // 表单ID
         this.trade.formId = detail.formId;
         // 创建订单
+        this.trade.createDate = `${this.input.placeDate} ${this.input.placeTime}`;
         await mausl.createOrder(this.trade);
         // 清空购物车
         Event.emit(Event.CART_LIST_CLEAR);
@@ -284,73 +299,46 @@
       trade.finalPrice += trade.postFee ? parseFloat(trade.postFee) : 0;
       // 优惠券
       trade.finalPrice -= trade.couponPrice ? parseFloat(trade.couponPrice) : 0;
-      // 积分
-      trade.finalPrice -= trade.bonusPrice ? parseFloat(trade.bonusPrice) : 0;
-      // 满减
-      trade.reduceFee = this.reduceFee;
-      trade.finalPrice -= this.reduceFee;
       // 防止价格小于0
       if (trade.finalPrice < 0) {
         trade.finalPrice = 0;
+        this.confirmStatus = false;
+        this.confirmText = '优惠力度过大';
+        this.$apply();
+      } else {
+        this.confirmStatus = true;
       }
       trade.finalPrice = trade.finalPrice.toFixed(2);
+      return trade;
     }
     computed = {
-      // 配送费用文字
-      delilveryText() {
-        let confirmStatus = false;
-        let deliveryText = '暂不支持配送';
-        let confirmText = '立即下单';
-        const orderType = this.trade.orderType;
-        if (orderType != '20') {
-          confirmStatus = true;
-          confirmText = '立即下单';
-        } else {
-          if (!this.selectedAddress) {
-            deliveryText = '请选择收货地址';
-            confirmText = '请选择地址';
-          } else if (this.delilveries.length < 1) {
-            confirmText = deliveryText = '暂不支持配送';
-          } else if (!this.selectedDelivery) {
-            confirmText = deliveryText = '请选择配送方式';
-          } else if (this.selectedDelivery.limitPrice > this.trade.dealPrice) {
-            deliveryText = `${this.selectedDelivery.name} 起送价￥${this.selectedDelivery.limitPrice}`;
-            confirmText = `起送价￥${this.selectedDelivery.limitPrice}`;
-          } else {
-            const fee = this.selectedDelivery.fee > 0 ? `￥${this.selectedDelivery.fee}` : '免配送费';
-            deliveryText = `${this.selectedDelivery.name} ${fee}`;
-            confirmStatus = true;
-            confirmText = '立即下单';
-          }
-        }
-        // 刷新视图
-        this.confirmStatus = confirmStatus;
-        this.confirmText = confirmText;
-        return deliveryText;
-      },
-      // 配送方式数量
-      delilveryCount() {
-        if (this.delilveries) {
-          return this.delilveries.length;
-        } else {
-          return 0;
-        }
-      },
-      // 减免金额
-      reduceFee () {
-        if (!this.reduce) {
-          return 0;
-        }
-        const dealPrice = this.trade.dealPrice;
-        let reduceFee = 0;
-        this.reduce.list.forEach(item => {
-          if (dealPrice >= item.limitPrice && item.fee > reduceFee) {
-            reduceFee = item.fee;
-          }
-        });
-        return reduceFee.toFixed(2);
+      finalPrice () {
+        return this.updateTradePrice();
       }
     };
+    validate () {
+      const rules = [
+        {
+          value: this.trade.postFee,
+          method: 'min',
+          param: 0.00,
+          message: '配送费用不能小于0'
+        },
+        {
+          value: this.trade.dealPrice,
+          method: 'min',
+          param: 0.00,
+          message: '商品金额不能小于0'
+        },
+        {
+          value: this.trade.couponPrice,
+          method: 'min',
+          param: 0.00,
+          message: '优惠金额不能小于0'
+        }
+      ];
+      return this.check(rules);
+    }
     components = {
       Tips: FormTips,
       ActionBar: ActionBar,
@@ -389,7 +377,6 @@
     }
 
     .address-box {
-      max-width: rpx(430);
       text {
         color: $color-muted;
         font-size: $text-sm;

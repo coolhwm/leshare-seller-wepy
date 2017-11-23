@@ -46,6 +46,13 @@ export default class mausl extends base {
     const url = `${this.baseUrl}/orders`;
     return this.post(url, trade);
   }
+  /**
+   * 卖家查询配送模板GET /v2/seller/delivery
+   */
+  static deliveryInfo () {
+    const url = `${this.baseUrl}/delivery`;
+    return this.get(url);
+  }
 
   /** ********************* 数据处理方法 ***********************/
   /**
