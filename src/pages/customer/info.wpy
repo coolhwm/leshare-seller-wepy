@@ -36,7 +36,7 @@
       <view class="row-between vip-column" @tap="moreVip" wx:if="{{customerMember != null}}">
         <image class="card-image" src="/images/icons/vip_card.png"/>
         <view class="row-between">
-          <text class="muted">会员等级 : {{customerMember.levelName}}</text>
+          <text class="muted">会员等级 : {{customerMember.discountRule.levelName}}</text>
           <view class="vertical-line"/>
           <text class="muted">当前积分 : {{customerMember.bonus}}</text>
           <image class="more-image" src="/images/icons/more-gray.png"/>
