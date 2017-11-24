@@ -15,7 +15,7 @@ module.exports = {
   },
   compilers: {
     sass: {
-      outputStyle: 'expanded'
+      outputStyle: 'compact'
     },
     babel: {
       sourceMap: true,

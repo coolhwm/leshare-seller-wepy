@@ -123,32 +123,41 @@
           type: 'OFFLINE_ORDER_ADD'
         };
         await member.memberAdd(param);
-        this.$apply();
         await Tips.success('消费已完成');
         const params = {
           bonus: this.bonus,
           customerMember: this.customerMember
         };
-        this.result = `累计消费${this.input.price}元` + (this.bonus > 0 ? `，累计积分${this.bonus}` : '');
+        this.result = `消费${this.input.price}元` + (this.bonus > 0 ? `，累计积分${this.bonus}` : '');
         this.customerMember = await member.Info(this.scene);
         this.input.price = null;
-        this.$apply();
         Event.emit(Event.SHOP_CUSTOMER_UPDATE, params);
+        this.loaded();
       },
       detail () {
         this.$navigate(`/pages/customer/info?customerId=${this.customerInfo.id}`);
       }
     };
     async scan() {
-      const data = await wepy.scanCode();
-      console.info(data);
-      if (data.result != null && data.result != '') {
-        this.$redirect(`/pages/coupon/scan?scan=${data.result}`);
-      } else if (data.path != null && data.path != '') {
-        const arr = data.path.split('=');
-        this.$redirect('/pages/vip/vip_scan?scene=' + arr[1]);
-      } else {
-        Tips.alert('扫描失败');
+      try {
+        const data = await wepy.scanCode();
+        Tips.loading('扫描中');
+        console.info(data);
+        const {errMsg, path} = data;
+        if (errMsg != 'scanCode:ok') {
+          Tips.alert('扫描失败请重试');
+          return;
+        }
+        // 会员卡的情况
+        const memberUrlPrefix = 'pages/vip/vip_scan';
+        const isMember = path && path.indexOf(memberUrlPrefix) >= 0;
+        if (isMember) {
+          this.$redirect('/' + path);
+          return;
+        }
+        Tips.alert('未知二维码');
+      } finally {
+        Tips.loaded();
       }
     }
     components = {
