@@ -4,7 +4,9 @@
     <ZanTab :tab.sync="tab" fixed="0"/>
 
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <CustomerItem :customer.sync="item"/>
+      <view @tap.stop="info({{item.id}})">
+        <CustomerItem :customer.sync="item"/>
+      </view>
     </repeat>
     <!-- 加载提示 -->
     <Loadmore :page.sync="page"/>
@@ -21,7 +23,8 @@
   import ZanTab from '../../components/zanui/tab';
   import Loadmore from '../../components/weui/loadmore';
   import Placeholder from '../../components/common/placeholder';
-  import CustomerItem from '../../components/customer/item'
+  import CustomerItem from '../../components/customer/item';
+  import Event from '../../utils/Event';
   export default class CustomerList extends wepy.page {
     def = {
       init: false,
@@ -48,11 +51,17 @@
         this.$apply();
         if (this.tab.selectedId == 'CUSTOMERS') {
           this.page = mausl.customersList();
-          console.log(this.page.list)
         } else if (this.tab.selectedId == 'MEMBERS') {
           this.page = mausl.membersList();
         }
         await this.next();
+      }
+    };
+    methods = {
+      info(customerId) {
+        console.log(customerId);
+        Event.emit(Event.MANUSL_USER_UPDATE, customerId);
+        wepy.navigateBack();
       }
     };
     components = {

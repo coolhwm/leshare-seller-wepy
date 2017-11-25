@@ -171,7 +171,7 @@
     methods = {
       // 跳转到用户列表
       chooseUser() {
-        this.$root.$navigate('/pages/customer/list?type=manusl');
+        this.$root.$navigate('/pages/manusl/customer_list');
       },
       // 点击分类
       switchTab() {

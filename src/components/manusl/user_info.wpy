@@ -1,6 +1,6 @@
 <template>
   <!--客户基本信息-->
-  <view class="customer-info-box row-between">
+  <view class="customer-info-box row-between" @tap="toUserList({{userInfo.type}})">
     <!--左侧头像-->
     <image class="customer-avatar"
            src="{{userInfo.customer.avatarUrl ? userInfo.customer.avatarUrl: '/images/icons/customer.png'}}"/>
@@ -26,10 +26,17 @@
 </template>
 <script>
   import wepy from 'wepy';
-  export default class UserInfo extends wepy.page {
+  export default class UserInfo extends wepy.component {
     props = {
       userInfo: {}
     };
+    methods = {
+      toUserList (type) {
+        if (type != 'trade') {
+          this.$root.$navigate('/pages/manusl/customer_list');
+        }
+      }
+    }
   }
 </script>
 <style lang="scss">
