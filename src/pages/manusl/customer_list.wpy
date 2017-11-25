@@ -59,7 +59,6 @@
     };
     methods = {
       info(customerId) {
-        console.log(customerId);
         Event.emit(Event.MANUSL_USER_UPDATE, customerId);
         wepy.navigateBack();
       }

@@ -246,7 +246,7 @@
         // 表单ID
         this.trade.formId = detail.formId;
         // 创建订单
-        this.trade.createDate = `${this.input.placeDate} ${this.input.placeTime}`;
+        this.trade.orderTime = `${this.input.placeDate} ${this.input.placeTime}`;
         await mausl.createOrder(this.trade);
         // 清空购物车
         Event.emit(Event.CART_LIST_CLEAR);

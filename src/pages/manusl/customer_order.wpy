@@ -59,11 +59,12 @@
         selectedId: '2',
         scroll: false
       },
-      status: '2'
+      status: '2',
+      memberId: 1
     };
     async onLoad (options) {
       // 页面加载
-      this.page = order.hisPage(options.customerId);
+      this.page = order.hisPage(options.customerId, this.memberId);
       await this.next();
       // 事件监听
       Event.listen(Event.USER_LOGOUT, this.clear.bind(this), this);

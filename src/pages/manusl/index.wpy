@@ -71,7 +71,8 @@
       carts: [],
       status: {},
       skuDisplay: 'false',
-      skuGoods: {}
+      skuGoods: {},
+      memberId: 1
     };
     data = {...this.def};
     async onLoad (option, {preload}) {
