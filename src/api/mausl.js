@@ -68,16 +68,36 @@ export default class mausl extends base {
     const url = `${this.baseUrl}/members/list`;
     return new Page(url, item => this._processUserInfo(item));
   }
+  /**
+   * 查找买家默认地址
+   */
+  static defaultAddress (customerId) {
+    const url = `${this.baseUrl}/addresses/default?customer_id=${customerId}`;
+    return this.get(url, {}).then(data => this._processOrderAddress(data));
+  }
+  /**
+   * 查找买家地址列表
+   */
+  static addressList (customerId) {
+    const url = `${this.baseUrl}/addresses/?customer_id=${customerId}`;
+    return new Page(url, item => this._processOrderAddress(item));
+  }
   /** ********************* 数据处理方法 ***********************/
   /**
    * 处理订单地址
    */
-  static _processOrderAddress (order, address) {
-    if (order.orderType == '20') {
-      order.receiveName = `${address.name} ${address.sexText}`;
-      order.receivePhone = address.phone;
-      order.address = address.fullAddress;
+  static _processOrderAddress (address) {
+    let data = {};
+    if (address) {
+      data.name = address.name;
+      data.sexText = address.setText;
+      data.phone = address.phone;
+      data.simpleAddress = address.fullAddress;
+      data.isDefault = address.isDefault;
+    } else {
+      data = null;
     }
+    return data;
   }
   static _createGoodsCategories (data) {
     const list = [];

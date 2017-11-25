@@ -2,8 +2,8 @@
   <Tips/>
 
   <view class="container" wx:if="{{init}}">
-    <!-- 用户信息 -->
-    <UserInfo :userInfo.sync="customerInfo"/>
+    <!-- 地址 -->
+    <AddressSelector :address.sync="selectedAddress" @select.user="address"/>
 
     <view class="mt10"/>
 
@@ -123,10 +123,9 @@
   import mausl from '../../api/mausl'
   import FormTips from '../../components/weui/tips';
   import ActionBar from '../../components/common/action_bar';
-  import ActionSheet from '../../components/weui/action_sheet';
   import OrderItem from '../../components/manusl/customer_item';
   import InShopTab from '../../components/order/inshop_status';
-  import UserInfo from '../../components/manusl/user_info';
+  import AddressSelector from '../../components/manusl/selector';
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
   import WxUtils from '../../utils/WxUtils';
@@ -144,7 +143,8 @@
       goodsList: null,
       customerInfo: {},
       deliveryInfo: {},
-      confirmStatus: true
+      confirmStatus: true,
+      selectedAddress: null
     };
     data = {...this.def};
 
@@ -169,20 +169,21 @@
       // 订单数据
       this.trade.customerId = this.customerInfo.countCustomerInfo.customerId;
       this.goodsList = this.trade.orderGoodsInfos;
+      // 默认地址
+      this.selectedAddress = await mausl.defaultAddress(this.trade.customerId);
       // 店铺信息
       this.shop = await Cache.shop();
       this.trade.shopName = this.shop.name;
       // 配送信息
       this.deliveryInfo = await mausl.deliveryInfo();
+      Event.listen(Event.ADDRESS_LIST_UPDATE, this.addressUpdate.bind(this), this);
+      this.loaded();
+    };
+    addressUpdate (address) {
+      this.selectedAddress = address;
       this.loaded();
     };
     methods = {
-      /**
-       * 切换到店方式
-       */
-      switchInShopType(type) {
-        this.trade.orderType = type;
-      },
       /**
        * 选择订单状态待付款1、已付款2、配送中3、已完成6
        */
@@ -232,6 +233,9 @@
           }
         });
         this.$apply();
+      },
+      address () {
+        this.$root.$navigate('/pages/manusl/select_address?customerId=' + this.trade.customerId);
       },
       /**
        * 确定下单
@@ -321,10 +325,9 @@
     components = {
       Tips: FormTips,
       ActionBar: ActionBar,
-      ActionSheet: ActionSheet,
       OrderItem: OrderItem,
       InShopTab: InShopTab,
-      UserInfo: UserInfo
+      AddressSelector: AddressSelector
     };
     mixins = [base, input];
     config = {

@@ -120,7 +120,8 @@
         'pages/manusl/customer_order',
         'pages/manusl/order',
         'pages/manusl/trade',
-        'pages/manusl/customer_list'
+        'pages/manusl/customer_list',
+        'pages/manusl/select_address'
       ],
       window: {
         backgroundTextStyle: 'dark',

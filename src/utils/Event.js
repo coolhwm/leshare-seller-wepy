@@ -49,6 +49,8 @@ export default class Event {
   static CART_LIST_RESET = 'CART_LIST_RESET';
   // 购物车增加
   static CART_LIST_ADD = 'CART_LIST_ADD';
+  // 地址列表更新
+  static ADDRESS_LIST_UPDATE = 'ADDRESS_LIST_UPDATE';
   static listen(eventName, callback, observer) {
     WxNotificationCenter.addNotification(eventName, callback, observer);
   }
