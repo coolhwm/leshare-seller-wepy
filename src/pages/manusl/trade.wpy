@@ -2,31 +2,10 @@
   <Tips/>
 
   <view class="container" wx:if="{{init}}">
+    <!-- 用户信息 -->
+    <UserInfo :userInfo.sync="customerInfo"/>
 
-    <!--客户基本信息-->
-    <view class="customer-info-box row-between">
-      <!--左侧头像-->
-      <image class="customer-avatar"
-             src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '/images/icons/customer.png'}}"/>
-      <!--右侧主区域-->
-      <view class="column customer-main-box">
-        <!--姓名/打电话-->
-        <view class="row">
-          <text class="xxl mr20 muted">{{customerInfo.customer.nickName ? customerInfo.customer.nickName : '微信用户'}}
-          </text>
-          <text class="lg ml20 muted">{{customerInfo.address ? customerInfo.address.phone : '暂无电话'}}</text>
-        </view>
-        <!--地址信息-->
-        <view class="row-between">
-          <!--地址/电话-->
-          <view class="row address-box">
-            <text class="address-text">地址：{{customerInfo.address ? customerInfo.address.fullAddress : '暂无地址'}}</text>
-          </view>
-        </view>
-      </view>
-    </view>
-
-    <view class="mt10"></view>
+    <view class="mt10"/>
 
     <!--订单项目-->
     <OrderItem :order.sync="trade" :shop.sync="shop" action="0"/>
@@ -77,7 +56,7 @@
           <view class="weui-label">商品金额</view>
         </view>
         <view class="weui-cell__bd row">
-          <view class="major-color mr10">￥</view>
+          <text class="major-color  ml20 mr10">￥</text>
           <input class="weui-input major-color" id="dealPrice" type="number" maxlength="6"
                  @input="input" value="{{input.dealPrice}}" placeholder="请输入商品金额"/>
         </view>
@@ -87,7 +66,7 @@
           <view class="weui-label">优惠金额</view>
         </view>
         <view class="weui-cell__bd row">
-          <view class="major-color mr10">- ￥</view>
+          <text class="major-color mr10">- ￥</text>
           <input class="weui-input major-color" id="couponPrice" type="number" maxlength="6"
                  @input="input" value="{{input.couponPrice}}" placeholder="请输入优惠金额"/>
         </view>
@@ -97,7 +76,7 @@
           <view class="weui-label">配送费</view>
         </view>
         <view class="weui-cell__bd row">
-          <view class="major-color mr10">+￥</view>
+          <text class="major-color mr10">+￥</text>
           <input class="weui-input major-color" id="postFee" type="number" maxlength="6"
                  @input="input" value="{{input.postFee}}" placeholder="请输入配送金额"/>
         </view>
@@ -147,6 +126,7 @@
   import ActionSheet from '../../components/weui/action_sheet';
   import OrderItem from '../../components/manusl/customer_item';
   import InShopTab from '../../components/order/inshop_status';
+  import UserInfo from '../../components/manusl/user_info';
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
   import WxUtils from '../../utils/WxUtils';
@@ -160,8 +140,6 @@
         orderGoodsInfos: []
       },
       delilveries: [],
-      selectedDelivery: null,
-      selectedCoupon: null,
       confirmText: null,
       goodsList: null,
       customerInfo: {},
@@ -186,6 +164,7 @@
       const isOpen = await this.checkShopStatus();
       // 用户信息
       this.customerInfo = JSON.parse(params.userInfo);
+      this.customerInfo.type = 'trade';
       if (!this.customerInfo || !isOpen) { return; }
       // 订单数据
       this.trade.customerId = this.customerInfo.countCustomerInfo.customerId;
@@ -303,7 +282,7 @@
       if (trade.finalPrice < 0) {
         trade.finalPrice = 0;
         this.confirmStatus = false;
-        this.confirmText = '优惠力度过大';
+        this.confirmText = '优惠金额过大';
         this.$apply();
       } else {
         this.confirmStatus = true;
@@ -344,7 +323,8 @@
       ActionBar: ActionBar,
       ActionSheet: ActionSheet,
       OrderItem: OrderItem,
-      InShopTab: InShopTab
+      InShopTab: InShopTab,
+      UserInfo: UserInfo
     };
     mixins = [base, input];
     config = {
@@ -356,34 +336,6 @@
 
 <style lang="scss">
   @import "../../styles/variable";
-  .customer-main-box {
-    flex: 1;
-    padding-left: rpx(25);
-    .address-text{
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-  }
-
-  .customer-info-box {
-    padding: rpx(30);
-    background-color: white;
-    .customer-avatar {
-      height: 100rpx;
-      width: 100rpx;
-      border-radius: 50%;
-    }
-
-    .address-box {
-      text {
-        color: $color-muted;
-        font-size: $text-sm;
-        word-break: break-all;
-      }
-    }
-  }
   .remark-box{
     border-top: $border;
     margin-bottom: 10rpx;

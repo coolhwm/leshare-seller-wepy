@@ -5,31 +5,12 @@
         <image class="icon mr20" src="/images/icons/plus.png"/>请选择用户
       </view>
     </view>
-    <!--客户基本信息-->
-    <view class="customer-info-box row-between" wx:if="{{customerId}}" @tap="chooseUser">
-      <!--左侧头像-->
-      <image class="customer-avatar"
-             src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '/images/icons/customer.png'}}"/>
-      <!--右侧主区域-->
-      <view class="column customer-main-box">
-        <!--姓名/打电话-->
-        <view class="row">
-          <text class="xxl mr20 muted">{{customerInfo.customer.nickName ? customerInfo.customer.nickName : '微信用户'}}</text>
-          <text class="lg ml20 muted">{{customerInfo.address ? customerInfo.address.phone : '暂无电话'}}</text>
-        </view>
-        <!--地址信息-->
-        <view class="row-between">
-          <!--地址/电话-->
-          <view class="row address-box">
-            <text class="address-text">地址：{{customerInfo.address ? customerInfo.address.fullAddress : '暂无地址'}}</text>
-          </view>
-        </view>
-      </view>
-      <!--更多地址-->
-      <image class="icon" src="/images/icons/more-gray.png"/>
+    <view wx:if="{{customerId}}">
+      <!-- 用户信息 -->
+      <UserInfo :userInfo.sync="customerInfo"/>
+      <!--功能区域-->
+      <ShopNav :badegText.sync="badegText" :title.sync="title"  navText="用户订单" :navUrl.sync="navUrl"/>
     </view>
-    <!--功能区域-->
-    <ShopNav :badegText.sync="badegText" :title.sync="title"  navText="用户订单" :navUrl.sync="navUrl" wx:if="{{customerId}}"/>
 
     <!--主内容区域-->
     <view class="{{!customerId ? 'main-box' : 'main-box-null'}} row">
@@ -71,6 +52,7 @@
   import SideTab from '../../components/manusl/side_tab';
   import GoodsItem from '../../components/manusl/goods_simple_item';
   import Loadmore from '../../components/weui/loadmore';
+  import UserInfo from '../../components/manusl/user_info';
   import Tips from '../../utils/Tips';
   import Cache from '../../utils/Cache';
   export default class ManuslIndex extends wepy.page {
@@ -405,7 +387,8 @@
       GoodsItem: GoodsItem,
       Loadmore: Loadmore,
       ShopCart: ShopCart,
-      SkuSelector: SkuSelector
+      SkuSelector: SkuSelector,
+      UserInfo: UserInfo
     };
     mixins = [base, pagination];
     config = {

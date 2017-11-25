@@ -1,0 +1,72 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <!--TAB 页-->
+    <ZanTab :tab.sync="tab" fixed="0"/>
+
+    <repeat for="{{page.list}}" key="index" index="index" item="item">
+      <CustomerItem :customer.sync="item"/>
+    </repeat>
+    <!-- 加载提示 -->
+    <Loadmore :page.sync="page"/>
+
+    <!--占位符-->
+    <Placeholder :show.sync="isPageEmpty" message="您还没有相关客户信息"/>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import pagination from '../../mixins/pagination';
+  import mausl from '../../api/mausl';
+  import ZanTab from '../../components/zanui/tab';
+  import Loadmore from '../../components/weui/loadmore';
+  import Placeholder from '../../components/common/placeholder';
+  import CustomerItem from '../../components/customer/item'
+  export default class CustomerList extends wepy.page {
+    def = {
+      init: false,
+      page: {
+        list: []
+      },
+      tab: {
+        list: [
+          {id: 'CUSTOMERS', title: '普通用户'},
+          {id: 'MEMBERS', title: '会员用户'}
+        ],
+        selectedId: 'CUSTOMERS'
+      }
+    };
+    data = {...this.def};
+    async onLoad() {
+      this.tab.selectedId = 'CUSTOMERS';
+      this.page = await mausl.customersList();
+      await this.next();
+      this.loaded();
+    };
+    events = {
+      async change () {
+        this.$apply();
+        if (this.tab.selectedId == 'CUSTOMERS') {
+          this.page = mausl.customersList();
+          console.log(this.page.list)
+        } else if (this.tab.selectedId == 'MEMBERS') {
+          this.page = mausl.membersList();
+        }
+        await this.next();
+      }
+    };
+    components = {
+      ZanTab: ZanTab,
+      Loadmore: Loadmore,
+      Placeholder: Placeholder,
+      CustomerItem: CustomerItem
+    };
+    mixins = [base, pagination];
+    config = {
+      navigationBarTitleText: '用户列表'
+    };
+  }
+</script>
+<style lang="scss">
+  @import "../../styles/variable";
+</style>

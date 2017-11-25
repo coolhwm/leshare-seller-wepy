@@ -54,6 +54,20 @@ export default class mausl extends base {
     return this.get(url);
   }
 
+  /**
+   * 卖家获取普通用户列表
+   */
+  static customersList () {
+    const url = `${this.baseUrl}/customers/list`;
+    return new Page(url, item => this._processUserInfo(item));
+  }
+  /**
+   * 卖家获取会员用户列表
+   */
+  static membersList () {
+    const url = `${this.baseUrl}/members/list`;
+    return new Page(url, item => this._processUserInfo(item));
+  }
   /** ********************* 数据处理方法 ***********************/
   /**
    * 处理订单地址
@@ -313,5 +327,15 @@ export default class mausl extends base {
     } catch (e) {
       console.warn('formid上报错误', e);
     }
+  }
+
+  /**
+   * 用户信息处理
+   */
+  static _processUserInfo (item) {
+    const userInfo = {};
+    userInfo.avatar = item.avatarUrl;
+    userInfo.name = item.nickName;
+    return userInfo;
   }
 }
