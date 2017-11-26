@@ -8,8 +8,7 @@
     <view class="column customer-main-box">
       <!--姓名/打电话-->
       <view class="row">
-        <text class="xxl mr20">{{userInfo.customer.nickName ? userInfo.customer.nickName : '微信用户'}}
-        </text>
+        <text class="xxl mr20 user-name-box">{{userInfo.customer.nickName ? userInfo.customer.nickName : '微信用户'}}</text>
         <text class="lg ml20">{{userInfo.address ? userInfo.address.phone : '暂无电话'}}</text>
       </view>
       <!--地址信息-->
@@ -61,6 +60,10 @@
    .customer-main-box {
      flex: 1;
      padding-left: rpx(25);
+     .user-name-box{
+       width: 220rpx;
+       @extend .address-text;
+     }
      .address-text{
        display: -webkit-box;
        -webkit-line-clamp: 1;

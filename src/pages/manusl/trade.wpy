@@ -277,30 +277,26 @@
     /**
      * 更新订单价格
      */
-    updateTradePrice() {
-      const trade = this.trade;
-      trade.finalPrice = 0;
-      // 商品总价
-      trade.finalPrice += trade.dealPrice ? parseFloat(trade.dealPrice) : 0;
-      // 运费
-      trade.finalPrice += trade.postFee ? parseFloat(trade.postFee) : 0;
-      // 优惠券
-      trade.finalPrice -= trade.couponPrice ? parseFloat(trade.couponPrice) : 0;
-      // 防止价格小于0
-      if (trade.finalPrice < 0) {
-        trade.finalPrice = 0;
-        this.confirmStatus = false;
-        this.confirmText = '优惠金额过大';
-        this.$apply();
-      } else {
-        this.confirmStatus = true;
-      }
-      trade.finalPrice = trade.finalPrice.toFixed(2);
-      return trade;
-    }
-    computed = {
-      finalPrice () {
-        return this.updateTradePrice();
+    watch = {
+      trade () {
+        if (this.trade) {
+          const trade = this.trade;
+          trade.finalPrice = 0;
+          // 商品总价
+          trade.finalPrice += trade.dealPrice ? parseFloat(trade.dealPrice) : 0;
+          // 运费
+          trade.finalPrice += trade.postFee ? parseFloat(trade.postFee) : 0;
+          // 优惠券
+          trade.finalPrice -= trade.couponPrice ? parseFloat(trade.couponPrice) : 0;
+          // 防止价格小于0
+          if (trade.finalPrice < 0) {
+            this.confirmStatus = false;
+            this.confirmText = '优惠金额过大';
+          } else {
+            this.confirmStatus = true;
+          }
+          trade.finalPrice = trade.finalPrice.toFixed(2);
+        }
       }
     };
     validate () {
