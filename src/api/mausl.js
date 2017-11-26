@@ -272,7 +272,7 @@ export default class mausl extends base {
     } else if (images[0].url == null) {
       item.imageUrl = '/images/goods/broken.png';
     } else {
-      item.imageUrl = images[0].url;
+      item.imageUrl = images[0].url + '/medium';
     }
   }
   /**

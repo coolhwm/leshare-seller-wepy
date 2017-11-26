@@ -1,8 +1,8 @@
 <template>
-  <view class="address-item-container">
+  <view class="address-item-container" @tap="select({{address}})">
     <!-- 地址内容 -->
     <view class="address-info-container">
-      <view class="address-name-phone-container" @tap="select({{address}})">
+      <view class="address-name-phone-container">
         <text class="address-info-name mr20">{{address.name}} {{address.sexText}}</text>
         <text class="address-info-phone ml20">{{address.phone}}</text>
       </view>

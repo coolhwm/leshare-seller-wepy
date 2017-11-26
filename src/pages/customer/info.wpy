@@ -206,6 +206,13 @@
         this.$navigate('../order/detail', {orderId});
       }
     };
+    // 获取分页参数
+    params() {
+      return {
+        customer_id: this.customerId,
+        member_id: this.memberId
+      };
+    }
     events = {
       async change () {
         this.page.clear();

@@ -60,11 +60,13 @@
         scroll: false
       },
       status: '2',
-      memberId: 1
+      memberId: 1,
+      customerId: null
     };
     async onLoad (options) {
+      this.customerId = options.customerId;
       // 页面加载
-      this.page = order.hisPage(options.customerId, this.memberId);
+      this.page = order.hisPage();
       await this.next();
       // 事件监听
       Event.listen(Event.USER_LOGOUT, this.clear.bind(this), this);
@@ -77,7 +79,11 @@
     }
     // 获取分页参数
     params() {
-      return { status: this.status };
+      return {
+        status: this.status,
+        customer_id: this.customerId,
+        member_id: this.memberId
+      };
     }
     clear() {
       this.page.clear();

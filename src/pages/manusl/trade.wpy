@@ -16,7 +16,7 @@
       <!--堂食才有预约时间-->
       <view class="weui-cell weui-cell_access">
         <view class="weui-cell__bd">订单日期</view>
-        <view class="weui-cell__ft">
+        <view class="weui-cell__ft weui-cell__ft_in-access">
           <picker mode="date" id="placeDate" @change="input" value="{{input.placeDate}}">
               {{input.placeDate ? input.placeDate : '请选择订单日期'}}
           </picker>
@@ -24,7 +24,7 @@
       </view>
       <view class="weui-cell weui-cell_access">
         <view class="weui-cell__bd">订单时间</view>
-        <view class="weui-cell__ft">
+        <view class="weui-cell__ft weui-cell__ft_in-access">
           <picker mode="time" id="placeTime" @change="input" value="{{input.placeTime}}">
               {{input.placeTime ? input.placeTime : '请选择订单时间'}}
           </picker>
@@ -251,6 +251,10 @@
         this.trade.formId = detail.formId;
         // 创建订单
         this.trade.orderTime = `${this.input.placeDate} ${this.input.placeTime}`;
+        this.trade.orderGoodsInfos.forEach(item => {
+          const arry = item.imageUrl.split('/medium');
+          item.imageUrl = arry[0];
+        });
         await mausl.createOrder(this.trade);
         // 清空购物车
         Event.emit(Event.CART_LIST_CLEAR);

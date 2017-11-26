@@ -229,7 +229,6 @@
           } else if (this.detail && this.detail.id == goodsId) {
             goodsPrice = this.detail.sellPrice;
           }
-          // goodsPrice = goodsPrice.toFixed(2);
           this.carts.push({
             goodsId: goodsId,
             goodsSku: goodsSku,
