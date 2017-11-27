@@ -41,6 +41,7 @@
 <style lang="scss">
    @import "../../styles/variable";
    .customer-info-box {
+     height: 100rpx;
      padding: rpx(30);
      background-color: white;
      .customer-avatar {

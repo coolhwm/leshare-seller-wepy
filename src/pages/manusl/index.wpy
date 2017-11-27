@@ -433,7 +433,7 @@
   .main-box{
     width: 100%;
     position: absolute;
-    top: 47px;
+    top: rpx(89);
     bottom: 55px;
 
     .goods-box{
@@ -453,6 +453,6 @@
   }
   .main-box-null{
     @extend .main-box;
-    top: 126px;
+    top: 246rpx;
   }
 </style>

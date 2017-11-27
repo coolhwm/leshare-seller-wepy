@@ -33,7 +33,7 @@
 <style lang="scss">
   @import "../../styles/variable";
   .nav-box {
-    height: 27px;
+    height: 50rpx;
     position: relative;
     background-color: #FFFFFF;
     padding:8px 13px;
