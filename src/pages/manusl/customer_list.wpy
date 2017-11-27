@@ -24,7 +24,6 @@
   import Loadmore from '../../components/weui/loadmore';
   import Placeholder from '../../components/common/placeholder';
   import CustomerItem from '../../components/customer/item';
-  import Event from '../../utils/Event';
   export default class CustomerList extends wepy.page {
     def = {
       init: false,
@@ -41,9 +40,15 @@
     };
     data = {...this.def};
     async onLoad(option) {
-      this.tab.selectedId = 'CUSTOMERS';
-      this.page = await mausl.customersList();
-      await this.next();
+      if (option.selectedId != null) {
+        this.tab.selectedId = option.selectedId;
+        await this.getRequest();
+        await this.next();
+      } else {
+        this.tab.selectedId = 'CUSTOMERS';
+        this.page = await mausl.customersList();
+        await this.next();
+      }
       this.loaded();
     };
     events = {
@@ -57,10 +62,18 @@
         await this.next();
       }
     };
+
+    async getRequest () {
+      if (this.tab.selectedId == 'CUSTOMERS') {
+        this.page = mausl.customersList();
+      } else if (this.tab.selectedId == 'MEMBERS') {
+        this.page = mausl.membersList();
+      }
+      return this.page;
+    }
     methods = {
       info(customerId) {
-        Event.emit(Event.MANUSL_USER_UPDATE, customerId);
-        wepy.navigateBack();
+        this.$root.$navigate('/pages/manusl/index?customerId=' + customerId);
       }
     };
     components = {
