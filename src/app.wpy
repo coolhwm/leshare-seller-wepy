@@ -115,13 +115,15 @@
         'pages/vip/vip_card',
         'pages/vip/supply_bonus',
         'pages/vip/vip_context',
+        'pages/vip/registe_member',
         'pages/vip/supply_discount',
         'pages/manusl/index',
         'pages/manusl/customer_order',
         'pages/manusl/order',
         'pages/manusl/trade',
         'pages/manusl/customer_list',
-        'pages/manusl/select_address'
+        'pages/manusl/select_address',
+        'pages/manusl/user_management'
       ],
       window: {
         backgroundTextStyle: 'dark',

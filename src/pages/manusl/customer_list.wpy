@@ -40,7 +40,7 @@
       }
     };
     data = {...this.def};
-    async onLoad() {
+    async onLoad(option) {
       this.tab.selectedId = 'CUSTOMERS';
       this.page = await mausl.customersList();
       await this.next();

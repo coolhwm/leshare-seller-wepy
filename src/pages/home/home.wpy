@@ -130,7 +130,8 @@
       show: false
     };
     data = {...this.def};
-    async onLoad () {
+    async onLoad (option) {
+      console.log(option.scene);
       console.info('load');
       WxUtils.checkSDK();
       this.shop = await shop.info();

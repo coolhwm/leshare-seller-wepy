@@ -1,0 +1,46 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <view class="weui-cells weui-cells_after-title">
+      <NavAllUser title="全部客户" url="/pages/manusl/customer_list?selectedId=CUSTOMERS"/>
+
+      <NavMemberUser title="会员" url="/pages/manusl/customer_list?selectedId=MEMBERS"/>
+    </view>
+    <view class="weui-cells" wx:if="{{memberCardInfo}}">
+      <repeat for="{{memberCardInfo}}" key="index" index="index" item="item">
+        <!-- 等级 -->
+        <view class="weui-cell weui-cell_access">
+          <view class="weui-cell__bd">{{item}}</view>
+          <text class="weui-cell__ft weui-cell__ft_in-access"/>
+        </view>
+      </repeat>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import member from '../../api/member'
+  import base from '../../mixins/base';
+  import Navigator from '../../components/weui/navigator';
+  export default class UserManagement extends wepy.page {
+    def = {
+      init: false,
+      memberCardInfo: {}
+    };
+    data = {...this.def};
+    async onLoad () {
+      this.memberCardInfo = await member.cardInfo();
+      this.loaded();
+    };
+    mixins = [base];
+    components = {
+      NavAllUser: Navigator,
+      NavMemberUser: Navigator
+    };
+    config = {
+      navigationBarTitleText: '客服管理'
+    };
+  }
+</script>
+<style lang="scss">
+  @import "../../styles/variable";
+</style>
