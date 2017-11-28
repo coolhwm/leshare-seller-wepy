@@ -74,13 +74,13 @@ export default class order extends base {
     '7': '本交易已取消',
     '8': '您已退货成功',
     '9': '您已接单，请尽快配送'
-  }
+  };
 
   /**
    * 分页方法
    */
-  static hisPage(customerId) {
-    const url = `${this.baseUrl}/customers/${customerId}/order_list`;
+  static hisPage(customerId, memberId) {
+    const url = `${this.baseUrl}/customers/order_list?customer_id=${customerId}&&member_id=${memberId}`;
     return new Page(url, this._processOrderListItem.bind(this));
   }
 

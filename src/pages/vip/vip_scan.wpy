@@ -14,7 +14,7 @@
                    type="number" maxlength="6" placeholder="请输入消费金额"/>
           </view>
         </view>
-        <view class="weui-cell" wx:if="{{memberCardInfo.supplyBalance == 1}}">
+        <view class="weui-cell" wx:if="{{memberCardInfo.supplyBonus == 1}}">
           <view class="weui-cell__hd">
             <view class="weui-label">累计积分</view>
           </view>
@@ -98,7 +98,7 @@
           const {customer} = preload.data.customerInfo;
           this.customerInfo = customer;
           this.customerMember = preload.data.customerMember;
-          this.sence = this.customerMember.memberNumber;
+          this.scene = this.customerMember.memberNumber;
         }
         this.loaded();
       } catch (e) {

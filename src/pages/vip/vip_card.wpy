@@ -118,11 +118,11 @@
             bonusRule: this.bonusRule,
             discountRules: this.discountRules,
             description: this.description,
-            notice: this.notice,
-            supplyBonus: this.input.supplyBonus ? 1 : 0,
-            supplyDiscount: this.input.supplyDiscount ? 1 : 0
+            notice: this.notice
           };
           Object.assign(param, this.input);
+          param.supplyBonus = this.input.supplyBonus ? 1 : 0;
+          param.supplyDiscount = this.input.supplyDiscount ? 1 : 0;
           await vip.create(param);
         } else {
           const param = this.input;
