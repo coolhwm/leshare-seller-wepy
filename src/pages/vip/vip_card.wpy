@@ -144,6 +144,7 @@
       this.card = await vip.info();
       if (!this.card) {
         this.mode = 'create';
+        this.card = {};
       } else {
         this.mode = 'update';
         this.input = this.card;

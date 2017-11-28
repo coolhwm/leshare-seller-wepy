@@ -7,12 +7,6 @@ module.exports = {
     }
   },
   eslint: true,
-  'autoprefixer': {
-    filter: /\.(wxss|css)$/,
-    config: {
-      browsers: ['last 11 iOS versions']
-    }
-  },
   compilers: {
     sass: {
       outputStyle: 'compact'
@@ -31,6 +25,12 @@ module.exports = {
     }
   },
   plugins: {
+    'autoprefixer': {
+      filter: /\.(wxss|css)$/,
+      config: {
+        browsers: ['last 11 iOS versions']
+      }
+    }
   }
 };
 
