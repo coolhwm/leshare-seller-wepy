@@ -4,10 +4,15 @@
     <ZanTab :tab.sync="tab" fixed="0"/>
 
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <view @tap.stop="info({{item.id}})">
+      <view @tap.stop="info({{item.customerId}})">
         <CustomerItem :customer.sync="item"/>
       </view>
     </repeat>
+
+    <!--操作栏-->
+    <view wx:if="{{tab.selectedId == 'MEMBERS'}}">
+      <ActionBar @tap.user="add" okText="注册会员" cancelText="返回" />
+    </view>
     <!-- 加载提示 -->
     <Loadmore :page.sync="page"/>
 
@@ -24,6 +29,8 @@
   import Loadmore from '../../components/weui/loadmore';
   import Placeholder from '../../components/common/placeholder';
   import CustomerItem from '../../components/customer/item';
+  import ActionBar from '../../components/common/action_bar';
+  import Event from '../../utils/Event';
   export default class CustomerList extends wepy.page {
     def = {
       init: false,
@@ -49,7 +56,12 @@
         this.page = await mausl.customersList();
         await this.next();
       }
+      Event.listen(Event.SHOP_CUSTOMER_UPDATE, this.updataMemberList.bind(this), this);
       this.loaded();
+    };
+    updataMemberList (selectedId) {
+      this.selectedId = selectedId;
+      this.reload();
     };
     events = {
       async change () {
@@ -72,7 +84,11 @@
       return this.page;
     }
     methods = {
+      add () {
+        this.$root.$navigate('/pages/vip/registe_member');
+      },
       info(customerId) {
+        console.log(customerId + 'ddddd');
         this.$root.$navigate('/pages/manusl/index?customerId=' + customerId);
       }
     };
@@ -80,7 +96,8 @@
       ZanTab: ZanTab,
       Loadmore: Loadmore,
       Placeholder: Placeholder,
-      CustomerItem: CustomerItem
+      CustomerItem: CustomerItem,
+      ActionBar: ActionBar
     };
     mixins = [base, pagination];
     config = {

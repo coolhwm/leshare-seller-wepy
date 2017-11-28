@@ -354,12 +354,21 @@ export default class mausl extends base {
    */
   static _processUserInfo (item) {
     const userInfo = {};
-    userInfo.id = item.id;
+    userInfo.customerId = item.id;
+    if (!item.id) {
+      userInfo.customerId = item.customerId;
+    }
     userInfo.memberId = item.memberId;
     userInfo.avatar = item.avatarUrl;
     userInfo.name = item.nickName;
+    if (!item.nickName) {
+      userInfo.name = item.remarkName;
+    }
     userInfo.key = '创建时间：';
     userInfo.value = item.createTime;
+    if (!item.createTime) {
+      userInfo.value = item.acceptTime;
+    }
     return userInfo;
   }
 }
