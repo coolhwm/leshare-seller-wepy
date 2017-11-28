@@ -118,11 +118,11 @@
             bonusRule: this.bonusRule,
             discountRules: this.discountRules,
             description: this.description,
-            notice: this.notice,
-            supplyBonus: this.input.supplyBonus ? 1 : 0,
-            supplyDiscount: this.input.supplyDiscount ? 1 : 0
+            notice: this.notice
           };
           Object.assign(param, this.input);
+          param.supplyBonus = this.input.supplyBonus ? 1 : 0;
+          param.supplyDiscount = this.input.supplyDiscount ? 1 : 0;
           await vip.create(param);
         } else {
           const param = this.input;
@@ -144,6 +144,9 @@
       this.card = await vip.info();
       if (!this.card) {
         this.mode = 'create';
+        this.card = {};
+        this.card.bonusRule = null;
+        this.card.discountRules = [];
       } else {
         this.mode = 'update';
         this.input = this.card;
@@ -164,9 +167,11 @@
     };
     bonusUpdate (data) {
       this.card.bonusRule = data;
+      this.input.bonusRule = data;
     };
     discountUpdate(param) {
       this.card.discountRules = param;
+      this.input.discountRules = param;
     };
     validate () {
       const {supplyBonus, supplyDiscount, discountRules, bonusRule} = this.input;

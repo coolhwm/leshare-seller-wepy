@@ -5,7 +5,8 @@
 
       <NavMemberUser title="会员" url="/pages/manusl/customer_list?selectedId=MEMBERS"/>
     </view>
-    <view class="weui-cells" wx:if="{{memberCardInfo && supplyDiscount == 1}}">
+    <view class="mt20"/>
+    <view class="weui-cells weui-cells_after-title" wx:if="{{memberCardInfo && memberCardInfo.supplyDiscount == 1}}">
       <repeat for="{{discountRules}}" key="index" index="index" item="item">
         <!-- 等级 -->
         <view class="weui-cell weui-cell_access" @tap="screen({{item.level}})">
@@ -25,7 +26,7 @@
     def = {
       init: false,
       memberCardInfo: {},
-      discountRules: {}
+      discountRules: []
     };
     data = {...this.def};
     async onLoad () {
