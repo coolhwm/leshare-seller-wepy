@@ -2,8 +2,8 @@
   <Tips/>
   <view wx:if="{{init}}">
     <view class="container box-bg">
-      <VipCard :member.sync="customerMember" :vipCard.sync="memberCardInfo" :userInfo.sync="customerInfo"
-            @detail.user="detail"/>
+      <VipCard :member.sync="member" :vipCard.sync="card" :userInfo.sync="customer"
+               @detail.user="detail"/>
       <view class="weui-cells weui-cells-form"  wx:if="{{result == null}}">
         <view class="weui-cell weui-cell_input">
           <view class="weui-cell__hd">
@@ -14,7 +14,7 @@
                    type="number" maxlength="6" placeholder="请输入消费金额"/>
           </view>
         </view>
-        <view class="weui-cell" wx:if="{{memberCardInfo.supplyBonus == 1}}">
+        <view class="weui-cell" wx:if="{{card.supplyBonus == 1}}">
           <view class="weui-cell__hd">
             <view class="weui-label">累计积分</view>
           </view>
@@ -68,10 +68,9 @@
   export default class VipScan extends wepy.page {
     def = {
       init: false,
-      customerInfo: {},
-      customerMember: {},
-      memberCardInfo: {},
-      bonus: null,
+      customer: {},
+      member: {},
+      card: {},
       scene: null,
       message: null,
       result: null
@@ -87,23 +86,24 @@
         // 扫描二维码进入
         if (options.scene) {
           this.scene = decodeURIComponent(options.scene);
-          this.customerMember = await member.Info(options.scene);
-          const {customer} = await userInfo.detailInfo(this.customerMember.customerId);
-          this.customerInfo = customer;
-          this.memberCardInfo = await member.cardInfo();
+          this.member = await member.Info(options.scene);
+          const {customer} = await userInfo.detailInfo(this.member.customerId);
+          this.customer = customer;
+          this.card = await member.cardInfo();
         }
         // 用户信息进入
         if (preload) {
-          this.memberCardInfo = await member.cardInfo();
-          const {customer} = preload.data.customerInfo;
-          this.customerInfo = customer;
-          this.customerMember = preload.data.customerMember;
-          this.scene = this.customerMember.memberNumber;
+          this.card = await member.cardInfo();
+          const {customer} = preload.data.customer;
+          this.customer = customer;
+          this.member = preload.data.member;
+          this.scene = this.member.memberNumber;
         }
         this.loaded();
       } catch (e) {
         this.message = e.message;
         this.$apply();
+        console.error(e);
         Tips.error(e.message);
       }
     };
@@ -118,7 +118,7 @@
         }
         const param = {
           addBonus: this.bonus,
-          cardNumber: this.customerMember.memberNumber,
+          cardNumber: this.scene,
           costMoney: this.input.price,
           type: 'OFFLINE_ORDER_ADD'
         };
@@ -126,16 +126,16 @@
         await Tips.success('消费已完成');
         const params = {
           bonus: this.bonus,
-          customerMember: this.customerMember
+          customer: this.customer
         };
         this.result = `消费${this.input.price}元` + (this.bonus > 0 ? `，累计积分${this.bonus}` : '');
-        this.customerMember = await member.Info(this.scene);
+        this.member = await member.Info(this.scene);
         this.input.price = null;
         Event.emit(Event.SHOP_CUSTOMER_UPDATE, params);
         this.loaded();
       },
       detail () {
-        this.$navigate(`/pages/customer/info?customerId=${this.customerInfo.id}`);
+        this.$navigate(`/pages/customer/info?customerId=${this.customer.id}`);
       }
     };
     async scan() {
@@ -186,15 +186,23 @@
       return this.check(rules);
     }
     computed = {
+      bonus () {
+        if (this.card == null) return;
+        const {bonusRule, supplyBonus} = this.card;
+        if (bonusRule == null || supplyBonus == 0) {
+          return 0;
+        }
+        return Math.floor(this.input.price / bonusRule.costMoneyUnit) * bonusRule.increaseBonus;
+      },
       okText () {
         return this.result ? '继续扫描' : '确定';
       },
       bonusRuleText() {
-        if (this.memberCardInfo == null) return;
-        const rule = this.memberCardInfo.bonusRule;
+        if (this.card == null) return;
+        const rule = this.card.bonusRule;
         let describes = [];
         // 开启积分规则
-        if (this.memberCardInfo.supplyBonus == 1 && this.memberCardInfo.bonusRule != null) {
+        if (this.card.supplyBonus == 1 && this.card.bonusRule != null) {
           // 有初始积分的情况
           if (rule.initIncreaseBonus > 0) {
             describes.push(`注册绑定手机开卡即送 ${rule.initIncreaseBonus} 积分`);
@@ -205,9 +213,9 @@
         return describes;
       },
       discountRuleText() {
-        if (this.memberCardInfo == null) return;
-        const rules = this.memberCardInfo.discountRules;
-        if (this.memberCardInfo.supplyDiscount == 0 || rules == null) return;
+        if (this.card == null) return;
+        const rules = this.card.discountRules;
+        if (this.card.supplyDiscount == 0 || rules == null) return;
         const describes = [];
         // 有折扣的情况
         for (let rule of rules) {
@@ -222,19 +230,6 @@
       }
     };
     mixins = [base, input];
-    watch = {
-      input (input) {
-        const bonusRule = this.memberCardInfo.bonusRule;
-        if (bonusRule != null) {
-          if ((input.price % bonusRule.costMoneyUnit) == 0) {
-            this.bonus = (bonusRule.increaseBonus / bonusRule.costMoneyUnit) * input.price;
-          } else {
-            this.bonus = (bonusRule.increaseBonus / bonusRule.costMoneyUnit) * (input.price - (input.price % bonusRule.costMoneyUnit));
-          }
-          this.$apply();
-        }
-      }
-    }
   }
 </script>
 

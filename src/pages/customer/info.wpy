@@ -8,13 +8,13 @@
 
         <!--左侧头像-->
         <image class="customer-avatar"
-               src="{{customerInfo.customer.avatarUrl ? customerInfo.customer.avatarUrl: '/images/icons/customer.png'}}"/>
+               src="{{customer.customer.avatarUrl ? customer.customer.avatarUrl: '/images/icons/customer.png'}}"/>
 
         <!--右侧主区域-->
         <view class="column customer-main-box">
           <!--姓名/打电话-->
           <view class="row-between">
-            <text class="xxl">{{customerInfo.customer.nickName}}</text>
+            <text class="xxl">{{customer.customer.nickName}}</text>
             <image class="icon" src="/images/icons/call.png" @tap.stop="phone"/>
           </view>
 
@@ -22,8 +22,8 @@
           <view class="row-between" @tap.stop="addressList({{customerId}})">
             <!--地址/电话-->
             <view class="column address-box">
-              <text>电话：{{customerInfo.address ? customerInfo.address.phone : '暂无电话'}}</text>
-              <text>地址：{{customerInfo.address ? customerInfo.address.fullAddress : '暂无地址'}}</text>
+              <text>电话：{{customer.address ? customer.address.phone : '暂无电话'}}</text>
+              <text>地址：{{customer.address ? customer.address.fullAddress : '暂无地址'}}</text>
             </view>
             <!--更多地址-->
             <image class="icon" src="/images/icons/more-gray.png"></image>
@@ -33,17 +33,17 @@
       </view>
 
       <view class="customer-hr"></view>
-      <view class="row-between vip-column" @tap="moreVip" wx:if="{{customerMember != null}}">
+      <view class="row-between vip-column" @tap="moreVip" wx:if="{{member != null}}">
         <image class="card-image" src="/images/icons/vip_card.png"/>
         <view class="row-between">
-          <text class="muted">会员等级 : {{customerMember.discountRule.levelName}}</text>
+          <text class="muted">会员等级 : {{member.discountRule.levelName}}</text>
           <view class="vertical-line"/>
-          <text class="muted">当前积分 : {{customerMember.bonus}}</text>
+          <text class="muted">当前积分 : {{member.bonus}}</text>
           <image class="more-image" src="/images/icons/more-gray.png"/>
         </view>
-        <text class="muted" wx:if="{{customerMember == null}}">暂未注册</text>
+        <text class="muted" wx:if="{{member == null}}">暂未注册</text>
       </view>
-      <view class="row vip-column" @tap="moreVip" wx:if="{{customerMember == null}}">
+      <view class="row vip-column" @tap="moreVip" wx:if="{{member == null}}">
         <image class="card-image" src="/images/icons/vip_card.png"/>
         <text class="muted ml20">暂未注册</text>
       </view>
@@ -51,19 +51,19 @@
       <!--客户统计信息-->
       <view class="count-box row-around bg-white">
         <view class="count-item column-center">
-          <text class="count-value">{{customerInfo.countCustomerInfo.lastOrderTime}}</text>
+          <text class="count-value">{{customer.countCustomerInfo.lastOrderTime}}</text>
           <text class="muted">最近购买</text>
         </view>
         <view class="count-item column-center">
-          <text class="count-value">￥{{customerInfo.countCustomerInfo.totalPrice}}</text>
+          <text class="count-value">￥{{customer.countCustomerInfo.totalPrice}}</text>
           <text class="muted">交易总额</text>
         </view>
         <view class="count-item column-center">
-          <text class="count-value">{{customerInfo.countCustomerInfo.totalOrderCount}}次</text>
+          <text class="count-value">{{customer.countCustomerInfo.totalOrderCount}}次</text>
           <text class="muted">购买次数</text>
         </view>
         <view class="count-item column-center">
-          <text class="count-value">{{customerInfo.countCustomerInfo.totalCouponCount}}张</text>
+          <text class="count-value">{{customer.countCustomerInfo.totalCouponCount}}张</text>
           <text class="muted">卡卷数量</text>
         </view>
       </view>
@@ -124,9 +124,9 @@
     def = {
       init: false,
       attention: false,
-      customerInfo: {},
+      customer: {},
       customerId: '',
-      customerMember: {},
+      member: {},
       page: {
         list: [
           {orderGoodsInfos: []}
@@ -149,9 +149,9 @@
 
     async onLoad (options) {
       this.customerId = options.customerId;
-      this.customerMember = await member.customerInfo(this.customerId);
+      this.member = await member.customerInfo(this.customerId);
       this.tab.selectedId = 'HIS_ORDER';
-      this.customerInfo = await customerInfo.detailInfo(this.customerId);
+      this.customer = await customerInfo.detailInfo(this.customerId);
       this.page = order.hisPage(this.customerId);
       this.next();
       Event.listen(Event.CUSOMTER_COUPON_UPDATE, this.updateInfo.bind(this), this);
@@ -159,20 +159,20 @@
     };
     updateInfo () {
       this.update();
-      this.customerInfo.countCustomerInfo.totalCouponCount++;
+      this.customer.countCustomerInfo.totalCouponCount++;
       this.$apply();
     }
     async updateMemberInfo (params) {
-      this.customerMember = await member.customerInfo(this.customerId);
+      this.member = await member.customerInfo(this.customerId);
       this.$apply();
     }
 
     methods = {
       moreVip () {
-        if (this.customerMember) {
+        if (this.member) {
           const params = {
-            customerInfo: this.customerInfo,
-            customerMember: this.customerMember
+            customer: this.customer,
+            member: this.member
           };
           this.$preload('data', params);
           this.$navigate('/pages/vip/vip_scan');
@@ -185,14 +185,14 @@
         this.$navigate('./coupon_send', {customerId});
       },
       phone () {
-        if (this.customerInfo.address) {
-          wepy.makePhoneCall({phoneNumber: this.customerInfo.address.phone});
+        if (this.customer.address) {
+          wepy.makePhoneCall({phoneNumber: this.customer.address.phone});
         } else {
           Tips.alert('该用户没有电话');
         }
       },
       addressList (customerId) {
-        if (!this.customerInfo.addressList) {
+        if (!this.customer.addressList) {
           Tips.alert('该用户没有地址');
           return;
         }
@@ -236,70 +236,70 @@
 </script>
 
 <style lang="scss">
-    @import "../../styles/variable";
+  @import "../../styles/variable";
 
-    .customer-box {
-        margin-bottom: rpx(10);
-        border-bottom: $border;
+  .customer-box {
+    margin-bottom: rpx(10);
+    border-bottom: $border;
+  }
+
+  .customer-main-box {
+    flex: 1;
+    padding-left: rpx(25);
+  }
+
+  .customer-info-box {
+    padding: rpx(30);
+    background-color: #FFF;
+
+    .customer-avatar {
+      @include icon-round(rpx(180));
     }
 
-    .customer-main-box {
-        flex: 1;
-        padding-left: rpx(25);
+    .address-box {
+      max-width: rpx(430);
+      text {
+        color: $color-muted;
+        font-size: $text-sm;
+        word-break: break-all;
+      }
     }
+  }
 
-    .customer-info-box {
-        padding: rpx(30);
-        background-color: #FFF;
+  .customer-hr {
+    width: 100%;
+    border-top: $border;
+  }
 
-        .customer-avatar {
-            @include icon-round(rpx(180));
-        }
-
-        .address-box {
-            max-width: rpx(430);
-            text {
-                color: $color-muted;
-                font-size: $text-sm;
-                word-break: break-all;
-            }
-        }
+  /*统计区域*/
+  .count-box {
+    padding: rpx(20) 0;
+    .count-item {
+      width: rpx(250);
     }
+  }
 
-    .customer-hr {
-        width: 100%;
-        border-top: $border;
+  .vip-column {
+    background-color: white;
+    padding: rpx(20) rpx(30);
+    .card-image {
+      width: rpx(50);
+      height: rpx(50);
+      margin-right: rpx(20);
     }
+    .more-image {
+      width: rpx(50);
+      height: rpx(50);
+      margin-left: rpx(40);
+    }
+    .vertical-line {
+      width: rpx(2);
+      height: rpx(30);
+      background-color: $color-muted;
+    }
+  }
 
-    /*统计区域*/
-    .count-box {
-        padding: rpx(20) 0;
-        .count-item {
-            width: rpx(250);
-        }
-    }
-
-    .vip-column {
-        background-color: white;
-        padding: rpx(20) rpx(30);
-        .card-image {
-            width: rpx(50);
-            height: rpx(50);
-            margin-right: rpx(20);
-        }
-        .more-image {
-            width: rpx(50);
-            height: rpx(50);
-            margin-left: rpx(40);
-        }
-        .vertical-line {
-            width: rpx(2);
-            height: rpx(30);
-            background-color: $color-muted;
-        }
-    }
-
-    .row-between {
-        flex: 1;
-    }
+  .row-between {
+    flex: 1;
+  }
 </style>

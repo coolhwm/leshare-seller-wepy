@@ -63,16 +63,6 @@
       },
       vipDetail(member, userInfo, vipCard) {
         this.$emit('detail', userInfo);
-//        if (this.type == 'detail') {
-//          return;
-//        }
-//        const params = {
-//          member: member,
-//          userInfo: userInfo,
-//          vipCard: vipCard
-//        };
-//        this.$root.$preload('param', params);
-//        this.$root.$navigate('/pages/customer/vip_detail');
       },
       canvas(member, userInfo, vipCard) {
         const params = {
