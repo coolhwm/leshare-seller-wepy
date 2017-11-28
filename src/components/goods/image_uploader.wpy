@@ -2,7 +2,7 @@
   <!-- 照片区域 -->
   <view class="photo-box column-center" @tap="photo" wx:if="{{pictures.length < 1}}">
     <image class="photo-btn " src="/images/icons/camera.png"></image>
-    <text class="mt10">添加商品图片</text>
+    <text class="mt10">{{title}}</text>
   </view>
 
   <!-- 照片轮播区域-->
@@ -49,6 +49,9 @@
   import WxUtils from '../../utils/WxUtils';
   export default class GoodsImageUploader extends wepy.component {
     props = {
+      title: {
+        default: '点击添加图片'
+      },
       pictures: {
         twoWay: true
       },
