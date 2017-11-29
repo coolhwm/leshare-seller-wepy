@@ -100,7 +100,8 @@
         if (this.type) {
           WxUtils.backOrNavigate('/pages/customer/info?customerId=' + customerId);
         } else {
-          WxUtils.backOrNavigate('/pages/manusl/index?customerId=' + customerId);
+          Event.emit(Event.SHOP_CUSTOMER_UPDATE, customerId);
+          WxUtils.backOrNavigate('/pages/manusl/index');
         }
       }
     };
