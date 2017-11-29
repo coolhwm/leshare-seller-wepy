@@ -213,7 +213,7 @@
   }
 
   .cart-list{
-    margin-top: 75rpx;
+    margin-top: 40rpx;
     padding-left: 30rpx;
     padding-right: 30rpx;
     background-color: #FFF;
