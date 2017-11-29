@@ -31,6 +31,7 @@
   import CustomerItem from '../../components/customer/item';
   import ActionBar from '../../components/common/action_bar';
   import Event from '../../utils/Event';
+  import WxUtils from '../../utils/WxUtils'
   export default class CustomerList extends wepy.page {
     def = {
       init: false,
@@ -43,19 +44,23 @@
           {id: 'MEMBERS', title: '会员用户'}
         ],
         selectedId: 'CUSTOMERS'
-      }
+      },
+      level: 1,
+      type: null
     };
     data = {...this.def};
     async onLoad(option) {
-      if (option.selectedId != null) {
-        this.tab.selectedId = option.selectedId;
+      if (option.params != null) {
+        const {type, level, selectedId} = JSON.parse(option.params);
+        this.type = type;
+        this.tab.selectedId = selectedId;
+        this.level = level;
         await this.getRequest();
-        await this.next();
       } else {
         this.tab.selectedId = 'CUSTOMERS';
         this.page = await mausl.customersList();
-        await this.next();
       }
+      await this.next();
       Event.listen(Event.SHOP_CUSTOMER_UPDATE, this.updataMemberList.bind(this), this);
       this.loaded();
     };
@@ -63,12 +68,16 @@
       this.selectedId = selectedId;
       this.reload();
     };
+    params () {
+      return {level: this.level}
+    };
     events = {
       async change () {
         this.$apply();
         if (this.tab.selectedId == 'CUSTOMERS') {
           this.page = mausl.customersList();
         } else if (this.tab.selectedId == 'MEMBERS') {
+          this.level = 1;
           this.page = mausl.membersList();
         }
         await this.next();
@@ -88,8 +97,11 @@
         this.$root.$navigate('/pages/vip/registe_member');
       },
       info(customerId) {
-        console.log(customerId + 'ddddd');
-        this.$root.$navigate('/pages/manusl/index?customerId=' + customerId);
+        if (this.type) {
+          WxUtils.backOrNavigate('/pages/customer/info?customerId=' + customerId);
+        } else {
+          WxUtils.backOrNavigate('/pages/manusl/index?customerId=' + customerId);
+        }
       }
     };
     components = {

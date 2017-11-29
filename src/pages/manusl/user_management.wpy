@@ -1,15 +1,20 @@
 <template>
   <view class="container" wx:if="{{init}}">
-    <view class="weui-cells weui-cells_after-title">
-      <NavAllUser title="全部客户" url="/pages/manusl/customer_list?selectedId=CUSTOMERS"/>
-
-      <NavMemberUser title="会员" url="/pages/manusl/customer_list?selectedId=MEMBERS"/>
+    <view class="weui-cells weui-cells-form">
+      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(null, 'CUSTOMERS')">
+        <view class="weui-cell__bd">全部客户</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"/>
+      </view>
+      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(1, 'MEMBERS')">
+        <view class="weui-cell__bd">会员</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"/>
+      </view>
     </view>
     <view class="mt20"/>
-    <view class="weui-cells weui-cells_after-title" wx:if="{{memberCardInfo && memberCardInfo.supplyDiscount == 1}}">
+    <view class="weui-cells weui-cells-form" wx:if="{{card && card.supplyDiscount == 1}}">
       <repeat for="{{discountRules}}" key="index" index="index" item="item">
         <!-- 等级 -->
-        <view class="weui-cell weui-cell_access" @tap="screen({{item.level}})">
+        <view class="weui-cell weui-cell_access" @tap="screen({{item.level}}, 'MEMBERS')">
           <view class="weui-cell__bd">{{item.levelName}}</view>
           <text class="weui-cell__ft weui-cell__ft_in-access"/>
         </view>
@@ -22,27 +27,31 @@
   import member from '../../api/member'
   import base from '../../mixins/base';
   import Navigator from '../../components/weui/navigator';
+  import WxUtils from '../../utils/WxUtils'
   export default class UserManagement extends wepy.page {
     def = {
       init: false,
-      memberCardInfo: {},
-      discountRules: []
+      card: {},
+      discountRules: [],
+      type: null
     };
     data = {...this.def};
-    async onLoad () {
-      this.memberCardInfo = await member.cardInfo();
-      if (this.memberCardInfo) {
-        this.discountRules = this.memberCardInfo.discountRules;
+    async onLoad (option) {
+      this.type = option.type;
+      this.card = await member.cardInfo();
+      if (this.card) {
+        this.discountRules = this.card.discountRules;
       }
       this.loaded();
     };
-    mathods = {
-      screen (level) {
+    methods = {
+      screen (level, selectedId) {
         const params = {
+          type: this.type,
           level: level,
-          selectedId: 'MEMBER'
+          selectedId: selectedId
         };
-        this.$root.$navigate(`/pages/manusl/customer_list?params=${params}`);
+        WxUtils.backOrNavigate('/pages/manusl/customer_list?params=' + JSON.stringify(params));
       }
     };
     mixins = [base];
