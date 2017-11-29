@@ -51,7 +51,7 @@
       <!--客户统计信息-->
       <view class="count-box row-around bg-white">
         <view class="count-item column-center">
-          <text class="count-value">{{customerInfo.countCustomerInfo.lastOrderTime}}</text>
+          <text class="count-value">{{customerInfo.countCustomerInfo.lastOrderTime ? customerInfo.countCustomerInfo.lastOrderTime : '0次'}}</text>
           <text class="muted">最近购买</text>
         </view>
         <view class="count-item column-center">
