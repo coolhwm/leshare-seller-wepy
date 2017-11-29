@@ -1,7 +1,9 @@
 <template>
   <view class="container" wx:if="{{init}}">
     <!--TAB 页-->
-    <ZanTab :tab.sync="tab" fixed="0"/>
+    <view wx:if="{{showBar == 0}}">
+      <ZanTab :tab.sync="tab" fixed="0"/>
+    </view>
 
     <repeat for="{{page.list}}" key="index" index="index" item="item">
       <view @tap.stop="info({{item.customerId}})">
@@ -45,20 +47,19 @@
         ],
         selectedId: 'CUSTOMERS'
       },
-      level: 1,
-      type: null
+      level: null,
+      type: null,
+      showBar: null
     };
     data = {...this.def};
     async onLoad(option) {
       if (option.params != null) {
-        const {type, level, selectedId} = JSON.parse(option.params);
+        const {type, level, selectedId, showBar} = JSON.parse(option.params);
         this.type = type;
         this.tab.selectedId = selectedId;
         this.level = level;
+        this.showBar = showBar;
         await this.getRequest();
-      } else {
-        this.tab.selectedId = 'CUSTOMERS';
-        this.page = await mausl.customersList();
       }
       await this.next();
       Event.listen(Event.SHOP_CUSTOMER_UPDATE, this.updataMemberList.bind(this), this);
@@ -69,18 +70,14 @@
       this.reload();
     };
     params () {
-      return {level: this.level}
+      if (this.level && this.level != 0) {
+        return {level: this.level}
+      }
     };
     events = {
       async change () {
         this.$apply();
-        if (this.tab.selectedId == 'CUSTOMERS') {
-          this.page = mausl.customersList();
-        } else if (this.tab.selectedId == 'MEMBERS') {
-          this.level = 1;
-          this.page = mausl.membersList();
-        }
-        await this.next();
+        await this.getRequest();
       }
     };
 
@@ -90,7 +87,7 @@
       } else if (this.tab.selectedId == 'MEMBERS') {
         this.page = mausl.membersList();
       }
-      return this.page;
+      await this.next();
     }
     methods = {
       add () {

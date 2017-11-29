@@ -1,11 +1,11 @@
 <template>
   <view class="container" wx:if="{{init}}">
     <view class="weui-cells weui-cells-form">
-      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(null, 'CUSTOMERS')">
+      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="toList(0, 'CUSTOMERS')">
         <view class="weui-cell__bd">全部客户</view>
         <view class="weui-cell__ft weui-cell__ft_in-access"/>
       </view>
-      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(1, 'MEMBERS')">
+      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="toList(1, 'MEMBERS')">
         <view class="weui-cell__bd">会员</view>
         <view class="weui-cell__ft weui-cell__ft_in-access"/>
       </view>
@@ -45,6 +45,13 @@
       this.loaded();
     };
     methods = {
+      toList (showBar, selectedId) {
+        const params = {
+          showBar: showBar,
+          selectedId: selectedId
+        };
+        WxUtils.backOrNavigate('/pages/manusl/customer_list?params=' + JSON.stringify(params));
+      },
       screen (level, selectedId) {
         const params = {
           type: this.type,
@@ -60,7 +67,7 @@
       NavMemberUser: Navigator
     };
     config = {
-      navigationBarTitleText: '客服管理'
+      navigationBarTitleText: '用户管理'
     };
   }
 </script>

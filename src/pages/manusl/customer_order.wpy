@@ -60,7 +60,7 @@
         scroll: false
       },
       status: '2',
-      memberId: 1,
+      memberId: 0,
       customerId: null
     };
     async onLoad (options) {

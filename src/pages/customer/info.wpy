@@ -144,7 +144,7 @@
       order: {},
       good: {},
       coupon: {},
-      memberId: 1
+      memberId: 0
     };
     data = {...this.def};
 
@@ -218,13 +218,15 @@
         this.page.clear();
         this.$apply();
         if (this.tab.selectedId == 'HIS_ORDER') {
-          this.page = order.hisPage(this.customerId, this.memberId);
+          this.page = order.hisPage();
         } else if (this.tab.selectedId == 'OFTEN_GOODS') {
           this.page = await goods.oftenGoodsPage(this.customerId);
         } else if (this.tab.selectedId == 'COUPON') {
           this.page = await coupon.cutomerCouponPage(this.customerId);
         } else if (this.tab.selectedId == 'HIS_BONUS') {
-          this.page = await member.bonusPage(this.customerId);
+          if (this.memberId != 0) {
+            this.page = await member.bonusPage(this.customerId);
+          }
         }
         this.next();
       }

@@ -67,7 +67,7 @@
         {id: 1, name: 'wman', value: '女'}
       ],
       registeInfo: {},
-      init: false,
+      init: false
     };
     data = {...this.def};
 
