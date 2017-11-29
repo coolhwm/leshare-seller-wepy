@@ -13,7 +13,7 @@
 
     <!--操作栏-->
     <view wx:if="{{tab.selectedId == 'MEMBERS'}}">
-      <ActionBar @tap.user="add" okText="注册会员" cancelText="返回" />
+      <ActionBar @tap.user="add" okText="注册会员" cancelText="返回"/>
     </view>
     <!-- 加载提示 -->
     <Loadmore :page.sync="page"/>
@@ -33,7 +33,8 @@
   import CustomerItem from '../../components/customer/item';
   import ActionBar from '../../components/common/action_bar';
   import Event from '../../utils/Event';
-  import WxUtils from '../../utils/WxUtils'
+  import WxUtils from '../../utils/WxUtils';
+
   export default class CustomerList extends wepy.page {
     def = {
       init: false,
@@ -52,7 +53,8 @@
       showBar: null
     };
     data = {...this.def};
-    async onLoad(option) {
+
+    async onLoad (option) {
       if (option.params != null) {
         const {type, level, selectedId, showBar} = JSON.parse(option.params);
         this.type = type;
@@ -65,15 +67,18 @@
       Event.listen(Event.SHOP_CUSTOMER_UPDATE, this.updataMemberList.bind(this), this);
       this.loaded();
     };
+
     updataMemberList (selectedId) {
       this.selectedId = selectedId;
       this.reload();
     };
+
     params () {
       if (this.level && this.level != 0) {
-        return {level: this.level}
+        return {level: this.level};
       }
     };
+
     events = {
       async change () {
         this.$apply();
@@ -89,11 +94,12 @@
       }
       await this.next();
     }
+
     methods = {
       add () {
         this.$root.$navigate('/pages/vip/registe_member');
       },
-      info(customerId) {
+      info (customerId) {
         if (this.type) {
           WxUtils.backOrNavigate('/pages/customer/info?customerId=' + customerId);
         } else {
