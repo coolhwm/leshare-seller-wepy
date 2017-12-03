@@ -1,11 +1,11 @@
 <template>
   <view class="container" wx:if="{{init}}">
     <view class="weui-cells weui-cells-form">
-      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(0, 'CUSTOMERS', 0)">
+      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(0, null)">
         <view class="weui-cell__bd">全部客户</view>
         <view class="weui-cell__ft weui-cell__ft_in-access"/>
       </view>
-      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(0, 'MEMBERS', 1)">
+      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(1, null)">
         <view class="weui-cell__bd">会员</view>
         <view class="weui-cell__ft weui-cell__ft_in-access"/>
       </view>
@@ -14,7 +14,7 @@
     <view class="weui-cells weui-cells-form" wx:if="{{card && card.supplyDiscount == 1}}">
       <repeat for="{{discountRules}}" key="index" index="index" item="item">
         <!-- 等级 -->
-        <view class="weui-cell weui-cell_access" @tap="screen({{item.level}}, 'MEMBERS', 1)">
+        <view class="weui-cell weui-cell_access" @tap="screen(1,{{item.level}})">
           <view class="weui-cell__bd">{{item.levelName}}</view>
           <text class="weui-cell__ft weui-cell__ft_in-access"/>
         </view>
@@ -27,7 +27,6 @@
   import member from '../../api/member';
   import base from '../../mixins/base';
   import Navigator from '../../components/weui/navigator';
-  import WxUtils from '../../utils/WxUtils';
 
   export default class UserManagement extends wepy.page {
     def = {
@@ -48,14 +47,13 @@
     };
 
     methods = {
-      screen (level, selectedId, showBar) {
+      screen (showCondition, level) {
         const params = {
-          showBar: showBar,
           type: this.type,
           level: level,
-          selectedId: selectedId
+          showCondition: showCondition
         };
-        WxUtils.backOrNavigate('/pages/manusl/customer_list?params=' + JSON.stringify(params));
+        this.$root.$navigate('/pages/manusl/test?params=' + JSON.stringify(params));
       }
     };
     mixins = [base];

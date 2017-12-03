@@ -123,7 +123,7 @@
   import mausl from '../../api/mausl'
   import FormTips from '../../components/weui/tips';
   import ActionBar from '../../components/common/action_bar';
-  import OrderItem from '../../components/manusl/customer_item';
+  import OrderItem from '../../components/manusl/goods_item';
   import InShopTab from '../../components/order/inshop_status';
   import AddressSelector from '../../components/manusl/selector';
   import Tips from '../../utils/Tips';

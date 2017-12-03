@@ -84,7 +84,7 @@
         try {
           await member.registe(this.registeInfo);
           await Tips.success('注册成功');
-          Event.emit(Event.SHOP_CUSTOMER_UPDATE, 'MEMBERS');
+          Event.emit(Event.SHOP_CUSTOMER_UPDATE, 1);
           wepy.navigateBack();
         } catch (error) {
           this.tips(error.message);

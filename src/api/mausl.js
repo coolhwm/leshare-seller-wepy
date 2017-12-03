@@ -55,18 +55,11 @@ export default class mausl extends base {
   }
 
   /**
-   * 卖家获取普通用户列表
+   * 卖家获取用户列表
    */
-  static customersList () {
-    const url = `${this.baseUrl}/customers/list`;
-    return new Page(url, item => this._processUserInfo(item));
-  }
-  /**
-   * 卖家获取会员用户列表
-   */
-  static membersList () {
-    const url = `${this.baseUrl}/members/list`;
-    return new Page(url, item => this._processUserInfo(item));
+  static customersList (selectedId) {
+    const url = `${this.baseUrl}/customers/sort_list`;
+    return new Page(url, item => this._processUserInfo(item, selectedId));
   }
   /**
    * 查找买家默认地址
@@ -352,23 +345,63 @@ export default class mausl extends base {
   /**
    * 用户信息处理
    */
-  static _processUserInfo (item) {
-    const userInfo = {};
-    userInfo.customerId = item.id;
-    if (!item.id) {
-      userInfo.customerId = item.customerId;
+  static _processUserInfo (item, selectedId) {
+    const data = {};
+    data.countValue = item.countValue;
+    switch (selectedId) {
+      case 1 : data.key = '最近购买：';
+        break;
+      case 2 : data.key = '购买次数：';
+        break;
+      case 3 : data.key = '购买金额：';
+        break;
     }
-    userInfo.memberId = item.memberId;
-    userInfo.avatar = item.avatarUrl;
-    userInfo.name = item.nickName;
-    if (!item.nickName) {
-      userInfo.name = item.remarkName;
+    if (item.customer && item.member) {
+      data.memberId = item.member.memberId;
+      data.customerId = item.customer.id;
+      data.avatarUrl = item.customer.avatarUrl;
+      data.bound = '/images/icons/bound.png';
+      switch (item.member.level) {
+        case 1 : data.level = '/images/icons/vip-1.png';
+          break;
+        case 2 : data.level = '/images/icons/vip-2.png';
+          break;
+        case 3 : data.level = '/images/icons/vip-3.png';
+          break;
+        case 4 : data.level = '/images/icons/vip-4.png';
+          break;
+        case 5 : data.level = '/images/icons/vip-5.png';
+          break;
+      }
+      if (item.member.remarkName) {
+        data.nickName = item.member.remarkName;
+      } else {
+        data.nickName = item.customer.nickName;
+      }
+    } else if (item.customer && !item.member) {
+      data.bound = null;
+      data.level = null;
+      data.customerId = item.customer.id;
+      data.nickName = item.customer.nickName;
+      data.avatarUrl = item.customer.avatarUrl;
+    } else if (!item.customer && item.member) {
+      data.memberId = item.member.memberId;
+      data.bound = '/images/icons/unbound.png';
+      switch (item.member.level) {
+        case 1 : data.level = '/images/icons/vip-1.png';
+          break;
+        case 2 : data.level = '/images/icons/vip-2.png';
+          break;
+        case 3 : data.level = '/images/icons/vip-3.png';
+          break;
+        case 4 : data.level = '/images/icons/vip-4.png';
+          break;
+        case 5 : data.level = '/images/icons/vip-5.png';
+          break;
+      }
+      data.nickName = item.member.remarkName;
+      data.avatarUrl = null;
     }
-    userInfo.key = '创建时间：';
-    userInfo.value = item.createTime;
-    if (!item.createTime) {
-      userInfo.value = item.acceptTime;
-    }
-    return userInfo;
+    return data;
   }
 }

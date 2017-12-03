@@ -175,11 +175,8 @@
     methods = {
       // 跳转到客服管理
       chooseUser() {
-        if (this.customerId) {
-          this.$root.$navigate('/pages/manusl/customer_list');
-        } else {
-          this.$root.$navigate('/pages/manusl/user_management');
-        }
+        console.log('chooseUser');
+        this.$root.$navigate('/pages/manusl/user_management');
       },
       // 点击分类
       switchTab() {

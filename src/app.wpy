@@ -123,7 +123,9 @@
         'pages/manusl/trade',
         'pages/manusl/customer_list',
         'pages/manusl/select_address',
-        'pages/manusl/user_management'
+        'pages/manusl/user_management',
+        'pages/manusl/test',
+        'pages/manusl/member_list'
       ],
       window: {
         backgroundTextStyle: 'dark',
