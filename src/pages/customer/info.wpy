@@ -156,7 +156,7 @@
       }
       this.tab.selectedId = 'HIS_ORDER';
       this.customerInfo = await customerInfo.detailInfo(this.customerId);
-      this.page = order.hisPage(this.customerId, this.memberId);
+      this.page = order.hisPage();
       this.next();
       Event.listen(Event.CUSOMTER_COUPON_UPDATE, this.updateInfo.bind(this), this);
       Event.listen(Event.SHOP_CUSTOMER_UPDATE, this.updateMemberInfo.bind(this), this);
@@ -224,9 +224,11 @@
         } else if (this.tab.selectedId == 'COUPON') {
           this.page = await coupon.cutomerCouponPage(this.customerId);
         } else if (this.tab.selectedId == 'HIS_BONUS') {
-          if (this.memberId != 0) {
-            this.page = await member.bonusPage(this.customerId);
+          if (this.memberId == 0) {
+            Tips.error('该用户不是会员');
+            return
           }
+          this.page = await member.bonusPage(this.customerId);
         }
         this.next();
       }
