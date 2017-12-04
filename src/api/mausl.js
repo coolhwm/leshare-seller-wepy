@@ -385,6 +385,7 @@ export default class mausl extends base {
       } else {
         data.nickName = item.customer.nickName;
       }
+      data.phone = item.member.phone;
     } else if (item.customer && !item.member) {
       data.bound = null;
       data.level = null;
@@ -392,9 +393,10 @@ export default class mausl extends base {
       data.customerId = item.customer.id;
       data.nickName = item.customer.nickName;
       data.avatarUrl = item.customer.avatarUrl;
+      data.phone = item.customer.phone;
     } else if (!item.customer && item.member) {
       data.memberId = item.member.memberId;
-      data.customerId = null;
+      data.customerId = item.member.customerId;
       data.bound = '/images/icons/unbound.png';
       switch (item.member.level) {
         case 1 : data.level = '/images/icons/vip-1.png';
@@ -410,6 +412,7 @@ export default class mausl extends base {
       }
       data.nickName = item.member.remarkName;
       data.avatarUrl = null;
+      data.phone = item.member.phone;
     }
     return data;
   }

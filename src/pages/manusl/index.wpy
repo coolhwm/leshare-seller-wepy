@@ -1,11 +1,11 @@
 <template>
   <view class="container" wx:if="{{init}}">
-    <view class="weui-cells weui-cells_after-title" wx:if="{{!customerId}}">
+    <view class="weui-cells weui-cells_after-title" wx:if="{{customerId == null}}">
       <view class="weui-select user-box" @tap="chooseUser">
         <image class="icon mr20" src="/images/icons/plus.png"/>请选择用户
       </view>
     </view>
-    <view wx:if="{{customerId}}">
+    <view wx:if="{{customerId != null}}">
       <!-- 用户信息 -->
       <UserInfo :userInfo.sync="customerInfo"/>
       <!--功能区域-->
@@ -13,7 +13,7 @@
     </view>
 
     <!--主内容区域-->
-    <view class="{{!customerId ? 'main-box' : 'main-box-null'}} row">
+    <view class="{{customerId == null ? 'main-box' : 'main-box-null'}} row">
       <!--分类侧边栏-->
       <SideTab :tab.sync="categories" @change.user="switchTab" />
       <!--右侧滚动-->
@@ -43,7 +43,6 @@
   import wepy from 'wepy';
   import base from '../../mixins/base';
   import pagination from '../../mixins/pagination.wpy';
-  import customerInfo from '../../api/customer_info';
   import mausl from '../../api/mausl'
   import Event from '../../utils/Event';
   import ShopNav from '../../components/manusl/nav';
@@ -98,10 +97,10 @@
       this.loaded();
     };
     // 更新用户信息
-    async updateUserInfo(customerId) {
-      this.customerId = customerId;
-      this.customerInfo = await customerInfo.detailInfo(this.customerId);
-      this.navUrl = `/pages/manusl/customer_order?customerId=${this.customerId}`;
+    async updateUserInfo(item) {
+      this.customerId = item.customerId;
+      this.navUrl = `/pages/manusl/customer_order?memberId=${item.memberId}`;
+      this.customerInfo = item;
       this.loaded();
     };
     async onShow () {

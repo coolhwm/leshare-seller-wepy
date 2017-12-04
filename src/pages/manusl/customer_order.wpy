@@ -61,10 +61,10 @@
       },
       status: '2',
       memberId: 0,
-      customerId: null
+      customerId: 0
     };
     async onLoad (options) {
-      this.customerId = options.customerId;
+      this.memberId = options.memberId;
       // 页面加载
       this.page = order.hisPage();
       await this.next();

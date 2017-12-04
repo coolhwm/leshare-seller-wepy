@@ -3,19 +3,20 @@
   <view class="customer-info-box row-between" @tap="toUserList({{userInfo.type}})">
     <!--左侧头像-->
     <image class="customer-avatar"
-           src="{{userInfo.customer.avatarUrl ? userInfo.customer.avatarUrl: '/images/icons/customer.png'}}"/>
+           src="{{userInfo.avatarUrl ? userInfo.avatarUrl: '/images/icons/customer.png'}}"/>
     <!--右侧主区域-->
     <view class="column customer-main-box">
       <!--姓名/打电话-->
       <view class="row">
-        <text class="xxl mr20 user-name-box">{{userInfo.customer.nickName ? userInfo.customer.nickName : '微信用户'}}</text>
-        <text class="lg ml20">{{userInfo.address ? userInfo.address.phone : '暂无电话'}}</text>
+        <text class="xxl mr20 user-name-box">{{userInfo.nickName ? userInfo.nickName : '微信用户'}}</text>
       </view>
       <!--地址信息-->
       <view class="row-between">
         <!--地址/电话-->
         <view class="row address-box">
-          <text class="address-text">地址：{{userInfo.address ? userInfo.address.fullAddress : '暂无地址'}}</text>
+          <text class="lg">联系电话：</text>
+          <text class="lg ml20">{{userInfo.phone ? userInfo.phone : '暂无电话'}}</text>
+          <!--<text class="address-text">地址：{{userInfo.address.fullAddress ? userInfo.address.fullAddress : '暂无地址'}}</text>-->
         </view>
       </view>
     </view>

@@ -167,10 +167,10 @@
       this.customerInfo.type = 'trade';
       if (!this.customerInfo || !isOpen) { return; }
       // 订单数据
-      this.trade.customerId = this.customerInfo.countCustomerInfo.customerId;
+      this.trade.memberId = this.customerInfo.memberId;
       this.goodsList = this.trade.orderGoodsInfos;
       // 默认地址
-      this.selectedAddress = await mausl.defaultAddress(this.trade.customerId);
+      this.selectedAddress = await mausl.defaultAddress(this.trade.memberId);
       // 店铺信息
       this.shop = await Cache.shop();
       this.trade.shopName = this.shop.name;
@@ -235,7 +235,7 @@
         this.$apply();
       },
       address () {
-        this.$root.$navigate('/pages/manusl/select_address?customerId=' + this.trade.customerId);
+        this.$root.$navigate('/pages/manusl/select_address?memberId=' + this.trade.memberId);
       },
       /**
        * 确定下单

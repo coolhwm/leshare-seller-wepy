@@ -1,7 +1,7 @@
 <template>
   <view class="container" wx:if="{{init}}">
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <view @tap.stop="toUserInfo({{item.customerId}})">
+      <view @tap.stop="toUserInfo({{item}})">
         <CustomerItem :customerInfo.sync="item"/>
       </view>
     </repeat>
@@ -20,7 +20,6 @@
   import base from '../../mixins/base';
   import CustomerItem from '../../components/manusl/customer_item';
   import Event from '../../utils/Event';
-  import Tips from '../../utils/Tips';
   import Loadmore from '../../components/weui/loadmore';
   import Placeholder from '../../components/common/placeholder';
 
@@ -40,13 +39,9 @@
       async switchTab () {
         await this.getRequest();
       },
-      toUserInfo (customerId) {
-        if (customerId) {
-          Event.emit(Event.MEMBER_INFO_UPDATE, customerId);
-          wepy.navigateBack();
-        } else {
-          Tips.error('该用户未绑定')
-        }
+      toUserInfo (item) {
+        Event.emit(Event.MEMBER_INFO_UPDATE, item);
+        wepy.navigateBack();
       }
     };
 
