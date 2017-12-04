@@ -62,6 +62,13 @@ export default class mausl extends base {
     return new Page(url, item => this._processUserInfo(item, selectedId));
   }
   /**
+   * 卖家获取用户列表
+   */
+  static membersList (selectedId) {
+    const url = `${this.baseUrl}/members/list`;
+    return new Page(url, item => this._processUserInfo(item, selectedId));
+  }
+  /**
    * 查找买家默认地址
    */
   static defaultAddress (customerId) {
@@ -353,7 +360,7 @@ export default class mausl extends base {
         break;
       case 2 : data.key = '购买次数：';
         break;
-      case 3 : data.key = '购买金额：';
+      case 3 : data.key = '购买金额：￥';
         break;
     }
     if (item.customer && item.member) {
@@ -381,11 +388,13 @@ export default class mausl extends base {
     } else if (item.customer && !item.member) {
       data.bound = null;
       data.level = null;
+      data.memberId = null;
       data.customerId = item.customer.id;
       data.nickName = item.customer.nickName;
       data.avatarUrl = item.customer.avatarUrl;
     } else if (!item.customer && item.member) {
       data.memberId = item.member.memberId;
+      data.customerId = null;
       data.bound = '/images/icons/unbound.png';
       switch (item.member.level) {
         case 1 : data.level = '/images/icons/vip-1.png';

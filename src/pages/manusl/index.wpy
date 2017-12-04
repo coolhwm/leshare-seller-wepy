@@ -91,7 +91,7 @@
       this.page = mausl.page();
       await this.next();
       // 监听事件
-      Event.listen(Event.SHOP_CUSTOMER_UPDATE, this.updateUserInfo.bind(this), this);
+      Event.listen(Event.MEMBER_INFO_UPDATE, this.updateUserInfo.bind(this), this);
       Event.listen(Event.CART_LIST_CLEAR, this.doClearCart.bind(this), this);
       Event.listen(Event.CART_LIST_RESET, this.doResetCart.bind(this), this);
       Event.listen(Event.CART_LIST_ADD, this.doAddCart.bind(this), this);
@@ -175,8 +175,7 @@
     methods = {
       // 跳转到客服管理
       chooseUser() {
-        console.log('chooseUser');
-        this.$root.$navigate('/pages/manusl/user_management');
+        this.$root.$navigate('/pages/manusl/member_list');
       },
       // 点击分类
       switchTab() {

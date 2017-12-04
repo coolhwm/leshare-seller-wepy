@@ -14,7 +14,7 @@
         <view class="column customer-main-box">
           <!--姓名/打电话-->
           <view class="row-between">
-            <text class="xxl">{{customerInfo.customer.nickName}}</text>
+            <text class="xxl">{{customerInfo.customer.nickName ? customerInfo.customer.nickName : '微信用户'}}</text>
             <image class="icon" src="/images/icons/call.png" @tap.stop="phone"/>
           </view>
 

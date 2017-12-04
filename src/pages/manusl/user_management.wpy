@@ -53,7 +53,7 @@
           level: level,
           showCondition: showCondition
         };
-        this.$root.$navigate('/pages/manusl/test?params=' + JSON.stringify(params));
+        this.$root.$navigate('/pages/manusl/customer_list?params=' + JSON.stringify(params));
       }
     };
     mixins = [base];
