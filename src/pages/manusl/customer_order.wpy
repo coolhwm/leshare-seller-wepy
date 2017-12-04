@@ -64,7 +64,9 @@
       customerId: 0
     };
     async onLoad (options) {
-      this.memberId = options.memberId;
+      const {customerId, memberId} = JSON.parse(options.params);
+      this.memberId = memberId;
+      this.customerId = customerId;
       // 页面加载
       this.page = order.hisPage();
       await this.next();

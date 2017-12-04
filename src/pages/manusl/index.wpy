@@ -99,7 +99,11 @@
     // 更新用户信息
     async updateUserInfo(item) {
       this.customerId = item.customerId;
-      this.navUrl = `/pages/manusl/customer_order?memberId=${item.memberId}`;
+      const params = {
+        customerId: item.customerId,
+        memberId: item.memberId
+      };
+      this.navUrl = `/pages/manusl/customer_order?params=${JSON.stringify(params)}`;
       this.customerInfo = item;
       this.loaded();
     };
