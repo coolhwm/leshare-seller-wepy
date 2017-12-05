@@ -7,9 +7,6 @@
         <CustomerItem :customerInfo.sync="item"/>
       </view>
     </repeat>
-    <view  wx:if="{{showCondition == 1}}">
-      <ActionBar @tap.user="add" okText="新增会员"/>
-    </view>
 
     <!-- 加载提示 -->
     <Loadmore :page.sync="page"/>
@@ -25,8 +22,6 @@
   import mausl from '../../api/mausl';
   import CustomerItem from '../../components/manusl/customer_item';
   import ZanTab from '../../components/zanui/tab';
-  import ActionBar from '../../components/common/action_bar';
-  import Event from '../../utils/Event';
   import Loadmore from '../../components/weui/loadmore';
   import Placeholder from '../../components/common/placeholder';
 
@@ -46,30 +41,18 @@
         order: true,
         sord: 'desc',
         scroll: false
-      },
-      showCondition: null,
-      type: null,
-      level: null
+      }
     };
     data = {...this.def};
 
-    async onLoad (options) {
-      const {type, level, showCondition} = JSON.parse(options.params);
-      this.type = type;
-      this.level = level;
-      this.showCondition = showCondition;
-      await this.getRequest();
-      Event.listen(Event.SHOP_CUSTOMER_UPDATE, this.updateShowCondition.bind(this), this);
-    };
-    async updateShowCondition (showCondition) {
-      this.showCondition = showCondition;
+    async onLoad () {
       await this.getRequest();
     };
     params () {
       return {
         order_type: this.tab.selectedId,
         sort: this.tab.sord,
-        show_condition: this.showCondition
+        show_condition: 0
       };
     };
 
@@ -78,14 +61,7 @@
         await this.getRequest();
       },
       toUserInfo (customerId) {
-        if (this.type == 'home') {
-          this.$root.$navigate('/pages/customer/info?customerId=' + customerId);
-        } else {
-          this.$root.$navigate('/pages/manusl/index?memberId');
-        }
-      },
-      add () {
-        this.$root.$navigate('/pages/vip/registe_member');
+        this.$root.$navigate('/pages/customer/info?customerId=' + customerId);
       }
     };
 
@@ -97,7 +73,6 @@
     components = {
       CustomerItem: CustomerItem,
       ZanTab: ZanTab,
-      ActionBar: ActionBar,
       Loadmore: Loadmore,
       Placeholder: Placeholder
     };

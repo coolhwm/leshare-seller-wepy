@@ -7,7 +7,7 @@
     </view>
     <view wx:if="{{customerId != null}}">
       <!-- 用户信息 -->
-      <UserInfo :userInfo.sync="customer"/>
+      <UserInfo :userInfo.sync="customer" @toUserInfo.user="chooseUser"/>
       <!--功能区域-->
       <ShopNav :badegText.sync="badegText" :title.sync="title"  navText="用户订单" :navUrl.sync="navUrl"/>
     </view>
@@ -182,7 +182,11 @@
     methods = {
       // 跳转到客服管理
       chooseUser() {
-        this.$root.$navigate('/pages/manusl/member_list');
+        const params = {
+          type: 'manusl',
+          level: 0
+        };
+        this.$root.$navigate('/pages/manusl/member_list?params=' + JSON.stringify(params));
       },
       // 点击分类
       switchTab() {

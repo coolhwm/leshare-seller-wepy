@@ -261,7 +261,12 @@
           const arry = item.imageUrl.split('/medium');
           item.imageUrl = arry[0];
         });
-        this.trade.address = this.selectedAddress.simpleAddress;
+        if (this.selectedAddress) {
+          this.trade.address = this.selectedAddress.simpleAddress;
+          this.trade.receiveName = this.selectedAddress.name;
+          this.trade.receivePhone = this.selectedAddress.phone;
+        }
+        this.trade.orderType = 20;
         await mausl.createOrder(this.trade);
         // 清空购物车
         Event.emit(Event.CART_LIST_CLEAR);

@@ -36,15 +36,15 @@
       </view>
     </block>
 
-
-    <!--地址展现-->
-    <block wx:if="{{order.orderType == '20'}}">
-      <Address :address.sync="address" />
-    </block>
-    <block wx:else>
-      <InShopStatus :order.sync="order" />
-    </block>
-
+    <view wx:if="{{order.customerId != 0}}">
+      <!--地址展现-->
+      <block wx:if="{{order.orderType == '20'}}">
+        <Address :address.sync="address"/>
+      </block>
+      <block wx:else>
+        <InShopStatus :order.sync="order"/>
+      </block>
+    </view>
     <!--订单项目-->
     <OrderItem :order.sync="order" action="0"></OrderItem>
 

@@ -35,7 +35,7 @@
     methods = {
       toUserList (type) {
         if (type != 'trade') {
-          this.$root.$navigate('/pages/manusl/member_list');
+          this.$emit('toUserInfo')
         }
       }
     }

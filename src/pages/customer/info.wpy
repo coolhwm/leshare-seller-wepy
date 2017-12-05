@@ -23,7 +23,7 @@
             <!--地址/电话-->
             <view class="column address-box">
               <text>电话：{{customerInfo.address ? customerInfo.address.phone : '暂无电话'}}</text>
-              <text>地址：{{customerInfo.address.fullAddress ? customerInfo.address.fullAddress : '暂无地址'}}</text>
+              <text>地址：{{customerInfo.address ? customerInfo.address.fullAddress : '暂无地址'}}</text>
             </view>
             <!--更多地址-->
             <image class="icon" src="/images/icons/more-gray.png"></image>

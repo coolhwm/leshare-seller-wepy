@@ -5,7 +5,7 @@
         <view class="weui-cell__bd">全部客户</view>
         <view class="weui-cell__ft weui-cell__ft_in-access"/>
       </view>
-      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(1, null)">
+      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(1, 0)">
         <view class="weui-cell__bd">会员</view>
         <view class="weui-cell__ft weui-cell__ft_in-access"/>
       </view>
@@ -50,10 +50,13 @@
       screen (showCondition, level) {
         const params = {
           type: this.type,
-          level: level,
-          showCondition: showCondition
+          level: level
         };
-        this.$root.$navigate('/pages/manusl/customer_list?params=' + JSON.stringify(params));
+        if (showCondition == 0) {
+          this.$root.$navigate('/pages/manusl/customer_list');
+        } else {
+          this.$root.$navigate('/pages/manusl/member_list?params=' + JSON.stringify(params));
+        }
       }
     };
     mixins = [base];
