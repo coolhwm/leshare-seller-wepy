@@ -99,6 +99,7 @@
     };
     // 更新用户信息
     async updateUserInfo(item) {
+      await this.doClearCart();
       this.customerId = item.customerId;
       const params = {
         customerId: item.customerId,

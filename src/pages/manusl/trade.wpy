@@ -264,8 +264,9 @@
         if (this.selectedAddress) {
           this.trade.address = this.selectedAddress.simpleAddress;
           this.trade.receiveName = this.selectedAddress.name;
-          this.trade.receivePhone = this.selectedAddress.phone;
+          this.trade.receivePhone = this.selectedAddress.name;
         }
+        this.trade.customerId = this.customer.customerId;
         this.trade.orderType = 20;
         await mausl.createOrder(this.trade);
         // 清空购物车
