@@ -42,7 +42,7 @@
 <script>
   import wepy from 'wepy';
   import base from '../../mixins/base';
-  import pagination from '../../mixins/pagination.wpy';
+  import pagination from '../../mixins/pagination';
   import mausl from '../../api/mausl'
   import Event from '../../utils/Event';
   import ShopNav from '../../components/manusl/nav';
@@ -70,7 +70,8 @@
       carts: [],
       status: {},
       skuDisplay: 'false',
-      skuGoods: {}
+      skuGoods: {},
+      discount: null
     };
     data = {...this.def};
     async onLoad (option, {preload}) {
@@ -105,7 +106,10 @@
       };
       this.navUrl = `/pages/manusl/customer_order?params=${JSON.stringify(params)}`;
       this.customer = item;
-      this.loaded();
+      // 会员卡信息
+      this.discount = await Cache.discount(false, this.customer.memberNumber);
+      this.page = mausl.page(this.discount);
+      this.next();
     };
     async onShow () {
       if (this.init) {
@@ -190,7 +194,7 @@
           this.setGoodsNum();
           this.loaded();
         } else {
-          this.page = mausl.page();
+          this.page = mausl.page(this.discount);
           this.reload();
         }
       },

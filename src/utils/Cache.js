@@ -1,5 +1,6 @@
 import shop from '../api/shop';
 import mausl from '../api/mausl';
+import members from '../api/member';
 
 export default class Cache {
   static cache = new Map();
@@ -68,7 +69,45 @@ export default class Cache {
     }
     return isExpired;
   }
-
+  /**
+   * 折扣信息
+   */
+  static async discount(reload = false, memberNumber) {
+    const KEY = 'VIP_DISCOUNT';
+    if (reload || this.isExpired(KEY)) {
+      const {member, card} = await this.vip(false, memberNumber);
+      if (member == null || card == null) {
+        return null;
+      }
+      if (card.supplyDiscount != 1) {
+        return null;
+      }
+      const {level} = member;
+      const {levelName, discount} = member.discountRule;
+      const rule = card.discountRules.find(item => item.level == level);
+      const categories = rule.discountCategoryLists.map(item => item.categoryId);
+      this.set(KEY, {
+        level: levelName,
+        categories,
+        rate: discount
+      });
+    }
+    return this.cache.get(KEY);
+  }
+  /**
+   *  会员卡信息
+   */
+  static async vip(reload = false, memberNumber) {
+    const KEY = 'VIP_INFO';
+    if (reload || this.isExpired(KEY)) {
+      const card = await members.cardInfo();
+      const member = await members.Info(memberNumber);
+      this.set(KEY, {
+        card, member
+      });
+    }
+    return this.cache.get(KEY);
+  }
   /**
    * 删除缓存对象
    */

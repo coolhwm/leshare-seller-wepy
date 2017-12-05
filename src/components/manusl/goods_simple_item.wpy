@@ -48,8 +48,7 @@
   import wepy from 'wepy';
   export default class GoodsItem extends wepy.component {
     props = {
-      goods: {
-      }
+      goods: {}
     };
     components = {
     };

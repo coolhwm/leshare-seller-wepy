@@ -8,10 +8,10 @@ export default class mausl extends base {
   /**
    * 返回分页对象
    */
-  static page () {
+  static page (discount) {
     let url = `${this.baseUrl}/goods?goods_status=onSale`;
     return new Page(url, item => {
-      this._processGoodsDiscount(item);
+      this._processGoodsDiscount(item, discount);
       this._processGoodsData(item);
     });
   }
@@ -374,6 +374,7 @@ export default class mausl extends base {
       data.memberId = item.member.memberId;
       data.customerId = item.customer.id;
       data.avatarUrl = item.customer.avatarUrl;
+      data.memberNumber = item.member.memberNumber;
       data.bound = '/images/icons/bound.png';
       switch (item.member.level) {
         case 1 : data.level = '/images/icons/vip-1.png';
@@ -402,6 +403,7 @@ export default class mausl extends base {
       data.avatarUrl = item.customer.avatarUrl;
       data.phone = item.customer.phone;
     } else if (!item.customer && item.member) {
+      data.memberNumber = item.member.memberNumber;
       data.memberId = item.member.memberId;
       data.customerId = item.member.customerId;
       data.bound = '/images/icons/unbound.png';
