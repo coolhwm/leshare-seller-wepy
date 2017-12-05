@@ -69,7 +69,7 @@
       }
     }
     async load() {
-      const {available, disable} = await mausl.addressList(this.goodsList);
+      const {available, disable} = await mausl.addresses(this.goodsList);
       this.available = available;
       this.disable = disable;
       this.isPageEmpty = available.length == 0 && disable.length == 0;

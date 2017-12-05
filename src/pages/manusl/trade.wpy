@@ -3,7 +3,7 @@
 
   <view class="container" wx:if="{{init}}">
     <!-- 地址 -->
-    <AddressSelector :address.sync="selectedAddress" @select.user="address"/>
+    <AddressSelector :address.sync="selectedAddress" :massege.sync="message" @select.user="toAddress"/>
 
     <view class="mt10"/>
 
@@ -44,7 +44,7 @@
       <!--外卖才有配送方式-->
       <view class="weui-cell weui-cell_access" @tap="delivery">
         <view class="weui-cell__bd">配送方式</view>
-        <text class="weui-cell__ft weui-cell__ft_in-access">{{trade.delilveryText}}</text>
+        <text class="weui-cell__ft weui-cell__ft_in-access">{{trade.deliveryText}}</text>
       </view>
 
     </view>
@@ -101,7 +101,7 @@
     <!--操作底栏-->
     <view class="tarde-action-bar row-end">
       <view wx:if="{{confirmStatus}}">
-        <text>待支付 </text>
+        <text>订单金额 </text>
         <text class="major mr20">￥{{trade.finalPrice}}</text>
       </view>
       <text class="xxl mr20 muted" wx:if="{{!confirmStatus}}">{{confirmText}}</text>
@@ -138,13 +138,14 @@
       trade: {
         orderGoodsInfos: []
       },
-      delilveries: [],
+      deliveries: [],
       confirmText: null,
       goodsList: null,
-      customerInfo: {},
-      deliveryInfo: {},
+      customer: {},
+      delivery: {},
       confirmStatus: true,
-      selectedAddress: null
+      selectedAddress: null,
+      address: {}
     };
     data = {...this.def};
 
@@ -157,25 +158,26 @@
       this.input.placeTime = `${myDate.getHours()}:${myDate.getMinutes()}`;
       this.trade.couponPrice = '0.00';
       this.trade.orderStutas = '已完成';
-      this.trade.delilveryText = '同城配送';
-      this.trade.delilveryType = 'CITY';
+      this.trade.deliveryText = '同城配送';
+      this.trade.deliveryType = 'CITY';
       this.trade.status = 6;
       // 查看店铺状态
       const isOpen = await this.checkShopStatus();
       // 用户信息
-      this.customerInfo = JSON.parse(params.userInfo);
-      this.customerInfo.type = 'trade';
-      if (!this.customerInfo || !isOpen) { return; }
+      this.customer = JSON.parse(params.customer);
+      this.customer.type = 'trade';
+      if (!this.customer || !isOpen) { return; }
       // 订单数据
-      this.trade.memberId = this.customerInfo.memberId;
+      this.trade.memberId = this.customer.memberId;
       this.goodsList = this.trade.orderGoodsInfos;
       // 默认地址
       this.selectedAddress = await mausl.defaultAddress(this.trade.memberId);
+      this.address = await mausl.address(this.customer.customerId);
       // 店铺信息
       this.shop = await Cache.shop();
       this.trade.shopName = this.shop.name;
       // 配送信息
-      this.deliveryInfo = await mausl.deliveryInfo();
+      this.delivery = await mausl.delivery();
       Event.listen(Event.ADDRESS_LIST_UPDATE, this.addressUpdate.bind(this), this);
       this.loaded();
     };
@@ -222,20 +224,24 @@
        * 选择配送方式
        */
       async delivery() {
-        this.deliveryInfo.forEach(item => {
-          this.delilveries = item;
+        this.delivery.forEach(item => {
+          this.deliveries = item;
         });
-        const {text} = await Tips.action(this.delilveries.name);
-        this.trade.delilveryText = text;
-        this.deliveryInfo.find(item => {
-          if (item.name == this.trade.delilveryText) {
-            this.trade.delilveryType = item.type;
+        const {text} = await Tips.action(this.deliveries.name);
+        this.trade.deliveryText = text;
+        this.delivery.find(item => {
+          if (item.name == this.trade.deliveryText) {
+            this.trade.deliveryType = item.type;
           }
         });
         this.$apply();
       },
-      address () {
-        this.$root.$navigate('/pages/manusl/select_address?memberId=' + this.trade.memberId);
+      async toAddress () {
+        if (this.address) {
+          this.$root.$navigate('/pages/manusl/select_address?memberId=' + this.customer.customerId);
+        } else {
+          Tips.error('该用户暂无地址')
+        }
       },
       /**
        * 确定下单
@@ -255,6 +261,7 @@
           const arry = item.imageUrl.split('/medium');
           item.imageUrl = arry[0];
         });
+        this.trade.address = this.selectedAddress.simpleAddress;
         await mausl.createOrder(this.trade);
         // 清空购物车
         Event.emit(Event.CART_LIST_CLEAR);
@@ -274,6 +281,15 @@
       }
       return status;
     }
+    computed = {
+      message () {
+        if (this.address) {
+          return 0;
+        } else {
+          return 1;
+        }
+      }
+    };
     /**
      * 更新订单价格
      */

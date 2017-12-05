@@ -20,7 +20,7 @@
       </view>
     </view>
     <!--更多地址-->
-    <image class="icon" src="/images/icons/more-gray.png" wx:if="{{customerInfo.customerId}}"/>
+    <image class="icon" src="/images/icons/more-gray.png"/>
   </view>
 </template>
 <script>

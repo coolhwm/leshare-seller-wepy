@@ -49,7 +49,7 @@ export default class mausl extends base {
   /**
    * 卖家查询配送模板GET /v2/seller/delivery
    */
-  static deliveryInfo () {
+  static delivery () {
     const url = `${this.baseUrl}/delivery`;
     return this.get(url);
   }
@@ -78,9 +78,16 @@ export default class mausl extends base {
   /**
    * 查找买家地址列表
    */
-  static addressList (customerId) {
+  static addresses (customerId) {
     const url = `${this.baseUrl}/addresses/?customer_id=${customerId}`;
     return new Page(url, item => this._processOrderAddress(item));
+  }
+  /**
+   * 查找买家地址列表
+   */
+  static address (customerId) {
+    const url = `${this.baseUrl}/addresses/?customer_id=${customerId}&from=0&limit=1`;
+    return this.get(url, item => this._processOrderAddress(item));
   }
   /** ********************* 数据处理方法 ***********************/
   /**

@@ -31,9 +31,8 @@
     };
     data = {...this.def};
     async onLoad(option) {
-      this.page = mausl.addressList(option.memberId);
+      this.page = mausl.addresses(option.memberId);
       this.next();
-      this.loaded();
     };
     methods = {
       select (address) {

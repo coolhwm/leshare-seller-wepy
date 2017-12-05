@@ -7,7 +7,7 @@
     </view>
     <view wx:if="{{customerId != null}}">
       <!-- 用户信息 -->
-      <UserInfo :userInfo.sync="customerInfo"/>
+      <UserInfo :userInfo.sync="customer"/>
       <!--功能区域-->
       <ShopNav :badegText.sync="badegText" :title.sync="title"  navText="用户订单" :navUrl.sync="navUrl"/>
     </view>
@@ -58,7 +58,7 @@
     def = {
       init: false,
       customerId: null,
-      customerInfo: {},
+      customer: {},
       badegText: '商城',
       title: '卖家下单',
       navUrl: null,
@@ -104,7 +104,7 @@
         memberId: item.memberId
       };
       this.navUrl = `/pages/manusl/customer_order?params=${JSON.stringify(params)}`;
-      this.customerInfo = item;
+      this.customer = item;
       this.loaded();
     };
     async onShow () {
@@ -308,7 +308,7 @@
         }
         const trade = mausl.createCartTrade(this.carts, param);
         this.$preload('trade', trade);
-        this.$navigate(`./trade?userInfo=` + JSON.stringify(this.customerInfo));
+        this.$navigate(`./trade?customer=` + JSON.stringify(this.customer));
       }
     };
     findGoods(goodsId) {

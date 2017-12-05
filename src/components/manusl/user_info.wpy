@@ -9,13 +9,15 @@
       <!--姓名/打电话-->
       <view class="row">
         <text class="xxl mr20 user-name-box">{{userInfo.nickName ? userInfo.nickName : '微信用户'}}</text>
+        <image class="icon mr10" src="{{userInfo.level}}"/>
+        <image class="icon mr10" src="{{userInfo.bound}}"/>
       </view>
       <!--地址信息-->
       <view class="row-between">
         <!--地址/电话-->
         <view class="row address-box">
           <text class="lg">联系电话：</text>
-          <text class="lg ml20">{{userInfo.phone ? userInfo.phone : '暂无电话'}}</text>
+          <text class="lg">{{userInfo.phone ? userInfo.phone : '暂无电话'}}</text>
           <!--<text class="address-text">地址：{{userInfo.address.fullAddress ? userInfo.address.fullAddress : '暂无地址'}}</text>-->
         </view>
       </view>
@@ -63,7 +65,7 @@
      flex: 1;
      padding-left: rpx(25);
      .user-name-box{
-       width: 220rpx;
+       max-width: 400rpx;
        @extend .address-text;
      }
      .address-text{
