@@ -65,7 +65,7 @@
       shop: {},
       app_code: '1jAB5uZLs57cH1gq6ujRnOdVLDqu2qle',
       baseUrl: 'http://106.14.195.68:9999/v2/seller'
-//      baseUrl: 'https://api.leshare.shop/v2/seller'
+      // baseUrl: 'https://api.leshare.shop/v2/seller'
       // baseUrl: 'http://192.168.31.124:9999/v2/seller'
     };
     config = {
