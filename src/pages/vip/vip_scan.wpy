@@ -2,7 +2,8 @@
   <Tips/>
   <view class="container box-bg" wx:if="{{init}}">
     <VipCard :member.sync="customerMember" :memberCardInfo.sync="memberCardInfo" :customerInfo.sync="customerInfo"/>
-    <view class="weui-cells weui-cells-form">
+    <ZanTab :tab.sync="tab" fixed="0"/>
+    <view class="weui-cells weui-cells-form" wx:if="{{tab.selectedId == 'COST'}}">
       <view class="weui-cell weui-cell_input">
         <view class="weui-cell__hd">
           <view class="weui-label">消费金额</view>
@@ -20,6 +21,17 @@
       </view>
     </view>
 
+    <view class="weui-cells weui-cells-form" wx:if="{{tab.selectedId == 'BONUS'}}">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">积分变动</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" id="bonus" @input="input" value="{{input.bonus}}"
+                 type="number" maxlength="6" placeholder="请输入变动积分"/>
+        </view>
+      </view>
+    </view>
     <!--操作栏-->
     <ActionBar @tap.user="add" okText="确定" cancelText="返回"/>
   </view>
@@ -32,10 +44,11 @@
   import VipCard from '../../components/vip/vip_card';
   import ActionBar from '../../components/common/action_bar';
   import FormTips from '../../components/weui/tips';
-  import member from '../../api/member'
-  import userInfo from '../../api/customer_info'
-  import Event from '../../utils/Event'
-  import Tips from '../../utils/Tips'
+  import member from '../../api/member';
+  import userInfo from '../../api/customer_info';
+  import Event from '../../utils/Event';
+  import Tips from '../../utils/Tips';
+  import ZanTab from '../../components/zanui/tab';
   export default class VipScan extends wepy.page {
     def = {
       init: false,
@@ -43,7 +56,14 @@
       customerMember: {},
       memberCardInfo: {},
       bonus: null,
-      scene: null
+      scene: null,
+      tab: {
+        list: [
+          {id: 'COST', title: '消费'},
+          {id: 'BONUS', title: '积分'}
+        ],
+        selectedId: 'COST'
+      }
     };
     data = {...this.def};
 
@@ -65,16 +85,29 @@
     };
     methods = {
       async add () {
-        if (!this.validate()) {
-          return;
+        if (this.tab.selectedId == 'COST') {
+          if (!this.validate()) {
+            return;
+          }
+          const param = {
+            addBonus: this.bonus,
+            cardNumber: this.customerMember.memberNumber,
+            costMoney: this.input.price,
+            type: 'OFFLINE_ORDER_ADD'
+          };
+          await member.memberAdd(param);
+        } else {
+          if (!this.bonusValidate()) {
+            return;
+          }
+          const param = {
+            addBonus: this.input.bonus,
+            cardNumber: this.customerMember.memberNumber,
+            costMoney: 0,
+            type: 'OFFLINE_ORDER_ADD'
+          };
+          await member.memberAdd(param);
         }
-        const param = {
-          addBonus: this.bonus,
-          cardNumber: this.customerMember.memberNumber,
-          costMoney: this.input.price,
-          type: 'OFFLINE_ORDER_ADD'
-        };
-        await member.memberAdd(param);
         this.$apply();
         await Tips.success('保存成功');
         const params = {
@@ -92,7 +125,8 @@
     components = {
       Tips: FormTips,
       VipCard: VipCard,
-      ActionBar: ActionBar
+      ActionBar: ActionBar,
+      ZanTab: ZanTab
     };
     config = {
       navigationBarTitleText: '会员卡核销'
@@ -101,9 +135,26 @@
       const rules = [
         {
           value: this.input.price,
+          method: 'required',
+          param: 0,
+          message: '优惠券面值不能为空'
+        },
+        {
+          value: this.input.price,
           method: 'min',
           param: 0,
           message: '优惠券面值不能为0或负数'
+        }
+      ];
+      return this.check(rules);
+    }
+    bonusValidate () {
+      const rules = [
+        {
+          value: this.input.bonus,
+          method: 'required',
+          param: 0,
+          message: '变动积分不能为空'
         }
       ];
       return this.check(rules);

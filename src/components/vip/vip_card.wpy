@@ -11,7 +11,7 @@
           <text class="xl">{{customerInfo.customer.nickName ? customerInfo.customer.nickName : '微信用户'}}</text>
           <view class="cost-box row">
             <text>{{member.levelName}}</text>
-            <text class="ml10 xxs">已累计消费{{member.totalCost}}元</text>
+            <text class="xxs">已累计消费{{member.totalCost}}元</text>
           </view>
         </view>
       </view>
@@ -26,6 +26,7 @@
 
 <script>
   import wepy from 'wepy';
+  import WxUtils from '../../utils/WxUtils';
 
   export default class VipCard extends wepy.component {
     props = {
@@ -44,7 +45,7 @@
           customerInfo: customerInfo,
           memberCardInfo: memberCardInfo
         };
-        this.$root.$navigate('/pages/vip/vip_detail?params=' + JSON.stringify(params));
+        this.$root.$redirect('/pages/vip/vip_detail?params=' + JSON.stringify(params));
       },
       canvas () {
         if (this.member.codeUrl != null) {

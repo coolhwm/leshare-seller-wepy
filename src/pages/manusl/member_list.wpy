@@ -57,11 +57,7 @@
           if (item.customerId != 0) {
             this.$root.$navigate('/pages/customer/info?customerId=' + item.customerId);
           } else {
-            const params = {
-              customerId: item.customerId,
-              memberId: item.memberId
-            };
-            this.$root.$navigate('/pages/manusl/customer_order?params=' + JSON.stringify(params));
+            this.$root.$navigate('/pages/customer/member_info?item=' + JSON.stringify(item));
           }
         } else {
           Event.emit(Event.MEMBER_INFO_UPDATE, item);

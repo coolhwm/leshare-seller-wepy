@@ -9,7 +9,7 @@
         <view class="column info-container">
           <view>
             <text>您当前为</text>
-            <text class="xl ml10 major">{{member.levelName}}</text>
+            <text class="xl ml10 major">{{member.discountRule.levelName}}</text>
           </view>
           <view>{{discountLevel}}</view>
         </view>
@@ -78,7 +78,7 @@
         }
         const rule = this.vipCard.bonusRule;
         return `注册绑定手机开卡即送 ${rule.initIncreaseBonus} 积分
-        本会员卡享受 ${(this.member.discount / 10).toFixed(1)} 折优惠
+        本会员卡享受 ${(this.member.discountRule.discount / 10).toFixed(1)} 折优惠
         每消费 ${rule.costBonusUnit} 元可获得 ${rule.increaseBonus} 积分
         每使用 ${rule.costMoneyUnit} 积分，抵扣 ${rule.reduceMoney} 元现金，每笔订单最多使用 ${rule.maxReduceBonus} 积分，订单需满 ${rule.limitMoney} 元`;
       },
