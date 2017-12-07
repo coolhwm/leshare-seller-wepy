@@ -1,28 +1,17 @@
 <template>
   <view class="container" wx:if="{{init}}">
+    <!-- 会员信息 -->
     <MemberItem :customer.sync="customer"/>
+    <!-- 会员点击区 -->
     <VipInfo :member.sync="member" @moreVip.user="moreVip"/>
-    <ZanTab :tab.sync="tab" fixed="0"/>
-    <!--列表区域-->
-    <view class="zan-btns" wx:if="{{tab.selectedId == 'COUPON'}}">
-      <button class="zan-btn zan-btn--fill" @tap="send">发放优惠券</button>
-    </view>
+    <!--TAB 页-->
+    <ZanTab :tab.sync="tab" :fixed.sync="fixed" @change.user="switchTap" />
+    <!--订单列表-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <block wx:if="{{tab.selectedId == 'HIS_ORDER'}}">
-        <OrderItem :order.sync="item" @tap.user="detail" action="0"/>
-      </block>
-      <block wx:elif="{{tab.selectedId == 'OFTEN_GOODS'}}">
-        <OftenGoods :goods="item"/>
-      </block>
-      <block wx:elif="{{tab.selectedId == 'COUPON'}}">
-        <CouponItem selectAction="0" :coupon.sync="item"/>
-      </block>
-      <block wx:elif="{{tab.selectedId == 'HIS_BONUS'}}">
-        <BonusItem :bonusInfo.sync="item"/>
-      </block>
+      <OrderItem :order.sync="item" @tap.user="detail" action="0"/>
     </repeat>
     <!-- 加载提示 -->
-    <Loadmore :page.sync="page" emptyText="暂无记录"/>
+    <Loadmore :page.sync="page" emptyText="暂无订单"/>
   </view>
 </template>
 <script>
@@ -32,17 +21,12 @@
   import pagination from '../../mixins/pagination';
   import MemberItem from '../../components/customer/member_item';
   import VipInfo from '../../components/customer/vip_info';
-  import ZanTab from '../../components/zanui/tab';
+  import ZanTab from '../../components/zanui/expand-tab';
   import OrderItem from '../../components/order/item';
-  import OftenGoods from '../../components/customer/often_goods';
-  import CouponItem from '../../components/customer/coupon_item';
-  import BonusItem from '../../components/vip/bonus_item';
   import Loadmore from '../../components/weui/loadmore';
+  import Placeholder from '../../components/common/placeholder';
   import order from '../../api/order';
-  import goods from '../../api/goods';
   import member from '../../api/member';
-  import coupon from '../../api/coupon';
-  import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
 
   export default class MemberInfo extends wepy.page {
@@ -55,17 +39,29 @@
       },
       tab: {
         list: [
-          {id: 'HIS_ORDER', title: '历史订单'},
-          {id: 'OFTEN_GOODS', title: '常购商品'},
-          {id: 'COUPON', title: '优惠券'},
-          {id: 'HIS_BONUS', title: '历史积分'}
+          {id: '2', title: '待接单'},
+          {id: '9', title: '待发货'},
+          {id: '3', title: '待送达'},
+          {id: '5', title: '待退款'}
         ],
-        selectedId: 'HIS_ORDER'
+        expand: [
+          {id: '0', title: '全部'},
+          {id: '1', title: '待付款'},
+          {id: '4', title: '待评价'},
+          {id: '6', title: '已完成'},
+          {id: '7', title: '已关闭'},
+          {id: '8', title: '已退款'}
+        ],
+        expandDefaultText: '其他状态',
+        selectedId: '2',
+        scroll: false
       },
       customer: {},
       memberId: 0,
       customerId: 0,
-      member: {}
+      status: '2',
+      member: {},
+      fixed: false
     };
     data = {...this.def};
 
@@ -84,40 +80,25 @@
     }
     params () {
       return {
+        status: this.status,
         customer_id: this.customerId,
         member_id: this.memberId
       }
     };
     methods = {
+      switchTap({selectedId}) {
+        this.status = selectedId;
+        this.reload();
+      },
       moreVip () {
         if (this.member) {
           const params = {
-            customerInfo: {customer: this.customer},
-            customerMember: this.member
+            customer: {customer: this.customer},
+            member: this.member
           };
           this.$preload('data', params);
           this.$root.$navigate('/pages/vip/vip_scan');
         }
-      }
-    };
-    events = {
-      async change () {
-        this.page.clear();
-        this.$apply();
-        if (this.tab.selectedId == 'HIS_ORDER') {
-          this.page = order.hisPage();
-        } else if (this.tab.selectedId == 'OFTEN_GOODS') {
-          this.page = await goods.oftenGoodsPage(this.customerId);
-        } else if (this.tab.selectedId == 'COUPON') {
-          this.page = await coupon.cutomerCouponPage(this.customerId);
-        } else if (this.tab.selectedId == 'HIS_BONUS') {
-          if (this.customerId == 0) {
-            Tips.error('该用户不是会员');
-          } else {
-            this.page = await member.bonusPage(this.customerId);
-          }
-        }
-        this.next();
       }
     };
     components = {
@@ -125,9 +106,7 @@
       VipInfo: VipInfo,
       ZanTab: ZanTab,
       OrderItem: OrderItem,
-      OftenGoods: OftenGoods,
-      CouponItem: CouponItem,
-      BonusItem: BonusItem,
+      Placeholder: Placeholder,
       Loadmore: Loadmore
     };
     mixins = [base, input, pagination];
