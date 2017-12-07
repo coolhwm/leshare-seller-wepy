@@ -14,11 +14,7 @@
       <image class="icon" src="/images/icons/plus.png"/>
       <text class="ml10">添加会员等级</text>
     </view>
-    <view class="zan-panel">
-      <view class="zan-btns">
-        <button class="zan-btn zan-btn--fill" @tap="submit">确定</button>
-      </view>
-    </view>
+    <ActionPanel submitText="确定" @submit.user="submit"/>
   </view>
 </template>
 <script>
@@ -26,6 +22,7 @@
   import base from '../../mixins/base';
   import Discount from '../../components/vip/discount';
   import FormTips from '../../components/weui/tips';
+  import ActionPanel from '../../components/common/action_panel';
   import input from '../../mixins/input';
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
@@ -175,7 +172,8 @@
 
     components = {
       Discount: Discount,
-      Tips: FormTips
+      Tips: FormTips,
+      ActionPanel: ActionPanel
     };
     config = {
       navigationBarTitleText: '会员等级编辑'

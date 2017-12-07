@@ -12,19 +12,16 @@
         </view>
       </view>
     </view>
-    <view class="desc-box row-around mt20">
-      <text class="muted">库存：{{goods.totalStock}}</text>
-      <text class="muted ml10">销量：{{goods.salesVolume}}</text>
-      <text class="muted ml10">收藏：{{goods.favoriteCount}}</text>
+    <view class="row-between mt10">
+      <text class="muted mr20 xs">库存：{{goods.totalStock}}</text>
+      <text class="muted mr20 xs">销量：{{goods.salesVolume}}</text>
+      <text class="muted mr20 xs">收藏：{{goods.favoriteCount}}</text>
     </view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy';
-  import goods from '../../api/goods';
-  import Tips from '../../utils/Tips';
-  import Event from '../../utils/Event';
   export default class GoodsItem extends wepy.component {
     props = {
       goods: {}
@@ -44,13 +41,15 @@
     background-color: #FFF;
     position: relative;
     border-bottom: $border;
-    padding: 20rpx;
+    padding: 10rpx;
     .item-action{
       border-top: $border;
       height: 90rpx;
     }
 
     .goods-box{
+      padding-bottom: 10rpx;
+      border-bottom: 1px dashed #dfdfdf;
       $image-size: 130rpx;
 
       .goods-image{
@@ -69,12 +68,6 @@
 
       .price-box{
         align-items: flex-end;
-      }
-
-      .desc-box{
-        text {
-          font-size: $text-sm;
-        }
       }
 
       .info-box{

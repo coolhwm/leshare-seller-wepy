@@ -62,11 +62,7 @@
         <view class="weui-cell__ft weui-cell__ft_in-access">{{levelText}}</view>
       </view>
     </view>
-    <view class="zan-panel">
-      <view class="zan-btns">
-        <button class="zan-btn zan-btn--fill" @tap="submit">保存</button>
-      </view>
-    </view>
+    <ActionPanel @submit.user="submit"/>
   </view>
 </template>
 <script>
@@ -78,6 +74,7 @@
   import Event from '../../utils/Event';
   import shop from '../../api/shop';
   import vip from '../../api/vip_card';
+  import ActionPanel from '../../components/common/action_panel';
 
   export default class VipCard extends wepy.page {
     def = {
@@ -245,7 +242,8 @@
     };
     mixins = [base, input];
     components = {
-      Tips: FormTips
+      Tips: FormTips,
+      ActionPanel: ActionPanel
     };
   }
 </script>

@@ -93,11 +93,7 @@
         <view class="content"></view>
       </view>
     </view>
-    <view class="zan-panel">
-      <view class="zan-btns">
-        <button class="zan-btn zan-btn--fill" @tap="submit">确定</button>
-      </view>
-    </view>
+    <ActionPanel submitText="确定" @submit.user="submit"/>
   </view>
 </template>
 <script>
@@ -106,6 +102,7 @@
   import input from '../../mixins/input';
   import FormTips from '../../components/weui/tips';
   import Event from '../../utils/Event';
+  import ActionPanel from '../../components/common/action_panel';
 
   export default class SupplyBonus extends wepy.page {
     data = {
@@ -123,13 +120,15 @@
         wepy.navigateBack();
       }
     };
-    async onLoad({bonus}) {
+
+    async onLoad ({bonus}) {
       if (bonus != null && bonus != 'null') {
         this.input = JSON.parse(bonus);
         this.input.isCost = this.input.isCost == 1;
       }
       this.loaded();
     };
+
     validate () {
       const rules = [
         {
@@ -314,7 +313,8 @@
 
     mixins = [base, input];
     components = {
-      Tips: FormTips
+      Tips: FormTips,
+      ActionPanel: ActionPanel
     };
     config = {
       navigationBarTitleText: '积分规则编辑'
