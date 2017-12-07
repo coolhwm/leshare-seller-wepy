@@ -74,6 +74,7 @@
         'pages/customer/address_list',
         'pages/customer/coupon_send',
         'pages/customer/info',
+        'pages/customer/member_info',
         'pages/order/index',
         'pages/shop/index',
         'pages/shop/contact',
@@ -115,7 +116,16 @@
         'pages/vip/vip_card',
         'pages/vip/supply_bonus',
         'pages/vip/vip_context',
-        'pages/vip/supply_discount'
+        'pages/vip/registe_member',
+        'pages/vip/supply_discount',
+        'pages/manusl/index',
+        'pages/manusl/customer_order',
+        'pages/manusl/order',
+        'pages/manusl/trade',
+        'pages/manusl/customer_list',
+        'pages/manusl/select_address',
+        'pages/manusl/user_management',
+        'pages/manusl/member_list'
       ],
       window: {
         backgroundTextStyle: 'dark',

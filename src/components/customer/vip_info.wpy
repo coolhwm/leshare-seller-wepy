@@ -1,0 +1,53 @@
+<template>
+  <view class="row-between vip-column" @tap="moreVip" wx:if="{{member != null}}">
+    <image class="card-image" src="/images/icons/vip_card.png"/>
+    <view class="row-between">
+      <text class="muted">会员等级 : {{member.discountRule.levelName}}</text>
+      <view class="vertical-line"/>
+      <text class="muted">当前积分 : {{member.bonus}}</text>
+      <image class="icon" src="/images/icons/more-gray.png"/>
+    </view>
+  </view>
+  <view class="row vip-column" @tap="moreVip" wx:if="{{member == null}}">
+    <image class="card-image" src="/images/icons/vip_card.png"/>
+    <text class="muted ml20">暂未注册</text>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+
+  export default class VipInfo extends wepy.component {
+    props = {
+      member: {}
+    };
+    methods = {
+      moreVip () {
+        this.$emit('moreVip');
+      }
+    };
+  }
+</script>
+<style lang="scss">
+  @import "../../styles/variable";
+
+  .vip-column {
+    border: $border;
+    margin-bottom: 10rpx;
+    background-color: white;
+    padding: rpx(20) rpx(30);
+    .card-image {
+      width: rpx(50);
+      height: rpx(50);
+      margin-right: rpx(20);
+    }
+    .vertical-line {
+      width: rpx(2);
+      height: rpx(30);
+      background-color: $color-muted;
+    }
+  }
+
+  .row-between {
+    flex: 1;
+  }
+</style>

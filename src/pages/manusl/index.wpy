@@ -1,0 +1,473 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <view class="weui-cells weui-cells_after-title" wx:if="{{customerId == null}}">
+      <view class="weui-select user-box" @tap="chooseUser">
+        <image class="icon mr20" src="/images/icons/plus.png"/>请选择用户
+      </view>
+    </view>
+    <view wx:if="{{customerId != null}}">
+      <!-- 用户信息 -->
+      <UserInfo :userInfo.sync="customer" @toUserInfo.user="chooseUser"/>
+      <!--功能区域-->
+      <ShopNav :badegText.sync="badegText" :title.sync="title"  navText="用户订单" :navUrl.sync="navUrl"/>
+    </view>
+
+    <!--主内容区域-->
+    <view class="{{customerId == null ? 'main-box' : 'main-box-null'}} row">
+      <!--分类侧边栏-->
+      <SideTab :tab.sync="categories" @change.user="switchTab" />
+      <!--右侧滚动-->
+      <scroll-view scroll-y class="goods-box" bindscrolltolower="onReachBottom">
+        <!--分类名称-->
+        <view class="goods-title row">
+          <text class="weak">{{selectedCategoryName}}</text>
+        </view>
+        <!--商品列表-->
+        <view class="goods-list">
+          <repeat for="{{page.list}}" key="index" index="index" item="item">
+            <GoodsItem :goods.sync="item" @plus.user="plus" @minus.user="minus"/>
+          </repeat>
+        </view>
+        <Loadmore :page.sync="page" emptyText="暂无商品"/>
+      </scroll-view>
+    </view>
+    <!-- 购物车 -->
+    <ShopCart :carts.sync="carts" :status.sync="status" @plus.user="plus" @minus.user="minus" @clear.user="clear" @buy.user="buy"/>
+
+    <!--SKU选择器-->
+    <SkuSelector :display.sync="skuDisplay" :goods.sync="skuGoods" :carts.sync="carts" @select.user="selectSku" />
+
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import pagination from '../../mixins/pagination';
+  import mausl from '../../api/mausl'
+  import Event from '../../utils/Event';
+  import ShopNav from '../../components/manusl/nav';
+  import ShopCart from '../../components/manusl/cart';
+  import SkuSelector from '../../components/manusl/sku_selector';
+  import SideTab from '../../components/manusl/side_tab';
+  import GoodsItem from '../../components/manusl/goods_simple_item';
+  import Loadmore from '../../components/weui/loadmore';
+  import UserInfo from '../../components/manusl/user_info';
+  import Tips from '../../utils/Tips';
+  import Cache from '../../utils/Cache';
+  export default class ManuslIndex extends wepy.page {
+    def = {
+      init: false,
+      customerId: null,
+      customer: {},
+      badegText: '商城',
+      title: '卖家下单',
+      navUrl: null,
+      categories: {},
+      page: {
+        list: []
+      },
+      pages: {},
+      carts: [],
+      status: {},
+      skuDisplay: 'false',
+      skuGoods: {},
+      discount: null
+    };
+    data = {...this.def};
+    async onLoad (option, {preload}) {
+      if (option.customerId) {
+        await this.updateUserInfo(option.customerId);
+      }
+      // 加载商品分类
+      this.categories = await Cache.categories();
+      this.categories.selectedId = this.categories.list[0].id;
+      // 设置页面标题
+      await this.setShopTitle();
+      // -- 需要实时加载的信息
+      // 购物车
+      const carts = wepy.getStorageSync('carts');
+      this.carts = carts == '' ? [] : carts;
+      // 加载商品
+      this.page = mausl.page();
+      await this.next();
+      // 监听事件
+      Event.listen(Event.MEMBER_INFO_UPDATE, this.updateUserInfo.bind(this), this);
+      Event.listen(Event.CART_LIST_CLEAR, this.doClearCart.bind(this), this);
+      Event.listen(Event.CART_LIST_RESET, this.doResetCart.bind(this), this);
+      Event.listen(Event.CART_LIST_ADD, this.doAddCart.bind(this), this);
+      this.loaded();
+    };
+    // 更新用户信息
+    async updateUserInfo(item) {
+      await this.doClearCart();
+      this.customerId = item.customerId;
+      const params = {
+        customerId: item.customerId,
+        memberId: item.memberId
+      };
+      this.navUrl = `/pages/manusl/customer_order?params=${JSON.stringify(params)}`;
+      this.customer = item;
+      // 会员卡信息
+      this.discount = await Cache.discount(false, this.customer.memberNumber);
+      this.page = mausl.page(this.discount);
+      this.next();
+    };
+    async onShow () {
+      if (this.init) {
+        // 重新判断店铺状态
+        Tips.setLoading();
+        await this.setShopTitle();
+        this.loaded();
+      }
+    }
+    // 页面风险
+    onShareAppMessage () {
+      return {};
+    }
+    // 设置页面标题
+    async setShopTitle() {
+      // 状态处理
+      this.status = await Cache.status();
+      if (!this.status.open) {
+        this.title = this.status.closeTips;
+        if (!this.init) {
+          Tips.modal(this.status.closeTips);
+        }
+      }
+    }
+    // 分页加载完毕
+    onPageLoad() {
+      this.pages[this.categories.selectedId] = this.page;
+      this.setGoodsNum();
+      this.setCategoryNum();
+    };
+    // 分页参数
+    params() {
+      return {category_id: this.categories.selectedId};
+    };
+    // 设置商品列表的数量
+    setGoodsNum() {
+      // 处理商品列表
+      this.page.list.forEach(goods => {
+        goods.num = this.countCartGoodNum(goods.id);
+      });
+      // 处理商品详情
+      if (this.detail) {
+        this.detail.num = this.countCartGoodNum(this.detail.id);
+      }
+    };
+    // 同步数量
+    countCartGoodNum(goodsId) {
+      let num = 0;
+      this.carts.forEach(cart => {
+        if (cart.goodsId == goodsId) {
+          num += cart.goodsNum;
+        }
+      });
+      return num;
+    };
+    // 设置商品分类的数量
+    setCategoryNum() {
+      if (!this.categories.list) {
+        return;
+      }
+      this.categories.list.forEach(item => {
+        item.count = 0;
+        this.carts.forEach(cart => {
+          if (cart.innerCid && item.id == cart.innerCid) {
+            item.count += cart.goodsNum;
+          }
+        });
+      });
+    };
+    methods = {
+      // 跳转到客服管理
+      chooseUser() {
+        const params = {
+          type: 'manusl',
+          level: 0
+        };
+        this.$root.$navigate('/pages/manusl/member_list?params=' + JSON.stringify(params));
+      },
+      // 点击分类
+      switchTab() {
+        Tips.setLoading();
+        const selectedId = this.categories.selectedId;
+        // 先判断缓存中是否存在商品列表
+        if (this.pages[selectedId] && this.pages[selectedId].list.length > 0) {
+          this.page = this.pages[selectedId];
+          this.setGoodsNum();
+          this.loaded();
+        } else {
+          this.page = mausl.page(this.discount);
+          this.reload();
+        }
+      },
+      async selectSku(sku) {
+        const plus = this.methods.plus.bind(this);
+        plus(sku);
+      },
+      /**
+       * 增加商品
+       */
+      async plus({goodsId, goodsSku, count = 1}) {
+        // 商品里列表
+        const goods = this.findGoods(goodsId);
+        if (goods) {
+          if (goods.goodsSkuInfo && goodsSku == null) {
+            await this.skuSelector(goodsId);
+            return;
+          }
+          if (goods.goodsSkuInfo == null) {
+            const isMax = goods.goodsStocks[0].stock == 0 || goods.num >= goods.goodsStocks[0].stock;
+            if (isMax) {
+              return;
+            }
+          }
+        }
+        // 购物车
+        const target = this.findCart(goodsId, goodsSku);
+        if (target) {
+          // 购物车中已存在
+          target.goodsNum = target.goodsNum + count;
+          target.totalPrice = (target.goodsNum * target.goodsPrice).toFixed(2);
+        } else {
+          // 购物车中不存在
+          let goodsPrice, originalPrice;
+          if (goodsSku) {
+            const skuInfo = goods.goodsSkuInfo.goodsSkuDetails.find(item => item.sku == goodsSku);
+            goodsPrice = skuInfo.goodsSkuDetailBase.price;
+            originalPrice = skuInfo.goodsSkuDetailBase.originalPrice;
+          } else if (goods) {
+            goodsPrice = goods.sellPrice;
+            originalPrice = goods.originalPrice;
+          } else if (this.detail && this.detail.id == goodsId) {
+            goodsPrice = this.detail.sellPrice;
+          }
+          this.carts.push({
+            goodsId: goodsId,
+            goodsSku: goodsSku,
+            goodsName: goods.name,
+            innerCid: goods.innerCid,
+            goodsImage: goods.imageUrl,
+            goodsPrice: goodsPrice,
+            goodsNum: 1,
+            totalPrice: goodsPrice,
+            originalPrice: originalPrice,
+            discount: goods.discount,
+            discountRate: goods.discountRate,
+            discountText: goods.discountText
+          });
+        }
+        // 重置数据
+        this.setGoodsNum();
+        this.setCategoryNum();
+        this.saveCartStore();
+        this.skuGoods = {};
+        this.loaded();
+      },
+      /**
+       * 减少商品
+       */
+      async minus({goodsId, goodsSku}) {
+        // 商品对象
+        const goods = this.findGoods(goodsId);
+        // 特殊情况，商品已经不足1个
+        if (goods && goods.num < 1) {
+          return;
+        }
+        // 若果购物车有多个对象，但是goodsSku 为空，那么则无法操作
+        const count = this.countCart(goodsId);
+        if (count > 1 && goodsSku == null) {
+          Tips.alert('请在购物车操作');
+          return;
+        }
+        // 购物车对象
+        const target = this.findCart(goodsId, goodsSku);
+        if (target.goodsNum == 1) {
+          this.removeCart(goodsId, target.goodsSku);
+        } else {
+          target.goodsNum -= 1;
+          target.totalPrice = (target.goodsNum * target.goodsPrice).toFixed(2);
+        }
+        // 重置数据
+        this.setGoodsNum();
+        this.setCategoryNum();
+        this.saveCartStore();
+        this.loaded();
+      },
+      /**
+       * 清空商品
+       */
+      async clear() {
+        if (this.carts.length < 1) {
+          Tips.alert('购物车为空');
+          return;
+        }
+        await Tips.confirm('确认清空购物车？');
+        await this.doClearCart();
+      },
+      /**
+       * 确认购买
+       */
+      async buy (param) {
+        if (this.customerId == null) {
+          Tips.error('请选择用户');
+          return;
+        }
+        const trade = mausl.createCartTrade(this.carts, param);
+        this.$preload('trade', trade);
+        this.$navigate(`./trade?customer=` + JSON.stringify(this.customer));
+      }
+    };
+    findGoods(goodsId) {
+      return this.page.list.find(item => item.id == goodsId);
+    };
+    async doClearCart() {
+      this.carts = [];
+      this.setCategoryNum();
+      this.setGoodsNum();
+      wepy.setStorage({
+        key: 'carts',
+        data: []
+      });
+      this.loaded();
+    }
+    async doResetCart(goodsList) {
+      this.carts = [];
+      // TODO 需要检验商品是否能够再来一单
+      goodsList.forEach(goods => {
+        this.carts.push({
+          goodsId: goods.goodsId,
+          goodsSku: goods.goodsSku,
+          goodsName: goods.goodsName,
+          innerCid: goods.innerCid,
+          goodsImage: goods.imageUrl,
+          goodsPrice: goods.goodsPrice,
+          goodsNum: goods.count,
+          totalPrice: (goods.goodsPrice * goods.count).toFixed(2)
+        });
+      });
+      // 重置数据
+      this.setGoodsNum();
+      this.setCategoryNum();
+      this.saveCartStore();
+      this.loaded();
+      this.loaded();
+    };
+    doAddCart(goods) {
+      const plus = this.methods.plus.bind(this);
+      plus({
+        goodsId: goods.id
+      });
+    };
+    async skuSelector(goodsId) {
+      this.skuGoods = this.findGoods(goodsId);
+      this.skuDisplay = 'true';
+      this.loaded();
+    };
+    saveCartStore() {
+      wepy.setStorage({
+        key: 'carts',
+        data: this.carts
+      });
+    };
+    findCart(goodsId, goodsSku) {
+      return this.carts.find(item => item.goodsId == goodsId && (goodsSku == null || item.goodsSku == goodsSku));
+    };
+    countCart(goodsId) {
+      let count = 0;
+      this.carts.forEach(item => {
+        if (item.goodsId == goodsId) {
+          count += 1;
+        }
+      });
+      return count;
+    };
+    removeCart(goodsId, goodsSku) {
+      const index = this.carts.findIndex(item => item.goodsId == goodsId && item.goodsSku == goodsSku);
+      this.carts.splice(index, 1);
+    };
+    computed = {
+      selectedCategoryName() {
+        if (this.init && this.categories && this.categories.list) {
+          const selectedId = this.categories.selectedId;
+          return this.categories.list.find(item => item.id == selectedId).title;
+        }
+      }
+    };
+    components = {
+      ShopNav: ShopNav,
+      SideTab: SideTab,
+      GoodsItem: GoodsItem,
+      Loadmore: Loadmore,
+      ShopCart: ShopCart,
+      SkuSelector: SkuSelector,
+      UserInfo: UserInfo
+    };
+    mixins = [base, pagination];
+    config = {
+      navigationBarTitleText: '手工下单'
+    };
+  }
+</script>
+<style lang="scss">
+  @import "../../styles/variable";
+  .user-box{
+    padding: 10rpx 0rpx 10rpx 30rpx;
+  }
+  .customer-main-box {
+    flex: 1;
+    padding-left: rpx(25);
+    .address-text{
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+
+  .customer-info-box {
+    padding: rpx(30);
+    background-color: white;
+    .customer-avatar {
+      height: 100rpx;
+      width: 100rpx;
+      border-radius: 50%;
+    }
+
+    .address-box {
+      max-width: rpx(430);
+      text {
+        color: $color-muted;
+        font-size: $text-sm;
+        word-break: break-all;
+      }
+    }
+  }
+  .main-box{
+    width: 100%;
+    position: absolute;
+    top: rpx(89);
+    bottom: 55px;
+
+    .goods-box{
+      flex: 1;
+      height: 100%;
+      .goods-title{
+        height: 30px;
+        padding-left: 20rpx;
+        align-items: center;
+        border-bottom: $border;
+      }
+      .goods-list{
+        background-color: #FFF;
+        padding-left: 10px;
+      }
+    }
+  }
+  .main-box-null{
+    @extend .main-box;
+    top: 246rpx;
+  }
+</style>

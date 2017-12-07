@@ -1,0 +1,56 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+
+    <!--列表展现-->
+    <repeat for="{{page.list}}" key="index" index="index" item="item">
+      <AddressItem :address.sync="item" @select.user="select"/>
+    </repeat>
+
+    <!-- 加载提示 -->
+    <Loadmore :page.sync="page"/>
+
+    <!--占位符-->
+    <Placeholder :show.sync="isPageEmpty" message="您还没有收货地址"  @tap.user="add"/>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import pagination from '../../mixins/pagination';
+  import mausl from '../../api/mausl';
+  import AddressItem from '../../components/manusl/address_item';
+  import Placeholder from '../../components/common/placeholder';
+  import Loadmore from '../../components/weui/loadmore';
+  import Event from '../../utils/Event';
+  export default class SelectAddress extends wepy.page {
+    def = {
+      init: false,
+      page: {
+        list: []
+      }
+    };
+    data = {...this.def};
+    async onLoad(option) {
+      this.page = mausl.addresses(option.memberId);
+      this.next();
+    };
+    methods = {
+      select (address) {
+        Event.emit(Event.ADDRESS_LIST_UPDATE, address);
+        wepy.navigateBack();
+      }
+    };
+    mixins = [base, pagination];
+    components = {
+      Placeholder: Placeholder,
+      Loadmore: Loadmore,
+      AddressItem: AddressItem
+    };
+    config = {
+      navigationBarTitleText: '选择地址'
+    };
+  }
+</script>
+<style lang="scss">
+  @import "../../styles/variable";
+</style>

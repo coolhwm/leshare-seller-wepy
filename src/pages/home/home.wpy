@@ -98,7 +98,7 @@
           <image src="/images/home/scan.png"/>
           <text>扫码核销</text>
         </view>
-        <navigator class="operation-row column-center" url="../customer/list">
+        <navigator class="operation-row column-center" url="{{navUrl}}">
           <image src="/images/home/customer.png"/>
           <text>用户管理</text>
         </navigator>
@@ -127,10 +127,12 @@
       order: {},
       shop: {},
       init: false,
-      show: false
+      show: false,
+      navUrl: '../manusl/user_management?type=home'
     };
     data = {...this.def};
-    async onLoad () {
+    async onLoad (option) {
+      console.log(option.scene);
       console.info('load');
       WxUtils.checkSDK();
       this.shop = await shop.info();

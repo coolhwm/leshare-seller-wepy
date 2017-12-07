@@ -54,7 +54,7 @@ export default class order extends base {
       '8': '卖家已退款',
       '9': '店家已接单'
     }
-  }
+  };
   static paymentDict = {
     '0': '线下支付',
     '1': '在线支付'
@@ -79,8 +79,8 @@ export default class order extends base {
   /**
    * 分页方法
    */
-  static hisPage(customerId, memberId) {
-    const url = `${this.baseUrl}/customers/order_list?customer_id=${customerId}&&member_id=${memberId}`;
+  static hisPage() {
+    const url = `${this.baseUrl}/customers/order_list`;
     return new Page(url, this._processOrderListItem.bind(this));
   }
 
@@ -256,7 +256,7 @@ export default class order extends base {
     // order.statusText = this.statusDict[status];
     // 处理动作
     this._processOrderAction(order);
-    this._processOrderStatusDesc(order)
+    this._processOrderStatusDesc(order);
     // 所有情况均展现动作条
     order.isAction = true;
     // 处理订单价格

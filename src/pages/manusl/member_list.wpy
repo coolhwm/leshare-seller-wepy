@@ -1,0 +1,90 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <repeat for="{{page.list}}" key="index" index="index" item="item">
+      <view @tap.stop="toUserInfo({{item}})">
+        <CustomerItem :customerInfo.sync="item"/>
+      </view>
+    </repeat>
+
+    <ActionBar @tap.user="add" okText="新增会员"/>
+    <!-- 加载提示 -->
+    <Loadmore :page.sync="page"/>
+
+    <!--占位符-->
+    <Placeholder :show.sync="isPageEmpty" message="您还没有相关客户信息"/>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import mausl from '../../api/mausl';
+  import pagination from '../../mixins/pagination';
+  import base from '../../mixins/base';
+  import CustomerItem from '../../components/manusl/customer_item';
+  import Event from '../../utils/Event';
+  import Loadmore from '../../components/weui/loadmore';
+  import Placeholder from '../../components/common/placeholder';
+  import ActionBar from '../../components/common/action_bar';
+
+  export default class MemberList extends wepy.page {
+    def = {
+      init: false,
+      page: {
+        list: []
+      },
+      selectedId: 3,
+      type: null,
+      level: 0
+    };
+    data = {...this.def};
+    async onLoad (options) {
+      const {type, level} = JSON.parse(options.params);
+      this.type = type;
+      this.level = level;
+      await this.getRequest();
+      Event.listen(Event.SHOP_CUSTOMER_UPDATE, this.update.bind(this), this);
+    };
+    params () {
+      if (this.level) {
+        return {level: this.level}
+      }
+    }
+    methods = {
+      async switchTab () {
+        await this.getRequest();
+      },
+      toUserInfo (item) {
+        if (this.type == 'home') {
+          if (item.customerId != 0) {
+            this.$root.$navigate('/pages/customer/info?customerId=' + item.customerId);
+          } else {
+            this.$root.$navigate('/pages/customer/member_info?item=' + JSON.stringify(item));
+          }
+        } else {
+          Event.emit(Event.MEMBER_INFO_UPDATE, item);
+          wepy.navigateBack();
+        }
+      },
+      add () {
+        this.$root.$navigate('/pages/vip/registe_member');
+      }
+    };
+
+    async getRequest () {
+      this.page = await mausl.membersList(this.selectedId);
+      await this.next();
+    };
+    components = {
+      CustomerItem: CustomerItem,
+      Loadmore: Loadmore,
+      Placeholder: Placeholder,
+      ActionBar: ActionBar
+    };
+    mixins = [base, pagination];
+    config = {
+      navigationBarTitleText: '会员列表'
+    };
+  }
+</script>
+<style lang="scss">
+  @import "../../styles/variable";
+</style>

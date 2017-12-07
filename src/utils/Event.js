@@ -23,6 +23,8 @@ export default class Event {
   static SHOP_INFO_UPDATE = 'SHOP_INFO_UPDATE';
   // 积分保存成功
   static SHOP_BONUS_UPDATE = 'SHOP_BONUS_UPDATE';
+  // 手工下单用户信息刷新
+  static MANUSL_USER_UPDATE = 'MANUSL_USER_UPDATE';
   // 会员等级保存成功
   static SHOP_DISCOUNT_UPDATE = 'SHOP_DISCOUNT_UPDATE';
   // 客户管理更新
@@ -41,6 +43,16 @@ export default class Event {
   static CUSOMTER_MEMEBER_UPDATE = 'CUSOMTER_MEMEBER_UPDATE';
   // 用户登出
   static USER_LOGOUT = 'USER_LOGOUT';
+  // 购物车清空
+  static CART_LIST_CLEAR = 'CART_LIST_CLEAR';
+  // 购物车重置
+  static CART_LIST_RESET = 'CART_LIST_RESET';
+  // 购物车增加
+  static CART_LIST_ADD = 'CART_LIST_ADD';
+  // 地址列表更新
+  static ADDRESS_LIST_UPDATE = 'ADDRESS_LIST_UPDATE';
+  // 地址列表更新
+  static MEMBER_INFO_UPDATE = 'MEMBER_INFO_UPDATE';
   static listen(eventName, callback, observer) {
     WxNotificationCenter.addNotification(eventName, callback, observer);
   }

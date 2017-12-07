@@ -14,7 +14,7 @@
         <view class="column customer-main-box">
           <!--姓名/打电话-->
           <view class="row-between">
-            <text class="xxl">{{customer.customer.nickName}}</text>
+            <text class="xxl">{{customer.customer.nickName ? customer.customer.nickName : '微信用户'}}</text>
             <image class="icon" src="/images/icons/call.png" @tap.stop="phone"/>
           </view>
 
@@ -51,7 +51,7 @@
       <!--客户统计信息-->
       <view class="count-box row-around bg-white">
         <view class="count-item column-center">
-          <text class="count-value">{{customer.countCustomerInfo.lastOrderTime}}</text>
+          <text class="count-value">{{customer.countCustomerInfo.lastOrderTime ? customer.countCustomerInfo.lastOrderTime : '0次'}}</text>
           <text class="muted">最近购买</text>
         </view>
         <view class="count-item column-center">
@@ -143,16 +143,20 @@
       },
       order: {},
       good: {},
-      coupon: {}
+      coupon: {},
+      memberId: 0
     };
     data = {...this.def};
 
     async onLoad (options) {
       this.customerId = options.customerId;
       this.member = await member.customerInfo(this.customerId);
+      if (this.member) {
+        this.memberId = this.member.memberId;
+      }
       this.tab.selectedId = 'HIS_ORDER';
       this.customer = await customerInfo.detailInfo(this.customerId);
-      this.page = order.hisPage(this.customerId);
+      this.page = order.hisPage();
       this.next();
       Event.listen(Event.CUSOMTER_COUPON_UPDATE, this.updateInfo.bind(this), this);
       Event.listen(Event.SHOP_CUSTOMER_UPDATE, this.updateMemberInfo.bind(this), this);
@@ -202,17 +206,28 @@
         this.$navigate('../order/detail', {orderId});
       }
     };
+    // 获取分页参数
+    params() {
+      return {
+        customer_id: this.customerId,
+        member_id: this.memberId
+      };
+    }
     events = {
       async change () {
         this.page.clear();
         this.$apply();
         if (this.tab.selectedId == 'HIS_ORDER') {
-          this.page = order.hisPage(this.customerId);
+          this.page = order.hisPage();
         } else if (this.tab.selectedId == 'OFTEN_GOODS') {
           this.page = await goods.oftenGoodsPage(this.customerId);
         } else if (this.tab.selectedId == 'COUPON') {
           this.page = await coupon.cutomerCouponPage(this.customerId);
         } else if (this.tab.selectedId == 'HIS_BONUS') {
+          if (this.memberId == 0) {
+            Tips.error('该用户不是会员');
+            return
+          }
           this.page = await member.bonusPage(this.customerId);
         }
         this.next();

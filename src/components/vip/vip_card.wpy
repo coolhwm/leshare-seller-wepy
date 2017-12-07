@@ -1,17 +1,4 @@
 <template>
-  <!-- 会员卡注册区域 -->
-  <view class="vip-box column-between" wx:if="{{member == null}}">
-    <view class="column-center">
-      <image class="avatar"  src="{{userInfo.avatarUrl ? userInfo.avatarUrl : '/images/icons/customer_white.png'}}"/>
-      <text>{{userInfo.nickName ? userInfo.nickName : '微信用户'}}</text>
-
-    </view>
-    <view class="column-center">
-      <text class="registe-btn" @tap="regist">会员注册</text>
-      <text class="xxs mt10">立即注册会员可享受积分与折扣特权</text>
-    </view>
-  </view>
-
   <!-- 会员卡区域 -->
   <view class="vip-box column-between flex-start" @tap="vipDetail({{member}},{{userInfo}},{{vipCard}})" wx:if="{{member != null}}">
 
