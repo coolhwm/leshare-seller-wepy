@@ -1,0 +1,46 @@
+<template>
+  <view class="nav-box row-between {{last == 'true' ? 'nav-box-last' : ''}}">
+    <view class="header row">
+      <view class="label primary small" wx:if="{{badegText}}">{{badegText}}</view>
+      <text>{{title}}</text>
+    </view>
+    <view class="footer row" wx:if="{{navText}}" @tap="goto">
+      <text class="muted">{{navText}}</text>
+      <image class="icon" src="/images/icons/more-gray.png" />
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import WxUtils from '../../utils/WxUtils';
+  export default class ShopNav extends wepy.component {
+    props = {
+      badegText: {},
+      navText: {},
+      navUrl: {},
+      title: {},
+      last: 'false'
+    };
+    methods = {
+      goto() {
+        WxUtils.backOrNavigate(this.navUrl);
+      }
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  .nav-box {
+    height: 50rpx;
+    position: relative;
+    background-color: #FFFFFF;
+    padding:8px 13px;
+    border-top: $border;
+  }
+  .nav-box-last{
+    border-bottom: $border;
+  }
+
+</style>

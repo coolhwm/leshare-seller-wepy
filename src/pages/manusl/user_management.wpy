@@ -1,0 +1,74 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <view class="weui-cells weui-cells-form">
+      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(0, null)">
+        <view class="weui-cell__bd">全部客户</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"/>
+      </view>
+      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(1, 0)">
+        <view class="weui-cell__bd">会员</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"/>
+      </view>
+    </view>
+    <view class="mt20"/>
+    <view class="weui-cells weui-cells-form" wx:if="{{card && card.supplyDiscount == 1}}">
+      <repeat for="{{discountRules}}" key="index" index="index" item="item">
+        <!-- 等级 -->
+        <view class="weui-cell weui-cell_access" @tap="screen(1,{{item.level}})">
+          <view class="weui-cell__bd">{{item.levelName}}</view>
+          <text class="weui-cell__ft weui-cell__ft_in-access"/>
+        </view>
+      </repeat>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import member from '../../api/member';
+  import base from '../../mixins/base';
+  import Navigator from '../../components/weui/navigator';
+
+  export default class UserManagement extends wepy.page {
+    def = {
+      init: false,
+      card: {},
+      discountRules: [],
+      type: null
+    };
+    data = {...this.def};
+
+    async onLoad (option) {
+      this.type = option.type;
+      this.card = await member.cardInfo();
+      if (this.card) {
+        this.discountRules = this.card.discountRules;
+      }
+      this.loaded();
+    };
+
+    methods = {
+      screen (showCondition, level) {
+        const params = {
+          type: this.type,
+          level: level
+        };
+        if (showCondition == 0) {
+          this.$root.$navigate('/pages/manusl/customer_list');
+        } else {
+          this.$root.$navigate('/pages/manusl/member_list?params=' + JSON.stringify(params));
+        }
+      }
+    };
+    mixins = [base];
+    components = {
+      NavAllUser: Navigator,
+      NavMemberUser: Navigator
+    };
+    config = {
+      navigationBarTitleText: '用户管理'
+    };
+  }
+</script>
+<style lang="scss">
+  @import "../../styles/variable";
+</style>

@@ -1,10 +1,18 @@
 <template>
   <Tips/>
-  <view wx:if="{{init}}">
-    <view class="container box-bg">
-      <VipCard :member.sync="customerMember" :vipCard.sync="memberCardInfo" :userInfo.sync="customerInfo"
-            @detail.user="detail"/>
-      <view class="weui-cells weui-cells-form"  wx:if="{{result == null}}">
+  <view class="container box-bg" wx:if="{{init}}">
+    <VipCard :member.sync="member" :vipCard.sync="card" :userInfo.sync="customer"
+             @detail.user="detail"/>
+
+    <view wx:if="{{result == null}}">
+      <ZanTab :tab.sync="tab" fixed="0"/>
+    </view>
+
+
+    <!--累计消费-->
+    <view  wx:if="{{tab.selectedId == 'COST'}}">
+      <!--消费前-->
+      <view class="weui-cells weui-cells-form" wx:if="{{result == null}}">
         <view class="weui-cell weui-cell_input">
           <view class="weui-cell__hd">
             <view class="weui-label">消费金额</view>
@@ -14,13 +22,15 @@
                    type="number" maxlength="6" placeholder="请输入消费金额"/>
           </view>
         </view>
-        <view class="weui-cell" wx:if="{{memberCardInfo.supplyBalance == 1}}">
+        <view class="weui-cell" wx:if="{{card.supplyBonus == 1}}">
           <view class="weui-cell__hd">
             <view class="weui-label">累计积分</view>
           </view>
           <text>{{bonus ? bonus : 0}}</text>
         </view>
       </view>
+
+      <!--消费后-->
       <view class="weui-cells weui-cells-form"  wx:else>
         <view class="weui-cell weui-cell_input">
           <view class="weui-cell__hd">
@@ -31,17 +41,46 @@
           </view>
         </view>
       </view>
+
+      <!--权益提示-->
+      <view class="tips-box column">
+        <block wx:if="{{discountRuleText.length > 0}}">
+          <text>• 会员折扣</text>
+          <text wx:for="{{discountRuleText}}" class="ml20">- {{item}}</text>
+        </block>
+        <block wx:if="{{bonusRuleText.length > 0}}">
+          <text>• 会员积分</text>
+          <text wx:for="{{bonusRuleText}}" class="ml20">- {{item}}</text>
+        </block>
+      </view>
     </view>
 
-    <view class="tips-box column">
-      <block wx:if="{{discountRuleText.length > 0}}">
-        <text>• 会员折扣</text>
-        <text wx:for="{{discountRuleText}}" class="ml20">- {{item}}</text>
-      </block>
-      <block wx:if="{{bonusRuleText.length > 0}}">
-        <text>• 会员积分</text>
-        <text wx:for="{{bonusRuleText}}" class="ml20">- {{item}}</text>
-      </block>
+    <!--修改积分-->
+    <view wx:if="{{tab.selectedId == 'BONUS'}}">
+
+      <!--操作前-->
+      <view class="weui-cells weui-cells-form"   wx:if="{{result == null}}">
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__hd">
+            <view class="weui-label">积分变动</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" id="bonus" @input="input" value="{{input.bonus}}"
+                   type="number" maxlength="6" placeholder="请输入变动积分"/>
+          </view>
+        </view>
+      </view>
+      <!--操作后-->
+      <view class="weui-cells weui-cells-form"  wx:else>
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__hd">
+            <view class="weui-label">保存成功</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input"  value="{{result}}" disabled/>
+          </view>
+        </view>
+      </view>
     </view>
 
     <view class="message-box row-center" wx:if="{{message}}">
@@ -61,20 +100,27 @@
   import VipCard from '../../components/vip/vip_card';
   import ActionBar from '../../components/common/action_bar';
   import FormTips from '../../components/weui/tips';
-  import member from '../../api/member'
-  import userInfo from '../../api/customer_info'
-  import Event from '../../utils/Event'
-  import Tips from '../../utils/Tips'
+  import member from '../../api/member';
+  import userInfo from '../../api/customer_info';
+  import Event from '../../utils/Event';
+  import Tips from '../../utils/Tips';
+  import ZanTab from '../../components/zanui/tab';
   export default class VipScan extends wepy.page {
     def = {
       init: false,
-      customerInfo: {},
-      customerMember: {},
-      memberCardInfo: {},
-      bonus: null,
+      customer: {},
+      member: {},
+      card: {},
       scene: null,
       message: null,
-      result: null
+      result: null,
+      tab: {
+        list: [
+          {id: 'COST', title: '消费'},
+          {id: 'BONUS', title: '积分'}
+        ],
+        selectedId: 'COST'
+      }
     };
     data = {...this.def};
 
@@ -87,74 +133,98 @@
         // 扫描二维码进入
         if (options.scene) {
           this.scene = decodeURIComponent(options.scene);
-          this.customerMember = await member.Info(options.scene);
-          const {customer} = await userInfo.detailInfo(this.customerMember.customerId);
-          this.customerInfo = customer;
-          this.memberCardInfo = await member.cardInfo();
+          this.member = await member.Info(options.scene);
+          const {customer} = await userInfo.detailInfo(this.member.customerId);
+          this.customer = customer;
+          this.card = await member.cardInfo();
         }
         // 用户信息进入
         if (preload) {
-          this.memberCardInfo = await member.cardInfo();
-          const {customer} = preload.data.customerInfo;
-          this.customerInfo = customer;
-          this.customerMember = preload.data.customerMember;
-          this.sence = this.customerMember.memberNumber;
+          this.card = await member.cardInfo();
+          const {customer} = preload.data.customer;
+          this.customer = customer;
+          this.member = preload.data.member;
+          this.scene = this.member.memberNumber;
         }
         this.loaded();
       } catch (e) {
         this.message = e.message;
         this.$apply();
+        console.error(e);
         Tips.error(e.message);
       }
     };
     methods = {
       async add () {
-        if (!this.validate()) {
-          return;
-        }
         if (this.result) {
           await this.scan();
           return;
         }
-        const param = {
-          addBonus: this.bonus,
-          cardNumber: this.customerMember.memberNumber,
-          costMoney: this.input.price,
-          type: 'OFFLINE_ORDER_ADD'
-        };
-        await member.memberAdd(param);
-        this.$apply();
-        await Tips.success('消费已完成');
-        const params = {
-          bonus: this.bonus,
-          customerMember: this.customerMember
-        };
-        this.result = `累计消费${this.input.price}元` + (this.bonus > 0 ? `，累计积分${this.bonus}` : '');
-        this.customerMember = await member.Info(this.scene);
-        this.input.price = null;
-        this.$apply();
-        Event.emit(Event.SHOP_CUSTOMER_UPDATE, params);
+        if (this.tab.selectedId == 'COST') {
+          if (!this.validate()) {
+            return;
+          }
+          const param = {
+            addBonus: this.bonus,
+            cardNumber: this.scene,
+            costMoney: this.input.price,
+            type: 'OFFLINE_ORDER_ADD'
+          };
+          await member.memberAdd(param);
+          await Tips.success('消费已完成');
+          this.result = `消费${this.input.price}元` + (this.bonus > 0 ? `，累计积分${this.bonus}` : '');
+          this.input.price = null;
+        } else {
+          if (!this.bonusValidate()) {
+            return;
+          }
+          const bouns = this.input.bonus;
+          const param = {
+            addBonus: bouns,
+            cardNumber: this.member.memberNumber,
+            costMoney: 0,
+            type: 'OFFLINE_ORDER_ADD'
+          };
+          await member.memberAdd(param);
+          await Tips.success('积分已保存');
+          this.result = `已${bouns > 0 ? '增加' : '扣除'}${bouns > 0 ? bouns : -bouns}积分`;
+          this.input.bonus = null;
+        }
+        this.member = await member.Info(this.scene);
+        Event.emit(Event.SHOP_CUSTOMER_UPDATE);
+        this.loaded();
       },
       detail () {
-        this.$navigate(`/pages/customer/info?customerId=${this.customerInfo.id}`);
+        this.$navigate(`/pages/customer/info?customerId=${this.customer.id}`);
       }
     };
     async scan() {
-      const data = await wepy.scanCode();
-      console.info(data);
-      if (data.result != null && data.result != '') {
-        this.$redirect(`/pages/coupon/scan?scan=${data.result}`);
-      } else if (data.path != null && data.path != '') {
-        const arr = data.path.split('=');
-        this.$redirect('/pages/vip/vip_scan?scene=' + arr[1]);
-      } else {
-        Tips.alert('扫描失败');
+      try {
+        const data = await wepy.scanCode();
+        Tips.loading('扫描中');
+        console.info(data);
+        const {errMsg, path} = data;
+        if (errMsg != 'scanCode:ok') {
+          Tips.alert('扫描失败请重试');
+          return;
+        }
+        // 会员卡的情况
+        const memberUrlPrefix = 'pages/vip/vip_scan';
+        const isMember = path && path.indexOf(memberUrlPrefix) >= 0;
+        if (isMember) {
+          this.$redirect('/' + path);
+          return;
+        }
+        Tips.alert('未知二维码');
+      } finally {
+        Tips.loaded();
       }
     }
     components = {
       Tips: FormTips,
       VipCard: VipCard,
-      ActionBar: ActionBar
+      ActionBar: ActionBar,
+      ZanTab: ZanTab
     };
     config = {
       navigationBarTitleText: '会员卡核销'
@@ -169,6 +239,12 @@
         },
         {
           value: this.input.price,
+          method: 'required',
+          param: 0,
+          message: '消费金额不能为空'
+        },
+        {
+          value: this.input.price,
           method: 'min',
           param: 0.01,
           message: '消费金额不能为0或负数'
@@ -176,29 +252,50 @@
       ];
       return this.check(rules);
     }
+    bonusValidate () {
+      const rules = [
+        {
+          value: this.input.bonus,
+          method: 'required',
+          param: 0,
+          message: '变动积分不能为空'
+        }
+      ];
+      return this.check(rules);
+    }
     computed = {
+      bonus () {
+        if (this.card == null) return;
+        const {bonusRule, supplyBonus} = this.card;
+        if (bonusRule == null || supplyBonus == 0) {
+          return 0;
+        }
+        return Math.floor(this.input.price / bonusRule.costMoneyUnit) * bonusRule.increaseBonus;
+      },
       okText () {
         return this.result ? '继续扫描' : '确定';
       },
       bonusRuleText() {
-        if (this.memberCardInfo == null) return;
-        const rule = this.memberCardInfo.bonusRule;
+        if (this.card == null) return;
+        const rule = this.card.bonusRule;
         let describes = [];
         // 开启积分规则
-        if (this.memberCardInfo.supplyBonus == 1 && this.memberCardInfo.bonusRule != null) {
+        if (this.card.supplyBonus == 1 && this.card.bonusRule != null) {
           // 有初始积分的情况
           if (rule.initIncreaseBonus > 0) {
             describes.push(`注册绑定手机开卡即送 ${rule.initIncreaseBonus} 积分`);
           }
           describes.push(`每消费 ${rule.costMoneyUnit} 元可获得 ${rule.increaseBonus} 积分`);
-          describes.push(`每使用 ${rule.costBonusUnit} 积分，抵扣 ${rule.reduceMoney} 元现金，每笔订单最多使用 ${rule.maxReduceBonus} 积分，订单需满 ${rule.limitMoney} 元`);
+          if (rule.isCost == 1) {
+            describes.push(`每使用 ${rule.costBonusUnit} 积分，抵扣 ${rule.reduceMoney} 元现金，每笔订单最多使用 ${rule.maxReduceBonus} 积分，订单需满 ${rule.limitMoney} 元`);
+          }
         }
         return describes;
       },
       discountRuleText() {
-        if (this.memberCardInfo == null) return;
-        const rules = this.memberCardInfo.discountRules;
-        if (this.memberCardInfo.supplyDiscount == 0 || rules == null) return;
+        if (this.card == null) return;
+        const rules = this.card.discountRules;
+        if (this.card.supplyDiscount == 0 || rules == null) return;
         const describes = [];
         // 有折扣的情况
         for (let rule of rules) {
@@ -213,19 +310,6 @@
       }
     };
     mixins = [base, input];
-    watch = {
-      input (input) {
-        const bonusRule = this.memberCardInfo.bonusRule;
-        if (bonusRule != null) {
-          if ((input.price % bonusRule.costMoneyUnit) == 0) {
-            this.bonus = (bonusRule.increaseBonus / bonusRule.costMoneyUnit) * input.price;
-          } else {
-            this.bonus = (bonusRule.increaseBonus / bonusRule.costMoneyUnit) * (input.price - (input.price % bonusRule.costMoneyUnit));
-          }
-          this.$apply();
-        }
-      }
-    }
   }
 </script>
 

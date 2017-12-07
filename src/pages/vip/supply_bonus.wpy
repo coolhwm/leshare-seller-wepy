@@ -1,92 +1,102 @@
 <template>
-  <Tips/>
-  <view class="title-box">
-    <text>积分规则</text>
-  </view>
-  <view class="weui-cells weui-cells-form">
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-label">每消费</view>
-      <view class="weui-cell__ft">
-        <input class="weui-input" id="costMoneyUnit" type="number" maxlength="6" @input="input"
-               value="{{input.costMoneyUnit}}"
-               placeholder="消费金额"/>
-      </view>
-      <view class="unit">元</view>
+  <view wx:if="{{init}}">
+    <Tips/>
+    <view class="title-box">
+      <text>积分规则</text>
     </view>
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-label">增加</view>
-      <view class="weui-cell__ft">
-        <input class="weui-input" id="increaseBonus" type="number" maxlength="6" @input="input"
-               value="{{input.increaseBonus}}"
-               placeholder="增加积分"/>
+    <view class="weui-cells weui-cells-form">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-label">每消费</view>
+        <view class="weui-cell__ft">
+          <input class="weui-input" id="costMoneyUnit" type="number" maxlength="6" @input="input"
+                 value="{{input.costMoneyUnit}}"
+                 placeholder="消费金额"/>
+        </view>
+        <view class="unit">元</view>
       </view>
-      <view class="unit">积分</view>
-    </view>
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-label">最多累计</view>
-      <view class="weui-cell__ft">
-        <input class="weui-input" id="maxIncreaseBonus" type="number" maxlength="6" @input="input"
-               value="{{input.maxIncreaseBonus}}" placeholder="单笔订单最多能累计的积分"/>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-label">增加</view>
+        <view class="weui-cell__ft">
+          <input class="weui-input" id="increaseBonus" type="number" maxlength="6" @input="input"
+                 value="{{input.increaseBonus}}"
+                 placeholder="增加积分"/>
+        </view>
+        <view class="unit">积分</view>
       </view>
-      <view class="unit">积分</view>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-label">最多累计</view>
+        <view class="weui-cell__ft">
+          <input class="weui-input" id="maxIncreaseBonus" type="number" maxlength="6" @input="input"
+                 value="{{input.maxIncreaseBonus}}" placeholder="单笔订单最多能累计的积分"/>
+        </view>
+        <view class="unit">积分</view>
+      </view>
     </view>
-  </view>
 
-  <view class="title-box">
-    <text>使用规则</text>
-  </view>
-  <view class="weui-cells weui-cells-form">
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-label">每使用</view>
-      <view class="weui-cell__ft">
-        <input class="weui-input" id="costBonusUnit" type="number" maxlength="6" @input="input"
-               value="{{input.costBonusUnit}}"
-               placeholder="使用积分"/>
-      </view>
-      <view class="unit">积分</view>
+    <view class="title-box">
+      <text>使用规则</text>
     </view>
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-label">抵扣</view>
-      <view class="weui-cell__ft">
-        <input class="weui-input" id="reduceMoney" type="number" maxlength="6" @input="input"
-               value="{{input.reduceMoney}}"
-               placeholder="抵扣金额"/>
+    <view class="weui-cells weui-cells-form">
+      <view class="weui-cell weui-cell_switch">
+        <view class="weui-cell__bd">现金抵扣</view>
+        <view class="weui-cell__ft">
+          <switch checked="{{input.isCost}}" id="isCost" @change="input"/>
+        </view>
       </view>
-      <view class="unit">元</view>
+      <block wx:if="{{input.isCost}}">
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-label">每使用</view>
+          <view class="weui-cell__ft">
+            <input class="weui-input" id="costBonusUnit" type="number" maxlength="6" @input="input"
+                   value="{{input.costBonusUnit}}"
+                   placeholder="使用积分"/>
+          </view>
+          <view class="unit">积分</view>
+        </view>
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-label">抵扣</view>
+          <view class="weui-cell__ft">
+            <input class="weui-input" id="reduceMoney" type="number" maxlength="6" @input="input"
+                   value="{{input.reduceMoney}}"
+                   placeholder="抵扣金额"/>
+          </view>
+          <view class="unit">元</view>
+        </view>
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-label">最多使用</view>
+          <view class="weui-cell__ft">
+            <input class="weui-input" id="maxReduceBonus" type="number" maxlength="6" @input="input"
+                   value="{{input.maxReduceBonus}}" placeholder="最多能使用的积分"/>
+          </view>
+          <view class="unit">积分</view>
+        </view>
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-label">订单需满</view>
+          <view class="weui-cell__ft">
+            <input class="weui-input" id="limitMoney" type="number" maxlength="6" @input="input"
+                   value="{{input.limitMoney}}" placeholder="订单金额达到"/>
+          </view>
+          <view class="unit">元</view>
+        </view>
+      </block>
     </view>
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-label">最多使用</view>
-      <view class="weui-cell__ft">
-        <input class="weui-input" id="maxReduceBonus" type="number" maxlength="6" @input="input"
-               value="{{input.maxReduceBonus}}" placeholder="最多能使用的积分"/>
+    <view class="title-box">
+      <text>其他</text>
+    </view>
+    <view class="weui-cells weui-cells-form">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-label">初始积分</view>
+        <view class="weui-cell__ft">
+          <input class="weui-input" id="initIncreaseBonus" type="number" maxlength="6" @input="input"
+                 value="{{input.initIncreaseBonus}}" placeholder="初始积分"/>
+        </view>
+        <view class="content"></view>
       </view>
-      <view class="unit">积分</view>
     </view>
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-label">订单需满</view>
-      <view class="weui-cell__ft">
-        <input class="weui-input" id="limitMoney" type="number" maxlength="6" @input="input"
-               value="{{input.limitMoney}}" placeholder="订单金额达到"/>
+    <view class="zan-panel">
+      <view class="zan-btns">
+        <button class="zan-btn zan-btn--fill" @tap="submit">确定</button>
       </view>
-      <view class="unit">元</view>
-    </view>
-  </view>
-  <view class="title-box">
-    <text>其他</text>
-  </view>
-  <view class="weui-cells weui-cells-form">
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-label">初始积分</view>
-      <view class="weui-cell__ft">
-        <input class="weui-input" id="initIncreaseBonus" type="number" maxlength="6" @input="input"
-               value="{{input.initIncreaseBonus}}" placeholder="初始积分"/>
-      </view>
-      <view class="content"></view>
-    </view>
-  </view>
-  <view class="zan-panel">
-    <view class="zan-btns">
-      <button class="zan-btn zan-btn--fill" @tap="submit">确定</button>
     </view>
   </view>
 </template>
@@ -99,6 +109,7 @@
 
   export default class SupplyBonus extends wepy.page {
     data = {
+      init: false,
       bonus: {}
     };
     methods = {
@@ -107,6 +118,7 @@
           return;
         }
         this.input.cardId = 0;
+        this.input.isCost = this.input.isCost ? 1 : 0;
         Event.emit(Event.SHOP_BONUS_UPDATE, this.input);
         wepy.navigateBack();
       }
@@ -114,7 +126,9 @@
     async onLoad({bonus}) {
       if (bonus != null && bonus != 'null') {
         this.input = JSON.parse(bonus);
+        this.input.isCost = this.input.isCost == 1;
       }
+      this.loaded();
     };
     validate () {
       const rules = [

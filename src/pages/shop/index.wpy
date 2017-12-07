@@ -1,37 +1,39 @@
 <template>
 
-    <view class="container" wx:if="{{init}}">
+  <view class="container" wx:if="{{init}}">
 
-        <!-- 头图区域 -->
-        <AvatarPanel :info.sync="shop"/>
+    <!-- 头图区域 -->
+    <AvatarPanel :info.sync="shop"/>
 
-        <view class="h-gap"/>
+    <view class="h-gap"/>
 
-        <view class="weui-cells-form">
-            <NavStatus title="营业状态" url="../shop/status" :describe.sync="statusText"/>
+    <view class="weui-cells-form">
+      <NavStatus title="营业状态" url="../shop/status" :describe.sync="statusText"/>
 
-            <NavNotice title="店铺公告" url="../notice/list"/>
+      <NavNotice title="店铺公告" url="../notice/list"/>
 
-            <NavDelivery title="运费模板" url="../delivery/list"/>
+      <NavManusl title="手工下单" url="../manusl/index"/>
 
-            <NavVip title="会员卡管理" url="../vip/vip_card"/>
+      <NavDelivery title="运费模板" url="../delivery/list"/>
 
-            <NavDeliver title="配送员管理" url="../delivery/deliver_list"/>
+      <NavVip title="会员卡管理" url="../vip/vip_card"/>
 
-            <NavReduce title="优惠管理" url="../shop/reduce_list"/>
+      <NavDeliver title="配送员管理" url="../delivery/deliver_list"/>
 
-            <NavCategory title="分类管理" url="../goods/category"/>
+      <NavReduce title="优惠管理" url="../shop/reduce_list"/>
 
-            <NavShops title="切换店铺" @tap.user="shops"/>
+      <NavCategory title="分类管理" url="../goods/category"/>
 
-            <NavLogout title="切换账号" @tap.user="logout"/>
-        </view>
+      <NavShops title="切换店铺" @tap.user="shops"/>
 
-        <Copyright/>
-
+      <NavLogout title="切换账号" @tap.user="logout"/>
     </view>
 
-    <view class="tab-border"/>
+    <Copyright/>
+
+  </view>
+
+  <view class="tab-border"/>
 </template>
 
 <script>
@@ -93,7 +95,8 @@
       NavCategory: Navigator,
       NavShops: Navigator,
       NavLogout: Navigator,
-      AvatarPanel: AvatarPanel
+      AvatarPanel: AvatarPanel,
+      NavManusl: Navigator
     };
     config = {
       navigationBarTitleText: '我的信息'
@@ -103,6 +106,5 @@
 </script>
 
 <style lang="scss">
-    @import "../../styles/variable";
-
+  @import "../../styles/variable";
 </style>

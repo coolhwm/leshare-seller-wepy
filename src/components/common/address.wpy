@@ -1,5 +1,5 @@
 <template>
-  <view class="address-box row">
+  <view class="address-box row" wx:if="{{address.fullAddress}}">
     <!--左侧图标-->
     <view class="icon-box">
       <image class="icon-lg" src="/images/icons/address.png"/>

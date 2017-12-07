@@ -1,0 +1,120 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <!-- 会员信息 -->
+    <MemberItem :customer.sync="customer"/>
+    <!-- 会员点击区 -->
+    <VipInfo :member.sync="member" @moreVip.user="moreVip"/>
+    <!--TAB 页-->
+    <ZanTab :tab.sync="tab" :fixed.sync="fixed" @change.user="switchTap" />
+    <!--订单列表-->
+    <repeat for="{{page.list}}" key="index" index="index" item="item">
+      <OrderItem :order.sync="item" @tap.user="detail" action="0"/>
+    </repeat>
+    <!-- 加载提示 -->
+    <Loadmore :page.sync="page" emptyText="暂无订单"/>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import input from '../../mixins/input';
+  import pagination from '../../mixins/pagination';
+  import MemberItem from '../../components/customer/member_item';
+  import VipInfo from '../../components/customer/vip_info';
+  import ZanTab from '../../components/zanui/expand-tab';
+  import OrderItem from '../../components/order/item';
+  import Loadmore from '../../components/weui/loadmore';
+  import Placeholder from '../../components/common/placeholder';
+  import order from '../../api/order';
+  import member from '../../api/member';
+  import Event from '../../utils/Event';
+
+  export default class MemberInfo extends wepy.page {
+    def = {
+      init: false,
+      page: {
+        list: [
+          {orderGoodsInfos: []}
+        ]
+      },
+      tab: {
+        list: [
+          {id: '2', title: '待接单'},
+          {id: '9', title: '待发货'},
+          {id: '3', title: '待送达'},
+          {id: '5', title: '待退款'}
+        ],
+        expand: [
+          {id: '0', title: '全部'},
+          {id: '1', title: '待付款'},
+          {id: '4', title: '待评价'},
+          {id: '6', title: '已完成'},
+          {id: '7', title: '已关闭'},
+          {id: '8', title: '已退款'}
+        ],
+        expandDefaultText: '其他状态',
+        selectedId: '2',
+        scroll: false
+      },
+      customer: {},
+      memberId: 0,
+      customerId: 0,
+      status: '2',
+      member: {},
+      fixed: false
+    };
+    data = {...this.def};
+
+    async onLoad (options) {
+      this.customer = JSON.parse(options.item);
+      this.memberId = this.customer.memberId;
+      this.customerId = this.customer.customerId;
+      this.member = await member.Info(this.customer.memberNumber);
+      this.page = order.hisPage();
+      await this.next();
+      Event.listen(Event.SHOP_CUSTOMER_UPDATE, this.updateMemberInfo.bind(this), this);
+    }
+    async updateMemberInfo (params) {
+      this.member = await member.Info(this.customer.memberNumber);
+      this.$apply();
+    }
+    params () {
+      return {
+        status: this.status,
+        customer_id: this.customerId,
+        member_id: this.memberId
+      }
+    };
+    methods = {
+      switchTap({selectedId}) {
+        this.status = selectedId;
+        this.reload();
+      },
+      moreVip () {
+        if (this.member) {
+          const params = {
+            customer: {customer: this.customer},
+            member: this.member
+          };
+          this.$preload('data', params);
+          this.$root.$navigate('/pages/vip/vip_scan');
+        }
+      }
+    };
+    components = {
+      MemberItem: MemberItem,
+      VipInfo: VipInfo,
+      ZanTab: ZanTab,
+      OrderItem: OrderItem,
+      Placeholder: Placeholder,
+      Loadmore: Loadmore
+    };
+    mixins = [base, input, pagination];
+    config = {
+      navigationBarTitleText: '会员详情'
+    };
+  }
+</script>
+<style lang="scss">
+  @import "../../styles/variable";
+</style>

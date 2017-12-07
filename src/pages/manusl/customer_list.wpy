@@ -1,0 +1,87 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <!--TAB 页-->
+    <ZanTab :tab.sync="tab" @change.user="switchTab"/>
+    <repeat for="{{page.list}}" key="index" index="index" item="item">
+      <view @tap.stop="toUserInfo({{item.customerId}})">
+        <CustomerItem :customerInfo.sync="item"/>
+      </view>
+    </repeat>
+
+    <!-- 加载提示 -->
+    <Loadmore :page.sync="page"/>
+
+    <!--占位符-->
+    <Placeholder :show.sync="isPageEmpty" message="您还没有相关客户信息"/>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import pagination from '../../mixins/pagination';
+  import mausl from '../../api/mausl';
+  import CustomerItem from '../../components/manusl/customer_item';
+  import ZanTab from '../../components/zanui/tab';
+  import Loadmore from '../../components/weui/loadmore';
+  import Placeholder from '../../components/common/placeholder';
+
+  export default class Test extends wepy.page {
+    def = {
+      init: false,
+      page: {
+        list: []
+      },
+      tab: {
+        list: [
+          {id: 1, title: '最近购买'},
+          {id: 2, title: '购买次数'},
+          {id: 3, title: '总交易额'}
+        ],
+        selectedId: 1,
+        order: true,
+        sord: 'desc',
+        scroll: false
+      }
+    };
+    data = {...this.def};
+
+    async onLoad () {
+      await this.getRequest();
+    };
+    params () {
+      return {
+        order_type: this.tab.selectedId,
+        sort: this.tab.sord,
+        show_condition: 0
+      };
+    };
+
+    methods = {
+      async switchTab () {
+        await this.getRequest();
+      },
+      toUserInfo (customerId) {
+        this.$root.$navigate('/pages/customer/info?customerId=' + customerId);
+      }
+    };
+
+    async getRequest () {
+      this.page = await mausl.customersList(this.tab.selectedId);
+      await this.next();
+    };
+
+    components = {
+      CustomerItem: CustomerItem,
+      ZanTab: ZanTab,
+      Loadmore: Loadmore,
+      Placeholder: Placeholder
+    };
+    mixins = [base, pagination];
+    config = {
+      navigationBarTitleText: '用户列表'
+    };
+  }
+</script>
+<style lang="scss">
+  @import "../../styles/variable";
+</style>

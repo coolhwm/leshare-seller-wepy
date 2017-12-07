@@ -98,7 +98,7 @@
           <image src="/images/home/scan.png"/>
           <text>扫码核销</text>
         </view>
-        <navigator class="operation-row column-center" url="../customer/list">
+        <navigator class="operation-row column-center" url="{{navUrl}}">
           <image src="/images/home/customer.png"/>
           <text>用户管理</text>
         </navigator>
@@ -127,10 +127,12 @@
       order: {},
       shop: {},
       init: false,
-      show: false
+      show: false,
+      navUrl: '../manusl/user_management?type=home'
     };
     data = {...this.def};
-    async onLoad () {
+    async onLoad (option) {
+      console.log(option.scene);
       console.info('load');
       WxUtils.checkSDK();
       this.shop = await shop.info();
@@ -209,15 +211,30 @@
         Event.emit(Event.ORDER_TAB_UPDATE, status);
       },
       async scan() {
-        const data = await wepy.scanCode();
-        console.info(data);
-        if (data.result != null && data.result != '') {
-          this.$navigate(`/pages/coupon/scan?scan=${data.result}`);
-        } else if (data.path != null && data.path != '') {
-          const arr = data.path.split('=');
-          this.$navigate('/pages/vip/vip_scan?scene=' + arr[1]);
-        } else {
-          Tips.alert('扫描失败');
+        try {
+          const data = await wepy.scanCode();
+          Tips.loading('扫描中');
+          console.info(data);
+          const {errMsg, path, result} = data;
+          if (errMsg != 'scanCode:ok') {
+            Tips.alert('扫描失败请重试');
+            return;
+          }
+          // 会员卡的情况
+          const memberUrlPrefix = 'pages/vip/vip_scan';
+          const isMember = path && path.indexOf(memberUrlPrefix) >= 0;
+          if (isMember) {
+            this.$navigate('/' + path);
+            return;
+          }
+          const isCoupon = path == null && result != null && result.indexOf('#') >= 0;
+          if (isCoupon) {
+            this.$navigate(`/pages/coupon/scan?scan=${result}`);
+            return;
+          }
+          Tips.alert('未知二维码');
+        } finally {
+          Tips.loaded();
         }
       }
     };

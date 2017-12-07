@@ -1,0 +1,78 @@
+<template>
+  <!--客户基本信息-->
+  <view class="customer-info-box row-between" @tap="toUserList({{userInfo.type}})">
+    <!--左侧头像-->
+    <image class="customer-avatar"
+           src="{{userInfo.avatarUrl ? userInfo.avatarUrl: '/images/icons/customer.png'}}"/>
+    <!--右侧主区域-->
+    <view class="column customer-main-box">
+      <!--姓名/打电话-->
+      <view class="row">
+        <text class="xxl mr20 user-name-box">{{userInfo.nickName ? userInfo.nickName : '微信用户'}}</text>
+        <image class="icon mr10" src="{{userInfo.level}}"/>
+        <image class="icon mr10" src="{{userInfo.bound}}"/>
+      </view>
+      <!--地址信息-->
+      <view class="row-between">
+        <!--地址/电话-->
+        <view class="row address-box">
+          <text class="lg">联系电话：</text>
+          <text class="lg">{{userInfo.phone ? userInfo.phone : '暂无电话'}}</text>
+          <!--<text class="address-text">地址：{{userInfo.address.fullAddress ? userInfo.address.fullAddress : '暂无地址'}}</text>-->
+        </view>
+      </view>
+    </view>
+    <!--更多地址-->
+    <image class="icon" src="/images/icons/more-gray.png" wx:if="{{userInfo.type != 'trade'}}"/>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  export default class UserInfo extends wepy.component {
+    props = {
+      userInfo: {}
+    };
+    methods = {
+      toUserList (type) {
+        if (type != 'trade') {
+          this.$emit('toUserInfo')
+        }
+      }
+    }
+  }
+</script>
+<style lang="scss">
+   @import "../../styles/variable";
+   .customer-info-box {
+     height: 100rpx;
+     padding: rpx(30);
+     background-color: white;
+     .customer-avatar {
+       height: 100rpx;
+       width: 100rpx;
+       border-radius: 50%;
+     }
+
+     .address-box {
+       text {
+         color: $color-muted;
+         font-size: $text-sm;
+         word-break: break-all;
+       }
+     }
+   }
+   .customer-main-box {
+     flex: 1;
+     padding-left: rpx(25);
+     .user-name-box{
+       max-width: 400rpx;
+       @extend .address-text;
+     }
+     .address-text{
+       display: -webkit-box;
+       -webkit-line-clamp: 1;
+       -webkit-box-orient: vertical;
+       overflow: hidden;
+     }
+   }
+</style>

@@ -2,14 +2,14 @@
   <view class="container" wx:if="{{init}}">
 
     <view class="list-panel">
-      <VipCard :member.sync="member" :customerInfo.sync="userInfo" :memberCardInfo="vipCard" :type.sync="detail"/>
+      <VipCard :member.sync="member" :customerInfo.sync="customer" :memberCardInfo="card" :type.sync="detail"/>
       <text class="titel-box">会员特权</text>
       <view class="weui-cell mt20">
         <view class="weui-label muted">会员等级</view>
         <view class="column info-container">
           <view>
             <text>您当前为</text>
-            <text class="xl ml10 major">{{member.levelName}}</text>
+            <text class="xl ml10 major">{{member.discountRule.levelName}}</text>
           </view>
           <view>{{discountLevel}}</view>
         </view>
@@ -22,21 +22,21 @@
       </view>
       <view class="weui-cell">
         <view class="weui-label muted">客服电话</view>
-        <text class="info-container">{{vipCard.servicePhone}}</text>
+        <text class="info-container">{{card.servicePhone}}</text>
       </view>
       <view class="weui-cell">
         <view class="weui-label muted">会员须知</view>
-        <text class="info-container">{{vipCard.description}}</text>
+        <text class="info-container">{{card.description}}</text>
       </view>
       <view class="weui-cell">
         <view class="weui-label muted">会员提醒</view>
-        <text class="info-container">{{vipCard.notice}}</text>
+        <text class="info-container">{{card.notice}}</text>
       </view>
     </view>
 
     <view class="list-panel">
       <view class="titel-box">会员级别</view>
-      <repeat for="{{vipCard.discountRules}}" key="index" index="index" item="item">
+      <repeat for="{{card.discountRules}}" key="index" index="index" item="item">
         <view class="weui-cell">
           <view class="weui-label muted">{{item.levelName}}</view>
           <view class="column info-container">
@@ -57,8 +57,8 @@
     def = {
       init: false,
       member: {},
-      userInfo: {},
-      vipCard: {},
+      customer: {},
+      card: {},
       detail: 'detail'
     };
     data = {...this.def};
@@ -66,28 +66,28 @@
     async onLoad (options) {
       const params = JSON.parse(options.params);
       this.member = params.member;
-      this.userInfo = params.customerInfo;
-      this.vipCard = params.memberCardInfo;
+      this.customer = params.customer;
+      this.card = params.memberCardInfo;
       this.loaded();
     }
 
     computed = {
       vipDescribe() {
-        if (this.vipCard == null || this.member == null || this.vipCard.bonusRule == null) {
+        if (this.card == null || this.member == null || this.card.bonusRule == null) {
           return;
         }
-        const rule = this.vipCard.bonusRule;
+        const rule = this.card.bonusRule;
         return `注册绑定手机开卡即送 ${rule.initIncreaseBonus} 积分
-        本会员卡享受 ${(this.member.discount / 10).toFixed(1)} 折优惠
+        本会员卡享受 ${(this.member.discountRule.discount / 10).toFixed(1)} 折优惠
         每消费 ${rule.costBonusUnit} 元可获得 ${rule.increaseBonus} 积分
         每使用 ${rule.costMoneyUnit} 积分，抵扣 ${rule.reduceMoney} 元现金，每笔订单最多使用 ${rule.maxReduceBonus} 积分，订单需满 ${rule.limitMoney} 元`;
       },
       discountLevel () {
         // 校验是否初始化完毕
-        if (this.member == null || this.vipCard.discountRules == null || this.member.levelName == null) {
+        if (this.member == null || this.card.discountRules == null || this.member.levelName == null) {
           return;
         }
-        const rules = this.vipCard.discountRules;
+        const rules = this.card.discountRules;
         const currentLevel = this.member.level;
         const lastLevel = rules[rules.length - 1].level;
         // 判断最高级会员
