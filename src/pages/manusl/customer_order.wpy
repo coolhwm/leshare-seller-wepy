@@ -113,3 +113,6 @@
     mixins = [pagination];
   }
 </script>
+<style lang="scss">
+  @import "../../styles/variable";
+</style>

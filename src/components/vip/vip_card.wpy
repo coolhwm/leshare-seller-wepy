@@ -26,7 +26,6 @@
 
 <script>
   import wepy from 'wepy';
-  import WxUtils from '../../utils/WxUtils';
 
   export default class VipCard extends wepy.component {
     props = {
@@ -85,7 +84,7 @@
     box-shadow: 0 0 2px gray;
     position: relative;
     padding: 30rpx;
-    margin: 20rpx;
+    margin: 15rpx;
     height: 300rpx;
     background-color: #509FC9;
     border-radius: 15rpx;
