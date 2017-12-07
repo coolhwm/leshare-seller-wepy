@@ -21,7 +21,7 @@
                            value="{{input.price}}" type="digit" placeholder="请输入卡券抵扣金额" disabled="{{mode == 'edit'}}"/>
                 </view>
             </view>
-            <view class="weui-cell weui-cell_input weui-cells-form">
+            <view class="weui-cell weui-cell_input">
                 <view class="weui-cell__hd">
                     <view class="weui-label">订单金额</view>
                 </view>
@@ -91,7 +91,7 @@
                     </view>
                 </view>
             </view>
-            <view class="weui-cell weui-cell_switch weui-cells-form">
+            <view class="weui-cell weui-cell_switch">
                 <view class="weui-cell__bd">自助核销</view>
                 <view class="weui-cell__ft">
                     <switch checked="{{input.isSelfUse}}" id="isSelfUse" @change="input"/>
@@ -161,7 +161,11 @@
         this.support = '通用';
         const myDate = new Date();
         this.input.beginTime = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}`;
-        this.input.dueTime = `${myDate.getFullYear()}-${myDate.getMonth() + 2}-${myDate.getDate()}`;
+        if (myDate.getMonth() == 11) {
+          this.input.dueTime = `${myDate.getFullYear() + 1}-01-${myDate.getDate()}`;
+        } else {
+          this.input.dueTime = `${myDate.getFullYear()}-${myDate.getMonth() + 2}-${myDate.getDate()}`;
+        }
       }
       this.loaded();
     }
