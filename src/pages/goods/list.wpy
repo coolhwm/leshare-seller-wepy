@@ -1,21 +1,29 @@
 <template>
   <view class="container" wx:if="{{init}}">
     <!--TAB 页-->
-    <CategoryTab :tab="tab" :categories.sync="categories" categoriesTitle="商品分类" @change.user="change"  />
+    <ZanTab :tab="tab" fixed="0" @change.user="change"/>
 
-    <!-- 商品列表 -->
-    <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <GoodsItem :goods="item"></GoodsItem>
-    </repeat>
-
-    <!-- 加载提示 -->
-    <Loadmore :page.sync="page"/>
-
+    <!--主内容区域-->
+    <view class="main-box row">
+      <!--分类侧边栏-->
+      <SideTab :tab.sync="categories" @change.user="switchTab" />
+      <!--右侧滚动-->
+      <scroll-view scroll-y class="goods-box" bindscrolltolower="onReachBottom">
+        <!--分类名称-->
+        <view class="goods-title row">
+          <text class="weak">{{selectedCategoryName}}</text>
+        </view>
+        <!--商品列表-->
+        <view class="goods-list">
+          <repeat for="{{page.list}}" key="index" index="index" item="item">
+            <GoodsItem :goods.sync="item"/>
+          </repeat>
+        </view>
+        <Loadmore :page.sync="page" emptyText="暂无商品"/>
+      </scroll-view>
+    </view>
     <!--操作栏-->
     <ActionBar @tap.user="add" okText="新增商品" cancelText="返回" />
-
-    <!--占位符-->
-    <Placeholder :show.sync="isPageEmpty" message="您还没有相关商品"/>
   </view>
 </template>
 
@@ -25,12 +33,13 @@
   import pagination from '../../mixins/pagination';
   import goods from '../../api/goods';
   import GoodsItem from '../../components/goods/item';
-  import CategoryTab from '../../components/zanui/category-tab';
+  import ZanTab from '../../components/zanui/tab';
+  import SideTab from '../../components/manusl/side_tab';
   import ActionBar from '../../components/common/action_bar';
   import Placeholder from '../../components/common/placeholder';
   import Loadmore from '../../components/weui/loadmore';
   import Event from '../../utils/Event';
-
+  import Cache from '../../utils/Cache';
   export default class GoodsList extends wepy.page {
     def = {
       init: false,
@@ -48,12 +57,14 @@
         scroll: false
       },
       categories: []
-    }
+    };
     data = {...this.def};
     async onLoad () {
       this.page = goods.page(this);
       this.goods = this.page.list;
-      this.categories = await goods.getInnerCategories();
+      // 加载商品分类
+      this.categories = await Cache.categories();
+      this.categories.selectedId = this.categories.list[0].id;
       await this.next();
       Event.listen(Event.GOODS_LIST_UPDATE, this.update.bind(this), this);
       Event.listen(Event.CATEGORY_LIST_UPDATE, this.updateCategories.bind(this), this);
@@ -71,20 +82,34 @@
       this.loaded();
     }
     methods = {
+      // 点击分类
+      switchTab(selectedId) {
+        this.tab.categoryId = selectedId;
+        this.reload();
+      },
       add() {
         this.$navigate('edit?mode=create');
       },
       change() {
         this.reload();
       }
-    }
+    };
+    computed = {
+      selectedCategoryName() {
+        if (this.init && this.categories && this.categories.list) {
+          const selectedId = this.categories.selectedId;
+          return this.categories.list.find(item => item.id == selectedId).title;
+        }
+      }
+    };
     events = {};
     components = {
-      CategoryTab: CategoryTab,
+      ZanTab: ZanTab,
       Placeholder: Placeholder,
       GoodsItem: GoodsItem,
       ActionBar: ActionBar,
-      Loadmore: Loadmore
+      Loadmore: Loadmore,
+      SideTab: SideTab
     };
     mixins = [base, pagination];
     config = {
@@ -96,4 +121,24 @@
 
 <style lang="scss">
   @import "../../styles/variable";
+  .main-box{
+    width: 100%;
+    position: absolute;
+    top: 43px;
+    bottom: 55px;
+
+    .goods-box{
+      flex: 1;
+      height: 100%;
+      .goods-title{
+        height: 30px;
+        padding-left: 20rpx;
+        align-items: center;
+        border-bottom: $border;
+      }
+      .goods-list{
+        background-color: #FFF;
+      }
+    }
+  }
 </style>
