@@ -74,6 +74,7 @@
         'pages/customer/address_list',
         'pages/customer/coupon_send',
         'pages/customer/info',
+        'pages/customer/member_info',
         'pages/order/index',
         'pages/shop/index',
         'pages/shop/contact',
