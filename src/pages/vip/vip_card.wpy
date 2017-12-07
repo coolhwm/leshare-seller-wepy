@@ -216,7 +216,13 @@
       bounsText() {
         if (this.card && this.card.bonusRule) {
           const {costBonusUnit, reduceMoney, costMoneyUnit, increaseBonus} = this.card.bonusRule;
-          return `${costMoneyUnit}元得${increaseBonus}分/${costBonusUnit}分抵${reduceMoney}元`;
+          let sketch = '';
+          if (this.card.bonusRule.isCost == 1) {
+            sketch = `${costMoneyUnit}元得${increaseBonus}分/${costBonusUnit}分抵${reduceMoney}元`;
+          } else {
+            sketch = `${costMoneyUnit}元得${increaseBonus}分`;
+          }
+          return sketch;
         } else {
           return '尚未配置';
         }
