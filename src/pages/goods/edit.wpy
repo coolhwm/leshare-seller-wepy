@@ -57,7 +57,7 @@
       </view>
     </view>
     <!--操作栏-->
-    <ActionBar @tap.user="submit" />
+    <ActionPanel :mode.sync="mode" @submit.user="submit" @remove.user="remove"/>
   </view>
 
   <!-- 分类 -->
@@ -101,6 +101,7 @@
   import Event from '../../utils/Event';
   import FormTips from '../../components/weui/tips';
   import ActionBar from '../../components/common/action_bar';
+  import ActionPanel from '../../components/common/action_panel';
   import SliderPanel from '../../components/common/slider_panel';
 
   export default class GoodsEdit extends wepy.page {
@@ -116,6 +117,7 @@
         stock: ''
       }],
       mode: 'create',
+      goodsId: null,
       innerCategories: [],
       init: false,
       isInnerDisplay: 'false'
@@ -123,6 +125,7 @@
     data = {...this.def};
     async onLoad ({goodsId, mode}) {
       this.mode = mode;
+      this.goodsId = goodsId;
       this.innerCategories = await goods.getInnerCategories();
       if (this.mode == 'edit') {
         const detail = await goods.detail(goodsId);
@@ -136,6 +139,14 @@
       this.loaded();
     };
     methods = {
+      // 删除商品
+      async remove() {
+        await Tips.confirm('是否确认删除该商品？');
+        await goods.remove(this.goodsId);
+        await Tips.success('删除成功');
+        Event.emit(Event.GOODS_LIST_UPDATE);
+        wepy.navigateBack();
+      },
       // 提交表单
       async submit() {
         if (!this.validate()) {
@@ -375,7 +386,8 @@
       ActionBar: ActionBar,
       SkuList: SkuList,
       ImageUploader: ImageUploader,
-      SliderPanel: SliderPanel
+      SliderPanel: SliderPanel,
+      ActionPanel: ActionPanel
     };
     mixins = [base, input];
     config = {

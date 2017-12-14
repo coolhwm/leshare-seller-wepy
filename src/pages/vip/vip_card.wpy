@@ -62,11 +62,7 @@
         <view class="weui-cell__ft weui-cell__ft_in-access">{{levelText}}</view>
       </view>
     </view>
-    <view class="zan-panel">
-      <view class="zan-btns">
-        <button class="zan-btn zan-btn--fill" @tap="submit">保存</button>
-      </view>
-    </view>
+    <ActionPanel @submit.user="submit"/>
   </view>
 </template>
 <script>
@@ -78,6 +74,7 @@
   import Event from '../../utils/Event';
   import shop from '../../api/shop';
   import vip from '../../api/vip_card';
+  import ActionPanel from '../../components/common/action_panel';
 
   export default class VipCard extends wepy.page {
     def = {
@@ -219,7 +216,13 @@
       bounsText() {
         if (this.card && this.card.bonusRule) {
           const {costBonusUnit, reduceMoney, costMoneyUnit, increaseBonus} = this.card.bonusRule;
-          return `${costMoneyUnit}元得${increaseBonus}分/${costBonusUnit}分抵${reduceMoney}元`;
+          let sketch = '';
+          if (this.card.bonusRule.isCost == 1) {
+            sketch = `${costMoneyUnit}元得${increaseBonus}分/${costBonusUnit}分抵${reduceMoney}元`;
+          } else {
+            sketch = `${costMoneyUnit}元得${increaseBonus}分`;
+          }
+          return sketch;
         } else {
           return '尚未配置';
         }
@@ -245,7 +248,8 @@
     };
     mixins = [base, input];
     components = {
-      Tips: FormTips
+      Tips: FormTips,
+      ActionPanel: ActionPanel
     };
   }
 </script>

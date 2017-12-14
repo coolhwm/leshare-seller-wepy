@@ -93,11 +93,7 @@
         <view class="content"></view>
       </view>
     </view>
-    <view class="zan-panel">
-      <view class="zan-btns">
-        <button class="zan-btn zan-btn--fill" @tap="submit">确定</button>
-      </view>
-    </view>
+    <ActionPanel submitText="确定" @submit.user="submit"/>
   </view>
 </template>
 <script>
@@ -106,6 +102,7 @@
   import input from '../../mixins/input';
   import FormTips from '../../components/weui/tips';
   import Event from '../../utils/Event';
+  import ActionPanel from '../../components/common/action_panel';
 
   export default class SupplyBonus extends wepy.page {
     data = {
@@ -123,37 +120,110 @@
         wepy.navigateBack();
       }
     };
-    async onLoad({bonus}) {
+
+    async onLoad ({bonus}) {
       if (bonus != null && bonus != 'null') {
         this.input = JSON.parse(bonus);
         this.input.isCost = this.input.isCost == 1;
       }
       this.loaded();
     };
+
     validate () {
+      if (this.input.isCost == 1) {
+        const rules = [
+          {
+            value: this.input.costBonusUnit,
+            method: 'required',
+            message: '消费金额不能为空'
+          },
+          {
+            value: this.input.costBonusUnit,
+            method: 'number',
+            message: '消费金额必须是数字'
+          },
+          {
+            value: this.input.costBonusUnit,
+            method: 'min',
+            param: 0.01,
+            message: '消费金额不能为0或负数'
+          },
+          {
+            value: this.input.costBonusUnit,
+            method: 'max',
+            param: 1000000,
+            message: '消费金额数过高'
+          },
+          {
+            value: this.input.reduceMoney,
+            method: 'required',
+            message: '抵扣积分数不能为空'
+          },
+          {
+            value: this.input.reduceMoney,
+            method: 'number',
+            message: '抵扣积分数必须是数字'
+          },
+          {
+            value: this.input.reduceMoney,
+            method: 'min',
+            param: 0.01,
+            message: '抵扣积分数不能为0或负数'
+          },
+          {
+            value: this.input.reduceMoney,
+            method: 'max',
+            param: 1000000,
+            message: '最多使用积分数过高'
+          },
+          {
+            value: this.input.maxReduceBonus,
+            method: 'required',
+            message: '最多使用积分数不能为空'
+          },
+          {
+            value: this.input.maxReduceBonus,
+            method: 'number',
+            message: '最多使用积分数必须是数字'
+          },
+          {
+            value: this.input.maxReduceBonus,
+            method: 'min',
+            param: 0.01,
+            message: '最多使用积分数不能为0或负数'
+          },
+          {
+            value: this.input.maxReduceBonus,
+            method: 'max',
+            param: 1000000,
+            message: '最多使用积分数过高'
+          },
+          {
+            value: this.input.limitMoney,
+            method: 'required',
+            message: '订单金额不能为空'
+          },
+          {
+            value: this.input.limitMoney,
+            method: 'number',
+            message: '订单金额必须是数字'
+          },
+          {
+            value: this.input.limitMoney,
+            method: 'min',
+            param: 0.01,
+            message: '订单金额不能为0或负数'
+          },
+          {
+            value: this.input.limitMoney,
+            method: 'max',
+            param: 1000000,
+            message: '订单金额最过高'
+          }
+        ];
+        return this.check(rules);
+      }
       const rules = [
-        {
-          value: this.input.costBonusUnit,
-          method: 'required',
-          message: '消费金额不能为空'
-        },
-        {
-          value: this.input.costBonusUnit,
-          method: 'number',
-          message: '消费金额必须是数字'
-        },
-        {
-          value: this.input.costBonusUnit,
-          method: 'min',
-          param: 0.01,
-          message: '消费金额不能为0或负数'
-        },
-        {
-          value: this.input.costBonusUnit,
-          method: 'max',
-          param: 1000000,
-          message: '消费金额数过高'
-        },
         {
           value: this.input.increaseBonus,
           method: 'required',
@@ -221,72 +291,6 @@
           message: '使用积分数过高'
         },
         {
-          value: this.input.reduceMoney,
-          method: 'required',
-          message: '抵扣积分数不能为空'
-        },
-        {
-          value: this.input.reduceMoney,
-          method: 'number',
-          message: '抵扣积分数必须是数字'
-        },
-        {
-          value: this.input.reduceMoney,
-          method: 'min',
-          param: 0.01,
-          message: '抵扣积分数不能为0或负数'
-        },
-        {
-          value: this.input.reduceMoney,
-          method: 'max',
-          param: 1000000,
-          message: '最多使用积分数过高'
-        },
-        {
-          value: this.input.maxReduceBonus,
-          method: 'required',
-          message: '最多使用积分数不能为空'
-        },
-        {
-          value: this.input.maxReduceBonus,
-          method: 'number',
-          message: '最多使用积分数必须是数字'
-        },
-        {
-          value: this.input.maxReduceBonus,
-          method: 'min',
-          param: 0.01,
-          message: '最多使用积分数不能为0或负数'
-        },
-        {
-          value: this.input.maxReduceBonus,
-          method: 'max',
-          param: 1000000,
-          message: '最多使用积分数过高'
-        },
-        {
-          value: this.input.limitMoney,
-          method: 'required',
-          message: '订单金额不能为空'
-        },
-        {
-          value: this.input.limitMoney,
-          method: 'number',
-          message: '订单金额必须是数字'
-        },
-        {
-          value: this.input.limitMoney,
-          method: 'min',
-          param: 0.01,
-          message: '订单金额不能为0或负数'
-        },
-        {
-          value: this.input.limitMoney,
-          method: 'max',
-          param: 1000000,
-          message: '订单金额最过高'
-        },
-        {
           value: this.input.initIncreaseBonus,
           method: 'required',
           message: '初始积分不能为空'
@@ -314,7 +318,8 @@
 
     mixins = [base, input];
     components = {
-      Tips: FormTips
+      Tips: FormTips,
+      ActionPanel: ActionPanel
     };
     config = {
       navigationBarTitleText: '积分规则编辑'

@@ -1,5 +1,5 @@
 <template>
-  <view class="item-box">
+  <view class="item-box column" @tap="edit({{goods.id}})">
     <view class="goods-box row">
       <image class="goods-image" src="{{goods.imageUrl}}" />
       <view class="info-box column">
@@ -10,71 +10,28 @@
           <text class="major lg">{{goods.priceText}}</text>
           <text class="muted xs ml10" wx:if="{{goods.skuCount > 0}}">[{{goods.skuCount}}规格]</text>
         </view>
-        <view class="desc-box row">
-          <text class="muted">库存：{{goods.totalStock}}</text>
-          <text class="muted ml20">销量：{{goods.salesVolume}}</text>
-          <text class="muted ml20">收藏：{{goods.favoriteCount}}</text>
-        </view>
       </view>
-      <image class="icon-recommend icon-lg"  wx:if="{{goods.isRecommend == 1}}" src="/images/icons/recommend.png"  />
     </view>
-
-    <view class="item-action row-between">
-      <text class="muted xs ml20">分类：{{goods.innerCategoryName}}</text>
-      <view>
-        <view class="zan-btn zan-btn--small"  @tap="comment({{goods.id}})" >评价</view>
-        <view class="zan-btn zan-btn--small" wx:if="{{goods.status == 1}}" @tap="delete({{goods.id}})" >删除</view>
-        <view class="zan-btn zan-btn--small" wx:if="{{goods.status != 1}}" @tap="offSale({{goods.id}})">下架</view>
-        <view class="zan-btn zan-btn--small  {{ goods.totalStock == 0 ?  'zan-btn--disabled ' : ''}}"  wx:if="{{goods.status == 1}}" @tap="onSale({{goods.id}}, {{goods.totalStock}})">上架</view>
-        <view class="zan-btn zan-btn--small zan-btn--primary" @tap="edit({{goods.id}})">编辑</view>
-      </view>
+    <view class="row-between mt10">
+      <text class="muted mr20 xs">库存：{{goods.totalStock}}</text>
+      <text class="muted mr20 xs">销量：{{goods.salesVolume}}</text>
+      <text class="muted mr20 xs">收藏：{{goods.favoriteCount}}</text>
     </view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy';
-  import goods from '../../api/goods';
-  import Tips from '../../utils/Tips';
-  import Event from '../../utils/Event';
   export default class GoodsItem extends wepy.component {
     props = {
       goods: {}
     };
     data = {};
     methods = {
-      async delete(goodsId) {
-        await Tips.confirm('是否确认删除该商品？');
-        await goods.remove(goodsId);
-        await Tips.success('删除成功');
-        Event.emit(Event.GOODS_LIST_UPDATE);
-      },
-      async comment(goodsId) {
-        this.$root.$navigate('comment', {goodsId});
-      },
       async edit(goodsId) {
         this.$root.$navigate('edit', {goodsId, mode: 'edit'});
-      },
-      async offSale(goodsId) {
-        await Tips.confirm('是否确认下架该商品？');
-        await goods.offSale(goodsId);
-        await Tips.success('下架成功');
-        Event.emit(Event.GOODS_LIST_UPDATE);
-      },
-      async onSale(goodsId, stock) {
-        if (stock == 0) {
-          Tips.alert('无库存');
-          return;
-        }
-        await Tips.confirm('是否确认上架该商品？');
-        await goods.onSale(goodsId);
-        await Tips.success('上架成功');
-        Event.emit(Event.GOODS_LIST_UPDATE);
       }
     };
-    events = {};
-    onLoad() {
-    }
   }
 </script>
 
@@ -82,19 +39,18 @@
   @import "../../styles/variable";
   .item-box{
     background-color: #FFF;
-    margin-top: 10rpx;
     position: relative;
-
+    border-bottom: $border;
+    padding: 10rpx;
     .item-action{
       border-top: $border;
       height: 90rpx;
-      padding-right: 10rpx;
     }
 
     .goods-box{
-      padding: 30rpx 20rpx;
-
-      $image-size: 170rpx;
+      padding-bottom: 10rpx;
+      border-bottom: 1px dashed #dfdfdf;
+      $image-size: 130rpx;
 
       .goods-image{
         height: $image-size;
@@ -112,12 +68,6 @@
 
       .price-box{
         align-items: flex-end;
-      }
-
-      .desc-box{
-        text {
-          font-size: $text-sm;
-        }
       }
 
       .info-box{
