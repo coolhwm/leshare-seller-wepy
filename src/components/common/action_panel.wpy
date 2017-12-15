@@ -2,7 +2,7 @@
   <view class="main-container">
     <view class="zan-panel">
       <view class="zan-btns">
-        <button class="zan-btn zan-btn--fill" @tap="submit">{{submitText}}</button>
+        <button class="zan-btn zan-btn--fill" form-type="submit">{{submitText}}</button>
         <button class="zan-btn" @tap="remove" wx:if="{{mode == 'edit'}}">删除</button>
       </view>
     </view>
