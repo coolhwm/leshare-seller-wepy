@@ -8,7 +8,8 @@
           <view class="weui-label">备注名</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" id="remarkName" value="{{input.remarkName}}" @input="input" maxlength="11" placeholder="请输入备注名" />
+          <input class="weui-input" id="remarkName" value="{{input.remarkName}}" @input="input" maxlength="11"
+                 placeholder="请输入备注名"/>
         </view>
       </view>
       <view class="weui-cell weui-cell_input weui-cell_vcode">
@@ -16,7 +17,8 @@
           <view class="weui-label">手机号码</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" id="phone" type="number" value="{{input.phone}}" @input="input" maxlength="11" placeholder="请输入手机号" />
+          <input class="weui-input" id="phone" type="number" value="{{input.phone}}" @input="input" maxlength="11"
+                 placeholder="请输入手机号"/>
         </view>
       </view>
       <view class="weui-cell weui-cells_after-title">
