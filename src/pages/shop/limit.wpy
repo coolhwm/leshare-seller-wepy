@@ -10,31 +10,31 @@
       <view class="weui-cell weui-cell_access">
         <view class="weui-cell__bd">会员余量</view>
         <view class="weui-cell__ft">
-          <text>{{limit.memberLimit ? limit.memberLimit + ' 个' : '未知个数'}}</text>
+          <text>{{limit.memberLimit != -1 ? limit.memberLimit + ' 个' : '无限制'}}</text>
         </view>
       </view>
       <view class="weui-cell weui-cell_access">
         <view class="weui-cell__bd">优惠券余量</view>
         <view class="weui-cell__ft">
-          <text>{{limit.couponLimit ? limit.couponLimit + ' 张' : '未知张数'}}</text>
+          <text>{{limit.couponLimit != -1 ? limit.couponLimit + ' 张' : '无限制'}}</text>
         </view>
       </view>
       <view class="weui-cell weui-cell_access">
         <view class="weui-cell__bd">订单余量</view>
         <view class="weui-cell__ft">
-          <text>{{limit.orderLimit ? limit.orderLimit + ' 笔' : '未知笔数'}} </text>
+          <text>{{limit.orderLimit != -1 ? limit.orderLimit + ' 笔' : '无限制'}} </text>
         </view>
       </view>
       <view class="weui-cell weui-cell_access">
         <view class="weui-cell__bd">短信余量</view>
         <view class="weui-cell__ft">
-          <text>{{limit.smsLimit ? limit.smsLimit + ' 条' : '未知条数'}}</text>
+          <text>{{limit.smsLimit != -1 ? limit.smsLimit + ' 条' : '无限制'}}</text>
         </view>
       </view>
       <view class="weui-cell weui-cell_access">
         <view class="weui-cell__bd">微信通知余量</view>
         <view class="weui-cell__ft">
-          <text>{{limit.mpLimit ? limit.mpLimit + ' 条' : '未知条数'}}</text>
+          <text>{{limit.mpLimit != -1 ? limit.mpLimit + ' 条' : '无限制'}}</text>
         </view>
       </view>
     </view>
