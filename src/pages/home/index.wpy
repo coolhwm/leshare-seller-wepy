@@ -5,33 +5,35 @@
       <image class="logo" src="/images/home/shop-logo.png"/>
       <text>乐享商家助手</text>
     </view>
-    <view class="page__bd form">
-      <view class="weui-cells weui-cells_after-title">
-        <view class="weui-cell weui-cell_input weui-cell_vcode">
-          <view class="weui-cell__hd">
-            <view class="weui-label">手机号</view>
+    <form @submit="confirm">
+      <view class="page__bd form">
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell weui-cell_input weui-cell_vcode">
+            <view class="weui-cell__hd">
+              <view class="weui-label">手机号</view>
+            </view>
+            <view class="weui-cell__bd">
+              <input class="weui-input" id="phone" @blur="input" type="number" maxlength="11" placeholder="请输入手机号"/>
+            </view>
+            <view class="weui-cell__ft">
+              <VCode @tap.user="code"/>
+            </view>
           </view>
-          <view class="weui-cell__bd">
-            <input class="weui-input" id="phone" type="number" @input="input" maxlength="11" placeholder="请输入手机号" />
-          </view>
-          <view class="weui-cell__ft">
-            <VCode  @tap.user="code" />
+          <view class="weui-cell weui-cell_input weui-cell_vcode">
+            <view class="weui-cell__hd">
+              <view class="weui-label">验证码</view>
+            </view>
+            <view class="weui-cell__bd">
+              <input class="weui-input" type="number" name="code" maxlength="6" placeholder="请输入验证码"/>
+            </view>
           </view>
         </view>
-        <view class="weui-cell weui-cell_input weui-cell_vcode">
-          <view class="weui-cell__hd">
-            <view class="weui-label">验证码</view>
-          </view>
-          <view class="weui-cell__bd">
-            <input class="weui-input" type="number"  id="code" maxlength="6"  @input="input" placeholder="请输入验证码" />
-          </view>
-        </view>
-      </view>
 
-      <view class="weui-btn-area">
-        <button class="weui-btn" type="primary" @tap="confirm">确定</button>
+        <view class="weui-btn-area">
+          <button class="weui-btn" type="primary" form-type="submit">确定</button>
+        </view>
       </view>
-    </view>
+    </form>
   </view>
 
   <Copyright buttom="true" />
@@ -49,7 +51,8 @@
   import Copyright from '../../components/common/copyright';
   export default class Login extends wepy.page {
     def = {
-      init: false
+      init: false,
+      loginMassage: {}
     };
     data = {...this.def};
     async onLoad () {
@@ -78,14 +81,16 @@
       }
     }
     methods = {
-      async confirm() {
-        if (!this.isValid()) {
+      async confirm({detail}) {
+        // 覆盖对象
+        Object.assign(this.loginMassage, detail.value);
+        if (!this.isValid(this.input.phone)) {
           return;
         }
         try {
           let loginCode;
           try {
-            loginCode = await auth.login(this.input.phone, this.input.code);
+            loginCode = await auth.login(this.input.phone, this.loginMassage.code);
           } catch (err) {
             if (err.serverCode == 10501) {
               loginCode = err.serverData.login_code;
@@ -106,7 +111,7 @@
         }
       },
       async code() {
-        if (!this.isPhoneValid()) {
+        if (!this.isPhoneValid(this.input.phone)) {
           return;
         }
         // 发送验证码
@@ -133,11 +138,11 @@
     /**
      * 校验表单提交
      */
-    isValid() {
-      if (!this.isPhoneValid()) {
+    isValid(phone) {
+      if (!this.isPhoneValid(phone)) {
         return false;
       }
-      if (this.isEmpty(this.input.code)) {
+      if (this.isEmpty(this.loginMassage.code)) {
         this.tips('请输入验证码');
         return false;
       }
@@ -146,13 +151,13 @@
     /**
      * 校验电话号码
      */
-    isPhoneValid() {
-      if (this.isEmpty(this.input.phone)) {
+    isPhoneValid(phone) {
+      if (this.isEmpty(phone)) {
         this.tips('请输入手机号码');
         return false;
       }
       const reg = /^1[34578]\d{9}$/;
-      if (!reg.test(this.input.phone)) {
+      if (!reg.test(phone)) {
         this.tips('电话号码格式错误');
         return false;
       }

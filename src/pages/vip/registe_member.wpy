@@ -2,14 +2,14 @@
   <Tips/>
   <view class="mt20"></view>
   <view class="container registe-box" wx:if="{{init}}">
+    <form @submit="submit">
     <view class="weui-cells weui-cells-form">
       <view class="weui-cell weui-cell_input weui-cell_vcode">
         <view class="weui-cell__hd">
           <view class="weui-label">备注名</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" id="remarkName" value="{{input.remarkName}}" @input="input" maxlength="11"
-                 placeholder="请输入备注名"/>
+          <input class="weui-input" name="remarkName" value="{{registeInfo.remarkName}}" maxlength="11" placeholder="请输入备注名"/>
         </view>
       </view>
       <view class="weui-cell weui-cell_input weui-cell_vcode">
@@ -17,8 +17,7 @@
           <view class="weui-label">手机号码</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" id="phone" type="number" value="{{input.phone}}" @input="input" maxlength="11"
-                 placeholder="请输入手机号"/>
+          <input class="weui-input" name="phone" type="number" value="{{registeInfo.phone}}" maxlength="11" placeholder="请输入手机号"/>
         </view>
       </view>
       <view class="weui-cell weui-cells_after-title">
@@ -49,12 +48,13 @@
       </view>
     </view>
     <!--操作栏-->
-    <ActionBar @tap.user="add" okText="注册" cancelText="返回"/>
+    <ActionPanel submitText="注册"/>
+    </form>
   </view>
 </template>
 <script>
   import wepy from 'wepy';
-  import ActionBar from '../../components/common/action_bar';
+  import ActionPanel from '../../components/common/action_panel';
   import base from '../../mixins/base';
   import input from '../../mixins/input';
   import FormTips from '../../components/weui/tips';
@@ -78,11 +78,15 @@
     };
 
     methods = {
-      async add () {
+      async submit ({detail}) {
+        // 覆盖对象
+        Object.assign(this.registeInfo, detail.value);
         if (!this.validate()) {
           return;
         }
-        this.registeInfo = this.input;
+        this.registeInfo.sex = this.input.sex;
+        this.registeInfo.birthday = this.input.birthday;
+        console.log(this.registeInfo);
         try {
           await member.registe(this.registeInfo);
           await Tips.success('注册成功');
@@ -95,7 +99,7 @@
       }
     };
     components = {
-      ActionBar: ActionBar,
+      ActionPanel: ActionPanel,
       Tips: FormTips
     };
     config = {
@@ -106,29 +110,29 @@
     validate () {
       const rules = [
         {
-          value: this.input.remarkName,
+          value: this.registeInfo.remarkName,
           method: 'required',
           message: '备注名称不能为空'
         }, {
-          value: this.input.remarkName,
+          value: this.registeInfo.remarkName,
           method: 'minlength',
           param: 2,
           message: '备注名称过短'
         }, {
-          value: this.input.remarkName,
+          value: this.registeInfo.remarkName,
           method: 'maxlength',
           param: 20,
           message: '备注名称过长'
         }, {
-          value: this.input.phone,
+          value: this.registeInfo.phone,
           method: 'required',
           message: '联系电话不能为空'
         }, {
-          value: this.input.phone,
+          value: this.registeInfo.phone,
           method: 'number',
           message: '联系电话只能为数字'
         }, {
-          value: this.input.phone,
+          value: this.registeInfo.phone,
           method: 'tel',
           message: '请输入正确的手机格式'
         }, {

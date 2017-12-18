@@ -6,8 +6,9 @@
   import wepy from 'wepy'
   export default class VCode extends wepy.component {
     props = {
-      tap: {}
-    }
+      tap: {},
+      phone: {}
+    };
     data = {
       display: false,
       message: '',

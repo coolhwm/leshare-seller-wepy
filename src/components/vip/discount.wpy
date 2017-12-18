@@ -7,7 +7,7 @@
             <view class="weui-label">级别名称</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" id="levelName" @input="input({{index}})" value="{{info.levelName}}"
+            <input class="weui-input" id="levelName" @blur="input({{index}})" value="{{info.levelName}}"
                    placeholder="请填写级别名称"/>
           </view>
         </view>
@@ -16,7 +16,7 @@
             <view class="weui-label">消费折扣</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" id="discount" type="digit" @input="input({{index}})"
+            <input class="weui-input" id="discount" type="digit" @blur="input({{index}})"
                    value="{{info.discount}}" placeholder="折扣率，9折为0.9"/>
           </view>
         </view>
@@ -25,7 +25,7 @@
             <view class="weui-label">升级条件</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" id="upgradeFee" type="number" @input="input({{index}})"
+            <input class="weui-input" id="upgradeFee" type="number" @blur="input({{index}})"
                    value="{{info.upgradeFee}}" placeholder="升级所需累计消费额"/>
           </view>
         </view>
