@@ -1,4 +1,44 @@
 <template>
+  <view class="container" wx:if="{{init}}">
+    <view class="weui-cells weui-cells-form">
+      <view class="weui-cell weui-cell_access">
+        <view class="weui-cell__bd">版本信息</view>
+        <view class="weui-cell__ft">
+          <text>{{version}}</text>
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_access">
+        <view class="weui-cell__bd">会员余量</view>
+        <view class="weui-cell__ft">
+          <text>{{limit.memberLimit ? limit.memberLimit + ' 个' : '未知个数'}}</text>
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_access">
+        <view class="weui-cell__bd">优惠券余量</view>
+        <view class="weui-cell__ft">
+          <text>{{limit.couponLimit ? limit.couponLimit + ' 张' : '未知张数'}}</text>
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_access">
+        <view class="weui-cell__bd">订单余量</view>
+        <view class="weui-cell__ft">
+          <text>{{limit.orderLimit ? limit.orderLimit + ' 笔' : '未知笔数'}} </text>
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_access">
+        <view class="weui-cell__bd">短信余量</view>
+        <view class="weui-cell__ft">
+          <text>{{limit.smsLimit ? limit.smsLimit + ' 条' : '未知条数'}}</text>
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_access">
+        <view class="weui-cell__bd">微信通知余量</view>
+        <view class="weui-cell__ft">
+          <text>{{limit.mpLimit ? limit.mpLimit + ' 条' : '未知条数'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>
@@ -8,7 +48,8 @@
 
   export default class DraftList extends wepy.page {
     data = {
-      limit: null
+      init: false,
+      limit: {}
     };
     async onLoad (options) {
       this.limit = await shop.limit();
@@ -16,7 +57,28 @@
     };
     methods = {};
     components = {};
-    computed = {};
+    computed = {
+      version () {
+        switch (this.limit.chargeVersion) {
+          case null:
+            return '暂无版本';
+          case 1:
+            return '推广普及版';
+          case 2:
+            return '会员普及版';
+          case 3:
+            return '会员年费版';
+          case 4:
+            return '电商普及版';
+          case 5:
+            return '电商年费版';
+          case 6:
+            return '全能普及版';
+          case 7:
+            return '全能年费版';
+        }
+      }
+    };
     mixins = [base];
     config = {
       navigationBarTitleText: '版本信息'
