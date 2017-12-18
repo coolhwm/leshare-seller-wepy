@@ -95,6 +95,7 @@
         'pages/customer/visitor',
         'pages/shop/reduce_list',
         'pages/shop/reduce_edit',
+        'pages/shop/limit',
         'pages/shop/edit',
         'pages/goods/list',
         'pages/goods/category',
