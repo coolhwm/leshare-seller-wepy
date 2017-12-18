@@ -1,0 +1,29 @@
+<template>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import shop from '../../api/shop';
+
+  export default class DraftList extends wepy.page {
+    data = {
+      limit: null
+    };
+    async onLoad (options) {
+      this.limit = await shop.limit();
+      this.loaded();
+    };
+    methods = {};
+    components = {};
+    computed = {};
+    mixins = [base];
+    config = {
+      navigationBarTitleText: '版本信息'
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+</style>
