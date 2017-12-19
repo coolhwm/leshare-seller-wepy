@@ -116,7 +116,10 @@
           </view>
         </view>
       </view>
-      <text class="muted mt20 ml20">提示：已创建的卡券只能编辑名称及投放总量</text>
+      <view class="row mr20 ml20 mt20">
+        <view class="muted notice-box">提示：</view>
+        <text class="muted">{{notice}}</text>
+      </view>
 
       <!--操作栏-->
       <ActionPanel :mode.sync="mode" @remove.user="remove"/>
@@ -126,6 +129,10 @@
 
 <style lang="scss">
     @import "../../styles/variable";
+  .notice-box{
+    width: 120rpx;
+    margin-left: 10rpx;
+  }
 </style>
 
 <script>
@@ -133,6 +140,7 @@
   import base from '../../mixins/base';
   import input from '../../mixins/input';
   import coupon from '../../api/coupon';
+  import shop from '../../api/shop';
   import ActionBar from '../../components/common/action_bar';
   import ActionPanel from '../../components/common/action_panel';
   import FormTips from '../../components/weui/tips';
@@ -144,11 +152,13 @@
       mode: 'create',
       init: false,
       couponId: 0,
-      coupon: {}
+      coupon: {},
+      limit: {}
     };
     data = {...this.def};
 
     async onLoad ({couponId, mode}) {
+      this.limit = await shop.limit();
       this.couponId = couponId;
       this.mode = mode;
       if (mode == 'edit') {
@@ -235,6 +245,13 @@
           return '线上';
         } else {
           return '线下';
+        }
+      },
+      notice () {
+        if (this.limit != null && this.limit.couponLimit != -1) {
+          return `1.\t已创建的卡券只能编辑名称及投放总量\n2.\t您的会员卡余量为${this.limit.couponLimit}张`;
+        } else {
+          return `1.\t已创建的卡券只能编辑名称及投放总量`;
         }
       }
     };
