@@ -12,6 +12,18 @@
             <input class="weui-input" name="name" value="{{coupon.name}}" placeholder="优惠亮点，吸引客户"/>
           </view>
         </view>
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__hd">
+            <view class="weui-label">类型</view>
+          </view>
+          <view class="weui-cell__bd">
+            <view @tap="actionType" id="couponType">
+              <view class="weui-input {{mode == 'edit' ? 'muted' : ''}}">
+                {{computedType}}
+              </view>
+            </view>
+          </view>
+        </view>
 
         <view class="weui-cell weui-cell_input">
           <view class="weui-cell__hd">
@@ -85,7 +97,7 @@
           </view>
           <view class="weui-cell__bd">
             <view @tap="action" id="supportType">
-              <view class="weui-input {{mode == 'edit' ? 'muted' : ''}}">
+              <view class="weui-input {{supplyStyle ? 'muted' : ''}}">
                 {{support}}
               </view>
             </view>
@@ -95,6 +107,12 @@
           <view class="weui-cell__bd">自助核销</view>
           <view class="weui-cell__ft">
             <switch checked="{{input.isSelfUse}}" id="isSelfUse" @change="input"/>
+          </view>
+        </view>
+        <view class="weui-cell weui-cell_switch">
+          <view class="weui-cell__bd">自助领取</view>
+          <view class="weui-cell__ft">
+            <switch checked="{{input.isReceive}}" id="isReceive" @change="input"/>
           </view>
         </view>
       </view>
@@ -170,7 +188,7 @@
       } else {
         this.coupon.perLimit = 1;
         this.input.supportType = 0;
-        this.support = '通用';
+        this.input.type = 'CASH';
         const myDate = new Date();
         this.input.beginTime = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}`;
         if (myDate.getMonth() == 11) {
@@ -184,9 +202,22 @@
 
     methods = {
       async action () {
-        if (this.mode == 'create') {
+        if (this.mode == 'create' && this.input.couponType == 1) {
           const result = await Tips.action('通用', '线上', '线下');
           this.input.supportType = result.index;
+          this.$apply();
+        }
+      },
+      async actionType () {
+        if (this.mode == 'create') {
+          const result = await Tips.action('兑换券', '现金券');
+          this.input.couponType = result.index;
+          if (this.input.couponType == 0) {
+            this.input.type = 'EXCHANGE';
+            this.input.supportType = 2;
+          } else {
+            this.input.type = 'CASH';
+          }
           this.$apply();
         }
       },
@@ -209,7 +240,8 @@
             suitLimit: 0,
             isSelfUse: this.input.isSelfUse ? 1 : 0,
             isPresent: this.input.isPresent ? 1 : 0,
-            supportType: this.input.supportType
+            supportType: this.input.supportType,
+            type: this.input.type
           };
           await coupon.create(param);
           await Tips.success('创建成功！');
@@ -236,6 +268,15 @@
       }
     };
     computed = {
+      computedType () {
+        if (this.input.type == null) {
+          return '请选择优惠券类型';
+        } else if (this.input.type == 'EXCHANGE') {
+          return '兑换券';
+        } else {
+          return '现金券';
+        }
+      },
       support() {
         if (this.input.supportType == null) {
           return '请选择使用场景';
@@ -253,6 +294,9 @@
         } else {
           return `1.\t已创建的卡券只能编辑名称及投放总量`;
         }
+      },
+      supplyStyle() {
+        return this.mode == 'edit' || this.input.couponType == 0;
       }
     };
 
