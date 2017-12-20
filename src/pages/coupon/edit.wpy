@@ -332,8 +332,8 @@
         {
           value: this.coupon.price,
           method: 'min',
-          param: 0.01,
-          message: '优惠券面值不能为0或负数'
+          param: 0,
+          message: '优惠券面值不能为负数'
         },
         {
           value: this.coupon.price,
