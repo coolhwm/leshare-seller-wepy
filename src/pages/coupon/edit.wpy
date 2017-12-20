@@ -25,7 +25,7 @@
           </view>
         </view>
 
-        <view class="weui-cell weui-cell_input">
+        <view class="weui-cell weui-cell_input" wx:if="{{input.type == 'CASH'}}">
           <view class="weui-cell__hd">
             <view class="weui-label">面值</view>
           </view>
@@ -224,6 +224,9 @@
       async submit ({detail}) {
         // 覆盖对象
         Object.assign(this.coupon, detail.value);
+        if (this.input.type == 'EXCHANGE') {
+          this.coupon.price = 0;
+        }
         if (!this.validate()) {
           return;
         }
