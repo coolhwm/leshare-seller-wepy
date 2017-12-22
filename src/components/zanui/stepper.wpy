@@ -1,10 +1,10 @@
 <template>
   <view class="zan-stepper {{ size === 'small' ? 'zan-stepper--small' : '' }}">
-    <view class="zan-stepper__minus {{ stepper <= 0 ? 'zan-stepper--disabled' : '' }}"
-          @tap="minus">-</view>
-    <input class="zan-stepper__text" value="{{ stepper }}" disabled="true"/>
-    <view class="zan-stepper__plus {{ stepper >= 10000 ? 'zan-stepper--disabled' : '' }}"
-          @tap="plus">+</view>
+    <view class="zan-stepper__minus {{ item.stepper <= 0 ? 'zan-stepper--disabled' : '' }}"
+          @tap="minus({{index}}, {{item.id}})">-</view>
+    <input class="zan-stepper__text" value="{{ item.stepper }}" disabled="true"/>
+    <view class="zan-stepper__plus {{ item.stepper >= 10000 ? 'zan-stepper--disabled' : '' }}"
+          @tap="plus({{index}}, {{item.id}})">+</view>
   </view>
 </template>
 <script>
@@ -13,16 +13,25 @@
 
   export default class Stepper extends wepy.component {
     props = {
-      stepper: {
-        default: 0
-      }
+      item: {},
+      index: {}
     };
     methods = {
-      minus () {
-        this.$emit('minus');
+      minus (index, id) {
+        if (this.item.stepper <= 0) {
+          return;
+        }
+        --this.item.stepper;
+        const stepper = this.item.stepper;
+        this.$emit('minus', {index, id, stepper});
       },
-      plus() {
-        this.$emit('plus');
+      plus(index, id) {
+        if (this.item.stepper >= 10000) {
+          return;
+        }
+        ++this.item.stepper;
+        const stepper = this.item.stepper;
+        this.$emit('plus', {index, id, stepper});
       }
     };
     mixins = [input];

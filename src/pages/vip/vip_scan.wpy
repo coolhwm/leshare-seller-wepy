@@ -28,15 +28,17 @@
           </view>
           <text>{{bonus ? bonus : 0}}</text>
         </view>
-        <view class="weui-cell" wx:if="{{card.supplyBonus == 1}}">
-          <view class="weui-cell__hd">
-            <view class="weui-label">赠送奶茶</view>
+        <repeat for="{{ruleGoods}}" key="index" index="index" item="item">
+          <view class="weui-cell" wx:if="{{card.supplyBonus == 1}}">
+            <view class="weui-cell__hd">
+              <view class="weui-label">{{item.ruleName}}</view>
+            </view>
+            <Stepper :item.sync="item" index.sync="index" @minus.user="minus" @plus.user="plus"/>
+            <view class="weui-cell__ft">
+              <view class="ml20">{{item.unit}}</view>
+            </view>
           </view>
-          <Stepper :stepper.sync="stepper" @minus.user="minus" @plus.user="plus"/>
-          <view class="weui-cell__ft">
-            <view class="ml20">杯</view>
-          </view>
-        </view>
+        </repeat>
       </view>
 
       <!--消费后-->
@@ -131,7 +133,8 @@
         ],
         selectedId: 'COST'
       },
-      stepper: 0
+      ruleGoods: [],
+      details: []
     };
     data = {...this.def};
 
@@ -141,17 +144,21 @@
         return;
       }
       try {
+        this.card = await member.cardInfo();
+        this.ruleGoods = this.card.memberPresentRules;
+        this.ruleGoods.forEach((item, index) => {
+          this.details.push({});
+          this.ruleGoods[index].stepper = 0;
+        });
         // 扫描二维码进入
         if (options.scene) {
           this.scene = decodeURIComponent(options.scene);
           this.member = await member.Info(options.scene);
           const {customer} = await userInfo.detailInfo(this.member.customerId);
           this.customer = customer;
-          this.card = await member.cardInfo();
         }
         // 用户信息进入
         if (preload) {
-          this.card = await member.cardInfo();
           const {customer} = preload.data.customer;
           this.customer = customer;
           this.member = preload.data.member;
@@ -179,7 +186,8 @@
             addBonus: this.bonus,
             cardNumber: this.scene,
             costMoney: this.input.price,
-            type: 'OFFLINE_ORDER_ADD'
+            type: 'OFFLINE_ORDER_ADD',
+            memberPresentDetails: this.details
           };
           await member.memberAdd(param);
           await Tips.success('消费已完成');
@@ -208,20 +216,15 @@
       detail () {
         this.$navigate(`/pages/customer/info?customerId=${this.customer.id}`);
       },
-      minus () {
-        if (this.stepper <= 0) {
-          return;
-        }
-        this.stepper--;
+      minus (info) {
+        this.details[info.index].ruleId = info.id;
+        this.details[info.index].currentCount = info.stepper;
       },
-      plus () {
-        if (this.stepper >= 10000) {
-          return;
-        }
-        this.stepper++;
+      plus (info) {
+        this.details[info.index].ruleId = info.id;
+        this.details[info.index].currentCount = info.stepper;
       }
     };
-
     async scan() {
       try {
         const data = await wepy.scanCode();
