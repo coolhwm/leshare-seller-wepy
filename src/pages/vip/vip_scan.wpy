@@ -28,6 +28,15 @@
           </view>
           <text>{{bonus ? bonus : 0}}</text>
         </view>
+        <view class="weui-cell" wx:if="{{card.supplyBonus == 1}}">
+          <view class="weui-cell__hd">
+            <view class="weui-label">赠送奶茶</view>
+          </view>
+          <Stepper :stepper.sync="stepper" @minus.user="minus" @plus.user="plus"/>
+          <view class="weui-cell__ft">
+            <view class="ml20">杯</view>
+          </view>
+        </view>
       </view>
 
       <!--消费后-->
@@ -105,6 +114,7 @@
   import Event from '../../utils/Event';
   import Tips from '../../utils/Tips';
   import ZanTab from '../../components/zanui/tab';
+  import Stepper from '../../components/zanui/stepper';
   export default class VipScan extends wepy.page {
     def = {
       init: false,
@@ -120,7 +130,8 @@
           {id: 'BONUS', title: '积分'}
         ],
         selectedId: 'COST'
-      }
+      },
+      stepper: 0
     };
     data = {...this.def};
 
@@ -196,8 +207,21 @@
       },
       detail () {
         this.$navigate(`/pages/customer/info?customerId=${this.customer.id}`);
+      },
+      minus () {
+        if (this.stepper <= 0) {
+          return;
+        }
+        this.stepper--;
+      },
+      plus () {
+        if (this.stepper >= 10000) {
+          return;
+        }
+        this.stepper++;
       }
     };
+
     async scan() {
       try {
         const data = await wepy.scanCode();
@@ -224,7 +248,8 @@
       Tips: FormTips,
       VipCard: VipCard,
       ActionBar: ActionBar,
-      ZanTab: ZanTab
+      ZanTab: ZanTab,
+      Stepper: Stepper
     };
     config = {
       navigationBarTitleText: '会员卡核销'
