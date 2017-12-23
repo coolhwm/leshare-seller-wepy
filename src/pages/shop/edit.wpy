@@ -172,7 +172,7 @@
         };
         Tips.loading('保存中');
         for (let picture of this.pictures) {
-          if (picture.url.substring(0, 6) == 'wxfile') {
+          if (picture.url.substring(0, 11) == 'http://tmp/') {
             const result = await shop.image(picture.url);
             const image = JSON.parse(result);
             data.images.push(image);
