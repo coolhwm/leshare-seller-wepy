@@ -35,6 +35,14 @@ export default class Member extends base {
   }
 
   /**
+   * 编辑自定义折扣
+   */
+  static customDiscount (member) {
+    const url = `${this.baseUrl}/members/custom_discount`;
+    return this.post(url, member);
+  }
+
+  /**
    * 历史积分信息
    */
   static async bonusPage(customerId) {

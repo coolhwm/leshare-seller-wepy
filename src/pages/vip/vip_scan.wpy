@@ -101,6 +101,25 @@
 
     </view>
 
+    <!--修改折扣率-->
+    <view wx:if="{{tab.selectedId == 'MEMBER'}}">
+      <!--操作前-->
+      <view class="weui-cells weui-cells-form"   wx:if="{{result == null}}">
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__hd">
+            <view class="weui-label">会员折扣</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" id="customDiscount" @input="input" value="{{member.customDiscount}}"
+                   type="number" maxlength="6" placeholder="输入90表示9折"/>
+          </view>
+        </view>
+      </view>
+      <view class="tips-box">
+        <text>提示：输入90表示9则，输入85表示8.5折</text>
+      </view>
+    </view>
+
     <view class="message-box row-center" wx:if="{{message}}">
       {{message}}
     </view>
@@ -136,7 +155,8 @@
       tab: {
         list: [
           {id: 'COST', title: '消费'},
-          {id: 'BONUS', title: '积分'}
+          {id: 'BONUS', title: '积分'},
+          {id: 'MEMBER', title: '会员'}
         ],
         selectedId: 'COST'
       },
@@ -189,18 +209,18 @@
           if (!this.validate()) {
             return;
           }
-          const param = {
+          const costParam = {
             addBonus: this.bonus,
             cardNumber: this.scene,
             costMoney: this.input.price,
             type: 'OFFLINE_ORDER_ADD',
             memberPresentDetails: this.details
           };
-          await member.memberAdd(param);
+          await member.memberAdd(costParam);
           await Tips.success('消费已完成');
           this.result = `消费${this.input.price}元` + (this.bonus > 0 ? `，累计积分${this.bonus}` : '');
           this.input.price = null;
-        } else {
+        } else if (this.tab.selectedId == 'BONUS') {
           if (this.card.supplyBonus != 1) {
             await Tips.alert('尚未开启积分');
             return;
@@ -209,16 +229,23 @@
             return;
           }
           const bouns = this.input.bonus;
-          const param = {
+          const bounsParam = {
             addBonus: bouns,
             cardNumber: this.member.memberNumber,
             costMoney: 0,
             type: 'OFFLINE_ORDER_ADD'
           };
-          await member.memberAdd(param);
+          await member.memberAdd(bounsParam);
           await Tips.success('积分已保存');
           this.result = `已${bouns > 0 ? '增加' : '扣除'}${bouns > 0 ? bouns : -bouns}积分`;
           this.input.bonus = null;
+        } else if (this.tab.selectedId == 'MEMBER') {
+          const memberParam = {
+            memberId: this.member.memberId,
+            customDiscount: this.input.customDiscount
+          };
+          member.customDiscount(memberParam);
+          await Tips.success('已保存');
         }
         this.member = await member.Info(this.scene);
         Event.emit(Event.SHOP_CUSTOMER_UPDATE);
