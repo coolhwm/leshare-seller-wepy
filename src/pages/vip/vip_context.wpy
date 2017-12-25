@@ -2,26 +2,29 @@
   <view class="container" wx:if="{{init}}">
     <Tips/>
     <text class="xl ml30 mt10 mb10 muted">{{support}}</text>
-    <view class="weui-cells weui-cells-form">
-      <view class="weui-cell">
-        <view class="weui-cell__bd">
-                    <textarea class="weui-textarea" id="context" value="{{input.context}}" placeholder="请输入{{support}}"
-                              style="height: 6.3em" maxlength="200" @input="input"/>
-          <view class="weui-textarea-counter">{{input.context ? input.context.length : 0}}/200</view>
+    <form @submit="submit">
+      <view class="weui-cells weui-cells-form">
+        <view class="weui-cell">
+          <view class="weui-cell__bd">
+          <textarea class="weui-textarea" id="context" value="{{input.context}}" placeholder="请输入{{support}}"
+                    style="height: 6.3em" maxlength="200" @blur="input"/>
+            <view class="weui-textarea-counter">{{input.context ? input.context.length : 0}}/200</view>
+          </view>
         </view>
       </view>
-    </view>
-    <!--操作栏-->
-    <ActionBar okText="确定" cancelText="返回" @tap.user="submit"/>
+      <!--操作栏-->
+      <ActionPanel submitText="确定"/>
+    </form>
   </view>
 </template>
 <script>
   import wepy from 'wepy';
+  import base from '../../mixins/base';
   import input from '../../mixins/input';
   import Event from '../../utils/Event';
   import Tips from '../../utils/Tips';
   import FormTips from '../../components/weui/tips';
-  import ActionBar from '../../components/common/action_bar';
+  import ActionPanel from '../../components/common/action_panel';
 
   export default class Context extends wepy.page {
     def = {
@@ -47,7 +50,6 @@
       this.input.context = param.context;
       this.init = true;
     };
-
     computed = {
       support () {
         if (this.type == 'description') {
@@ -80,9 +82,9 @@
     }
 
     config = {navigationBarTitleText: '内容编辑'};
-    mixins = [input];
+    mixins = [input, base];
     components = {
-      ActionBar: ActionBar,
+      ActionPanel: ActionPanel,
       Tips: FormTips
     };
   }

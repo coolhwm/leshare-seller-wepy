@@ -4,10 +4,9 @@
     <!--操作表单-->
     <view class="weui-cells-form">
       <Switch title="请输入分类名称：" fieldName="show" :input.sync="input" switchFlag="0"/>
-      <!--<Textarea fieldName="name" :input.sync="input"/>-->
       <view class="weui-cell">
         <view class="weui-cell__bd">
-          <input class="weui-textarea" id="name" @blur="input" value="{{input.name}}" maxlength="8"/>
+          <input class="weui-textarea" id="name" @blur="input" value="{{input.name}}" maxlength="10"/>
         </view>
       </view>
     </view>
@@ -26,7 +25,6 @@
   import base from '../../mixins/base';
   import input from '../../mixins/input';
   import goods from '../../api/goods';
-  import Textarea from '../../components/weui/textarea';
   import Switch from '../../components/weui/switch';
   import FormTips from '../../components/weui/tips';
   import ActionBar from '../../components/common/action_bar';
@@ -85,7 +83,6 @@
     components = {
       Tips: FormTips,
       ActionBar: ActionBar,
-      Textarea: Textarea,
       Switch: Switch
     };
     config = {
