@@ -2,68 +2,82 @@
   <Tips/>
   <view class="container" wx:if="{{init}}">
     <form @submit="submit">
-    <view class="weui-cells weui-cells-form">
-      <view class="weui-cell weui-cell_input">
-        <view class="weui-cell__hd">
-          <view class="weui-label">会员卡名称</view>
+      <view class="weui-cells weui-cells-form">
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__hd">
+            <view class="weui-label">会员卡名称</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" name="title" value="{{card.title}}" type="text"
+                   placeholder="请输入会员卡名称"/>
+          </view>
         </view>
-        <view class="weui-cell__bd">
-          <input class="weui-input" name="title" value="{{card.title}}" type="text"
-                 placeholder="请输入会员卡名称"/>
-        </view>
-      </view>
 
-      <view class="weui-cell weui-cell_input">
-        <view class="weui-cell__hd">
-          <view class="weui-label">客服电话</view>
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__hd">
+            <view class="weui-label">客服电话</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" name="servicePhone" value="{{card.servicePhone}}"
+                   type="number" maxlength="11"
+                   placeholder="请输入客服电话"/>
+          </view>
         </view>
-        <view class="weui-cell__bd">
-          <input class="weui-input" name="servicePhone" value="{{card.servicePhone}}"
-                 type="number" maxlength="11"
-                 placeholder="请输入客服电话"/>
+
+        <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="textArea('description')">
+          <view class="weui-cell__bd">使用说明</view>
+          <view class="weui-cell__ft weui-cell__ft_in-access">{{descriptionText}}</view>
         </view>
-      </view>
-
-      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="textArea('description')">
-        <view class="weui-cell__bd">使用说明</view>
-        <view class="weui-cell__ft weui-cell__ft_in-access">{{descriptionText}}</view>
-      </view>
-      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="textArea('notice')">
-        <view class="weui-cell__bd">使用提醒</view>
-        <view class="weui-cell__ft weui-cell__ft_in-access">{{noticeText}}</view>
-      </view>
-    </view>
-
-    <view class="mt10"></view>
-    <view class="weui-cells weui-cells-form">
-      <view class="weui-cell weui-cell_switch">
-        <view class="weui-cell__bd">积分规则</view>
-        <view class="weui-cell__ft">
-          <switch checked="{{input.supplyBonus}}" id="supplyBonus" @change="input"/>
+        <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="textArea('notice')">
+          <view class="weui-cell__bd">使用提醒</view>
+          <view class="weui-cell__ft weui-cell__ft_in-access">{{noticeText}}</view>
         </view>
       </view>
 
-      <view class="weui-cell weui-cell_access" wx:if="{{input.supplyBonus}}" @tap="toSupplyBonus">
-        <view class="weui-cell__bd">规则配置</view>
-        <view class="weui-cell__ft weui-cell__ft_in-access">{{bounsText}}</view>
-      </view>
-    </view>
+      <view class="mt10"></view>
+      <view class="weui-cells weui-cells-form">
+        <view class="weui-cell weui-cell_switch">
+          <view class="weui-cell__bd">积分规则</view>
+          <view class="weui-cell__ft">
+            <switch checked="{{input.supplyBonus}}" id="supplyBonus" @change="input"/>
+          </view>
+        </view>
 
-    <view class="mt10"></view>
-    <view class="weui-cells weui-cells-form">
-      <view class="weui-cell weui-cell_switch">
-        <view class="weui-cell__bd">会员等级</view>
-        <view class="weui-cell__ft">
-          <switch checked="{{input.supplyDiscount}}" id="supplyDiscount" @change="input"/>
+        <view class="weui-cell weui-cell_access" wx:if="{{input.supplyBonus}}" @tap="toSupplyBonus">
+          <view class="weui-cell__bd">规则配置</view>
+          <view class="weui-cell__ft weui-cell__ft_in-access">{{bounsText}}</view>
         </view>
       </view>
 
-      <view class="weui-cell weui-cell_access" wx:if="{{input.supplyDiscount}}" @tap="toSupplyDiscount">
-        <view class="weui-cell__bd">等级配置</view>
-        <view class="weui-cell__ft weui-cell__ft_in-access">{{levelText}}</view>
+      <view class="mt10"></view>
+      <view class="weui-cells weui-cells-form">
+        <view class="weui-cell weui-cell_switch">
+          <view class="weui-cell__bd">会员等级</view>
+          <view class="weui-cell__ft">
+            <switch checked="{{input.supplyDiscount}}" id="supplyDiscount" @change="input"/>
+          </view>
+        </view>
+
+        <view class="weui-cell weui-cell_access" wx:if="{{input.supplyDiscount}}" @tap="toSupplyDiscount">
+          <view class="weui-cell__bd">等级配置</view>
+          <view class="weui-cell__ft weui-cell__ft_in-access">{{levelText}}</view>
+        </view>
       </view>
-    </view>
-    <ActionPanel/>
+      <view class="mt10"></view>
+      <view class="weui-cells weui-cells-form">
+        <view class="weui-cell weui-cell_switch">
+          <view class="weui-cell__bd">满赠规则</view>
+          <view class="weui-cell__ft">
+            <switch checked="{{input.supplyPresent}}" id="supplyPresent" @change="input"/>
+          </view>
+        </view>
+
+        <view class="weui-cell weui-cell_access" wx:if="{{input.supplyPresent}}" @tap="toSupplyPresent">
+          <view class="weui-cell__bd">满赠规则配置</view>
+          <view class="weui-cell__ft weui-cell__ft_in-access">{{presentText}}</view>
+        </view>
+      </view>
+      <ActionPanel/>
     </form>
   </view>
 </template>
@@ -100,6 +114,9 @@
       toSupplyBonus () {
         this.$navigate('supply_bonus?bonus=' + JSON.stringify(this.card.bonusRule));
       },
+      toSupplyPresent() {
+        this.$navigate('supply_present?present=' + JSON.stringify(this.card.memberPresentRules));
+      },
       async submit ({detail}) {
         // 覆盖对象
         Object.assign(this.card, detail.value);
@@ -118,19 +135,23 @@
             fixedTerm: 0,
             bonusRule: this.bonusRule,
             discountRules: this.discountRules,
+            memberPresentRules: this.memberPresentRules,
             description: this.description,
             notice: this.notice
           };
           Object.assign(param, this.input);
           param.supplyBonus = this.input.supplyBonus ? 1 : 0;
           param.supplyDiscount = this.input.supplyDiscount ? 1 : 0;
+          param.supplyPresent = this.input.supplyPresent ? 1 : 0;
           await vip.create(param);
         } else {
           const param = this.card;
           param.supplyBonus = this.input.supplyBonus ? 1 : 0;
           param.supplyDiscount = this.input.supplyDiscount ? 1 : 0;
+          param.supplyPresent = this.input.supplyPresent ? 1 : 0;
           param.bonusRule = this.card.bonusRule;
           param.discountRules = this.card.discountRules;
+          param.memberPresentRules = this.card.memberPresentRules;
           param.description = this.card.description;
           param.notice = this.card.notice;
           await vip.update(param);
@@ -148,16 +169,19 @@
         this.card = {};
         this.card.bonusRule = null;
         this.card.discountRules = [];
+        this.card.memberPresentRules = [];
       } else {
         this.mode = 'update';
         this.input = this.card;
         this.input.supplyBonus = this.input.supplyBonus == 1;
         this.input.supplyDiscount = this.input.supplyDiscount == 1;
+        this.input.supplyPresent = this.input.supplyPresent == 1;
       }
       this.loaded();
       Event.listen(Event.SHOP_BONUS_UPDATE, this.bonusUpdate.bind(this), this);
       Event.listen(Event.SHOP_CONTEXT_UPDATE, this.contextUpdate.bind(this), this);
       Event.listen(Event.SHOP_DISCOUNT_UPDATE, this.discountUpdate.bind(this), this);
+      Event.listen(Event.SHOP_PRESENT_UPDATE, this.presentUpdate.bind(this), this);
       // 会员卡开启提醒
       if (this.shop.supportMember != 1) {
         await Tips.alert('请先开启会员卡功能');
@@ -173,6 +197,10 @@
     discountUpdate(param) {
       this.card.discountRules = param;
       this.input.discountRules = param;
+    };
+    presentUpdate(param) {
+      this.card.memberPresentRules = param;
+      this.input.memberPresentRules = param;
     };
     validate () {
       const {supplyBonus, supplyDiscount, discountRules, bonusRule} = this.input;
@@ -236,6 +264,11 @@
           return `已配置${this.card.discountRules.length}个级别`;
         } else {
           return '尚未配置';
+        }
+      },
+      presentText() {
+        if (this.card && this.card.memberPresentRules && this.card.memberPresentRules.length > 0) {
+          return `已配置${this.card.memberPresentRules.length}个规则`
         }
       }
     };

@@ -119,6 +119,8 @@
         'pages/vip/vip_context',
         'pages/vip/registe_member',
         'pages/vip/supply_discount',
+        'pages/vip/supply_present',
+        'pages/vip/present_category',
         'pages/manusl/index',
         'pages/manusl/customer_order',
         'pages/manusl/order',
