@@ -14,6 +14,12 @@
       buttom: {
         default: 'false'
       }
+    };
+    data = {
+      version: null
+    };
+    onLoad () {
+      this.version = wepy.$instance.globalData.version;
     }
   }
 </script>
