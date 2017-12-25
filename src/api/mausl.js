@@ -118,7 +118,7 @@ export default class mausl extends base {
     }
     return {
       list: list,
-      selectedId: 9,
+      selectedId: null,
       scroll: false
     };
   }

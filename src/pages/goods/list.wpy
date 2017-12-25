@@ -64,7 +64,7 @@
       this.goods = this.page.list;
       // 加载商品分类
       await this.updateCategories();
-      this.categories.categoryId = this.categories.list[0].id;
+      this.categories.selectedId = this.categories.list[0].id;
       await this.next();
       Event.listen(Event.GOODS_LIST_UPDATE, this.update.bind(this), this);
       Event.listen(Event.CATEGORY_LIST_UPDATE, this.updateCategories.bind(this), this);
@@ -74,7 +74,7 @@
     params() {
       return {
         goods_status: this.tab.selectedId,
-        category_id: this.tab.categoryId
+        category_id: this.categories.selectedId
       };
     }
     // 更新分类
@@ -99,7 +99,8 @@
       selectedCategoryName() {
         if (this.init && this.categories && this.categories.list) {
           const selectedId = this.categories.selectedId;
-          return this.categories.list.find(item => item.id == selectedId).title;
+          const selectedCategory = this.categories.list.find(item => item.id == selectedId);
+          return selectedCategory ? selectedCategory.title : null;
         }
       }
     };
