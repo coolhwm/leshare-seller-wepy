@@ -53,7 +53,7 @@
           {id: 'offSale', title: '仓库中'}
         ],
         selectedId: 'onSale',
-        categoryId: '0',
+        categoryId: '9',
         scroll: false
       },
       categories: []
@@ -63,11 +63,12 @@
       this.page = goods.page(this);
       this.goods = this.page.list;
       // 加载商品分类
-      this.categories = await Cache.categories();
-      this.categories.selectedId = this.categories.list[0].id;
+      await this.updateCategories();
+      this.categories.categoryId = this.categories.list[0].id;
       await this.next();
       Event.listen(Event.GOODS_LIST_UPDATE, this.update.bind(this), this);
       Event.listen(Event.CATEGORY_LIST_UPDATE, this.updateCategories.bind(this), this);
+      this.loaded();
     };
     // 获取分页参数
     params() {
@@ -78,8 +79,8 @@
     }
     // 更新分类
     async updateCategories() {
-      this.categories = await goods.getInnerCategories();
-      this.loaded();
+      // 加载商品分类
+      this.categories = await Cache.categories();
     }
     methods = {
       // 点击分类

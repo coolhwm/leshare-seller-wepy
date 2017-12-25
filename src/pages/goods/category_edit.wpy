@@ -1,14 +1,19 @@
 <template>
-  <Tips />
+  <Tips/>
   <view class="container" wx:if="{{init}}">
     <!--操作表单-->
     <view class="weui-cells-form">
-      <Switch title="请输入分类名称：" fieldName="show" :input.sync="input" switchFlag="0" />
-      <Textarea fieldName="name" :input.sync="input"/>
+      <Switch title="请输入分类名称：" fieldName="show" :input.sync="input" switchFlag="0"/>
+      <!--<Textarea fieldName="name" :input.sync="input"/>-->
+      <view class="weui-cell">
+        <view class="weui-cell__bd">
+          <input class="weui-textarea" id="name" @blur="input" value="{{input.name}}" maxlength="8"/>
+        </view>
+      </view>
     </view>
 
     <!--操作栏-->
-    <ActionBar @tap.user="submit" />
+    <ActionBar @tap.user="submit"/>
   </view>
 </template>
 
