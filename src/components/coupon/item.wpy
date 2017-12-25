@@ -10,7 +10,7 @@
       <text class="mt10" wx:else>满{{coupon.limitPrice}}元可用</text>
   </view>
     <view class="main-box column-center" wx:if="{{coupon.type == 'EXCHANGE'}}">
-      <text class="xl">兑换券</text>
+      <text class="exchange">兑换券</text>
       <text class="mt10" wx:if="{{coupon.limitPrice == 0}}">无门槛</text>
       <text class="mt10" wx:else>满{{coupon.limitPrice}}元可用</text>
     </view>
@@ -92,6 +92,9 @@
 
       text.price{
         font-size: 75rpx;
+      }
+      text.exchange{
+        font-size: 55rpx;
       }
     }
 
