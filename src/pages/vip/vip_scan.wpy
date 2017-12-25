@@ -28,7 +28,7 @@
           </view>
           <text>{{bonus ? bonus : 0}}</text>
         </view>
-        <repeat for="{{ruleGoods}}" key="index" index="index" item="item">
+        <repeat for="{{presentRules}}" key="index" index="index" item="item">
           <view class="weui-cell">
             <view class="weui-cell__hd">
               <view class="weui-label">{{item.ruleName}}</view>
@@ -43,7 +43,7 @@
 
       <!--消费后-->
       <view class="weui-cells weui-cells-form"  wx:else>
-        <view class="weui-cell weui-cell_input">
+        <view class="weui-cell weui-cell_input" wx:if="{{input.price > 0}}">
           <view class="weui-cell__hd">
             <view class="weui-label">消费完成</view>
           </view>
@@ -51,6 +51,17 @@
             <input class="weui-input"  value="{{result}}" disabled/>
           </view>
         </view>
+
+        <repeat for="{{presentRules}}" key="index" index="index" item="item">
+          <view class="weui-cell" wx:if="{{item.stepper > 0}}">
+            <view class="weui-cell__hd">
+              <view class="weui-label">{{item.ruleName}}</view>
+            </view>
+            <view class="weui-cell__bd">
+              <input class="weui-input"  value="累计{{item.stepper}} {{item.unit}}" disabled/>
+            </view>
+          </view>
+        </repeat>
       </view>
 
       <!--权益提示-->
@@ -104,14 +115,17 @@
     <!--修改折扣率-->
     <view wx:if="{{tab.selectedId == 'MEMBER'}}">
       <!--操作前-->
-      <view class="weui-cells weui-cells-form"   wx:if="{{result == null}}">
+      <view class="weui-cells weui-cells-form" >
         <view class="weui-cell weui-cell_input">
           <view class="weui-cell__hd">
             <view class="weui-label">会员折扣</view>
           </view>
-          <view class="weui-cell__bd">
+          <view class="weui-cell__bd" wx:if="{{result == null}}">
             <input class="weui-input" id="customDiscount" @input="input" value="{{member.customDiscount}}"
                    type="number" maxlength="6" placeholder="输入90表示9折"/>
+          </view>
+          <view class="weui-cell__bd" wx:else>
+            <input class="weui-input"  value="已设置为{{member.customDiscount / 10}}折" disabled/>
           </view>
         </view>
       </view>
@@ -160,7 +174,7 @@
         ],
         selectedId: 'COST'
       },
-      ruleGoods: [],
+      presentRules: [],
       details: []
     };
     data = {...this.def};
@@ -172,10 +186,13 @@
       }
       try {
         this.card = await member.cardInfo();
-        this.ruleGoods = this.card.memberPresentRules;
-        this.ruleGoods.forEach((item, index) => {
-          this.details.push({});
-          this.ruleGoods[index].stepper = 0;
+        this.presentRules = this.card.memberPresentRules;
+        this.presentRules.forEach((item, index) => {
+          this.details.push({
+            ruleId: item.id,
+            currentCount: 0
+          });
+          this.presentRules[index].stepper = 0;
         });
         // 扫描二维码进入
         if (options.scene) {
@@ -206,7 +223,7 @@
           return;
         }
         if (this.tab.selectedId == 'COST') {
-          if (!this.validate()) {
+          if (!this.costValidate()) {
             return;
           }
           const costParam = {
@@ -219,7 +236,6 @@
           await member.memberAdd(costParam);
           await Tips.success('消费已完成');
           this.result = `消费${this.input.price}元` + (this.bonus > 0 ? `，累计积分${this.bonus}` : '');
-          this.input.price = null;
         } else if (this.tab.selectedId == 'BONUS') {
           if (this.card.supplyBonus != 1) {
             await Tips.alert('尚未开启积分');
@@ -244,6 +260,7 @@
             memberId: this.member.memberId,
             customDiscount: this.input.customDiscount
           };
+          this.result = true;
           member.customDiscount(memberParam);
           await Tips.success('已保存');
         }
@@ -295,7 +312,13 @@
     config = {
       navigationBarTitleText: '会员卡核销'
     };
-    validate () {
+    costValidate () {
+      const isPrice = this.input.price != 0 && this.input.price != null;
+      const isPresent = this.details.some(detail => detail && detail.currentCount > 0);
+      if (!isPresent && !isPrice) {
+        this.tips('请输入消费信息');
+        return false;
+      }
       const rules = [
         {
           value: this.input.price,
