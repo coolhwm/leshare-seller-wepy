@@ -98,7 +98,8 @@
       selectedCategoryName() {
         if (this.init && this.categories && this.categories.list) {
           const selectedId = this.categories.selectedId;
-          return this.categories.list.find(item => item.id == selectedId).title;
+          const selectedCategory = this.categories.list.find(item => item.id == selectedId);
+          return selectedCategory ? selectedCategory.title : null;
         }
       }
     };
