@@ -1,63 +1,64 @@
 <template>
-  <Tips />
+  <Tips/>
   <view class="container" wx:if="{{init}}">
+    <form @submit="submit">
+      <!--照片上传区域-->
+      <ImageUploader :pictures.sync="pictures"/>
 
-    <!--照片上传区域-->
-    <ImageUploader :pictures.sync="pictures" />
-
-    <!-- 标题区域 -->
-    <view class="weui-cells-form">
-      <view class="weui-cell">
-        <view class="weui-cell__bd">
-          <input class="weui-textarea" id="name" value="{{input.name}}" placeholder="请输入商品标题" style="height: 2.3em" maxlength="30" @input="input" />
-          <view class="weui-textarea-counter">{{input.name ? input.name.length : 0}}/30</view>
-        </view>
-      </view>
-    </view>
-
-    <!-- SKU 列表 -->
-    <SkuList :skuList.sync="skuList" />
-
-    <!-- 其他详细信息 -->
-    <view class="detail-box">
+      <!-- 标题区域 -->
       <view class="weui-cells-form">
-
-        <view class="weui-cell"  @tap="showInner">
-          <view class="weui-cell__hd">
-            <view class="weui-label">商品分类</view>
-          </view>
-          <view class="weui-cell__bd" >
-            {{input.inner ? input.inner : '请选择商品分类'}}
-          </view>
-          <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-        </view>
-
-        <view class="weui-cell"  @tap="details">
-          <view class="weui-cell__hd">
-            <view class="weui-label">商品详情</view>
-          </view>
+        <view class="weui-cell">
           <view class="weui-cell__bd">
-            {{detailText}}
-          </view>
-          <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-        </view>
-
-        <view class="weui-cell weui-cell_switch">
-          <view class="weui-cell__bd">立即上架</view>
-          <view class="weui-cell__ft">
-            <switch checked="{{input.status}}" id="status" @change="input" />
-          </view>
-        </view>
-        <view class="weui-cell weui-cell_switch">
-          <view class="weui-cell__bd">推荐商品</view>
-          <view class="weui-cell__ft">
-            <switch checked="{{input.isRecommend}}" id="isRecommend" @change="input" />
+            <input class="weui-textarea" id="name" @blur="input" value="{{input.name}}"
+                   placeholder="请输入商品标题" style="height: 2.3em" maxlength="30"/>
           </view>
         </view>
       </view>
-    </view>
-    <!--操作栏-->
-    <ActionPanel :mode.sync="mode" @submit.user="submit" @remove.user="remove"/>
+
+      <!-- SKU 列表 -->
+      <SkuList :skuList.sync="skuList"/>
+
+      <!-- 其他详细信息 -->
+      <view class="detail-box">
+        <view class="weui-cells-form">
+
+          <view class="weui-cell" @tap="showInner">
+            <view class="weui-cell__hd">
+              <view class="weui-label">商品分类</view>
+            </view>
+            <view class="weui-cell__bd">
+              {{input.inner ? input.inner : '请选择商品分类'}}
+            </view>
+            <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+          </view>
+
+          <view class="weui-cell" @tap="details">
+            <view class="weui-cell__hd">
+              <view class="weui-label">商品详情</view>
+            </view>
+            <view class="weui-cell__bd">
+              {{detailText}}
+            </view>
+            <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+          </view>
+
+          <view class="weui-cell weui-cell_switch">
+            <view class="weui-cell__bd">立即上架</view>
+            <view class="weui-cell__ft">
+              <switch checked="{{input.status}}" id="status" @change="input"/>
+            </view>
+          </view>
+          <view class="weui-cell weui-cell_switch">
+            <view class="weui-cell__bd">推荐商品</view>
+            <view class="weui-cell__ft">
+              <switch checked="{{input.isRecommend}}" id="isRecommend" @change="input"/>
+            </view>
+          </view>
+        </view>
+      </view>
+      <!--操作栏-->
+      <ActionPanel :mode.sync="mode" @remove.user="remove"/>
+    </form>
   </view>
 
   <!-- 分类 -->
@@ -80,7 +81,7 @@
           <view class="weui-label"> + 新增分类</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" id="newInner" @input="input" placeholder="输入分类名称" />
+          <input class="weui-input" id="newInner" @blur="input" placeholder="输入分类名称" />
         </view>
         <view class="weui-cell__ft">
           <view class="weui-vcode-btn" @tap="addInner">确定</view>
