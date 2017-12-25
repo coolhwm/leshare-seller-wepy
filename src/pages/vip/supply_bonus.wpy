@@ -1,6 +1,7 @@
 <template>
   <view wx:if="{{init}}">
     <Tips/>
+    <form @submit="submit">
     <view class="title-box">
       <text>积分规则</text>
     </view>
@@ -8,8 +9,8 @@
       <view class="weui-cell weui-cell_input">
         <view class="weui-label">每消费</view>
         <view class="weui-cell__ft">
-          <input class="weui-input" id="costMoneyUnit" type="number" maxlength="6" @input="input"
-                 value="{{input.costMoneyUnit}}"
+          <input class="weui-input" name="costMoneyUnit" type="number" maxlength="6"
+                 value="{{bonus.costMoneyUnit}}"
                  placeholder="消费金额"/>
         </view>
         <view class="unit">元</view>
@@ -17,8 +18,8 @@
       <view class="weui-cell weui-cell_input">
         <view class="weui-label">增加</view>
         <view class="weui-cell__ft">
-          <input class="weui-input" id="increaseBonus" type="number" maxlength="6" @input="input"
-                 value="{{input.increaseBonus}}"
+          <input class="weui-input" name="increaseBonus" type="number" maxlength="6"
+                 value="{{bonus.increaseBonus}}"
                  placeholder="增加积分"/>
         </view>
         <view class="unit">积分</view>
@@ -26,8 +27,8 @@
       <view class="weui-cell weui-cell_input">
         <view class="weui-label">最多累计</view>
         <view class="weui-cell__ft">
-          <input class="weui-input" id="maxIncreaseBonus" type="number" maxlength="6" @input="input"
-                 value="{{input.maxIncreaseBonus}}" placeholder="单笔订单最多能累计的积分"/>
+          <input class="weui-input" name="maxIncreaseBonus" type="number" maxlength="6"
+                 value="{{bonus.maxIncreaseBonus}}" placeholder="单笔订单最多能累计的积分"/>
         </view>
         <view class="unit">积分</view>
       </view>
@@ -47,8 +48,8 @@
         <view class="weui-cell weui-cell_input">
           <view class="weui-label">每使用</view>
           <view class="weui-cell__ft">
-            <input class="weui-input" id="costBonusUnit" type="number" maxlength="6" @input="input"
-                   value="{{input.costBonusUnit}}"
+            <input class="weui-input" name="costBonusUnit" type="number" maxlength="6"
+                   value="{{bonus.costBonusUnit}}"
                    placeholder="使用积分"/>
           </view>
           <view class="unit">积分</view>
@@ -56,8 +57,8 @@
         <view class="weui-cell weui-cell_input">
           <view class="weui-label">抵扣</view>
           <view class="weui-cell__ft">
-            <input class="weui-input" id="reduceMoney" type="number" maxlength="6" @input="input"
-                   value="{{input.reduceMoney}}"
+            <input class="weui-input" name="reduceMoney" type="number" maxlength="6"
+                   value="{{bonus.reduceMoney}}"
                    placeholder="抵扣金额"/>
           </view>
           <view class="unit">元</view>
@@ -65,16 +66,16 @@
         <view class="weui-cell weui-cell_input">
           <view class="weui-label">最多使用</view>
           <view class="weui-cell__ft">
-            <input class="weui-input" id="maxReduceBonus" type="number" maxlength="6" @input="input"
-                   value="{{input.maxReduceBonus}}" placeholder="最多能使用的积分"/>
+            <input class="weui-input" name="maxReduceBonus" type="number" maxlength="6"
+                   value="{{bonus.maxReduceBonus}}" placeholder="最多能使用的积分"/>
           </view>
           <view class="unit">积分</view>
         </view>
         <view class="weui-cell weui-cell_input">
           <view class="weui-label">订单需满</view>
           <view class="weui-cell__ft">
-            <input class="weui-input" id="limitMoney" type="number" maxlength="6" @input="input"
-                   value="{{input.limitMoney}}" placeholder="订单金额达到"/>
+            <input class="weui-input" name="limitMoney" type="number" maxlength="6"
+                   value="{{bonus.limitMoney}}" placeholder="订单金额达到"/>
           </view>
           <view class="unit">元</view>
         </view>
@@ -87,17 +88,14 @@
       <view class="weui-cell weui-cell_input">
         <view class="weui-label">初始积分</view>
         <view class="weui-cell__ft">
-          <input class="weui-input" id="initIncreaseBonus" type="number" maxlength="6" @input="input"
-                 value="{{input.initIncreaseBonus}}" placeholder="初始积分"/>
+          <input class="weui-input" name="initIncreaseBonus" type="number" maxlength="6"
+                 value="{{bonus.initIncreaseBonus}}" placeholder="初始积分"/>
         </view>
         <view class="content"></view>
       </view>
     </view>
-    <view class="zan-panel">
-      <view class="zan-btns">
-        <button class="zan-btn zan-btn--fill" @tap="submit">确定</button>
-      </view>
-    </view>
+    <ActionPanel submitText="确定"/>
+    </form>
   </view>
 </template>
 <script>
@@ -106,6 +104,7 @@
   import input from '../../mixins/input';
   import FormTips from '../../components/weui/tips';
   import Event from '../../utils/Event';
+  import ActionPanel from '../../components/common/action_panel';
 
   export default class SupplyBonus extends wepy.page {
     data = {
@@ -113,197 +112,206 @@
       bonus: {}
     };
     methods = {
-      async submit () {
+      async submit ({detail}) {
+        // 覆盖对象
+        Object.assign(this.bonus, detail.value);
         if (!this.validate()) {
           return;
         }
-        this.input.cardId = 0;
-        this.input.isCost = this.input.isCost ? 1 : 0;
-        Event.emit(Event.SHOP_BONUS_UPDATE, this.input);
+        this.bonus.cardId = 0;
+        this.bonus.isCost = this.input.isCost ? 1 : 0;
+        Event.emit(Event.SHOP_BONUS_UPDATE, this.bonus);
         wepy.navigateBack();
       }
     };
-    async onLoad({bonus}) {
+
+    async onLoad ({bonus}) {
       if (bonus != null && bonus != 'null') {
-        this.input = JSON.parse(bonus);
-        this.input.isCost = this.input.isCost == 1;
+        this.bonus = JSON.parse(bonus);
+        this.input.isCost = this.bonus.isCost == 1;
       }
       this.loaded();
     };
+
     validate () {
+      if (this.bonus.isCost == 1) {
+        const rules = [
+          {
+            value: this.bonus.costBonusUnit,
+            method: 'required',
+            message: '消费金额不能为空'
+          },
+          {
+            value: this.bonus.costBonusUnit,
+            method: 'number',
+            message: '消费金额必须是数字'
+          },
+          {
+            value: this.bonus.costBonusUnit,
+            method: 'min',
+            param: 0.01,
+            message: '消费金额不能为0或负数'
+          },
+          {
+            value: this.bonus.costBonusUnit,
+            method: 'max',
+            param: 1000000,
+            message: '消费金额数过高'
+          },
+          {
+            value: this.bonus.reduceMoney,
+            method: 'required',
+            message: '抵扣积分数不能为空'
+          },
+          {
+            value: this.bonus.reduceMoney,
+            method: 'number',
+            message: '抵扣积分数必须是数字'
+          },
+          {
+            value: this.bonus.reduceMoney,
+            method: 'min',
+            param: 0.01,
+            message: '抵扣积分数不能为0或负数'
+          },
+          {
+            value: this.bonus.reduceMoney,
+            method: 'max',
+            param: 1000000,
+            message: '最多使用积分数过高'
+          },
+          {
+            value: this.bonus.maxReduceBonus,
+            method: 'required',
+            message: '最多使用积分数不能为空'
+          },
+          {
+            value: this.bonus.maxReduceBonus,
+            method: 'number',
+            message: '最多使用积分数必须是数字'
+          },
+          {
+            value: this.bonus.maxReduceBonus,
+            method: 'min',
+            param: 0.01,
+            message: '最多使用积分数不能为0或负数'
+          },
+          {
+            value: this.bonus.maxReduceBonus,
+            method: 'max',
+            param: 1000000,
+            message: '最多使用积分数过高'
+          },
+          {
+            value: this.bonus.limitMoney,
+            method: 'required',
+            message: '订单金额不能为空'
+          },
+          {
+            value: this.bonus.limitMoney,
+            method: 'number',
+            message: '订单金额必须是数字'
+          },
+          {
+            value: this.bonus.limitMoney,
+            method: 'min',
+            param: 0.01,
+            message: '订单金额不能为0或负数'
+          },
+          {
+            value: this.bonus.limitMoney,
+            method: 'max',
+            param: 1000000,
+            message: '订单金额最过高'
+          }
+        ];
+        return this.check(rules);
+      }
       const rules = [
         {
-          value: this.input.costBonusUnit,
-          method: 'required',
-          message: '消费金额不能为空'
-        },
-        {
-          value: this.input.costBonusUnit,
-          method: 'number',
-          message: '消费金额必须是数字'
-        },
-        {
-          value: this.input.costBonusUnit,
-          method: 'min',
-          param: 0.01,
-          message: '消费金额不能为0或负数'
-        },
-        {
-          value: this.input.costBonusUnit,
-          method: 'max',
-          param: 1000000,
-          message: '消费金额数过高'
-        },
-        {
-          value: this.input.increaseBonus,
+          value: this.bonus.increaseBonus,
           method: 'required',
           message: '增加积分不能为空'
         },
         {
-          value: this.input.increaseBonus,
+          value: this.bonus.increaseBonus,
           method: 'number',
           message: '增加积分必须是数字'
         },
         {
-          value: this.input.increaseBonus,
+          value: this.bonus.increaseBonus,
           method: 'min',
           param: 0.01,
           message: '增加积分不能为0或负数'
         },
         {
-          value: this.input.increaseBonus,
+          value: this.bonus.increaseBonus,
           method: 'max',
           param: 1000000,
           message: '增加积分数过高'
         },
         {
-          value: this.input.maxIncreaseBonus,
+          value: this.bonus.maxIncreaseBonus,
           method: 'required',
           message: '最多使用积分数不能为空'
         },
         {
-          value: this.input.maxIncreaseBonus,
+          value: this.bonus.maxIncreaseBonus,
           method: 'number',
           message: '最多使用积分数必须是数字'
         },
         {
-          value: this.input.maxIncreaseBonus,
+          value: this.bonus.maxIncreaseBonus,
           method: 'min',
           param: 0.01,
           message: '最多使用积分数不能为0或负数'
         },
         {
-          value: this.input.maxIncreaseBonus,
+          value: this.bonus.maxIncreaseBonus,
           method: 'max',
           param: 1000000,
           message: '最多使用积分数过高'
         },
         {
-          value: this.input.costMoneyUnit,
+          value: this.bonus.costMoneyUnit,
           method: 'required',
           message: '使用积分不能为空'
         },
         {
-          value: this.input.costMoneyUnit,
+          value: this.bonus.costMoneyUnit,
           method: 'number',
           message: '使用积分必须是数字'
         },
         {
-          value: this.input.costMoneyUnit,
+          value: this.bonus.costMoneyUnit,
           method: 'min',
           param: 0.01,
           message: '使用积分不能为0或负数'
         },
         {
-          value: this.input.costMoneyUnit,
+          value: this.bonus.costMoneyUnit,
           method: 'max',
           param: 1000000,
           message: '使用积分数过高'
         },
         {
-          value: this.input.reduceMoney,
-          method: 'required',
-          message: '抵扣积分数不能为空'
-        },
-        {
-          value: this.input.reduceMoney,
-          method: 'number',
-          message: '抵扣积分数必须是数字'
-        },
-        {
-          value: this.input.reduceMoney,
-          method: 'min',
-          param: 0.01,
-          message: '抵扣积分数不能为0或负数'
-        },
-        {
-          value: this.input.reduceMoney,
-          method: 'max',
-          param: 1000000,
-          message: '最多使用积分数过高'
-        },
-        {
-          value: this.input.maxReduceBonus,
-          method: 'required',
-          message: '最多使用积分数不能为空'
-        },
-        {
-          value: this.input.maxReduceBonus,
-          method: 'number',
-          message: '最多使用积分数必须是数字'
-        },
-        {
-          value: this.input.maxReduceBonus,
-          method: 'min',
-          param: 0.01,
-          message: '最多使用积分数不能为0或负数'
-        },
-        {
-          value: this.input.maxReduceBonus,
-          method: 'max',
-          param: 1000000,
-          message: '最多使用积分数过高'
-        },
-        {
-          value: this.input.limitMoney,
-          method: 'required',
-          message: '订单金额不能为空'
-        },
-        {
-          value: this.input.limitMoney,
-          method: 'number',
-          message: '订单金额必须是数字'
-        },
-        {
-          value: this.input.limitMoney,
-          method: 'min',
-          param: 0.01,
-          message: '订单金额不能为0或负数'
-        },
-        {
-          value: this.input.limitMoney,
-          method: 'max',
-          param: 1000000,
-          message: '订单金额最过高'
-        },
-        {
-          value: this.input.initIncreaseBonus,
+          value: this.bonus.initIncreaseBonus,
           method: 'required',
           message: '初始积分不能为空'
         },
         {
-          value: this.input.initIncreaseBonus,
+          value: this.bonus.initIncreaseBonus,
           method: 'number',
           message: '初始积分必须是数字'
         },
         {
-          value: this.input.initIncreaseBonus,
+          value: this.bonus.initIncreaseBonus,
           method: 'min',
           param: 0,
           message: '初始积分不能为为负数'
         },
         {
-          value: this.input.initIncreaseBonus,
+          value: this.bonus.initIncreaseBonus,
           method: 'max',
           param: 1000000,
           message: '初始积分值过高'
@@ -314,7 +322,8 @@
 
     mixins = [base, input];
     components = {
-      Tips: FormTips
+      Tips: FormTips,
+      ActionPanel: ActionPanel
     };
     config = {
       navigationBarTitleText: '积分规则编辑'

@@ -4,102 +4,105 @@
   <ImageUploader :pictures.sync="pictures" otherClass="shop-swiper" top="260" maxSize="6" @toggle.user="toggle"/>
 
   <view class="hr"></view>
+  <form @submit="save">
 
-  <!--店铺名称-->
-  <view class="name-box row-center">
-    <image class="icon-xl" src="{{shop.avatar}}" @tap="avatar"/>
-    <input class="shop-name" id="name" placeholder="请输入店铺名称" value="{{shop.name}}" bindinput="input"/>
-  </view>
-
-  <view class="hr"></view>
-
-  <view class="weui-cells weui-cells-form">
-
-    <view class="weui-cell">
-      <view class="weui-cell__bd">店铺分类</view>
-      <view class="weui-cell__ft" @tap="show">{{shop.categoryName}}</view>
+    <!--店铺名称-->
+    <view class="name-box row-center">
+      <image class="icon-xl" src="{{shop.avatar}}" @tap="avatar"/>
+      <input class="shop-name" name="name" placeholder="请输入店铺名称" value="{{shop.name}}"/>
     </view>
 
-    <view class="weui-cell weui-cell_switch">
-      <view class="weui-cell__bd">自动接单</view>
-      <view class="weui-cell__ft">
-        <switch checked="{{shop.autoOrder}}" id="autoOrder" @change="input"/>
+    <view class="hr"></view>
+
+
+    <view class="weui-cells weui-cells-form">
+
+      <view class="weui-cell">
+        <view class="weui-cell__bd">店铺分类</view>
+        <view class="weui-cell__ft" @tap="show">{{shop.categoryName}}</view>
+      </view>
+
+      <view class="weui-cell weui-cell_switch">
+        <view class="weui-cell__bd">自动接单</view>
+        <view class="weui-cell__ft">
+          <switch checked="{{shop.autoOrder}}" name="autoOrder" />
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_switch">
+        <view class="weui-cell__bd">线下支付</view>
+        <view class="weui-cell__ft">
+          <switch checked="{{shop.offPay}}" name="offPay"/>
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_switch">
+        <view class="weui-cell__bd">堂食点餐</view>
+        <view class="weui-cell__ft">
+          <switch checked="{{shop.inShop}}" name="inShop" />
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_switch">
+        <view class="weui-cell__bd">会员卡</view>
+        <view class="weui-cell__ft">
+          <switch checked="{{shop.supportMember}}" name="supportMember" />
+        </view>
+      </view>
+
+      <view class="weui-cell">
+        <view class="weui-cell__bd" style="min-width: 150rpx;">店铺位置</view>
+        <view @tap.stop="chooseLocation" style="min-width: 500rpx;">
+          <view class="weui-cell__ft">{{shop.latitude ? '已选择(点击更换)' : '点击选择'}}</view>
+        </view>
+      </view>
+    </view>
+    <view class="mt10"></view>
+    <view class="weui-cells weui-cells-form">
+
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">店铺地址</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" name="address" value="{{shop.address}}"
+                 placeholder="请输入店铺地址"/>
+        </view>
+        <view class="weui-cell__ft">
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">联系电话</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" name="phone" value="{{shop.phone}}" placeholder="请输入电话号码"/>
+        </view>
+        <view class="weui-cell__ft">
+        </view>
+      </view>
+
+      <view class="weui-cell">
+        <view class="weui-cell__bd">店铺描述</view>
+        <view class="weui-cell__ft"></view>
+      </view>
+
+      <view class="weui-cell" wx:if="{{!uploader}}">
+        <view class="weui-cell__bd">
+                  <textarea class="weui-textarea" name="describe" value="{{shop.describe}}" placeholder="请输入店铺描述"
+                            style="height: 4.0em" maxlength="50"/>
+          <view class="weui-textarea-counter">{{shop.describe ? shop.describe.length : 0}}/50</view>
+        </view>
       </view>
     </view>
 
-    <view class="weui-cell weui-cell_switch">
-      <view class="weui-cell__bd">线下支付</view>
-      <view class="weui-cell__ft">
-        <switch checked="{{shop.offPay}}" id="offPay" @change="input"/>
+    <view class="zan-panel">
+      <view class="zan-btns">
+        <button class="zan-btn zan-btn--fill" form-type="submit">保存</button>
       </view>
     </view>
-
-    <view class="weui-cell weui-cell_switch">
-      <view class="weui-cell__bd">堂食点餐</view>
-      <view class="weui-cell__ft">
-        <switch checked="{{shop.inShop}}" id="inShop" @change="input"/>
-      </view>
-    </view>
-
-    <view class="weui-cell weui-cell_switch">
-      <view class="weui-cell__bd">会员卡</view>
-      <view class="weui-cell__ft">
-        <switch checked="{{shop.supportMember}}" id="supportMember" @change="input"/>
-      </view>
-    </view>
-
-    <view class="weui-cell">
-      <view class="weui-cell__bd" style="min-width: 150rpx;">店铺位置</view>
-      <view @tap.stop="chooseLocation" style="min-width: 500rpx;">
-        <view class="weui-cell__ft">{{shop.latitude ? '已选择(点击更换)' : '点击选择'}}</view>
-      </view>
-    </view>
-  </view>
-  <view class="mt10"></view>
-  <view class="weui-cells weui-cells-form">
-
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-cell__hd">
-        <view class="weui-label">店铺地址</view>
-      </view>
-      <view class="weui-cell__bd">
-        <input class="weui-input" id="address" bindinput="input" value="{{shop.address}}"
-               placeholder="请输入店铺地址"/>
-      </view>
-      <view class="weui-cell__ft">
-      </view>
-    </view>
-
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-cell__hd">
-        <view class="weui-label">联系电话</view>
-      </view>
-      <view class="weui-cell__bd">
-        <input class="weui-input" id="phone" bindinput="input" value="{{shop.phone}}" placeholder="请输入电话号码"/>
-      </view>
-      <view class="weui-cell__ft">
-      </view>
-    </view>
-
-    <view class="weui-cell">
-      <view class="weui-cell__bd">店铺描述</view>
-      <view class="weui-cell__ft"></view>
-    </view>
-
-    <view class="weui-cell" wx:if="{{!uploader}}">
-      <view class="weui-cell__bd">
-                <textarea class="weui-textarea" id="describe" value="{{shop.describe}}" placeholder="请输入店铺描述"
-                          style="height: 4.0em" maxlength="50" @input="input"/>
-        <view class="weui-textarea-counter">{{shop.describe ? shop.describe.length : 0}}/50</view>
-      </view>
-    </view>
-  </view>
-
-  <view class="zan-panel">
-    <view class="zan-btns">
-      <button class="zan-btn zan-btn--fill" @tap="save">保存</button>
-    </view>
-  </view>
+  </form>
 
   <!--下拉选择器-->
   <SliderSelector :display.sync="display"
@@ -156,10 +159,9 @@
           this.$apply();
         });
       },
-      input (e) {
-        this.shop[e.target.id] = e.detail.value;
-      },
-      async save () {
+      async save ({detail}) {
+        // 覆盖对象
+        Object.assign(this.shop, detail.value);
         if (this.shop.address === '请选择店铺地址') {
           this.tips('店铺地址不能为空');
           return;
@@ -170,7 +172,7 @@
         };
         Tips.loading('保存中');
         for (let picture of this.pictures) {
-          if (picture.url.substring(0, 6) == 'wxfile') {
+          if (picture.url.substring(0, 11) == 'http://tmp/') {
             const result = await shop.image(picture.url);
             const image = JSON.parse(result);
             data.images.push(image);

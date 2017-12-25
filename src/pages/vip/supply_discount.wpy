@@ -1,24 +1,22 @@
 <template>
   <Tips/>
   <view class="container" wx:if="{{init}}">
-    <view class="title">
-      <text class="title-size">会员等级</text>
-    </view>
-    <repeat for="{{discounts}}" key="discounts" index="index" item="item">
-      <Discount :info.sync="item" index.sync="index" @remove.user="remove"
-                @change.user="change" @category.user="category"/>
-    </repeat>
-
-    <!--添加商品型号-->
-    <view class="sku-add-btn row-end" @tap="add">
-      <image class="icon" src="/images/icons/plus.png"/>
-      <text class="ml10">添加会员等级</text>
-    </view>
-    <view class="zan-panel">
-      <view class="zan-btns">
-        <button class="zan-btn zan-btn--fill" @tap="submit">确定</button>
+    <form @submit="submit">
+      <view class="title">
+        <text class="title-size">会员等级</text>
       </view>
-    </view>
+      <repeat for="{{discounts}}" key="discounts" index="index" item="item">
+        <Discount :info.sync="item" index.sync="index" @remove.user="remove"
+                  @change.user="change" @category.user="category"/>
+      </repeat>
+
+      <!--添加商品型号-->
+      <view class="sku-add-btn row-end" @tap="add">
+        <image class="icon" src="/images/icons/plus.png"/>
+        <text class="ml10">添加会员等级</text>
+      </view>
+      <ActionPanel submitText="确定"/>
+    </form>
   </view>
 </template>
 <script>
@@ -26,6 +24,7 @@
   import base from '../../mixins/base';
   import Discount from '../../components/vip/discount';
   import FormTips from '../../components/weui/tips';
+  import ActionPanel from '../../components/common/action_panel';
   import input from '../../mixins/input';
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
@@ -175,7 +174,8 @@
 
     components = {
       Discount: Discount,
-      Tips: FormTips
+      Tips: FormTips,
+      ActionPanel: ActionPanel
     };
     config = {
       navigationBarTitleText: '会员等级编辑'

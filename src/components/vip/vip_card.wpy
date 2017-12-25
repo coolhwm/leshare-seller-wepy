@@ -20,9 +20,9 @@
       <image class="icon-qrcode" src="/images/icons/qrcode.png"
              @tap.stop="canvas({{member}},{{userInfo}},{{vipCard}})"/>
     </view>
-    <view class="row" style="width: 100%">
+    <view class="row-between" style="width: 100%">
       <text class="xxl">{{numberText}}</text>
-
+      <text class="sm">{{parsentText}}</text>
       <!--<view class="row-between">-->
         <!---->
       <!--</view>-->
@@ -80,7 +80,16 @@
           }
         }
         return text;
-      }
+      },
+      parsentText () {
+        // 对合法性进行检查
+        const isRule = this.vipCard && this.vipCard.memberPresentRules && this.vipCard.memberPresentRules.length > 0;
+        const isMember = this.member && this.member.memberPresentDetails && this.member.memberPresentDetails.length > 0;
+        if (!isRule || !isMember) return '';
+        const {currentCount} = this.member.memberPresentDetails[0];
+        const {unit} = this.vipCard.memberPresentRules[0];
+        return `当前已累计${currentCount}${unit}`;
+      },
     };
     mixins = [base]
   }

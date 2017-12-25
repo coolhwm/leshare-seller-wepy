@@ -32,13 +32,13 @@
     def = {
       init: false,
       mode: 'create'
-    }
+    };
     data = {...this.def};
     async onReady() {
       wepy.setNavigationBarTitle({
         title: this.title
       })
-    }
+    };
     async onLoad ({mode, categoryId}) {
       this.mode = mode;
       if (mode == 'create') {

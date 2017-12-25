@@ -4,6 +4,14 @@ import wepy from 'wepy';
 export default class shop extends base {
 
   /**
+   * 获取限制信息
+   */
+  static async limit () {
+    const url = `${this.baseUrl}/shop_charge_limit`;
+    return await this.get(url);
+  }
+
+  /**
    * 获取卖家的店铺列表
    */
   static async list () {

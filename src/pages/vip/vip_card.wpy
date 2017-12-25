@@ -1,13 +1,14 @@
 <template>
   <Tips/>
   <view class="container" wx:if="{{init}}">
+    <form @submit="submit">
     <view class="weui-cells weui-cells-form">
       <view class="weui-cell weui-cell_input">
         <view class="weui-cell__hd">
           <view class="weui-label">会员卡名称</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" id="title" @input="input" value="{{input.title}}" type="text"
+          <input class="weui-input" name="title" value="{{card.title}}" type="text"
                  placeholder="请输入会员卡名称"/>
         </view>
       </view>
@@ -17,7 +18,7 @@
           <view class="weui-label">客服电话</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" id="servicePhone" value="{{input.servicePhone}}" @input="input"
+          <input class="weui-input" name="servicePhone" value="{{card.servicePhone}}"
                  type="number" maxlength="11"
                  placeholder="请输入客服电话"/>
         </view>
@@ -62,11 +63,8 @@
         <view class="weui-cell__ft weui-cell__ft_in-access">{{levelText}}</view>
       </view>
     </view>
-    <view class="zan-panel">
-      <view class="zan-btns">
-        <button class="zan-btn zan-btn--fill" @tap="submit">保存</button>
-      </view>
-    </view>
+    <ActionPanel/>
+    </form>
   </view>
 </template>
 <script>
@@ -78,6 +76,7 @@
   import Event from '../../utils/Event';
   import shop from '../../api/shop';
   import vip from '../../api/vip_card';
+  import ActionPanel from '../../components/common/action_panel';
 
   export default class VipCard extends wepy.page {
     def = {
@@ -101,7 +100,9 @@
       toSupplyBonus () {
         this.$navigate('supply_bonus?bonus=' + JSON.stringify(this.card.bonusRule));
       },
-      async submit () {
+      async submit ({detail}) {
+        // 覆盖对象
+        Object.assign(this.card, detail.value);
         // 当前表单校验
         if (!this.validate()) {
           return;
@@ -125,7 +126,7 @@
           param.supplyDiscount = this.input.supplyDiscount ? 1 : 0;
           await vip.create(param);
         } else {
-          const param = this.input;
+          const param = this.card;
           param.supplyBonus = this.input.supplyBonus ? 1 : 0;
           param.supplyDiscount = this.input.supplyDiscount ? 1 : 0;
           param.bonusRule = this.card.bonusRule;
@@ -185,24 +186,24 @@
       }
       const rules = [
         {
-          value: this.input.title,
+          value: this.card.title,
           method: 'required',
           message: '会员卡名称不能为空'
         },
         {
-          value: this.input.title,
+          value: this.card.title,
           method: 'minlength',
           param: 2,
           message: '会员卡名称过短'
         },
         {
-          value: this.input.title,
+          value: this.card.title,
           method: 'maxlength',
           param: 10,
           message: '会员卡名称过长'
         },
         {
-          value: this.input.servicePhone,
+          value: this.card.servicePhone,
           method: 'tel',
           message: '电话号码格式不正确'
         }
@@ -219,7 +220,13 @@
       bounsText() {
         if (this.card && this.card.bonusRule) {
           const {costBonusUnit, reduceMoney, costMoneyUnit, increaseBonus} = this.card.bonusRule;
-          return `${costMoneyUnit}元得${increaseBonus}分/${costBonusUnit}分抵${reduceMoney}元`;
+          let sketch = '';
+          if (this.card.bonusRule.isCost == 1) {
+            sketch = `${costMoneyUnit}元得${increaseBonus}分/${costBonusUnit}分抵${reduceMoney}元`;
+          } else {
+            sketch = `${costMoneyUnit}元得${increaseBonus}分`;
+          }
+          return sketch;
         } else {
           return '尚未配置';
         }
@@ -245,7 +252,8 @@
     };
     mixins = [base, input];
     components = {
-      Tips: FormTips
+      Tips: FormTips,
+      ActionPanel: ActionPanel
     };
   }
 </script>

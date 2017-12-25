@@ -43,24 +43,24 @@
       },
       tab: {
         list: [
+          {id: '0', title: '全部'},
           {id: '2', title: '待接单'},
           {id: '9', title: '待发货'},
-          {id: '3', title: '待送达'},
-          {id: '5', title: '待退款'}
+          {id: '3', title: '待送达'}
         ],
         expand: [
-          {id: '0', title: '全部'},
           {id: '1', title: '待付款'},
           {id: '4', title: '待评价'},
           {id: '6', title: '已完成'},
           {id: '7', title: '已关闭'},
+          {id: '5', title: '待退款'},
           {id: '8', title: '已退款'}
         ],
         expandDefaultText: '其他状态',
-        selectedId: '2',
+        selectedId: '0',
         scroll: false
       },
-      status: '2'
+      status: '0'
     };
     async onLoad (options, {preload}) {
       // 处理初始化的状态

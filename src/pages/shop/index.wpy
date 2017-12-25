@@ -8,6 +8,8 @@
     <view class="h-gap"/>
 
     <view class="weui-cells-form">
+      <Version title="软件版本" url="../shop/limit" describe="推广普及版"/>
+
       <NavStatus title="营业状态" url="../shop/status" :describe.sync="statusText"/>
 
       <NavNotice title="店铺公告" url="../notice/list"/>
@@ -86,6 +88,7 @@
     };
     components = {
       Copyright: Copyright,
+      Version: Navigator,
       NavStatus: Navigator,
       NavNotice: Navigator,
       NavDelivery: Navigator,

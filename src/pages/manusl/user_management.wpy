@@ -10,7 +10,7 @@
         <view class="weui-cell__ft weui-cell__ft_in-access"/>
       </view>
     </view>
-    <view class="mt20"/>
+    <text class="muted notice-box">提示：您当前的会员余量为<text class="{{limit.memberLimit < 10 ? 'danger' : 'muted'}}">{{limit.memberLimit}}</text>个</text>
     <view class="weui-cells weui-cells-form" wx:if="{{card && card.supplyDiscount == 1}}">
       <repeat for="{{discountRules}}" key="index" index="index" item="item">
         <!-- 等级 -->
@@ -25,27 +25,34 @@
 <script>
   import wepy from 'wepy';
   import member from '../../api/member';
+  import shop from '../../api/shop';
   import base from '../../mixins/base';
   import Navigator from '../../components/weui/navigator';
+  import Event from '../../utils/Event';
 
   export default class UserManagement extends wepy.page {
     def = {
       init: false,
       card: {},
       discountRules: [],
-      type: null
+      type: null,
+      limit: {}
     };
     data = {...this.def};
 
     async onLoad (option) {
+      await this.loadLimit();
       this.type = option.type;
       this.card = await member.cardInfo();
       if (this.card) {
         this.discountRules = this.card.discountRules;
       }
+      Event.listen(Event.SHOP_CUSTOMER_UPDATE, this.loadLimit.bind(this), this);
       this.loaded();
     };
-
+    async loadLimit() {
+      this.limit = await shop.limit();
+    }
     methods = {
       screen (showCondition, level) {
         const params = {
@@ -71,4 +78,7 @@
 </script>
 <style lang="scss">
   @import "../../styles/variable";
+  .notice-box{
+    margin: 5rpx 30rpx;
+  }
 </style>
