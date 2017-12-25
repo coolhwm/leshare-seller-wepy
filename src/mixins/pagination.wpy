@@ -53,6 +53,7 @@
      * 重新加载
      */
     async reload () {
+      Tips.setLoading();
       this.page.reset();
       await this.next();
       wepy.stopPullDownRefresh();
