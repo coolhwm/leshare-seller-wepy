@@ -6,9 +6,8 @@
       <view class="weui-cells weui-cells-form">
         <view class="weui-cell">
           <view class="weui-cell__bd">
-          <textarea class="weui-textarea" id="context" value="{{input.context}}" placeholder="请输入{{support}}"
-                    style="height: 6.3em" maxlength="200" @blur="input"/>
-            <view class="weui-textarea-counter">{{input.context ? input.context.length : 0}}/200</view>
+          <textarea class="weui-textarea" name="context" value="{{context}}" placeholder="请输入{{support}}"
+                    style="height: 6.3em" maxlength="200"/>
           </view>
         </view>
       </view>
@@ -29,14 +28,15 @@
   export default class Context extends wepy.page {
     def = {
       init: false,
-      type: ''
+      type: '',
+      context: {}
     };
     data = {...this.def};
     methods = {
-      async submit () {
+      async submit ({detail}) {
         const param = {
           type: this.type,
-          context: this.input.context
+          context: detail.value.context
         };
         await Tips.success('编辑完成！');
         Event.emit(Event.SHOP_CONTEXT_UPDATE, param);
@@ -47,7 +47,7 @@
     async onLoad (options) {
       const param = JSON.parse(options.param);
       this.type = param.type;
-      this.input.context = param.context;
+      this.context = param.context;
       this.init = true;
     };
     computed = {
@@ -59,27 +59,6 @@
         }
       }
     };
-    validate () {
-      if (this.type == 'description') {
-        const rules = [
-          {
-            value: this.input.description,
-            method: 'required',
-            message: '会员权益不能为空'
-          }
-        ];
-        return this.check(rules);
-      } else {
-        const rules = [
-          {
-            value: this.input.notice,
-            method: 'required',
-            message: '使用须知不能为空'
-          }
-        ];
-        return this.check(rules);
-      }
-    }
 
     config = {navigationBarTitleText: '内容编辑'};
     mixins = [input, base];
