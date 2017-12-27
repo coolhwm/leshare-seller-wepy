@@ -21,35 +21,31 @@
         <view class="weui-cell__bd">店铺分类</view>
         <view class="weui-cell__ft" @tap="show">{{shop.categoryName}}</view>
       </view>
-
-      <view class="weui-cell weui-cell_switch">
+      <view class="weui-cell weui-cell_switch" wx:if="{{versions != 'extension'}}" wx:if="{{versions != 'vip'}}">
         <view class="weui-cell__bd">自动接单</view>
         <view class="weui-cell__ft">
-          <switch checked="{{shop.autoOrder}}" name="autoOrder" />
+          <switch checked="{{shop.autoOrder}}" name="autoOrder"/>
         </view>
       </view>
 
-      <view class="weui-cell weui-cell_switch">
+      <view class="weui-cell weui-cell_switch" wx:if="{{versions != 'extension'}}" wx:if="{{versions != 'vip'}}">
         <view class="weui-cell__bd">线下支付</view>
         <view class="weui-cell__ft">
           <switch checked="{{shop.offPay}}" name="offPay"/>
         </view>
       </view>
-
-      <view class="weui-cell weui-cell_switch">
+      <view class="weui-cell weui-cell_switch" wx:if="{{versions != 'extension'}}" wx:if="{{versions != 'vip'}}">
         <view class="weui-cell__bd">堂食点餐</view>
         <view class="weui-cell__ft">
-          <switch checked="{{shop.inShop}}" name="inShop" />
+          <switch checked="{{shop.inShop}}" name="inShop"/>
         </view>
       </view>
-
-      <view class="weui-cell weui-cell_switch">
+      <view class="weui-cell weui-cell_switch" wx:if="{{versions != 'extension'}}" wx:if="{{versions != 'online'}}">
         <view class="weui-cell__bd">会员卡</view>
         <view class="weui-cell__ft">
-          <switch checked="{{shop.supportMember}}" name="supportMember" />
+          <switch checked="{{shop.supportMember}}" name="supportMember"/>
         </view>
       </view>
-
       <view class="weui-cell">
         <view class="weui-cell__bd" style="min-width: 150rpx;">店铺位置</view>
         <view @tap.stop="chooseLocation" style="min-width: 500rpx;">
@@ -129,7 +125,9 @@
       pictures: [],
       categories: [],
       display: false,
-      uploader: false
+      uploader: false,
+      limit: {},
+      versions: ''
     };
 
     async onLoad () {
@@ -141,6 +139,7 @@
       this.shop.supportMember = this.shop.supportMember == 1;
       this.categories = categories;
       this.pictures = this.shop.images;
+      this.limit = wepy.getStorageSync('limit');
       this.loaded();
     };
 
@@ -220,6 +219,21 @@
     };
 
     events = {};
+    computed = {
+      version () {
+        if (this.limit.chargeVersion == null) {
+          return;
+        }
+        const version = this.limit.chargeVersion;
+        if (version == '1') {
+          this.versions = 'extension';
+        } else if (version == '2' || version == '3') {
+          this.versions = 'vip';
+        } else if (version == '4' || version == '5') {
+          this.versions = 'online';
+        }
+      }
+    };
     components = {
       Tips: FormTips,
       SliderSelector: SliderSelector,

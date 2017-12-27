@@ -70,7 +70,6 @@
     async onLoad (options, {preload}) {
       if (!this.checkFunctionAuth('order')) {
         this.version = false;
-        return;
       }
       // 处理初始化的状态
       const status = preload ? preload.status : null;

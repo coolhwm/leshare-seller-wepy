@@ -21,7 +21,7 @@
 
       <NavVip title="会员卡管理" url="../vip/vip_card" type="vip"/>
 
-      <NavDeliver title="配送员管理" url="../delivery/deliver_list"/>
+      <NavDeliver title="配送员管理" url="../delivery/deliver_list" type="deliveryUser"/>
 
       <NavReduce title="优惠管理" url="../shop/reduce_list" type="discount"/>
 

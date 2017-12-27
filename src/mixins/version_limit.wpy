@@ -7,7 +7,7 @@
       this.limit = wepy.getStorageSync('limit');
       if (this.limit.chargeVersion == 1) {
         if (funName == 'order' || funName == 'manusl' || funName == 'delivery' ||
-          funName == 'vip' || funName == 'discount' || funName == 'add') {
+          funName == 'vip' || funName == 'discount' || funName == 'add' || funName == 'deliveryUser') {
           Tips.alert(`尚未开通`);
           return false;
         }
