@@ -89,7 +89,7 @@
         const {currentCount} = this.member.memberPresentDetails[0];
         const {unit} = this.vipCard.memberPresentRules[0];
         return `当前已累计${currentCount}${unit}`;
-      },
+      }
     };
     mixins = [base]
   }

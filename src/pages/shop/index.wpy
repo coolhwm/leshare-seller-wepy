@@ -8,21 +8,22 @@
     <view class="h-gap"/>
 
     <view class="weui-cells-form">
-      <Version title="软件版本" url="../shop/limit" describe="推广普及版"/>
+      <view>{{version}}</view>
+      <Version title="软件版本" :url.sync="limitUrl" :describe.sync="versionText"/>
 
       <NavStatus title="营业状态" url="../shop/status" :describe.sync="statusText"/>
 
       <NavNotice title="店铺公告" url="../notice/list"/>
 
-      <NavManusl title="手工下单" url="../manusl/index"/>
+      <NavManusl title="手工下单" url="../manusl/index" type="manusl"/>
 
-      <NavDelivery title="运费模板" url="../delivery/list"/>
+      <NavDelivery title="运费模板" url="../delivery/list" type="delivery"/>
 
-      <NavVip title="会员卡管理" url="../vip/vip_card"/>
+      <NavVip title="会员卡管理" url="../vip/vip_card" type="vip"/>
 
-      <NavDeliver title="配送员管理" url="../delivery/deliver_list"/>
+      <NavDeliver title="配送员管理" url="../delivery/deliver_list" type="deliveryUser"/>
 
-      <NavReduce title="优惠管理" url="../shop/reduce_list"/>
+      <NavReduce title="优惠管理" url="../shop/reduce_list" type="discount"/>
 
       <NavCategory title="分类管理" url="../goods/category"/>
 
@@ -55,7 +56,10 @@
       shop: {},
       status: {},
       statusText: '',
-      shopName: ''
+      shopName: '',
+      limit: '',
+      versionText: '',
+      limitUrl: ''
     };
 
     async onLoad () {
@@ -68,6 +72,9 @@
       this.shopName = this.shop.name;
       this.status = await shop.getStatus();
       this.statusText = this.status.statusText;
+      this.limit = wepy.getStorageSync('limit');
+      this.versionText = this.limit.versionText;
+      this.limitUrl = `../shop/limit?param=${JSON.stringify(this.limit)}`;
       this.loaded();
     };
 

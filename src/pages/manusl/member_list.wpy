@@ -65,7 +65,9 @@
         }
       },
       add () {
-        this.$root.$navigate('/pages/vip/registe_member');
+        if (this.checkFunctionAuth('add')) {
+          this.$root.$navigate('/pages/vip/registe_member');
+        }
       }
     };
 

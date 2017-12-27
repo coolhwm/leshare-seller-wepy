@@ -4,7 +4,7 @@
       <view class="weui-cell weui-cell_access">
         <view class="weui-cell__bd">版本信息</view>
         <view class="weui-cell__ft">
-          <text>{{version}}</text>
+          <text>{{limit.versionText}}</text>
         </view>
       </view>
       <view class="weui-cell weui-cell_access">
@@ -44,7 +44,6 @@
 <script>
   import wepy from 'wepy';
   import base from '../../mixins/base';
-  import shop from '../../api/shop';
 
   export default class DraftList extends wepy.page {
     data = {
@@ -52,33 +51,11 @@
       limit: {}
     };
     async onLoad (options) {
-      this.limit = await shop.limit();
+      this.limit = JSON.parse(options.param);
       this.loaded();
     };
     methods = {};
     components = {};
-    computed = {
-      version () {
-        switch (this.limit.chargeVersion) {
-          case null:
-            return '暂无版本';
-          case 1:
-            return '推广普及版';
-          case 2:
-            return '会员普及版';
-          case 3:
-            return '会员年费版';
-          case 4:
-            return '电商普及版';
-          case 5:
-            return '电商年费版';
-          case 6:
-            return '全能普及版';
-          case 7:
-            return '全能年费版';
-        }
-      }
-    };
     mixins = [base];
     config = {
       navigationBarTitleText: '版本信息'
