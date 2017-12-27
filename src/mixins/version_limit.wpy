@@ -1,6 +1,7 @@
 <script>
   import wepy from 'wepy';
   import Tips from '../utils/Tips';
+
   export default class versionlimit extends wepy.mixin {
     checkFunctionAuth (funName) {
       this.limit = wepy.getStorageSync('limit');
@@ -14,11 +15,11 @@
         if (funName == 'order' || funName == 'manusl' || funName == 'delivery' || funName == 'discount') {
           Tips.alert(`尚未开通`);
           return false;
-        } else if (this.limit.chargeVersion == 4 || this.limit.chargeVersion == 5) {
-          if (funName == 'vip' || funName == 'add') {
-            Tips.alert(`尚未开通`);
-            return false;
-          }
+        }
+      } else if (this.limit.chargeVersion == 4 || this.limit.chargeVersion == 5) {
+        if (funName == 'vip' || funName == 'add') {
+          Tips.alert(`尚未开通`);
+          return false;
         }
       }
       return true;
