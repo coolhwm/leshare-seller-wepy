@@ -73,7 +73,7 @@
         </view>
 
         <view class="weui-cell weui-cell_access" wx:if="{{input.supplyPresent}}" @tap="toSupplyPresent">
-          <view class="weui-cell__bd">满赠规则配置</view>
+          <view class="weui-cell__bd">规则配置</view>
           <view class="weui-cell__ft weui-cell__ft_in-access">{{presentText}}</view>
         </view>
       </view>

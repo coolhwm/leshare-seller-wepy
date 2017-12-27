@@ -3,11 +3,11 @@
 	<view class="container" wx:if="{{init}}">
 		<form @submit="submit">
 			<view class="title">
-				<text class="title-size">规则名称</text>
+				<text class="title-size">满赠规则</text>
 			</view>
 			<repeat for="{{presents}}" key="present" index="index" item="item">
 				<Present :info.sync="item" index.sync="index" @remove.user="remove"
-									@change.user="change" @category.user="category"/>
+								 @change.user="change" @category.user="category" @coupon.user="coupon"/>
 			</repeat>
 
 			<!--添加商品型号-->
@@ -28,41 +28,51 @@
   import input from '../../mixins/input';
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
+  import coupon from '../../api/coupon';
 
   export default class SupplyFullGift extends wepy.page {
     data = {
       init: false,
       presents: [{}]
     };
+
     async onLoad ({present}) {
       if (present != null && present != 'null') {
         this.presents = JSON.parse(present);
         const presents = [];
-        this.presents.forEach(item => {
-          item.presentCategoryLists = [{
-            cardId: 1,
-            categoryId: 46
-          }]
+        this.presents.forEach((item) => {
           const data = {...item};
-          data.present /= 100;
           presents.push(data);
         });
         this.presents = presents;
+        const promises = this.presents.map(item => coupon.info(item.presentCouponId));
+        const coupons = await Promise.all(promises);
+        this.presents.forEach((item, index) => {
+          item.coupon = coupons[index];
+        });
       }
       if (this.presents.length == 0) {
         this.presents[0] = {
           upgradeFee: 0,
-          presentCategoryLists: []
+          categoryList: [],
+          coupon: null
         };
       }
       Event.listen(Event.VIP_CATEGORY_UPDATA, this.categoryUpdate.bind(this), this);
+      Event.listen(Event.CUSOMTER_COUPON_UPDATE, this.couponUpdate.bind(this), this);
       this.loaded();
     };
 
     categoryUpdate ({list, index}) {
       if (list != null && index != null) {
-        this.presents[index].presentCategoryLists = list;
+        this.presents[index].categoryList = list;
       }
+    };
+    couponUpdate ({coupon, index}) {
+      if (coupon != null && index != null) {
+        this.presents[index].coupon = coupon;
+      }
+      this.presents[index].presentCouponId = coupon.id;
     };
 
     methods = {
@@ -71,28 +81,24 @@
           return;
         }
         const presents = [];
-        this.presents.forEach((item, index) => {
+        this.presents.forEach((item) => {
           const data = {...item};
-          data.discount *= 100;
-          data.level = index + 1;
-          if (index == 0) {
-            data.upgradeFee = 0;
-          }
+          data.presentCouponId = data.coupon.id;
           presents.push(data);
         });
         await Tips.success('保存成功');
         Event.emit(Event.SHOP_PRESENT_UPDATE, presents);
         wepy.navigateBack();
       },
-      async category ({presentCategoryLists}, index) {
+      async category ({categoryList}, index) {
         this.$preload('data', {
-          presentCategoryLists, index
+          categoryList, index
         });
         this.$navigate('present_category');
       },
       add () {
         this.presents.push({
-          presentCategoryLists: []
+          categoryList: []
         });
       },
       remove (index) {
@@ -100,6 +106,12 @@
       },
       change (info) {
         this.presents[info.index][info.fieldName] = info.fieldValue;
+      },
+      coupon({coupon}, index) {
+        this.$preload('data', {
+          coupon, index
+        });
+        this.$navigate('present_coupon');
       }
     };
 
@@ -107,6 +119,7 @@
       const ruleName = this.presents.map(item => item.ruleName);
       const limitCount = this.presents.map(item => item.limitCount);
       const unit = this.presents.map(item => item.unit);
+      const coupon = this.presents.map(item => item.presentCouponId);
       let rules = [
         {
           value: unit,
@@ -150,6 +163,11 @@
           method: 'min',
           param: 0,
           message: '满赠要求不能小于0'
+        },
+        {
+          value: coupon,
+          method: 'required',
+          message: '赠送优惠劵不能为空'
         }
       ];
       return this.check(rules);
@@ -161,7 +179,7 @@
       ActionPanel: ActionPanel
     };
     config = {
-      navigationBarTitleText: '会员等级编辑'
+      navigationBarTitleText: '满赠规则编辑'
     };
     mixins = [input, base];
   }

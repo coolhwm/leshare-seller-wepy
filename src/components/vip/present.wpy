@@ -4,7 +4,7 @@
 			<view class="weui-cells-form">
 				<view class="weui-cell weui-cell_input">
 					<view class="weui-cell__hd">
-						<view class="weui-label">规则名称</view>
+						<view class="weui-label">满赠规则</view>
 					</view>
 					<view class="weui-cell__bd">
 						<input class="weui-input" id="ruleName" @blur="input({{index}})" value="{{info.ruleName}}"
@@ -29,17 +29,16 @@
 									 value="{{info.unit}}" placeholder="请填写单位"/>
 					</view>
 				</view>
-				<view class="weui-cell weui-cell_input" wx:if="{{index != 0}}">
-					<view class="weui-cell__hd">
-						<view class="weui-label">赠送优惠劵</view>
+				<view class="weui-cell row" @tap="coupon({{info}}, {{index}})">
+					<view class="mr10">赠送优惠券
+						<text wx:if="{{info && info.coupon}}">（满{{info.coupon.price}}减{{info.coupon.limitPrice}}）</text>
+						<text wx:elif="{{info && info.editCoupon}}">（满{{info.editCoupon.price}}减{{info.editCoupon.limitPrice}}）</text>
+						<text wx:else>（尚未配置）</text>
 					</view>
-					<view class="weui-cell__bd">
-						<input class="weui-input" id="presentCouponId" @blur="input({{index}})"
-									 value="{{info.presentCouponId}}" placeholder="可赠送优惠劵"/>
-					</view>
+					<image class="icon" src="/images/icons/more-gray.png"/>
 				</view>
 				<view class="weui-cell row" @tap="category({{info}}, {{index}})">
-					<view class="mr10">商品范围({{info.presentCategoryLists.length}})</view>
+					<view class="mr10">商品类型({{info.categoryList.length}})</view>
 					<image class="icon" src="/images/icons/more-gray.png"/>
 				</view>
 			</view>
@@ -59,11 +58,9 @@
       index: {},
       info: {}
     };
-    data = {
-
-    };
+    data = {};
     methods = {
-      category(present, index) {
+      category (present, index) {
         this.$emit('category', present, index);
       },
       input (index, e) {
@@ -73,6 +70,9 @@
       },
       remove (index) {
         this.$emit('remove', index);
+      },
+      coupon (present, index) {
+        this.$emit('coupon', present, index);
       }
     };
   }

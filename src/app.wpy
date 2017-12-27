@@ -121,6 +121,7 @@
         'pages/vip/supply_discount',
         'pages/vip/supply_present',
         'pages/vip/present_category',
+        'pages/vip/present_coupon',
         'pages/manusl/index',
         'pages/manusl/customer_order',
         'pages/manusl/order',
