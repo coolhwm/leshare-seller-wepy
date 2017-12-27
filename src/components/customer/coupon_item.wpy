@@ -28,7 +28,7 @@
 
       <view class="btn-box row-end">
         <block wx:if="{{selectAction != '0'}}">
-          <view class="zan-btn zan-btn--small  zan-btn--primary" @tap="sendCoupon({{}})">发放</view>
+          <view class="zan-btn zan-btn--small  zan-btn--primary" @tap="sendCoupon">{{couponText}}</view>
         </block>
         <block wx:else>
           <text class="muted xs">领取时间：{{coupon.acceptTime}}</text>
@@ -51,15 +51,18 @@
       },
       selectAction: {
         default: true
+      },
+      couponText: {
+        default: '发放'
       }
     };
     data = {};
     methods = {
       async sendCoupon() {
-        await Tips.confirm('确定给该用户发放优惠券？');
+        await Tips.confirm('确认选择该优惠券吗？');
 
         // 发射事件
-        this.$emit('select', this.coupon.id);
+        this.$emit('select', this.coupon);
       }
     };
 
