@@ -2,13 +2,31 @@ import base from './base';
 import wepy from 'wepy';
 
 export default class shop extends base {
-
+  static autoVersion = {
+    '1': '推广普及版',
+    '2': '会员普及版',
+    '3': '会员年费版',
+    '4': '电商普及版',
+    '5': '电商年费版',
+    '6': '全能普及版',
+    '7': '全能年费版'
+  };
+  static autoCofig = {
+    '1': ['order', 'manusl', 'delivery', 'vip', 'discount', 'add', 'deliveryUser'],
+    '2': ['order', 'manusl', 'delivery', 'discount'],
+    '3': ['order', 'manusl', 'delivery', 'discount'],
+    '4': ['vip', 'add'],
+    '5': ['vip', 'add'],
+    '6': [],
+    '7': []
+  };
   /**
    * 获取限制信息
    */
   static async limit () {
     const url = `${this.baseUrl}/shop_charge_limit`;
-    return await this.get(url);
+    const data = await this.get(url);
+    return this._processVersionText(data);
   }
 
   /**
@@ -120,5 +138,13 @@ export default class shop extends base {
   static updateReduce (reduce) {
     const url = `${this.baseUrl}/reduce_rule`;
     return this.put(url, reduce);
+  }
+  /**
+   * 版本
+   */
+  static _processVersionText(data) {
+    data.versionText = this.autoVersion[data.chargeVersion];
+    data.versionConfig = this.autoCofig[data.chargeVersion];
+    return data;
   }
 }

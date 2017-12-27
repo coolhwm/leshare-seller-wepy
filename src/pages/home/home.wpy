@@ -115,7 +115,6 @@
   import count from '../../api/count';
   import shop from '../../api/shop';
   import base from '../../mixins/base';
-  import version from '../../mixins/version_limit';
   import Event from '../../utils/Event';
   import Tips from '../../utils/Tips';
   import WxUtils from '../../utils/WxUtils';
@@ -247,7 +246,7 @@
       enablePullDownRefresh: true,
       navigationBarTitleText: '    '
     };
-    mixins = [base, version];
+    mixins = [base];
   }
 </script>
 

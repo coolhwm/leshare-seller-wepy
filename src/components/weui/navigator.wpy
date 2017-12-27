@@ -7,7 +7,7 @@
 
 <script>
   import wepy from 'wepy';
-  import version from '../../mixins/version_limit';
+  import base from '../../mixins/base';
 
   export default class Navigator extends wepy.component {
     props = {
@@ -24,7 +24,7 @@
         this.$emit('tap');
       }
     };
-    mixins = [version];
+    mixins = [base];
   }
 </script>
 

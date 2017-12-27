@@ -27,7 +27,7 @@
 <script>
   import wepy from 'wepy';
   import pagination from '../../mixins/pagination';
-  import version from '../../mixins/version_limit';
+  import base from '../../mixins/base';
   import order from '../../api/order';
   import Event from '../../utils/Event';
   import ZanTab from '../../components/zanui/expand-tab';
@@ -136,6 +136,6 @@
       Placeholder: Placeholder,
       Loadmore: Loadmore
     };
-    mixins = [pagination, version];
+    mixins = [pagination, base];
   }
 </script>

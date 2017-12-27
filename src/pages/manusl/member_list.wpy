@@ -18,7 +18,6 @@
   import wepy from 'wepy';
   import mausl from '../../api/mausl';
   import pagination from '../../mixins/pagination';
-  import version from '../../mixins/version_limit';
   import base from '../../mixins/base';
   import CustomerItem from '../../components/manusl/customer_item';
   import Event from '../../utils/Event';
@@ -82,7 +81,7 @@
       Placeholder: Placeholder,
       ActionBar: ActionBar
     };
-    mixins = [base, pagination, version];
+    mixins = [base, pagination];
     config = {
       navigationBarTitleText: '会员列表'
     };

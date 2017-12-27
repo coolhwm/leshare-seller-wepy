@@ -21,26 +21,26 @@
         <view class="weui-cell__bd">店铺分类</view>
         <view class="weui-cell__ft" @tap="show">{{shop.categoryName}}</view>
       </view>
-      <view class="weui-cell weui-cell_switch" wx:if="{{versions != 'extension'}}" wx:if="{{versions != 'vip'}}">
+      <view class="weui-cell weui-cell_switch" wx:if="{{versions != 'extension' && versions != 'vip'}}">
         <view class="weui-cell__bd">自动接单</view>
         <view class="weui-cell__ft">
           <switch checked="{{shop.autoOrder}}" name="autoOrder"/>
         </view>
       </view>
 
-      <view class="weui-cell weui-cell_switch" wx:if="{{versions != 'extension'}}" wx:if="{{versions != 'vip'}}">
+      <view class="weui-cell weui-cell_switch" wx:if="{{versions != 'extension' && versions != 'vip'}}">
         <view class="weui-cell__bd">线下支付</view>
         <view class="weui-cell__ft">
           <switch checked="{{shop.offPay}}" name="offPay"/>
         </view>
       </view>
-      <view class="weui-cell weui-cell_switch" wx:if="{{versions != 'extension'}}" wx:if="{{versions != 'vip'}}">
+      <view class="weui-cell weui-cell_switch" wx:if="{{versions != 'extension' && versions != 'vip'}}">
         <view class="weui-cell__bd">堂食点餐</view>
         <view class="weui-cell__ft">
           <switch checked="{{shop.inShop}}" name="inShop"/>
         </view>
       </view>
-      <view class="weui-cell weui-cell_switch" wx:if="{{versions != 'extension'}}" wx:if="{{versions != 'online'}}">
+      <view class="weui-cell weui-cell_switch" wx:if="{{versions != 'extension' && versions != 'online'}}">
         <view class="weui-cell__bd">会员卡</view>
         <view class="weui-cell__ft">
           <switch checked="{{shop.supportMember}}" name="supportMember"/>

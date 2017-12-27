@@ -9,7 +9,7 @@
 
     <view class="weui-cells-form">
       <view>{{version}}</view>
-      <Version title="软件版本" :url.sync="limitUrl" :describe.sync="versions"/>
+      <Version title="软件版本" :url.sync="limitUrl" :describe.sync="versionText"/>
 
       <NavStatus title="营业状态" url="../shop/status" :describe.sync="statusText"/>
 
@@ -58,6 +58,7 @@
       statusText: '',
       shopName: '',
       limit: '',
+      versionText: '',
       limitUrl: ''
     };
 
@@ -72,6 +73,7 @@
       this.status = await shop.getStatus();
       this.statusText = this.status.statusText;
       this.limit = wepy.getStorageSync('limit');
+      this.versionText = this.limit.versionText;
       this.limitUrl = `../shop/limit?param=${JSON.stringify(this.limit)}`;
       this.loaded();
     };
@@ -105,27 +107,6 @@
       NavLogout: Navigator,
       AvatarPanel: AvatarPanel,
       NavManusl: Navigator
-    };
-    computed = {
-      versions () {
-        if (this.limit.chargeVersion == null) {
-          return '暂无版本';
-        } else if (this.limit.chargeVersion == 1) {
-          return '推广普及版';
-        } else if (this.limit.chargeVersion == 2) {
-          return '会员普及版';
-        } else if (this.limit.chargeVersion == 3) {
-          return '会员年费版';
-        } else if (this.limit.chargeVersion == 4) {
-          return '电商普及版';
-        } else if (this.limit.chargeVersion == 5) {
-          return '电商年费版';
-        } else if (this.limit.chargeVersion == 6) {
-          return '全能普及版';
-        } else if (this.limit.chargeVersion == 7) {
-          return '全能年费版';
-        }
-      }
     };
     config = {
       navigationBarTitleText: '我的信息'
