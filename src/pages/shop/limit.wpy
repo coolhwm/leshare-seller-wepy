@@ -4,7 +4,7 @@
       <view class="weui-cell weui-cell_access">
         <view class="weui-cell__bd">版本信息</view>
         <view class="weui-cell__ft">
-          <text>{{version}}</text>
+          <text>{{versions}}</text>
         </view>
       </view>
       <view class="weui-cell weui-cell_access">
@@ -52,30 +52,29 @@
       limit: {}
     };
     async onLoad (options) {
-      this.limit = await shop.limit();
+      this.limit = JSON.parse(options.param);
       this.loaded();
     };
     methods = {};
     components = {};
     computed = {
-      version () {
-        switch (this.limit.chargeVersion) {
-          case null:
-            return '暂无版本';
-          case 1:
-            return '推广普及版';
-          case 2:
-            return '会员普及版';
-          case 3:
-            return '会员年费版';
-          case 4:
-            return '电商普及版';
-          case 5:
-            return '电商年费版';
-          case 6:
-            return '全能普及版';
-          case 7:
-            return '全能年费版';
+      versions () {
+        if (this.limit.chargeVersion == null) {
+          return '暂无版本';
+        } else if (this.limit.chargeVersion == 1) {
+          return '推广普及版';
+        } else if (this.limit.chargeVersion == 2) {
+          return '会员普及版';
+        } else if (this.limit.chargeVersion == 3) {
+          return '会员年费版';
+        } else if (this.limit.chargeVersion == 4) {
+          return '电商普及版';
+        } else if (this.limit.chargeVersion == 5) {
+          return '电商年费版';
+        } else if (this.limit.chargeVersion == 6) {
+          return '全能普及版';
+        } else if (this.limit.chargeVersion == 7) {
+          return '全能年费版';
         }
       }
     };

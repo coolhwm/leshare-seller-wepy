@@ -115,6 +115,7 @@
   import count from '../../api/count';
   import shop from '../../api/shop';
   import base from '../../mixins/base';
+  import version from '../../mixins/version_limit';
   import Event from '../../utils/Event';
   import Tips from '../../utils/Tips';
   import WxUtils from '../../utils/WxUtils';
@@ -128,13 +129,17 @@
       shop: {},
       init: false,
       show: false,
-      navUrl: '../manusl/user_management?type=home'
+      navUrl: '../manusl/user_management?type=home',
+      limit: {}
     };
     data = {...this.def};
     async onLoad (option) {
       console.log(option.scene);
       console.info('load');
       WxUtils.checkSDK();
+      this.limit = await shop.limit();
+      // 写入缓存
+      wepy.setStorageSync('limit', this.limit);
       this.shop = await shop.info();
       this.show = true;
       await this.reload();
@@ -242,7 +247,7 @@
       enablePullDownRefresh: true,
       navigationBarTitleText: '    '
     };
-    mixins = [base];
+    mixins = [base, version];
   }
 </script>
 

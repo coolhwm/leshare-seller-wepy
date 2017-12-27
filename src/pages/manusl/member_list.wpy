@@ -18,6 +18,7 @@
   import wepy from 'wepy';
   import mausl from '../../api/mausl';
   import pagination from '../../mixins/pagination';
+  import version from '../../mixins/version_limit';
   import base from '../../mixins/base';
   import CustomerItem from '../../components/manusl/customer_item';
   import Event from '../../utils/Event';
@@ -65,7 +66,9 @@
         }
       },
       add () {
-        this.$root.$navigate('/pages/vip/registe_member');
+        if (this.checkFunctionAuth('add')) {
+          this.$root.$navigate('/pages/vip/registe_member');
+        }
       }
     };
 
@@ -79,7 +82,7 @@
       Placeholder: Placeholder,
       ActionBar: ActionBar
     };
-    mixins = [base, pagination];
+    mixins = [base, pagination, version];
     config = {
       navigationBarTitleText: '会员列表'
     };

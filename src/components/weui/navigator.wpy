@@ -7,21 +7,24 @@
 
 <script>
   import wepy from 'wepy';
+  import version from '../../mixins/version_limit';
 
   export default class Navigator extends wepy.component {
     props = {
       url: {},
       title: {},
-      describe: {}
+      describe: {},
+      type: {}
     };
     methods = {
       tap (url) {
-        if (this.url != null) {
+        if (this.url != null && this.checkFunctionAuth(this.type)) {
           this.$root.$navigate(url);
         }
         this.$emit('tap');
       }
     };
+    mixins = [version];
   }
 </script>
 
