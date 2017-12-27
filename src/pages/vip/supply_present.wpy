@@ -39,12 +39,6 @@
     async onLoad ({present}) {
       if (present != null && present != 'null') {
         this.presents = JSON.parse(present);
-        const presents = [];
-        this.presents.forEach((item) => {
-          const data = {...item};
-          presents.push(data);
-        });
-        this.presents = presents;
         const promises = this.presents.map(item => coupon.info(item.presentCouponId));
         const coupons = await Promise.all(promises);
         this.presents.forEach((item, index) => {
@@ -53,9 +47,7 @@
       }
       if (this.presents.length == 0) {
         this.presents[0] = {
-          upgradeFee: 0,
-          categoryList: [],
-          coupon: null
+          categoryList: []
         };
       }
       Event.listen(Event.VIP_CATEGORY_UPDATA, this.categoryUpdate.bind(this), this);
@@ -80,14 +72,8 @@
         if (!this.validate()) {
           return;
         }
-        const presents = [];
-        this.presents.forEach((item) => {
-          const data = {...item};
-          data.presentCouponId = data.coupon.id;
-          presents.push(data);
-        });
         await Tips.success('保存成功');
-        Event.emit(Event.SHOP_PRESENT_UPDATE, presents);
+        Event.emit(Event.SHOP_PRESENT_UPDATE, this.presents);
         wepy.navigateBack();
       },
       async category ({categoryList}, index) {

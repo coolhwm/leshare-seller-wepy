@@ -30,11 +30,7 @@
 					</view>
 				</view>
 				<view class="weui-cell row" @tap="coupon({{info}}, {{index}})">
-					<view class="mr10">赠送优惠券
-						<text wx:if="{{info && info.coupon}}">（满{{info.coupon.price}}减{{info.coupon.limitPrice}}）</text>
-						<text wx:elif="{{info && info.editCoupon}}">（满{{info.editCoupon.price}}减{{info.editCoupon.limitPrice}}）</text>
-						<text wx:else>（尚未配置）</text>
-					</view>
+					<view class="mr10">赠送优惠券<block wx:if="{{info && info.coupon}}">(满{{info.coupon.price}}减{{info.coupon.limitPrice}})</block><block wx:else>(尚未配置)</block></view>
 					<image class="icon" src="/images/icons/more-gray.png"/>
 				</view>
 				<view class="weui-cell row" @tap="category({{info}}, {{index}})">
