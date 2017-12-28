@@ -142,12 +142,12 @@
       </view>
       <view class="h-gap"></view>
       <view class="weui-cells weui-cells-form">
-        <view class="weui-cell weui-cell_input">
+        <view class="weui-cell weui-cell_input weui-cell_switch">
           <view class="weui-cell__bd">立即赠送</view>
           <view class="weui-cell__ft">
 
             <switch checked="{{input.sendNow}}" id="sendNow" @change="input" wx:if="{{mode == 'create'}}"/>
-            <view class="weui-input" wx:else>已自动发放</view>
+            <view class="weui-input" wx:else>{{input.sendNow ? '已投放' : '未投放'}}</view>
           </view>
         </view>
       </view>
