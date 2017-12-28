@@ -125,7 +125,7 @@
       <view class="h-gap"></view>
       <view class="weui-cells weui-cells-form">
         <view class="weui-cell weui-cell_switch">
-          <view class="weui-cell__bd">自动赠送</view>
+          <view class="weui-cell__bd">消费赠送</view>
           <view class="weui-cell__ft">
             <switch checked="{{input.isPresent}}" id="isPresent" @change="input"/>
           </view>
@@ -140,6 +140,18 @@
           </view>
         </view>
       </view>
+      <view class="h-gap"></view>
+      <view class="weui-cells weui-cells-form">
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__bd">立即赠送</view>
+          <view class="weui-cell__ft">
+
+            <switch checked="{{input.sendNow}}" id="sendNow" @change="input" wx:if="{{mode == 'create'}}"/>
+            <view class="weui-input" wx:else>已自动发放</view>
+          </view>
+        </view>
+      </view>
+
       <view class="row mr20 ml20 mt20">
         <view class="muted notice-box">提示：</view>
         <text class="muted">{{notice}}</text>
@@ -193,6 +205,7 @@
         this.input.isSelfUse = this.input.isSelfUse == 1;
         this.input.isShow = this.input.isShow == 1;
         this.input.isShowHome = this.input.isShowHome == 1;
+        this.input.sendNow = this.input.sendNow == 1;
       } else {
         this.coupon.perLimit = 1;
         this.input.supportType = 0;
@@ -253,6 +266,7 @@
             isPresent: this.input.isPresent ? 1 : 0,
             isShow: this.input.isShow ? 1 : 0,
             isShowHome: this.input.isShowHome ? 1 : 0,
+            sendNow: this.input.sendNow ? 1 : 0,
             supportType: this.input.supportType,
             type: this.input.type
           };
