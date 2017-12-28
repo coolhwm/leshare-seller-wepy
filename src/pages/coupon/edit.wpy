@@ -112,7 +112,13 @@
         <view class="weui-cell weui-cell_switch">
           <view class="weui-cell__bd">自助领取</view>
           <view class="weui-cell__ft">
-            <switch checked="{{input.isReceive}}" id="isReceive" @change="input"/>
+            <switch checked="{{input.isShow}}" id="isShow" @change="input"/>
+          </view>
+        </view>
+        <view class="weui-cell weui-cell_switch {{input.isShow ? '' : 'hide'}}">
+          <view class="weui-cell__bd">首页领取</view>
+          <view class="weui-cell__ft">
+            <switch checked="{{input.isShowHome}}" id="isShowHome" @change="isShowHome"/>
           </view>
         </view>
       </view>
@@ -185,6 +191,8 @@
         // 调整枚举值
         this.input.isPresent = this.input.isPresent == 1;
         this.input.isSelfUse = this.input.isSelfUse == 1;
+        this.input.isShow = this.input.isShow == 1;
+        this.input.isShowHome = this.input.isShowHome == 1;
       } else {
         this.coupon.perLimit = 1;
         this.input.supportType = 0;
@@ -243,6 +251,8 @@
             suitLimit: 0,
             isSelfUse: this.input.isSelfUse ? 1 : 0,
             isPresent: this.input.isPresent ? 1 : 0,
+            isShow: this.input.isShow ? 1 : 0,
+            isShowHome: this.input.isShowHome ? 1 : 0,
             supportType: this.input.supportType,
             type: this.input.type
           };
@@ -254,7 +264,9 @@
             stock: this.coupon.stock,
             presentFee: this.coupon.presentFee,
             isSelfUse: this.input.isSelfUse ? 1 : 0,
-            isPresent: this.input.isPresent ? 1 : 0
+            isPresent: this.input.isPresent ? 1 : 0,
+            isShow: this.input.isShow ? 1 : 0,
+            isShowHome: this.input.isShowHome ? 1 : 0
           };
           await coupon.update(this.couponId, param);
           await Tips.success('编辑成功！');
@@ -268,6 +280,11 @@
         await Tips.success('删除成功');
         Event.emit(Event.COUPON_LIST_UPDATE);
         wepy.navigateBack();
+      },
+      isShowHome (e) {
+        if (this.input.isShow == false) {
+          this.input.isShowHome = false
+        }
       }
     };
     computed = {
@@ -468,3 +485,9 @@
     };
   }
 </script>
+
+<style lang="scss">
+  .hide{
+    display: none;
+  }
+</style>
