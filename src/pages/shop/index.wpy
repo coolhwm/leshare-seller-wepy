@@ -49,6 +49,7 @@
   import Navigator from '../../components/weui/navigator';
   import Copyright from '../../components/common/copyright';
   import AvatarPanel from '../../components/common/avatar_panel';
+  import Cache from '../../utils/Cache';
 
   export default class UserIndex extends wepy.page {
     data = {
@@ -82,6 +83,8 @@
       async shops () {
         await Tips.confirm('是否确认切换店铺？');
         await auth.removeConfig('shop_id');
+        Cache.remove('SHOP_INFO');
+        Cache.remove('GOODS_CATEGORIES');
         this.$redirect('../home/shops');
         Event.emit(Event.USER_LOGOUT);
       },
@@ -89,6 +92,8 @@
         await Tips.confirm('是否确认退出登录？');
         await auth.removeConfig('shop_id');
         await auth.removeConfig('login_code');
+        Cache.remove('SHOP_INFO');
+        Cache.remove('GOODS_CATEGORIES');
         this.$redirect('../home/index');
         Event.emit(Event.USER_LOGOUT);
       }
