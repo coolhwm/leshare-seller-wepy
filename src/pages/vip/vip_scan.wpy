@@ -106,7 +106,7 @@
           </view>
         </view>
       </block>
-      <view class="row-center" style="min-height: 100px">
+      <view class="row-center" style="min-height: 100px" wx:else>
         <text class="ml20 muted" >尚未开启积分功能</text>
       </view>
 
