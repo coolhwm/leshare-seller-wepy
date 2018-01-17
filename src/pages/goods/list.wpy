@@ -79,7 +79,9 @@
     async updateCategories() {
       // 加载商品分类
       this.categories = await Cache.categories();
-      this.categories.selectedId = this.categories.list[0].id;
+      if (this.categories && this.categories.list && this.categories.list.length > 0) {
+        this.categories.selectedId = this.categories.list[0].id;
+      }
     }
     methods = {
       // 点击分类
@@ -96,7 +98,7 @@
     };
     computed = {
       selectedCategoryName() {
-        if (this.init && this.categories && this.categories.list) {
+        if (this.init && this.categories && this.categories.list && this.categories.list.length > 0) {
           const selectedId = this.categories.selectedId;
           const selectedCategory = this.categories.list.find(item => item.id == selectedId);
           return selectedCategory ? selectedCategory.title : null;

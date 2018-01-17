@@ -143,8 +143,10 @@ export default class shop extends base {
    * 版本
    */
   static _processVersionText(data) {
-    data.versionText = this.autoVersion[data.chargeVersion];
-    data.versionConfig = this.autoCofig[data.chargeVersion];
+    if (data) {
+      data.versionText = this.autoVersion[data.chargeVersion];
+      data.versionConfig = this.autoCofig[data.chargeVersion];
+    }
     return data;
   }
 }

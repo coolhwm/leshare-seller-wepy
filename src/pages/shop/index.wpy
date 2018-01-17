@@ -74,8 +74,10 @@
       this.status = await shop.getStatus();
       this.statusText = this.status.statusText;
       this.limit = wepy.getStorageSync('limit');
-      this.versionText = this.limit.versionText;
-      this.limitUrl = `../shop/limit?param=${JSON.stringify(this.limit)}`;
+      if (this.limit) {
+        this.versionText = this.limit.versionText;
+        this.limitUrl = `../shop/limit?param=${JSON.stringify(this.limit)}`;
+      }
       this.loaded();
     };
 

@@ -2,7 +2,7 @@
   <view class="container" wx:if="{{init}}">
     <!--列表展现-->
     <repeat for="{{list}}" key="index" index="index" item="item">
-      <CategoryItem :category.sync="item" :index.sync="index" :size.sync="size" @up.user="up" @down.user="down" @top.user="top" @bottom.user="bottom"/>
+      <CategoryItem :category.sync="item" @up.user="up" @down.user="down" @top.user="top" @bottom.user="bottom"/>
     </repeat>
 
     <view class="box"></view>
@@ -21,8 +21,6 @@
 </template>
 
 <script>
-  /* eslint-disable no-return-assign */
-
   import wepy from 'wepy';
   import base from '../../mixins/base';
   import goods from '../../api/goods';
@@ -36,88 +34,92 @@
   export default class Category extends wepy.page {
     def = {
       init: false,
-      list: [
-      ],
+      list: [],
       isPageEmpty: false,
       check: true,
-      size: null
+      // size: null
     };
     data = {...this.def};
+
     async onLoad () {
       await this.update();
       Event.listen(Event.CATEGORY_LIST_UPDATE, this.update.bind(this), this);
     };
+
     async update () {
       this.list = await goods.getInnerCategories();
+      console.info(this.list);
       this.isPageEmpty = this.list == null || this.list.length == 0;
-      this.size = this.list.length - 1;
+      // this.size = this.list ? this.list.length - 1 : null;
       this.loaded();
     }
     methods = {
-      add() {
+      add () {
         this.$navigate('category_edit?mode=create');
       },
-      sort() {
+      sort () {
         this.changeCheck();
       },
-      ok() {
+      ok () {
         this.changeCheck();
         const listsId = this.list.map(item => {
-          const listId = item.id;
-          return listId;
-        })
+          return item.id;
+        });
         console.info(listsId);
         // 上传接口
         // 刷新页面
       },
-      cancel() {
+      cancel () {
         this.changeCheck();
         this.update();
       },
-      up(index) {
+      up (index) {
         if (index == 0) {
           return;
         }
         const target = index - 1;
         this.swap(index, target);
       },
-      down(index) {
+      down (index) {
         if (index == this.size) {
           return;
         }
         const target = index + 1;
         this.swap(index, target);
       },
-      top(index) {
+      top (index) {
         if (index == 0) {
           return;
         }
-        const target = this.list[index]
-        this.list.splice(index, 1)
-        this.list.splice(0, 0, target)
+        const target = this.list[index];
+        this.list.splice(index, 1);
+        this.list.splice(0, 0, target);
       },
-      bottom(index) {
+      bottom (index) {
         if (index == this.size) {
           return;
         }
-        const target = this.list[index]
-        this.list.splice(index, 1)
-        this.list.splice(this.size, 0, target)
+        const target = this.list[index];
+        this.list.splice(index, 1);
+        this.list.splice(this.size, 0, target);
       }
     };
-    swap(srcIndex, targetIndex) {
+
+    swap (srcIndex, targetIndex) {
       const list = this.list;
       const src = list[srcIndex];
       const target = list[targetIndex];
       list[targetIndex] = src;
       list[srcIndex] = target;
     };
-    changeCheck() {
+
+    changeCheck () {
       this.check = !this.check;
       this.list.forEach(item => {
         item.check = !item.check;
-      })
+      });
     };
+
     events = {};
     components = {
       Placeholder: Placeholder,

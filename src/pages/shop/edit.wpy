@@ -221,7 +221,7 @@
     events = {};
     computed = {
       version () {
-        if (this.limit.chargeVersion == null) {
+        if (this.limit == null || this.limit.chargeVersion == null) {
           return;
         }
         const version = this.limit.chargeVersion;
