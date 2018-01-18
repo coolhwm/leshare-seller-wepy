@@ -90,7 +90,7 @@
         this.reload();
       },
       add() {
-        this.$navigate('edit?mode=create');
+        this.$navigate(`edit?mode=create&categoryId=${this.tab.categoryId}`);
       },
       change() {
         this.reload();
