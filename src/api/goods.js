@@ -30,7 +30,9 @@ export default class goods extends base {
    */
   static async getInnerCategories() {
     const url = `${this.baseUrl}/goods/inner_category`;
-    return await this.get(url);
+    return await this.get(url).then(data => {
+      return data == null ? [] : data;
+    });
   }
 
   /**

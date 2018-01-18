@@ -1,0 +1,76 @@
+<template>
+	<view class="container" wx:if="{{init}}">
+		<repeat for="{{category}}" key="item" item="item">
+			<CategoryItem :category.sync="item"/>
+		</repeat>
+
+		<Placeholder :show.sync="isEmpty" message="尚未配置商品分类"/>
+
+		<ActionBar @tap.user="submit" okText="确定" cancelText="返回"/>
+	</view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import category from '../../api/goods';
+  import base from '../../mixins/base';
+  import CategoryItem from '../../components/vip/category_item';
+  import ActionBar from '../../components/common/action_bar';
+  import Placeholder from '../../components/common/placeholder'
+  import Tips from '../../utils/Tips';
+  import Event from '../../utils/Event';
+
+  export default class Category extends wepy.page {
+    data = {
+      init: false,
+      category: [],
+      index: null,
+      isEmpty: false
+    };
+    methods = {
+      async submit () {
+        const result = this.category.filter(item => item.checked).map(item => {
+          return {categoryId: item.id};
+        });
+        await Tips.success('保存成功');
+        Event.emit(Event.VIP_CATEGORY_UPDATA, {
+          list: result,
+          index: this.index
+        });
+        wepy.navigateBack();
+      }
+    };
+
+    async onLoad (options, {preload}) {
+      this.category = await category.getInnerCategories();
+      this.index = preload.data.index;
+      if (this.category != null && this.category.length > 0) {
+        const params = preload.data.categoryList;
+        this.category.forEach(item => {
+          item.checked = params.some(param => param.categoryId == item.id);
+        });
+      } else {
+        this.category = [];
+        this.isEmpty = true;
+      }
+      this.loaded();
+    };
+
+    mixins = [base];
+    components = {
+      CategoryItem: CategoryItem,
+      ActionBar: ActionBar,
+      Placeholder: Placeholder
+    };
+    config = {
+      navigationBarTitleText: '商品范围'
+    };
+  }
+</script>
+
+<style lang="scss">
+	@import "../../styles/variable";
+	.container{
+		background-color: white;
+		border-bottom: $border;
+	}
+</style>

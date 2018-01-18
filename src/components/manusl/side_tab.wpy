@@ -6,6 +6,9 @@
         <view class="weui-badge tab-num" wx:if="{{item.count > 0}}">{{item.count}}</view>
       </view>
     </block>
+    <view wx:if="{{tab.list.length < 1}}" class="row-center">
+      <text class="muted mt20">占无信息</text>
+    </view>
   </scroll-view>
 </template>
 

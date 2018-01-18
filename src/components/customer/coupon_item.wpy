@@ -1,14 +1,19 @@
 <template>
   <view class="coupon-box row-center " @longtap="remove({{coupon.id}})">
     <!--左侧区域-->
-    <view class="main-box column-center">
+    <view class="main-box column-center" wx:if="{{coupon.type == 'CASH'}}">
       <view>
         <text class="xl">￥</text>
         <text class="price">{{coupon.price}}</text>
       </view>
-      <text class="mt10">满{{coupon.limitPrice}}元可用</text>
+      <text class="mt10" wx:if="{{coupon.limitPrice == 0}}">无门槛</text>
+      <text class="mt10" wx:else>满{{coupon.limitPrice}}元可用</text>
     </view>
-
+    <view class="main-box column-center" wx:if="{{coupon.type == 'EXCHANGE'}}">
+      <text class="exchange">兑换券</text>
+      <text class="mt10" wx:if="{{coupon.limitPrice == 0}}">无门槛</text>
+      <text class="mt10" wx:else>满{{coupon.limitPrice}}元可用</text>
+    </view>
     <!--右侧区域-->
     <view class="info-box column">
       <view>
@@ -23,7 +28,7 @@
 
       <view class="btn-box row-end">
         <block wx:if="{{selectAction != '0'}}">
-          <view class="zan-btn zan-btn--small  zan-btn--primary" @tap="sendCoupon({{}})">发放</view>
+          <view class="zan-btn zan-btn--small  zan-btn--primary" @tap="sendCoupon">{{couponText}}</view>
         </block>
         <block wx:else>
           <text class="muted xs">领取时间：{{coupon.acceptTime}}</text>
@@ -46,15 +51,18 @@
       },
       selectAction: {
         default: true
+      },
+      couponText: {
+        default: '发放'
       }
     };
     data = {};
     methods = {
       async sendCoupon() {
-        await Tips.confirm('确定给该用户发放优惠券？');
+        await Tips.confirm('确认选择该优惠券吗？');
 
         // 发射事件
-        this.$emit('select', this.coupon.id);
+        this.$emit('select', this.coupon);
       }
     };
 
@@ -88,6 +96,9 @@
 
       text.price {
         font-size: rpx(75);
+      }
+      text.exchange {
+        font-size: 55rpx;
       }
     }
 

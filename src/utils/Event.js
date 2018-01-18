@@ -27,6 +27,8 @@ export default class Event {
   static MANUSL_USER_UPDATE = 'MANUSL_USER_UPDATE';
   // 会员等级保存成功
   static SHOP_DISCOUNT_UPDATE = 'SHOP_DISCOUNT_UPDATE';
+  // 会员满赠规则保存成功
+  static SHOP_PRESENT_UPDATE = 'SHOP_PRESENT_UPDATE';
   // 客户管理更新
   static SHOP_CUSTOMER_UPDATE = 'SHOP_CUSTOMER_UPDATE';
   // 优惠类别保存成功

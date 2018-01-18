@@ -1,20 +1,24 @@
 <!--订单列表页面-->
 <template>
   <view class="container" wx:if="{{init}}">
-    <!--TAB 页-->
-    <ZanTab :tab.sync="tab" @change.user="switchTap" />
+    <view wx:if="{{version}}">
+      <!--TAB 页-->
+      <ZanTab :tab.sync="tab" @change.user="switchTap"/>
 
-    <!--订单列表-->
-    <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <OrderItem :order.sync="item" @tap.user="detail" @receive.user="receive"></OrderItem>
-    </repeat>
+      <!--订单列表-->
+      <repeat for="{{page.list}}" key="index" index="index" item="item">
+        <OrderItem :order.sync="item" @tap.user="detail" @receive.user="receive"></OrderItem>
+      </repeat>
 
-    <!-- 加载提示 -->
-    <Loadmore :page.sync="page"/>
+      <!-- 加载提示 -->
+      <Loadmore :page.sync="page"/>
 
-    <view class="tab-border" />
-    <!--占位符-->
-    <Placeholder :show.sync="isPageEmpty" message="您还没有相关订单"/>
+      <view class="tab-border"/>
+      <!--占位符-->
+      <Placeholder :show.sync="isPageEmpty" message="您还没有相关订单"/>
+    </view>
+
+    <VersionPlaceholder :show.sync="false" message="尚未开放" wx:if="{{!version}}"/>
   </view>
 </template>
 
@@ -24,6 +28,7 @@
 <script>
   import wepy from 'wepy';
   import pagination from '../../mixins/pagination';
+  import base from '../../mixins/base';
   import order from '../../api/order';
   import Event from '../../utils/Event';
   import ZanTab from '../../components/zanui/expand-tab';
@@ -60,9 +65,13 @@
         selectedId: '0',
         scroll: false
       },
-      status: '0'
+      status: '0',
+      version: true
     };
     async onLoad (options, {preload}) {
+      if (!this.checkFunctionAuth('order')) {
+        this.version = false;
+      }
       // 处理初始化的状态
       const status = preload ? preload.status : null;
       if (status) {
@@ -126,8 +135,9 @@
       ZanTab: ZanTab,
       OrderItem: OrderItem,
       Placeholder: Placeholder,
-      Loadmore: Loadmore
+      Loadmore: Loadmore,
+      VersionPlaceholder: Placeholder
     };
-    mixins = [pagination];
+    mixins = [pagination, base];
   }
 </script>

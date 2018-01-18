@@ -1,0 +1,100 @@
+<template>
+	<view class="sku-box row mt10">
+		<view class="info-box">
+			<view class="weui-cells-form">
+				<view class="weui-cell weui-cell_input">
+					<view class="weui-cell__hd">
+						<view class="weui-label">满赠规则</view>
+					</view>
+					<view class="weui-cell__bd">
+						<input class="weui-input" id="ruleName" @blur="input({{index}})" value="{{info.ruleName}}"
+									 placeholder="请填写规则名称"/>
+					</view>
+				</view>
+				<view class="weui-cell weui-cell_input">
+					<view class="weui-cell__hd">
+						<view class="weui-label">满赠要求</view>
+					</view>
+					<view class="weui-cell__bd">
+						<input class="weui-input" id="limitCount" type="number" @blur="input({{index}})"
+									 value="{{info.limitCount}}" placeholder="请填写满赠要求"/>
+					</view>
+				</view>
+				<view class="weui-cell weui-cell_input">
+					<view class="weui-cell__hd">
+						<view class="weui-label">单位</view>
+					</view>
+					<view class="weui-cell__bd">
+						<input class="weui-input" id="unit" @blur="input({{index}})"
+									 value="{{info.unit}}" placeholder="请填写单位"/>
+					</view>
+				</view>
+				<view class="weui-cell row" @tap="coupon({{info}}, {{index}})">
+					<view class="mr10">赠送优惠券<block wx:if="{{info && info.coupon}}">(满{{info.coupon.price}}减{{info.coupon.limitPrice}})</block><block wx:else>(尚未配置)</block></view>
+					<image class="icon" src="/images/icons/more-gray.png"/>
+				</view>
+				<view class="weui-cell row" @tap="category({{info}}, {{index}})">
+					<view class="mr10">商品类型({{info.categoryList.length}})</view>
+					<image class="icon" src="/images/icons/more-gray.png"/>
+				</view>
+			</view>
+		</view>
+
+		<view class="op-box column-center" @tap="remove({{index}})">
+			<image class="icon" src="/images/icons/minus.png" wx:if="{{index != 0}}"></image>
+		</view>
+	</view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+  export default class Discount extends wepy.component {
+    props = {
+      index: {},
+      info: {}
+    };
+    data = {};
+    methods = {
+      category (present, index) {
+        this.$emit('category', present, index);
+      },
+      input (index, e) {
+        const fieldName = e.currentTarget.id;
+        const fieldValue = e.detail.value;
+        this.$emit('change', {index, fieldName, fieldValue});
+      },
+      remove (index) {
+        this.$emit('remove', index);
+      },
+      coupon (present, index) {
+        this.$emit('coupon', present, index);
+      }
+    };
+  }
+</script>
+
+<style lang="scss">
+	@import "../../styles/variable";
+
+	.weui-cells-form {
+		border: 0rpx;
+	}
+
+	.sku-box {
+		border-bottom: $border;
+		background-color: white;
+
+		.info-box {
+			flex: 1;
+			.weui-cells-form {
+				border-bottom: none;
+			}
+		}
+
+		.op-box {
+			width: 100rpx;
+			height: 100%;
+		}
+	}
+</style>

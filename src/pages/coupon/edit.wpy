@@ -112,14 +112,20 @@
         <view class="weui-cell weui-cell_switch">
           <view class="weui-cell__bd">自助领取</view>
           <view class="weui-cell__ft">
-            <switch checked="{{input.isReceive}}" id="isReceive" @change="input"/>
+            <switch checked="{{input.isShow}}" id="isShow" @change="input"/>
+          </view>
+        </view>
+        <view class="weui-cell weui-cell_switch {{input.isShow ? '' : 'hide'}}">
+          <view class="weui-cell__bd">首页领取</view>
+          <view class="weui-cell__ft">
+            <switch checked="{{input.isShowHome}}" id="isShowHome" @change="isShowHome"/>
           </view>
         </view>
       </view>
       <view class="h-gap"></view>
       <view class="weui-cells weui-cells-form">
         <view class="weui-cell weui-cell_switch">
-          <view class="weui-cell__bd">自动赠送</view>
+          <view class="weui-cell__bd">消费赠送</view>
           <view class="weui-cell__ft">
             <switch checked="{{input.isPresent}}" id="isPresent" @change="input"/>
           </view>
@@ -134,6 +140,18 @@
           </view>
         </view>
       </view>
+      <view class="h-gap"></view>
+      <view class="weui-cells weui-cells-form">
+        <view class="weui-cell weui-cell_input weui-cell_switch">
+          <view class="weui-cell__bd">立即赠送</view>
+          <view class="weui-cell__ft">
+
+            <switch checked="{{input.sendNow}}" id="sendNow" @change="input" wx:if="{{mode == 'create'}}"/>
+            <view class="weui-input" wx:else>{{input.sendNow ? '已投放' : '未投放'}}</view>
+          </view>
+        </view>
+      </view>
+
       <view class="row mr20 ml20 mt20">
         <view class="muted notice-box">提示：</view>
         <text class="muted">{{notice}}</text>
@@ -185,6 +203,9 @@
         // 调整枚举值
         this.input.isPresent = this.input.isPresent == 1;
         this.input.isSelfUse = this.input.isSelfUse == 1;
+        this.input.isShow = this.input.isShow == 1;
+        this.input.isShowHome = this.input.isShowHome == 1;
+        this.input.sendNow = this.input.sendNow == 1;
       } else {
         this.coupon.perLimit = 1;
         this.input.supportType = 0;
@@ -243,6 +264,9 @@
             suitLimit: 0,
             isSelfUse: this.input.isSelfUse ? 1 : 0,
             isPresent: this.input.isPresent ? 1 : 0,
+            isShow: this.input.isShow ? 1 : 0,
+            isShowHome: this.input.isShowHome ? 1 : 0,
+            sendNow: this.input.sendNow ? 1 : 0,
             supportType: this.input.supportType,
             type: this.input.type
           };
@@ -254,7 +278,9 @@
             stock: this.coupon.stock,
             presentFee: this.coupon.presentFee,
             isSelfUse: this.input.isSelfUse ? 1 : 0,
-            isPresent: this.input.isPresent ? 1 : 0
+            isPresent: this.input.isPresent ? 1 : 0,
+            isShow: this.input.isShow ? 1 : 0,
+            isShowHome: this.input.isShowHome ? 1 : 0
           };
           await coupon.update(this.couponId, param);
           await Tips.success('编辑成功！');
@@ -268,6 +294,11 @@
         await Tips.success('删除成功');
         Event.emit(Event.COUPON_LIST_UPDATE);
         wepy.navigateBack();
+      },
+      isShowHome (e) {
+        if (this.input.isShow == false) {
+          this.input.isShowHome = false
+        }
       }
     };
     computed = {
@@ -468,3 +499,9 @@
     };
   }
 </script>
+
+<style lang="scss">
+  .hide{
+    display: none;
+  }
+</style>

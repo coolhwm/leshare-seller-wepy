@@ -17,7 +17,7 @@
           <view class="weui-label">手机号码</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" name="phone" type="number" value="{{registeInfo.phone}}" maxlength="11" placeholder="请输入手机号"/>
+          <input class="weui-input" name="phone" type="number" value="{{registeInfo.phone}}" placeholder="请输入手机号"/>
         </view>
       </view>
       <view class="weui-cell weui-cells_after-title">
@@ -81,6 +81,7 @@
       async submit ({detail}) {
         // 覆盖对象
         Object.assign(this.registeInfo, detail.value);
+        this.registeInfo.phone = this.registeInfo.phone.replace(/\s/g, '');
         if (!this.validate()) {
           return;
         }
@@ -127,6 +128,10 @@
           value: this.registeInfo.phone,
           method: 'required',
           message: '联系电话不能为空'
+        }, {
+          value: this.registeInfo.phone,
+          method: 'maxlength',
+          param: 11
         }, {
           value: this.registeInfo.phone,
           method: 'number',
