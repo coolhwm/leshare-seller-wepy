@@ -17,7 +17,8 @@
       <!--占位符-->
       <Placeholder :show.sync="isPageEmpty" message="您还没有相关订单"/>
     </view>
-    <Placeholder :show.sync="false" message="尚未开放" wx:if="{{!version}}"/>
+
+    <VersionPlaceholder :show.sync="false" message="尚未开放" wx:if="{{!version}}"/>
   </view>
 </template>
 
@@ -134,7 +135,8 @@
       ZanTab: ZanTab,
       OrderItem: OrderItem,
       Placeholder: Placeholder,
-      Loadmore: Loadmore
+      Loadmore: Loadmore,
+      VersionPlaceholder: Placeholder
     };
     mixins = [pagination, base];
   }
