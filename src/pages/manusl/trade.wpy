@@ -130,6 +130,7 @@
   import Event from '../../utils/Event';
   import WxUtils from '../../utils/WxUtils';
   import Cache from '../../utils/Cache';
+  import Lang from '../../utils/Lang';
 
   export default class OrderTrade extends wepy.page {
     def = {
@@ -153,14 +154,14 @@
       // 默认值
       this.trade = preload.trade;
       this.input = this.trade;
-      const myDate = new Date();
-      this.input.placeDate = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}`;
-      this.input.placeTime = `${myDate.getHours()}:${myDate.getMinutes()}`;
+      const now = new Date();
+      this.input.placeDate = Lang.dateFormate(now, 'yyyy-MM-dd');
+      this.input.placeTime = Lang.dateFormate(now, 'hh:mm');
       this.trade.couponPrice = '0.00';
-      this.trade.orderStutas = '已完成';
+      this.trade.orderStutas = '待付款';
       this.trade.deliveryText = '同城配送';
       this.trade.deliveryType = 'CITY';
-      this.trade.status = 6;
+      this.trade.status = 1;
       // 查看店铺状态
       const isOpen = await this.checkShopStatus();
       // 用户信息
@@ -269,6 +270,7 @@
         this.trade.customerId = this.customer.customerId;
         this.trade.orderType = 20;
         await mausl.createOrder(this.trade);
+        await Tips.success('下单成功！');
         // 清空购物车
         Event.emit(Event.CART_LIST_CLEAR);
         WxUtils.backOrRedirect('/pages/manusl/index');

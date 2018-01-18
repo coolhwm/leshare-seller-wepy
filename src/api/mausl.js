@@ -325,8 +325,8 @@ export default class mausl extends base {
       reduceFee: reduceFee,
       finalPrice: finalPrice,
       postFee: (0).toFixed(2),
-      paymentType: '1',
-      paymentText: '在线支付',
+      paymentType: '0',
+      paymentText: '线下支付',
       orderGoodsInfos: orderGoodsInfos,
       shopName: this.shopName
     };
