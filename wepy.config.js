@@ -12,7 +12,7 @@ module.exports = {
       outputStyle: 'compact'
     },
     babel: {
-      sourceMap: true,
+      sourceMap: false,
       presets: [
         'es2015',
         'stage-1'
