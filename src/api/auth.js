@@ -32,7 +32,7 @@ export default class auth extends base {
    */
   static async check(loginCode) {
     const url = `${this.baseUrl}/auth/check?login_code=${loginCode}`;
-    const data = await this.get(url)
+    const data = await this.get(url);
     return data.result;
   }
 

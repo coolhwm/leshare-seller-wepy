@@ -26,6 +26,9 @@
 
       <NavCategory title="分类管理" url="../goods/category"/>
 
+      <NavComment title="商品评论" url="../comment/comment"/>
+
+
       <NavShops title="切换店铺" @tap.user="shops"/>
 
       <NavLogout title="切换账号" @tap.user="logout"/>
@@ -99,7 +102,8 @@
       NavShops: Navigator,
       NavLogout: Navigator,
       AvatarPanel: AvatarPanel,
-      NavManusl: Navigator
+      NavManusl: Navigator,
+      NavComment:Navigator
     };
     config = {
       navigationBarTitleText: '我的信息'
