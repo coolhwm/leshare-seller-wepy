@@ -84,6 +84,7 @@
         const tempFilePaths = await WxUtils.chooseImage(param, this.maxSize);
         const pictures = tempFilePaths.map(item => {
           return {
+            temp: true,
             url: item
           }
         });

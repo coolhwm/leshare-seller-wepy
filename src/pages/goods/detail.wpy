@@ -104,7 +104,7 @@
           const item = this.details[index];
           item.sequence = index;
           // 图片上传
-          if (item.type == 2 && (item.content.substring(0, 6) == 'wxfile' || item.content.substring(0, 11) == 'http://tmp/')) {
+          if (item.type == 2 && item.temp) {
             const result = await goods.image(item.content);
             console.info(result);
             const {url} = JSON.parse(result);
