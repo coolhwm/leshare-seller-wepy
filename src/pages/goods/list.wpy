@@ -39,7 +39,7 @@
   import Placeholder from '../../components/common/placeholder';
   import Loadmore from '../../components/weui/loadmore';
   import Event from '../../utils/Event';
-  import Cache from '../../utils/Cache';
+  import mausl from '../../api/mausl';
   export default class GoodsList extends wepy.page {
     def = {
       init: false,
@@ -77,10 +77,11 @@
     // 更新分类
     async updateCategories() {
       // 加载商品分类
-      this.categories = await Cache.categories();
+      this.categories = await mausl.categories();
       if (this.categories && this.categories.list && this.categories.list.length > 0) {
         this.categories.selectedId = this.categories.list[0].id;
       }
+      this.loaded();
     }
     methods = {
       // 点击分类

@@ -104,6 +104,7 @@
   import ActionBar from '../../components/common/action_bar';
   import ActionPanel from '../../components/common/action_panel';
   import SliderPanel from '../../components/common/slider_panel';
+  import Cache from '../../utils/Cache';
 
   export default class GoodsEdit extends wepy.page {
     def = {
@@ -235,8 +236,13 @@
       // 新增分类
       async addInner() {
         const name = this.input.newInner;
+        if (name == null) {
+          Tips.alert('请输入分类名称');
+          return;
+        }
         await goods.addInnerCategories(name);
         this.innerCategories = await goods.getInnerCategories();
+        await Cache.categories(true);
         Event.emit(Event.CATEGORY_LIST_UPDATE);
         this.loaded();
       },
