@@ -88,6 +88,7 @@
           const tempFilePaths = await WxUtils.chooseImage(param, 5);
           for (let path of tempFilePaths) {
             this.details.push({
+              temp: true,
               type: 2,
               content: path
             });
@@ -115,7 +116,7 @@
         Event.emit(Event.GOODS_DETAILS_UPDATE, data);
         wepy.navigateBack();
       }
-    }
+    };
     swap(srcIndex, targetIndex) {
       const details = this.details;
       const src = details[srcIndex];
