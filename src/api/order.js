@@ -1,81 +1,11 @@
 import base from './base';
 import Page from '../utils/Page';
-import {ACTIONS, ACTION_MAP} from './order_dict'
+import {TYPE, ACTION, orderUtils as utils} from './order_const';
 
 export default class order extends base {
   static closeReacon = [
     '已缺货无法交易', '协商取消交易', '已通过货到付款交易', '无法联系上买家', '买家误拍或重拍', '其他'
   ];
-  static statusDict = {
-    '10': {
-      '0': '全部',
-      '1': '等待买家付款',
-      '2': '等待卖家发货',
-      '3': '卖家已发货',
-      '4': '等待买家评价',
-      '5': '申请退款中',
-      '6': '交易成功',
-      '7': '交易关闭',
-      '8': '卖家已退款'
-    },
-    '20': {
-      '0': '全部',
-      '1': '等待买家付款',
-      '2': '等待店家接单',
-      '3': '店家配送中',
-      '4': '等待买家评价',
-      '5': '申请退款中',
-      '6': '交易成功',
-      '7': '交易关闭',
-      '8': '卖家已退款',
-      '9': '店家已接单'
-    },
-    '30': {
-      '0': '全部',
-      '1': '等待买家付款',
-      '2': '等待店家接单',
-      '3': '店家配餐中',
-      '4': '等待买家评价',
-      '5': '申请退款中',
-      '6': '交易成功',
-      '7': '交易关闭',
-      '8': '卖家已退款',
-      '9': '店家已接单'
-    },
-    '33': {
-      '0': '全部',
-      '1': '等待买家付款',
-      '2': '等待店家接单',
-      '3': '店家配餐中',
-      '4': '等待买家评价',
-      '5': '申请退款中',
-      '6': '交易成功',
-      '7': '交易关闭',
-      '8': '卖家已退款',
-      '9': '店家已接单'
-    }
-  };
-  static paymentDict = {
-    '0': '线下支付',
-    '1': '在线支付'
-  };
-  static deliveryText = {
-    'SELF': '上门自提',
-    'CITY': '同城配送',
-    'EXPRESS': '快递配送'
-  };
-  static statusDesc = {
-    '1': '等待买家付款，超时订单自动关闭',
-    '2': '买家已付款，请您尽快发货，超时未接单将自动退款',
-    '3': '您已发货，请耐心等待买家确认收货',
-    '4': '买家已确认收货，请核对收款情况',
-    '5': '买家发起退款申请，请您尽快处理',
-    '6': '交易已完成，您已收到买家货款',
-    '7': '本交易已取消',
-    '8': '您已退货成功',
-    '9': '您已接单，请尽快配送'
-  };
-
   /**
    * 分页方法
    */
@@ -252,8 +182,6 @@ export default class order extends base {
    * 处理订单列表数据
    */
   static _processOrderListItem(order) {
-    // const status = order.status;
-    // order.statusText = this.statusDict[status];
     // 处理动作
     this._processOrderAction(order);
     this._processOrderStatusDesc(order);
@@ -264,6 +192,8 @@ export default class order extends base {
     // 处理商品信息
     const goods = order.orderGoodsInfos;
     this._processOrderGoods(goods);
+    // 处理离线支付
+    this._processOfflinePayment(order);
   }
 
   /**
@@ -290,19 +220,33 @@ export default class order extends base {
     this._processOrderGoods(detail.orderGoodsInfos);
     // 处理动作
     this._processOrderAction(detail, true);
+    // 处理离线支付
+    this._processOfflinePayment(detail);
     return detail;
+  }
+
+  static _processOfflinePayment(order) {
+    const orderType = order.orderType;
+    if (orderType != TYPE.OFFLINE) return;
+    order.orderGoodsInfos = [{
+      imageUrl: 'http://img.leshare.shop/shop/other/wechat_pay.png',
+      goodsName: `微信支付 ${order.finalPrice}元`,
+      goodsPrice: order.finalPrice,
+      count: 1
+    }];
+    return order;
   }
 
   /**
    * 处理订单动作
    */
   static _processOrderAction(order, inner = false) {
-    const basic = [ACTIONS.REMARK];
+    const basic = [ACTION.REMARK];
     if (inner) {
-      basic.push(ACTIONS.PRINT);
+      basic.push(ACTION.PRINT);
     }
-    const key = `${order.orderType}-${order.paymentType}-${order.status}`;
-    const actions = ACTION_MAP[key];
+    const {orderType, paymentType, status} = order;
+    const actions = utils.statusActions(orderType, paymentType, status);
     if (actions) {
       const display = inner ? actions.filter(v => v.inner != true) : actions;
       order.actions = basic.concat(display);
@@ -325,19 +269,19 @@ export default class order extends base {
   /**
    * 处理订单支付方式
    */
-  static _processOrderPaymentText(detail) {
-    detail.paymentText = this.paymentDict[detail.paymentType];
+  static _processOrderPaymentText (detail) {
+    detail.paymentText = utils.paymentType(detail.paymentType);
   }
+
 
   /**
    * 处理状态描述文本
    */
-  static _processOrderStatusDesc(order) {
-    const statusDict = order.orderType ? this.statusDict[order.orderType] : this.statusDict[10];
-    const status = order.status;
-    order.statusText = statusDict[status];
-    order.statusDesc = this.statusDesc[status];
-    // 订单关闭
+  static _processOrderStatusDesc (order) {
+    const {status, orderType} = order;
+    order.statusText = utils.statusName(orderType, status);
+    order.statusDesc = utils.statusDesc(order, status);
+    // 订单关闭增加关闭原因
     if (order.status == 7 && order.orderCloseNote) {
       const reason = order.orderCloseNote;
       order.statusDesc = `订单已关闭，关闭原因：${reason.note}`;
@@ -347,8 +291,8 @@ export default class order extends base {
   /**
    * 处理物流配送信息
    */
-  static _processOrderDetailDelivery(order) {
-    order.deliveryText = this.deliveryText[order.deliveryType];
+  static _processOrderDetailDelivery (order) {
+    order.deliveryText = utils.deliveryType(order.deliveryType);
   }
   /**
    * 处理订单状态

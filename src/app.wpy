@@ -66,7 +66,7 @@
       // baseUrl: 'https://api.leshare.shop/v2/seller',
       // baseUrl: 'http://192.168.31.124:9999/v2/seller'
       baseUrl: 'http://106.14.195.68:9999/v2/seller',
-      version: 'v2.0.4'
+      version: 'v3.0.0'
     };
     config = {
       pages: [
