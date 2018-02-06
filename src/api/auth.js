@@ -13,7 +13,7 @@ export default class auth extends base {
    * 登录
    */
   static async login(phone, code) {
-    const appCode = wepy.$instance.globalData.app_code;
+    const appCode = wepy.$instance.globalData.appCode;
     const url = `${this.baseUrl}/auth/login?phone=${phone}&sms_code=${code}&app_code=${appCode}`;
     const dara = await this.get(url);
     return dara.login_code;

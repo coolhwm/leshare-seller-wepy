@@ -1,15 +1,20 @@
-<style lang="scss">
-    @import "./styles/base";
-    @import "./styles/zent";
-    @import "styles/weui";
-    @import "./styles/weui-extend";
-</style>
+<style lang="scss" src="./styles/weui.scss"></style>
+<style lang="scss" src="./styles/zent.scss"></style>
+<style lang="scss" src="./styles/weui-extend.scss"></style>
+<style lang="scss" src="./styles/base.scss"></style>
 
 <script>
   import wepy from 'wepy';
   import 'wepy-async-function';
 
   export default class extends wepy.app {
+    globalData = {
+      auth: {},
+      shop: {},
+      appCode: null,
+      baseUrl: null,
+      version: 'v3.0.0'
+    };
     constructor() {
       super();
       // 注册中间件
@@ -31,7 +36,6 @@
         }
       });
     }
-
     /**
      * 构造权限头部
      */
@@ -49,6 +53,10 @@
     }
 
     onLaunch() {
+      // 同步开放平台EXT数据
+      const ext = wepy.getExtConfigSync();
+      console.info('[ext] init ext data', ext);
+      Object.assign(wepy.$instance.globalData, ext);
       this.syncStoreConfig({'login_code': 'login_code'}, 'login_code');
       this.syncStoreConfig({'shop_id': 'shop_id'}, 'shop_id');
     }
@@ -59,15 +67,7 @@
         wepy.$instance.globalData.auth[key] = value;
       }
     }
-    globalData = {
-      auth: {},
-      shop: {},
-      app_code: '1jAB5uZLs57cH1gq6ujRnOdVLDqu2qle',
-      baseUrl: 'https://api.leshare.shop/v2/seller',
-      // baseUrl: 'http://192.168.31.124:9999/v2/seller'
-      // baseUrl: 'http://106.14.195.68:9999/v2/seller',
-      version: 'v3.0.0'
-    };
+
     config = {
       pages: [
         'pages/home/index',
