@@ -209,6 +209,7 @@
       } else {
         this.coupon.perLimit = 1;
         this.input.supportType = 0;
+        this.input.isShow = true;
         this.input.type = 'CASH';
         const myDate = new Date();
         this.input.beginTime = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}`;
