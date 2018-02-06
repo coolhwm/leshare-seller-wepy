@@ -1,7 +1,8 @@
 <template>
   <view class="conatiner" wx:if="{{init}}">
-    <view class="shop-box">
+    <view class="shop-box row-between">
       <text class="sm">{{shop.name}}</text>
+      <image class="icon mr20" @tap="service" src="/images/icons/customer_service.png"/>
     </view>
     <!--今日统计区域-->
     <view class="today-box">
@@ -210,6 +211,10 @@
       return Tips.share(title, url, title);
     }
     methods = {
+      // 客服
+      service() {
+        this.$root.$navigate('../customer/index');
+      },
       order(status) {
         this.$preload('status', status);
         Event.emit(Event.ORDER_TAB_UPDATE, status);

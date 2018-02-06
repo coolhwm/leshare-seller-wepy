@@ -63,9 +63,11 @@
       auth: {},
       shop: {},
       app_code: '1jAB5uZLs57cH1gq6ujRnOdVLDqu2qle',
-      baseUrl: 'https://api.leshare.shop/v2/seller',
+      // baseUrl: 'https://api.leshare.shop/v2/seller',
       // baseUrl: 'http://192.168.31.124:9999/v2/seller'
-      // baseUrl: 'http://106.14.195.68:9999/v2/seller',
+      baseUrl: 'http://localhost:9999/v2/seller',
+      openUrl: 'http://localhost:8989/open',
+      socketUrl: 'ws://localhost:8989/leshare-kefu',
       version: 'v2.0.4'
     };
     config = {
@@ -75,6 +77,8 @@
         'pages/customer/coupon_send',
         'pages/customer/info',
         'pages/customer/member_info',
+        'pages/customer/index',
+        'pages/customer/chat',
         'pages/order/index',
         'pages/shop/index',
         'pages/shop/contact',
