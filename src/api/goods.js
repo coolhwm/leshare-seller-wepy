@@ -25,6 +25,11 @@ export default class goods extends base {
     return new Page(url, this._processGoodsListItem.bind(this));
   }
 
+  static list() {
+    const url = `${this.baseUrl}/goods/list`;
+    return new Page(url, this._processGoodsListItem.bind(this));
+  }
+
   /**
    * 商品分类
    */

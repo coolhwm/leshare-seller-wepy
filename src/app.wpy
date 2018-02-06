@@ -1,7 +1,10 @@
-<style lang="scss" src="./styles/weui.scss"></style>
 <style lang="scss" src="./styles/zent.scss"></style>
-<style lang="scss" src="./styles/weui-extend.scss"></style>
 <style lang="scss" src="./styles/base.scss"></style>
+
+<style lang="scss">
+  @import "./styles/weui";
+  @import "./styles/weui-extend";
+</style>
 
 <script>
   import wepy from 'wepy';

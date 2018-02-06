@@ -139,7 +139,10 @@
       }
       if (this.mode == 'create') {
         if (categoryId != null) {
-          this.input.inner = this.innerCategories.find(item => item.id == categoryId).name
+          const category = this.innerCategories.find(item => item.id == categoryId);
+          if (category && category.type != 'RECOMMEND') {
+            this.input.inner = category.name;
+          }
         }
       }
       Event.listen(Event.GOODS_DETAILS_UPDATE, this.detailsUpdate.bind(this), this);

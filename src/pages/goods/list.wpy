@@ -59,7 +59,7 @@
     };
     data = {...this.def};
     async onLoad () {
-      this.page = goods.page(this);
+      this.page = goods.list(this);
       this.goods = this.page.list;
       await this.updateCategories();
       await this.next();
