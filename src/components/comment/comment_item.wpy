@@ -16,8 +16,8 @@
           </view>
         </view>
       </view>
-      <view class="comment">{{comment.good_name}}：{{comment.comment}} <text class="muted xs">{{comment.createTime_comment}}</text></view>
-      <!--<text class="muted xs comment-create-time">{{comment.createTime_comment}}</text>-->
+      <view class="comment"> <text class="muted small">{{comment.good_name}}：</text> {{comment.comment}} </view>
+      <text class="muted xs comment-create-time">{{comment.createTime_comment}}</text>
     </view>
   </view>
 </template>
