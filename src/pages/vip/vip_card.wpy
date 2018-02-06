@@ -8,7 +8,7 @@
             <view class="weui-label">会员卡名称</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" name="title" value="{{card.title}}" type="text"
+            <input class="weui-input" name="title" id="title" @blur="input" value="{{card.title}}" type="text"
                    placeholder="请输入会员卡名称"/>
           </view>
         </view>
@@ -18,7 +18,7 @@
             <view class="weui-label">客服电话</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" name="servicePhone" value="{{card.servicePhone}}"
+            <input class="weui-input" name="servicePhone" id="servicePhone" @blur="input" value="{{card.servicePhone}}"
                    type="number" maxlength="11"
                    placeholder="请输入客服电话"/>
           </view>
@@ -158,6 +158,10 @@
         }
         await Tips.success('保存成功');
         wepy.navigateBack();
+      },
+      input(e) {
+        const fieldName = e.currentTarget.id;
+        this.card[fieldName] = e.detail.value;
       }
     };
 
@@ -188,6 +192,7 @@
       }
     };
     contextUpdate ({type, context}) {
+      console.info(type, context);
       this.card[type] = context;
     };
     bonusUpdate (data) {

@@ -50,10 +50,10 @@
     }
 
     events = {
-      async select(couponId) {
+      async select(coupon) {
         const params = {
           customerId: this.customerId,
-          couponId: couponId
+          couponId: coupon.id
         };
         const data = await customerInfo.sendCoupon(params);
         if (data.result == 'SUCCESS') {
