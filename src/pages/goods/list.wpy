@@ -39,7 +39,7 @@
   import Placeholder from '../../components/common/placeholder';
   import Loadmore from '../../components/weui/loadmore';
   import Event from '../../utils/Event';
-  import Cache from '../../utils/Cache';
+  import mausl from '../../api/mausl';
   export default class GoodsList extends wepy.page {
     def = {
       init: false,
@@ -53,14 +53,13 @@
           {id: 'offSale', title: '仓库中'}
         ],
         selectedId: 'onSale',
-        categoryId: '9',
         scroll: false
       },
       categories: []
     };
     data = {...this.def};
     async onLoad () {
-      this.page = goods.page(this);
+      this.page = goods.list(this);
       this.goods = this.page.list;
       await this.updateCategories();
       await this.next();
@@ -78,10 +77,11 @@
     // 更新分类
     async updateCategories() {
       // 加载商品分类
-      this.categories = await Cache.categories();
+      this.categories = await mausl.categories();
       if (this.categories && this.categories.list && this.categories.list.length > 0) {
         this.categories.selectedId = this.categories.list[0].id;
       }
+      this.loaded();
     }
     methods = {
       // 点击分类
@@ -90,7 +90,7 @@
         this.reload();
       },
       add() {
-        this.$navigate(`edit?mode=create&categoryId=${this.tab.categoryId}`);
+        this.$navigate(`edit?mode=create&categoryId=${this.categories.selectedId}`);
       },
       change() {
         this.reload();

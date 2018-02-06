@@ -112,7 +112,8 @@ export default class mausl extends base {
       list.push(...data.map(item => {
         return {
           id: item.id,
-          title: item.name
+          title: item.name,
+          type: item.type
         };
       }));
     }

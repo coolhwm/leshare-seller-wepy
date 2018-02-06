@@ -1,12 +1,9 @@
 <template>
   <view class="container" wx:if="{{init}}">
-    <!--TAB 页-->
-    <ZanTab :tab.sync="tab" @change.user="switchTab" />
-
 
     <!--列表展现-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <GoodsScoreItem />
+      <CommentItem :comment.sync="item" />
     </repeat>
 
     <!-- 加载提示 -->
@@ -15,8 +12,6 @@
     <!--占位符-->
     <Placeholder :show.sync="isPageEmpty" message="该商品还没有评价"/>
   </view>
-
-
 </template>
 
 <script>
@@ -28,49 +23,26 @@
   import ZanTab from '../../components/zanui/tab';
   import ActionBar from '../../components/common/action_bar';
   import Loadmore from '../../components/weui/loadmore';
-  import CommentItem from '../../components/goods/comment_item';
+  import CommentItem from '../../components/comment/comment_item'
 
-  export default class GoodsScoreIndex extends wepy.page {
-    def = {
-      init: false,
-      page: {
-        list: []
-      },
-      tab: {
-        list: []
-      },
-      goodsId: ''
+  export default class Comment extends wepy.page {
+    data = {
+      page: {},
+      init: false
     };
-    data = {...this.def};
-    async onLoad ({goodsId}) {
-      this.goodsId = goodsId;
-      const count = await comment.count(goodsId);
-      this.tab = {
-        list: [
-          {id: 'GOOD', title: `满意(${count.GOOD})`},
-          {id: 'NORMAL', title: `一般(${count.NORMAL})`},
-          {id: 'BAD', title: `不满意(${count.BAD})`}
-        ],
-        selectedId: 'GOOD'
-      };
-      this.page = comment.page();
+    async onLoad () {
+      this.page = await comment.page();
       await this.next();
-    };
-    params() {
-      return {status: this.tab.selectedId, goods_id: this.goodsId};
     }
-    methods = {
-      switchTab() {
-        this.reload();
-      }
-    };
-    events = {};
+    params() {
+      return {status: 'ALL'};
+    }
     components = {
       Placeholder: Placeholder,
       ZanTab: ZanTab,
       ActionBar: ActionBar,
       Loadmore: Loadmore,
-      GoodsScoreItem: CommentItem
+      CommentItem: CommentItem
     };
     mixins = [base, pagination];
     config = {
@@ -80,6 +52,4 @@
   }
 </script>
 
-<style lang="scss">
-  @import "../../styles/variable";
-</style>
+<style></style>
