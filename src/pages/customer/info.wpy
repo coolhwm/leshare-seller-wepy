@@ -8,7 +8,7 @@
 
         <!--左侧头像-->
         <image class="customer-avatar" wx:if="{{customer.customer.avatarUrl}}" src="{{customer.customer.avatarUrl}}"/>
-        <icon class="customer customer-avatar" color="gray" wx:else/>
+        <icon class="customer" color="gray" style="font-size: 180rpx;line-height: 180rpx;" wx:else/>
         <!--右侧主区域-->
         <view class="column customer-main-box">
           <!--姓名/打电话-->
