@@ -1,7 +1,7 @@
 <template>
   <!--SKU区域// 组件化-->
   <repeat for="{{skuList}}" key="sku" index="index" item="item">
-    <Sku :info.sync="item" index.sync="index" :skuEditable.sync="skuEditable" @remove.user="remove" @change.user="change" />
+    <Sku :info.sync="item" :index.sync="index" :skuEditable.sync="skuEditable" @remove.user="remove" @change.user="change" />
   </repeat>
 
   <!--添加商品型号-->
@@ -41,7 +41,7 @@
         this.resetSkuEditable();
         this.$apply();
       }
-    }
+    };
     resetSkuEditable() {
       this.skuEditable = this.skuList.length > 1;
     }
