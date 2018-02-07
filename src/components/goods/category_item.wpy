@@ -1,19 +1,19 @@
 <template>
-    <view class="category-box column">
-        <view class="category-item row-center">
-            <text>{{category.name}}</text>
-            <view wx:if="{{!category.check}}">
-                <view class="zan-btn zan-btn--small" @tap="remove({{category.id}})">删除</view>
-                <view class="zan-btn zan-btn--small  zan-btn--primary" @tap="edit({{category.id}})">编辑</view>
-            </view>
-            <view class="icon-box" wx:if="{{category.check}}">
-                <image class="icon ml20" wx:if="{{index != 0}}" src="/images/icons/top.png" @tap.stop="top({{index}})"/>
-                <image class="icon ml20" wx:if="{{index != 0}}" src="/images/icons/up-arrow.png" @tap.stop="up({{index}})"/>
-                <image class="icon ml20" wx:if="{{index != size}}" src="/images/icons/down-arrow.png" @tap.stop="down({{index}})"/>
-                <image class="icon ml20" wx:if="{{index != size}}" src="/images/icons/bottom.png" @tap.stop="bottom({{index}})"/>
-            </view>
-        </view>
+  <view class="category-box column">
+    <view class="category-item row-center">
+      <text>{{category.name}}</text>
+      <view wx:if="{{!category.check}}">
+        <view class="zan-btn zan-btn--small" @tap="remove({{category.id}})">删除</view>
+        <view class="zan-btn zan-btn--small  zan-btn--primary" @tap="edit({{category.id}})">编辑</view>
+      </view>
+      <view class="icon-box" wx:if="{{category.check}}">
+        <icon class="top" wx:if="{{index != 0}}" @tap.stop="top({{index}})"/>
+        <icon class="up-arrow" wx:if="{{index != 0}}" @tap.stop="up({{index}})"/>
+        <icon class="down-arrow" wx:if="{{index != size}}" @tap.stop="down({{index}})"/>
+        <icon class="bottom" wx:if="{{index != size}}" @tap.stop="bottom({{index}})"/>
+      </view>
     </view>
+  </view>
 </template>
 
 <script>

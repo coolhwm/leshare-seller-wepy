@@ -34,7 +34,7 @@
             <text class="muted sm">已核销: {{coupon.couponCustomerCount.usedCount?coupon.couponCustomerCount.usedCount:0}}</text>
           </view>
           <view>
-            <image class="icon" src="/images/icons/more-gray.png" ></image>
+            <icon class="more" color="gray"/>
           </view>
       </view>
     </view>

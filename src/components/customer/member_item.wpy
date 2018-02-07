@@ -2,13 +2,13 @@
   <!--会员基本信息-->
   <view class="main-container row">
     <view class="portrait-container">
-      <image class="icon-xxl"
-             src="{{customer.avatarUrl ? customer.avatarUrl: '/images/icons/customer.png'}}"/>
+      <image class="icon-xxl" wx:if="{{customer.avatarUrl}}" src="{{customer.avatarUrl}}"/>
+      <icon class="customer" color="gray" style="line-height: 60px;font-size: 60px" wx:else/>
     </view>
     <view class="user-container column">
       <view class="row-between">
         <text class="xxl mr20 user-name-box">{{customer.nickName ? customer.nickName : '微信用户'}}</text>
-        <image class="icon ml20" src="/images/icons/call.png" @tap.stop="phone"/>
+        <icon class="call ml20" @tap.stop="phone"/>
       </view>
       <view class="row">
         <text class="lg muted">联系电话：</text>

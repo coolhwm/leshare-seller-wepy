@@ -2,8 +2,8 @@
   <!--客户基本信息-->
   <view class="customer-info-box row-between" @tap="toUserList({{userInfo.type}})">
     <!--左侧头像-->
-    <image class="customer-avatar"
-           src="{{userInfo.avatarUrl ? userInfo.avatarUrl: '/images/icons/customer.png'}}"/>
+    <image class="customer-avatar" wx:if="{{userInfo.avatarUrl}}" src="{{userInfo.avatarUrl}}"/>
+    <icon wx:else class="customer xxlarge" color="gray"/>
     <!--右侧主区域-->
     <view class="column customer-main-box">
       <!--姓名/打电话-->
@@ -23,7 +23,7 @@
       </view>
     </view>
     <!--更多地址-->
-    <image class="icon" src="/images/icons/more-gray.png" wx:if="{{userInfo.type != 'trade'}}"/>
+    <icon class="more" color="gray" wx:if="{{userInfo.type != 'trade'}}"/>
   </view>
 </template>
 <script>

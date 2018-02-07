@@ -2,8 +2,9 @@
   <!--客户基本信息-->
   <view class="customer-info-box row-between">
     <!--左侧头像-->
-    <image class="customer-avatar"
-           src="{{customerInfo.avatarUrl ? customerInfo.avatarUrl : '/images/icons/customer.png'}}"/>
+    <image class="customer-avatar" wx:if="{{customerInfo.avatarUrl}}"
+           src="{{customerInfo.avatarUrl}}"/>
+    <icon class="customer customer-avatar" color="gray" wx:else/>
     <!--右侧主区域-->
     <view class="column customer-main-box">
       <!--姓名-->
@@ -20,7 +21,7 @@
       </view>
     </view>
     <!--更多地址-->
-    <image class="icon" src="/images/icons/more-gray.png"/>
+    <icon class="more" color="gray"/>
   </view>
 </template>
 <script>

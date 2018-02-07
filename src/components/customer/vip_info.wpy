@@ -1,15 +1,15 @@
 <template>
   <view class="row-between vip-column" @tap="moreVip" wx:if="{{member != null}}">
-    <image class="card-image" src="/images/icons/vip_card.png"/>
+    <icon class="vip-card card-image" class="gray" />
     <view class="row-between">
       <text class="muted">会员等级 : {{member.discountRule.levelName}}</text>
       <view class="vertical-line"/>
       <text class="muted">当前积分 : {{member.bonus}}</text>
-      <image class="icon" src="/images/icons/more-gray.png"/>
+      <icon class="more" color="gray"/>
     </view>
   </view>
   <view class="row vip-column" @tap="moreVip" wx:if="{{member == null}}">
-    <image class="card-image" src="/images/icons/vip_card.png"/>
+    <icon class="vip-card card-image" class="gray" />
     <text class="muted ml20">暂未注册</text>
   </view>
 </template>

@@ -2,6 +2,7 @@
     @import "./styles/base";
     @import "./styles/zent";
     @import "styles/weui";
+    @import "styles/icons";
     @import "./styles/weui-extend";
 </style>
 

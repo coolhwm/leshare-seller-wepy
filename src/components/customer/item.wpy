@@ -1,6 +1,7 @@
 <template>
   <view class="cusomer-box row" @tap="tap({{customer}})">
-    <image class="avatar icon-xl icon-round" src="{{customer.avatar ? customer.avatar : '/images/icons/customer.png'}}"></image>
+    <image class="avatar icon-xl icon-round" wx:if="{{customer.avatar}}" src="{{customer.avatar}}"></image>
+    <icon wx:else class="customer xxlarge" color="gray"/>
     <view class="info-box column">
       <view class="title-box row">
         <text class="xl">{{customer.name ? customer.name : '微信用户'}}</text>

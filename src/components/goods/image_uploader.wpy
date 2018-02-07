@@ -1,7 +1,7 @@
 <template>
   <!-- 照片区域 -->
   <view class="photo-box column-center" @tap="photo" wx:if="{{pictures.length < 1}}">
-    <image class="photo-btn " src="/images/icons/camera.png"></image>
+    <icon class="camera photo-btn" style="line-height: 75px;font-size: 75px;"/>
     <text class="mt10">{{title}}</text>
   </view>
 
@@ -12,7 +12,7 @@
         <image mode="aspectFill" src="{{item.url}}"></image>
       </swiper-item>
     </swiper>
-    <image class="photo-btn icon-xl" style="top: {{top}}rpx;"  @tap.stop="photo" src="/images/icons/camera.png"></image>
+    <icon class="camera photo-btn xlarge" style="top: {{top}}rpx;"  @tap.stop="photo"/>
   </view>
 
   <!--上传管理器-->
@@ -31,9 +31,9 @@
 
         <!-- 操作区域 -->
         <view class="item-footer-box">
-          <image class="icon-lg" wx:if="{{index != 0}}" src="/images/icons/up-arrow.png" @tap="up({{index}})"></image>
-          <image class="icon-lg" wx:if="{{index != pictures.length - 1}}" src="/images/icons/down-arrow.png" @tap="down({{index}})"></image>
-          <image class="icon-lg" src="/images/icons/minus.png" @tap="remove({{index}})"></image>
+          <icon class="up-arrow large" wx:if="{{index != 0}}" @tap="up({{index}})"/>
+          <icon class="down-arrow large" wx:if="{{index != pictures.length - 1}}" @tap="down({{index}})"/>
+          <icon class="minus large" style="color: red;" @tap="remove({{index}})"/>
         </view>
       </view>
       <text class="muted sm mt10 ml20">提示：请点击按钮改变图片顺序，第一张图片为封面</text>

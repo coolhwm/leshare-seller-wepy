@@ -1,26 +1,26 @@
 <template>
-    <view class="score-box column">
-        <view class="header-box row-between">
-            <view class="info-box row">
-                <image class="icon-lg icon-round"
-                       src="https://wx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJgfUzkJq7aLPZKHcicAiceEobzp1ozCZef2kWYibLIriaKdKv366IPWktSLxVQiaLicPfvXPo4ffHzUhsQ/0"></image>
-                <view class="ml20 column">
-                    <text>匿名用户</text>
-                    <text class="sm muted">2017-07-22</text>
-                </view>
-            </view>
-            <view class="star-box">
-                <image class="icon" src="/images/icons/star-fill.png"></image>
-                <image class="icon" src="/images/icons/star-fill.png"></image>
-                <image class="icon" src="/images/icons/star-fill.png"></image>
-                <image class="icon" src="/images/icons/star-fill.png"></image>
-                <image class="icon" src="/images/icons/star-fill.png"></image>
-            </view>
+  <view class="score-box column">
+    <view class="header-box row-between">
+      <view class="info-box row">
+        <image class="icon-lg icon-round"
+               src="https://wx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJgfUzkJq7aLPZKHcicAiceEobzp1ozCZef2kWYibLIriaKdKv366IPWktSLxVQiaLicPfvXPo4ffHzUhsQ/0"></image>
+        <view class="ml20 column">
+          <text>匿名用户</text>
+          <text class="sm muted">2017-07-22</text>
         </view>
-        <view class="content-box">
-            好评！
-        </view>
+      </view>
+      <view class="star-box">
+        <icon class="star-fill" color="major"/>
+        <icon class="star-fill" color="major"/>
+        <icon class="star-fill" color="major"/>
+        <icon class="star-fill" color="major"/>
+        <icon class="star-fill" color="major"/>
+      </view>
     </view>
+    <view class="content-box">
+      好评！
+    </view>
+  </view>
 </template>
 
 <script>

@@ -36,7 +36,7 @@
     </view>
 
     <view class="op-box column-center" wx:if="{{skuEditable}}" @tap="remove({{index}})">
-      <image class="icon" src="/images/icons/minus.png" wx:if="{{index != 0}}"></image>
+      <icon class="minus" style="color: red;" wx:if="{{index != 0}}"/>
     </view>
   </view>
 </template>

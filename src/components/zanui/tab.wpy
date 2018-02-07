@@ -18,7 +18,7 @@
             <text>{{item.title}}</text>
             <block wx:if="{{tab.order}}">
               <image class="icon" src="/images/icons/order-{{tab.sord}}.png" wx:if="{{tab.selectedId == item.id}}"/>
-              <image class="icon" src="/images/icons/order-none.png" wx:else/>
+              <icon class="order-none" color="gray" wx:else/>
             </block>
           </view>
         </view>
@@ -38,7 +38,7 @@
             <text>{{item.title}}</text>
             <block wx:if="{{tab.order}}">
               <image class="icon" src="/images/icons/order-{{tab.sord}}.png" wx:if="{{tab.selectedId == item.id}}"/>
-              <image class="icon" src="/images/icons/order-none.png" wx:else/>
+              <icon class="order-none" color="gray" wx:else/>
             </block>
           </view>
         </view>

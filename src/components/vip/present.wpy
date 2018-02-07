@@ -31,17 +31,17 @@
 				</view>
 				<view class="weui-cell row" @tap="coupon({{info}}, {{index}})">
 					<view class="mr10">赠送优惠券<block wx:if="{{info && info.coupon}}">(满{{info.coupon.price}}减{{info.coupon.limitPrice}})</block><block wx:else>(尚未配置)</block></view>
-					<image class="icon" src="/images/icons/more-gray.png"/>
+					<icon class="more" color="gray"/>
 				</view>
 				<view class="weui-cell row" @tap="category({{info}}, {{index}})">
 					<view class="mr10">商品类型({{info.categoryList.length}})</view>
-					<image class="icon" src="/images/icons/more-gray.png"/>
+					<icon class="more" color="gray"/>
 				</view>
 			</view>
 		</view>
 
 		<view class="op-box column-center" @tap="remove({{index}})">
-			<image class="icon" src="/images/icons/minus.png" wx:if="{{index != 0}}"></image>
+			<icon class="minus" style="color: red;" wx:if="{{index != 0}}"/>
 		</view>
 	</view>
 </template>

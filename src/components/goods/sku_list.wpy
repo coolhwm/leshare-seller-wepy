@@ -6,7 +6,7 @@
 
   <!--添加商品型号-->
   <view class="sku-add-btn row-end" @tap="add">
-    <image class="icon" src="/images/icons/plus.png"></image><text class="ml10">添加商品型号</text>
+    <icon class="plus"/><text class="ml10">添加商品型号</text>
   </view>
 </template>
 

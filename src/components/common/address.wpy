@@ -2,14 +2,14 @@
   <view class="address-box row" wx:if="{{address.fullAddress}}">
     <!--左侧图标-->
     <view class="icon-box">
-      <image class="icon-lg" src="/images/icons/address.png"/>
+      <icon class="address large"/>
     </view>
     <!-- 地址内容 -->
     <view class="info-box column">
       <view class="row-between">
         <text>收货人：{{address.name}} </text>
         <view class="row"  @tap="phone">
-          <image class="icon" src="/images/icons/call.png" />
+          <icon class="call" />
           <text class="primary ml10">{{address.phone}}</text>
         </view>
       </view>

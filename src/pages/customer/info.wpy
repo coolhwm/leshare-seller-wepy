@@ -7,15 +7,14 @@
       <view class="customer-info-box row-between">
 
         <!--左侧头像-->
-        <image class="customer-avatar"
-               src="{{customer.customer.avatarUrl ? customer.customer.avatarUrl: '/images/icons/customer.png'}}"/>
-
+        <image class="customer-avatar" wx:if="{{customer.customer.avatarUrl}}" src="{{customer.customer.avatarUrl}}"/>
+        <icon class="customer customer-avatar" color="gray" wx:else/>
         <!--右侧主区域-->
         <view class="column customer-main-box">
           <!--姓名/打电话-->
           <view class="row-between">
             <text class="xxl">{{customer.customer.nickName ? customer.customer.nickName : '微信用户'}}</text>
-            <image class="icon" src="/images/icons/call.png" @tap.stop="phone"/>
+            <icon class="call" @tap.stop="phone"/>
           </view>
 
           <!--地址信息-->
@@ -26,7 +25,7 @@
               <text>地址：{{customer.address ? customer.address.fullAddress : '暂无地址'}}</text>
             </view>
             <!--更多地址-->
-            <image class="icon" src="/images/icons/more-gray.png"></image>
+            <icon class="more" color="gray"/>
           </view>
 
         </view>
@@ -34,17 +33,17 @@
 
       <view class="customer-hr"></view>
       <view class="row-between vip-column" @tap="moreVip" wx:if="{{member != null}}">
-        <image class="card-image" src="/images/icons/vip_card.png"/>
+        <icon class="vip-card card-image" color="gray"/>
         <view class="row-between">
           <text class="muted">会员等级 : {{member.discountRule.levelName}}</text>
           <view class="vertical-line"/>
           <text class="muted">当前积分 : {{member.bonus}}</text>
-          <image class="more-image" src="/images/icons/more-gray.png"/>
+          <icon class="more" color="gray"/>
         </view>
         <text class="muted" wx:if="{{member == null}}">暂未注册</text>
       </view>
       <view class="row vip-column" @tap="moreVip" wx:if="{{member == null}}">
-        <image class="card-image" src="/images/icons/vip_card.png"/>
+        <icon class="vip-card card-image" color="gray"/>
         <text class="muted ml20">暂未注册</text>
       </view>
       <view class="customer-hr"></view>

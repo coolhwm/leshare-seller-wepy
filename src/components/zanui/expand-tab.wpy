@@ -21,7 +21,7 @@
       >
         <view class="zan-tab__title">
           <view class="row">
-            <image class="icon" src="/images/icons/category.png"/>
+            <icon class="category" color="gray"/>
             <text class="ml10">{{expandText}}</text>
           </view>
         </view>

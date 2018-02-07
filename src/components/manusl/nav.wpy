@@ -6,7 +6,7 @@
     </view>
     <view class="footer row" wx:if="{{navText}}" @tap="goto">
       <text class="muted">{{navText}}</text>
-      <image class="icon" src="/images/icons/more-gray.png" />
+      <icon class="more" color="gray"/>
     </view>
   </view>
 </template>

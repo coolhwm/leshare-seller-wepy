@@ -3,13 +3,13 @@
 
     <!--空占位符-->
     <view class="empty-placeholder row-center" wx:if="{{type == 'empty'}}" @tap="tap" >
-      <image class="icon-xl" src="/images/icons/empty.png"/>
+      <icon class="empty xxlarge"/>
       <text class="ml20">{{message}}</text>
     </view>
 
     <!--新增占位符-->
     <view class="empty-placeholder column-center" wx:if="{{type == 'add'}}" @tap="tap">
-      <image class="icon-xl" src="/images/icons/plus.png"/>
+      <icon class="plus xxlarge"/>
       <text class="mt20">{{message}}</text>
     </view>
 

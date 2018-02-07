@@ -12,7 +12,7 @@
 
 			<!--添加商品型号-->
 			<view class="sku-add-btn row-end" @tap="add">
-				<image class="icon" src="/images/icons/plus.png"/>
+				<icon class="plus"/>
 				<text class="ml10">添加满赠规则</text>
 			</view>
 			<ActionPanel submitText="确定"/>
