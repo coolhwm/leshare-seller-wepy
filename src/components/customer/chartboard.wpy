@@ -52,7 +52,7 @@
     <scroll-view scroll-y="1" style="height:1100rpx;" scroll-top="{{(chatHistory.length-1)*60}}" class="chartboard">
         <block wx:for="{{chatHistory}}" wx:key="index" wx:for-index="index" wx:for-item="item">
             <view class="msgarea{{item.from === 'me' ? ' fromme' : ' other'}}">
-                <image class="icon" src="{{item.customer.avatarUrl ? item.customer.avatarUrl : '/images/icons/customer.png'}}"></image>
+                <image class="icon" src="{{item.from === 'me' ? '/images/icons/customer.png' : avatarUrl}}"></image>
                 <view class="msg">{{item.content}}</view>
                 <view class="clearfix"></view>
             </view>
@@ -64,7 +64,8 @@
 
   export default class Chartboard extends wepy.component {
     props = {
-      chatHistory: {}
+      chatHistory: {},
+      avatarUrl: {}
     };
     fixPosition(focus) {
       this.focus = focus;

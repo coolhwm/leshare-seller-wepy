@@ -6,7 +6,7 @@ export default class customerService extends base {
    * 聊天记录
    * */
   static async chatHistory(shopId, openId) {
-    const url = `${this.openUrl}/kefu/chat_history?shop_id=${shopId}&open_id=${openId}`;
+    const url = `${this.baseUrl}/kefu/chat_history?shop_id=${shopId}&open_id=${openId}`;
     const data = await this.get(url);
     return this.processChatHistoryTransformation(data);
   }
@@ -15,7 +15,7 @@ export default class customerService extends base {
    * 客服列表
    * */
   static async chatList(shopId) {
-    const url = `${this.openUrl}/kefu/chat_list?shop_id=${shopId}`;
+    const url = `${this.baseUrl}/kefu/chat_list?shop_id=${shopId}`;
     return new Page(url, this.processChatInfoTransformation.bind(this));
   }
 
@@ -33,7 +33,6 @@ export default class customerService extends base {
     params.nickName = chatInfo.nickName;
     params.avatarUrl = chatInfo.avatarUrl;
     params.openId = chatInfo.openId;
-    params.appCode = chatInfo.appCode;
     return params;
   }
 
@@ -50,7 +49,6 @@ export default class customerService extends base {
       } else {
         params[index].from = 'orther'
       }
-      params[index].avatarUrl = '';
     });
     return params;
   }

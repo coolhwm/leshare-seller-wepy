@@ -66,7 +66,6 @@
       // baseUrl: 'https://api.leshare.shop/v2/seller',
       // baseUrl: 'http://192.168.31.124:9999/v2/seller'
       baseUrl: 'http://localhost:9999/v2/seller',
-      openUrl: 'http://localhost:8989/open',
       socketUrl: 'ws://localhost:8989/leshare-kefu',
       version: 'v2.0.4'
     };

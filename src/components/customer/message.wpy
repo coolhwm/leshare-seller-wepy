@@ -38,7 +38,7 @@
 </style>
 <template>
   <view class="message">
-    <view class="item" @tap="select({{chats.openId}},{{chats.nickName}})">
+    <view class="item" @tap="select({{chats.openId}},{{chats.avatarUrl}},{{chats.nickName}})">
       <view class="header">
         <image class="img" src="{{chats.avatarUrl}}"></image>
       </view>
@@ -61,9 +61,10 @@
     };
 
     methods = {
-      select(id, nickName) {
+      select(id, avatarUrl, nickName) {
         const params = {
           id: id,
+          avatarUrl: avatarUrl,
           nickName: nickName
         };
         this.$root.$navigate('../../pages/customer/chat?param=' + JSON.stringify(params));

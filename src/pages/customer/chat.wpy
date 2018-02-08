@@ -3,7 +3,7 @@
 </style>
 <template>
     <view class="" wx:if="{{init}}">
-        <chartboard :chatHistory.sync="chatHistory"/>
+        <chartboard :chatHistory.sync="chatHistory" :avatarUrl.sync="avatarUrl"/>
         <myinput @send.user="send"/>
     </view>
 </template>
@@ -26,7 +26,8 @@
       chatHistory: [],
       openId: '',
       nickName: '',
-      shopId: null
+      shopId: null,
+      avatarUrl: ''
     };
     data = {...this.def};
 
@@ -34,6 +35,7 @@
       const param = JSON.parse(option.param);
       this.openId = param.id;
       this.nickName = param.nickName;
+      this.avatarUrl = param.avatarUrl;
       await this.initLoad();
       await this.initSocket();
     }
