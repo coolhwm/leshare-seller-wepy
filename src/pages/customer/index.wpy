@@ -37,9 +37,7 @@
       };
 
       async updateCustomerService() {
-        // 由shopId查询app_id
-        const shopId = wepy.getStorageSync('shop_id');
-        this.page = await customerService.chatList(shopId);
+        this.page = await customerService.chatList();
         await this.next();
       }
 

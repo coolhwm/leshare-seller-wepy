@@ -5,8 +5,8 @@ export default class customerService extends base {
   /**
    * 聊天记录
    * */
-  static async chatHistory(shopId, openId) {
-    const url = `${this.baseUrl}/kefu/chat_history?shop_id=${shopId}&open_id=${openId}`;
+  static async chatHistory(openId) {
+    const url = `${this.baseUrl}/kefu/chat_history?open_id=${openId}`;
     const data = await this.get(url);
     return this.processChatHistoryTransformation(data);
   }
@@ -14,8 +14,8 @@ export default class customerService extends base {
   /**
    * 客服列表
    * */
-  static async chatList(shopId) {
-    const url = `${this.baseUrl}/kefu/chat_list?shop_id=${shopId}`;
+  static async chatList() {
+    const url = `${this.baseUrl}/kefu/chat_list`;
     return new Page(url, this.processChatInfoTransformation.bind(this));
   }
 

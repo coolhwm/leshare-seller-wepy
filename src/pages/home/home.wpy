@@ -141,6 +141,8 @@
       // 写入缓存
       wepy.setStorageSync('limit', this.limit);
       this.shop = await shop.info();
+      // 写入缓存
+      wepy.setStorageSync('shop_image', this.shop.avatar);
       this.show = true;
       await this.reload();
       Event.listen(Event.USER_LOGOUT, this.clear.bind(this), this);
