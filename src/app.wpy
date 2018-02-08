@@ -78,6 +78,8 @@
         'pages/customer/coupon_send',
         'pages/customer/info',
         'pages/customer/member_info',
+        'pages/customer/index',
+        'pages/customer/chat',
         'pages/order/index',
         'pages/shop/index',
         'pages/shop/contact',

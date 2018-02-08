@@ -55,6 +55,8 @@ export default class Event {
   static ADDRESS_LIST_UPDATE = 'ADDRESS_LIST_UPDATE';
   // 地址列表更新
   static MEMBER_INFO_UPDATE = 'MEMBER_INFO_UPDATE';
+  // 聊天列表更新
+  static CHAT_LIST_UPDATE = 'CHAT_LIST_UPDATE';
   static listen(eventName, callback, observer) {
     WxNotificationCenter.addNotification(eventName, callback, observer);
   }

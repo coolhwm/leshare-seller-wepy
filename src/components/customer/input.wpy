@@ -1,0 +1,105 @@
+<style type="scss">
+    $fontcolor: #7b7b7b;
+    $activecolor: #13b113;
+    .input {
+        color: $fontcolor;
+        position: fixed;
+        bottom: 0;
+        height: 100rpx;
+        width: 100%;
+        border-top: 1px solid #d8d8d8;
+        background-color: #ededed;
+        font-size: 22rpx;
+        .input_layout {
+            position: relative;
+            .input_icon {
+                position: absolute;
+                width: 90rpx;
+                height: 90rpx;
+                &.voice {
+                    left: 20rpx;
+                }
+                &.face {
+                    right: 120rpx;
+                }
+                &.plus {
+                    right: 20rpx;
+                }
+            }
+            .input_text {
+                border-bottom: 1px solid #d8d8d8;
+                margin-left: 120rpx;
+                margin-right: 240rpx;
+                height: 80rpx;
+                font-size: 32rpx;
+                color: #000;
+                &.focus {
+                    border-bottom: 1px solid #9bb793;
+                }
+            }
+            .send {
+                background-color: #14b012;
+                display: inline-block;
+                box-sizing: border-box;
+                position: absolute;
+                border: 1px solid #378c37;
+                border-radius: 5rpx;
+                right:20rpx;
+                width:90rpx;
+                height: 74rpx;
+                line-height: 72rpx;
+                color: white;
+                text-align: center;
+                font-size: 30rpx;
+                margin-top:8rpx;
+                &.hidden {
+                    display: none;
+                }
+            }
+        }
+    }
+</style>
+<template>
+    <view class="input">
+        <view class="input_layout">
+            <image class="input_icon voice" src='/images/icons/voice.png'/>
+            <image class="input_icon face" src='/images/icons/face.png'/>
+            <image class="input_icon plus" src='/images/icons/service_plus.png'/>
+            <view class="send{{readyToSend.length == 0 ? ' hidden' : ''}}" @tap="send">发送</view>
+            <input @input="input" value="{{readyToSend}}" class="input_text{{focusFlag ? ' focusFlag' : ''}}"
+                   @focus="focus" @blur="blur" @type="input"/>
+        </view>
+    </view>
+</template>
+<script>
+  import wepy from 'wepy';
+
+  export default class Input extends wepy.component {
+    data = {
+      focusFlag: false,
+      readyToSend: ''
+    };
+    methods = {
+      send() {
+        if (this.readyToSend) {
+          this.$emit('send', this.readyToSend);
+        }
+        this.clear();
+      },
+      input (evt) {
+        this.readyToSend = evt.detail.value;
+      },
+      focus() {
+        this.focusFlag = true;
+        this.$invoke('../chartboard', 'fixPosition', this.focusFlag);
+      },
+      blur() {
+        this.focusFlag = false;
+        this.$invoke('../chartboard', 'fixPosition', this.focusFlag);
+      }
+    };
+    clear() {
+      this.readyToSend = '';
+    }
+  }
+</script>

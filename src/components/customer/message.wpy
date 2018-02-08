@@ -1,0 +1,74 @@
+<style type="scss">
+  $fontcolor: #7b7b7b;
+  $activecolor: #13b113;
+  .message {
+    background-color: #fff;
+    .item {
+      height: 136rpx;
+      border-bottom: 1px solid #dad9d6;
+      box-sizing: border-box;
+      padding: 20rpx;
+      position: relative;
+      .header {
+        width: 100rpx;
+        height: 100rpx;
+        position: absolute;
+        overflow: hidden;
+        border-radius: 10rpx;
+        .img {
+          width: 100rpx;
+          height: 100rpx;
+        }
+      }
+      .content {
+        margin-left: 120rpx;
+        .name {
+          color: #000;
+          font-size: 33rpx;
+        }
+        .last-msg {
+          overflow: hidden;
+          height: 45rpx;
+          color: $fontcolor;
+          font-size: 26rpx;
+        }
+      }
+    }
+  }
+</style>
+<template>
+  <view class="message">
+    <view class="item" @tap="select({{chats.openId}},{{chats.avatarUrl}},{{chats.nickName}})">
+      <view class="header">
+        <image class="img" src="{{chats.avatarUrl}}"></image>
+      </view>
+      <view class="content">
+        <view class="row-between">
+          <view class="name">{{chats.nickName}}</view>
+          <!--<text class="msg-time muted xs">{{chats.msgTime ? chats.msgTime : ""}}</text>-->
+        </view>
+        <view class="last-msg">{{chats.content ? chats.content: ""}}</view>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+
+  export default class Message extends wepy.component {
+    props = {
+      chats: {}
+    };
+
+    methods = {
+      select(id, avatarUrl, nickName) {
+        const params = {
+          id: id,
+          avatarUrl: avatarUrl,
+          nickName: nickName
+        };
+        this.$root.$navigate('../../pages/customer/chat?param=' + JSON.stringify(params));
+      }
+    };
+  }
+</script>
