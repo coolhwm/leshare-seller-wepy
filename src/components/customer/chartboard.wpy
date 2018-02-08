@@ -1,0 +1,81 @@
+<style type="scss">
+    .chartboard {
+        padding-bottom: 120rpx;
+        &.fixed {
+            position:fixed;
+            left:0;
+            right:0;
+            overflow-y:scroll;
+        }
+        .msgarea {
+            padding: 20rpx 10rpx;
+            .clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden}
+            .clearfix{height:1%;}
+            .msg {
+                border: 1px solid #d8d8d8;
+                font-size: 32rpx;
+                display: inline-block;
+                padding: 14rpx 20rpx;
+                max-width: 450rpx;
+                border-radius: 15rpx;
+            }
+            .icon {
+                width: 80rpx;
+                height: 80rpx;
+            }
+            &.fromme {
+                .msg {
+                    background-color: #9fe757;
+                    float: right;
+                    margin-right: 10rpx;
+                }
+                .icon {
+                    float: right;
+                    margin-right: 10rpx;
+                }
+            }
+            &.other {
+                .msg {
+                    background-color: #fff;
+                    float: left;
+                    margin-left: 10rpx;
+                }
+                .icon {
+                    float: left;
+                    margin-left: 10rpx;
+                }
+            }
+        }
+    }
+</style>
+<template>
+    <scroll-view scroll-y="1" style="height:1100rpx;" scroll-top="{{(chatHistory.length-1)*60}}" class="chartboard">
+        <block wx:for="{{chatHistory}}" wx:key="index" wx:for-index="index" wx:for-item="item">
+            <view class="msgarea{{item.from === 'me' ? ' fromme' : ' other'}}">
+                <image class="icon" src="{{item.from === 'me' ? shopImgeUrl : avatarUrl}}"></image>
+                <view class="msg">{{item.content}}</view>
+                <view class="clearfix"></view>
+            </view>
+        </block>
+    </scroll-view>
+</template>
+<script>
+  import wepy from 'wepy';
+
+  export default class Chartboard extends wepy.component {
+    props = {
+      chatHistory: {},
+      avatarUrl: {}
+    };
+    data = {
+      shopImgeUrl: ''
+    };
+    onLoad() {
+      this.shopImgeUrl = wepy.getStorageSync('shop_image');
+    }
+    fixPosition(focus) {
+      this.focus = focus;
+      this.$apply();
+    }
+  }
+</script>

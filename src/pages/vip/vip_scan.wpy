@@ -33,7 +33,7 @@
             <view class="weui-cell__hd">
               <view class="weui-label">{{item.ruleName}}</view>
             </view>
-            <Stepper :item.sync="item" index.sync="index" @minus.user="minus" @plus.user="plus"/>
+            <Stepper :item.sync="item" :index.sync="index" @minus.user="minus" @plus.user="plus"/>
             <view class="weui-cell__ft">
               <view class="ml20">{{item.unit}}</view>
             </view>

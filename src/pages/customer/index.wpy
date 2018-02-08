@@ -1,0 +1,61 @@
+<style type="scss">
+.tab_item {
+    height: 100%;
+}
+</style>
+<template>
+    <view class="container" wx:if="{{init}}">
+        <view class="tab_item">
+            <repeat for="{{page.list}}" key="index" value="index" item="item">
+                <message :chats.sync="item"/>
+            </repeat>
+        </view>
+        <!-- 加载提示 -->
+        <Loadmore :page.sync="page"/>
+
+        <!--占位符-->
+        <Placeholder :show.sync="isPageEmpty" message="您还没有客服聊天信息"/>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import Message from '../../components/customer/message';
+    import customerService from '../../api/customer_service';
+    import pagination from '../../mixins/pagination';
+    import base from '../../mixins/base';
+    import Placeholder from '../../components/common/placeholder';
+    import Loadmore from '../../components/weui/loadmore';
+
+    export default class Index extends wepy.page {
+      data = {
+        init: false,
+        currentTab: 0,
+        page: {
+          list: []
+        }
+      };
+
+      async updateCustomerService() {
+        this.page = await customerService.chatList();
+        await this.next();
+      }
+
+      async onShow() {
+        await this.updateCustomerService();
+      }
+
+      mixins = [base, pagination];
+      config = {
+        'navigationBarTitleText': '乐享客服',
+        'navigationBarTextStyle': 'white',
+        'navigationBarBackgroundColor': '#3b3a40'
+      };
+
+      components = {
+        message: Message,
+        Placeholder: Placeholder,
+        Loadmore: Loadmore
+      };
+    }
+</script>

@@ -6,7 +6,7 @@
 				<text class="title-size">满赠规则</text>
 			</view>
 			<repeat for="{{presents}}" key="present" index="index" item="item">
-				<Present :info.sync="item" index.sync="index" @remove.user="remove"
+				<Present :info.sync="item" :index.sync="index" @remove.user="remove"
 								 @change.user="change" @category.user="category" @coupon.user="coupon"/>
 			</repeat>
 

@@ -6,7 +6,7 @@
         <text class="title-size">会员等级</text>
       </view>
       <repeat for="{{discounts}}" key="discounts" index="index" item="item">
-        <Discount :info.sync="item" index.sync="index" @remove.user="remove"
+        <Discount :info.sync="item" :index.sync="index" @remove.user="remove"
                   @change.user="change" @category.user="category"/>
       </repeat>
 

@@ -55,6 +55,7 @@
     data = {};
     methods = {
       input(index, e) {
+        console.info(index, e);
         const fieldName = e.currentTarget.id;
         const fieldValue = e.detail.value;
         this.$emit('change', {index, fieldName, fieldValue});

@@ -1,0 +1,113 @@
+<style type="scss">
+    @import "../../styles/variable";
+</style>
+<template>
+    <view class="" wx:if="{{init}}">
+        <chartboard :chatHistory.sync="chatHistory" :avatarUrl.sync="avatarUrl"/>
+        <myinput @send.user="send"/>
+    </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+  import Input from '../../components/customer/input';
+  import Chartboard from '../../components/customer/chartboard';
+  import base from '../../mixins/base';
+  import customerService from '../../api/customer_service';
+  import input from '../../mixins/input';
+
+  export default class Chat extends wepy.page {
+    def = {
+      init: false,
+      webSocket: null,
+      socketOpen: false,
+      socketMsgQueue: [],
+      chatHistory: [],
+      openId: '',
+      nickName: '',
+      shopId: null,
+      avatarUrl: ''
+    };
+    data = {...this.def};
+
+    async onLoad(option) {
+      this.shopId = wepy.getStorageSync('shop_id');
+      const param = JSON.parse(option.param);
+      this.openId = param.id;
+      this.nickName = param.nickName;
+      this.avatarUrl = param.avatarUrl;
+      this.initSocket();
+      await this.initLoad();
+    }
+
+    async initLoad() {
+      this.chatHistory = await customerService.chatHistory(this.openId);
+      this.loaded();
+    }
+
+    onShow() {
+      wepy.setNavigationBarTitle({title: this.nickName});
+    }
+
+    onUnload() {
+      wepy.closeSocket();
+    }
+
+    initSocket() {
+      // 链接地址
+      const url = `wss://wx.leshare.shop/leshare-kefu?shop_id=${this.shopId}&open_id=${this.openId}`;
+      wepy.connectSocket({url: url});
+
+      // 判断链接成功
+      wepy.onSocketOpen(res => {
+        this.socketOpen = true;
+        this.$apply();
+        console.log('WebSocket连接已打开！')
+      });
+
+      // 判断链接失败
+      wepy.onSocketError(res => {
+        this.socketOpen = false;
+        this.$apply();
+        console.log('WebSocket连接打开失败，请检查！')
+      });
+
+      // 接受信息
+      wepy.onSocketMessage(res => {
+        console.log('收到服务器内容：' + res.data);
+        this.chatHistory.push({content: res.data, avaterUrl: this.chatHistory.avatarUrl, from: 'orther'});
+        this.$apply();
+      });
+    }
+
+    // 发送信息
+    sendSocketMessage(msg) {
+      if (this.socketOpen) {
+        wepy.sendSocketMessage({
+          data: msg
+        });
+      } else {
+        this.socketMsgQueue.push(msg)
+      }
+    }
+
+    methods = {
+      async send(info) {
+        this.chatHistory.push({content: info, avaterUrl: '', from: 'me'});
+        this.sendSocketMessage(info);
+        this.input.readyToSend = '';
+      }
+    };
+    config = {
+      'navigationBarTitleText': '聊天',
+      'navigationBarTextStyle': 'white',
+      'navigationBarBackgroundColor': '#3b3a40'
+    };
+    components = {
+      myinput: Input,
+      chartboard: Chartboard
+    };
+    mixins = [base, input]
+  }
+</script>
