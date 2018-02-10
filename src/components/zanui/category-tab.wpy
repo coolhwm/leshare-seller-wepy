@@ -7,7 +7,7 @@
     <!--类型筛选-->
     <view class="category-box column" @tap="show">
       <view class="vr row-center">
-        <image class="icon" src="/images/icons/category.png"/>
+        <icon class="category" color="gray"/>
         <text class="category-text ml10 muted inline">{{categoriesTitle}}</text>
       </view>
     </view>

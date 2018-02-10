@@ -2,7 +2,7 @@
   <view class="container" wx:if="{{init}}">
     <view class="weui-cells weui-cells_after-title" wx:if="{{customerId == null}}">
       <view class="weui-select user-box" @tap="chooseUser">
-        <image class="icon mr20" src="/images/icons/plus.png"/>请选择用户
+        <icon class="plus mr20"/>请选择用户
       </view>
     </view>
     <view wx:if="{{customerId != null}}">

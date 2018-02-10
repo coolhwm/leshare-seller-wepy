@@ -31,13 +31,13 @@
         <!--数量选择器-->
         <view class="quantity row">
           <block wx:if="{{goods.num > 0}}">
-            <image class="minus" src="/images/icons/minus.png" @tap.stop="minus({{goods}})" />
+            <icon class="minus" @tap.stop="minus({{goods}})"/>
             <view class="number">
               <text>{{goods.num}}</text>
             </view>
           </block>
-          <image class="plus" src="/images/icons/plus-gray.png" wx:if="{{goods.goodsStocks[0].stock == 0 || goods.num >= goods.goodsStocks[0].stock}}" />
-          <image class="plus" src="/images/icons/plus.png" @tap.stop="plus({{goods}})" wx:else/>
+          <icon class="plus" color="gray" wx:if="{{goods.goodsStocks[0].stock == 0 || goods.num >= goods.goodsStocks[0].stock}}"/>
+          <icon class="plus" @tap.stop="plus({{goods}})" wx:else/>
       </view>
       </view>
     </view>

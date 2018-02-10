@@ -17,8 +17,7 @@
           </view>
         </view>
       </view>
-      <image class="icon-qrcode" src="/images/icons/qrcode.png"
-             @tap.stop="canvas({{member}},{{userInfo}},{{vipCard}})"/>
+      <icon class="icon-qrcode qrcode" color="white" style="font-size: 80rpx;line-height: 80rpx;" @tap.stop="canvas({{member}},{{userInfo}},{{vipCard}})"/>
     </view>
     <view class="row-between" style="width: 100%">
       <text class="xxl">{{numberText}}</text>

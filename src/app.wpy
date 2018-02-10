@@ -1,9 +1,9 @@
-<style lang="scss" src="./styles/zent.scss"></style>
-<style lang="scss" src="./styles/base.scss"></style>
-
 <style lang="scss">
-  @import "./styles/weui";
-  @import "./styles/weui-extend";
+    @import "./styles/base";
+    @import "./styles/zent";
+    @import "./styles/weui";
+    @import "./styles/icons";
+    @import "./styles/weui-extend";
 </style>
 
 <script>

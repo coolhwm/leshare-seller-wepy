@@ -4,7 +4,7 @@
     <view class="order-header-container colunm">
       <view class="row-between">
         <view class="user-info-container">
-          <image class="icon" src="/images/icons/shop-gray.png"/>
+          <icon class="shop" color="gray"/>
           <text class="sm ml10">{{shop.name}}</text>
         </view>
         <text class="sm primary" wx:if="{{order.statusText}}">{{order.statusText}}{{order.paymentType == 0 ? '(线下支付)' : ''}}</text>
