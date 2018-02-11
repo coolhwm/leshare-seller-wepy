@@ -198,8 +198,11 @@
         if (options.scene) {
           this.scene = decodeURIComponent(options.scene);
           this.member = await member.Info(options.scene);
-          const {customer} = await userInfo.detailInfo(this.member.customerId);
-          this.customer = customer;
+          // 可能出现没用户信息的情况
+          if (this.member.customerId != 0) {
+            const {customer} = await userInfo.detailInfo(this.member.customerId);
+            this.customer = customer;
+          }
         }
         // 用户信息进入
         if (preload) {
