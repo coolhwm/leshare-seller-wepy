@@ -190,7 +190,10 @@ const STATUS_ACTIONS = {
   '10-1-3': [ACTION.CLOSE, ACTION.RECEIVE],
   '10-1-5': [ACTION.DEAL_REFUND],
   // 离线支付
-  '40-1-1': [ACTION.CLOSE]
+  '40-1-1': [ACTION.CLOSE],
+  // 拼团
+  '50-1-2': [ACTION.SEND],
+  '50-1-3': [ACTION.RECEIVE]
 };
 
 /**  内部方法 **/

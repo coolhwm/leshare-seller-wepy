@@ -25,11 +25,10 @@
   import ActionBar from '../../components/common/action_bar';
 
   export default class OrderRemark extends wepy.page {
-    def = {
+    data = {
       orderId: '',
       init: false
     };
-    data = {...this.def};
     onLoad (options) {
       this.orderId = options.orderId;
       const sellerNote = options.sellerNote;
@@ -38,10 +37,6 @@
       }
       this.init = true;
     };
-    // 卸载清理
-    onUnload() {
-      Object.assign(this, this.def);
-    }
     methods = {
       // 提交表单
       async submit() {

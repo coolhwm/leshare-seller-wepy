@@ -75,7 +75,7 @@
   import FormTips from '../../components/weui/tips';
 
   export default class OrderSend extends wepy.page {
-    def = {
+    data = {
       order: {
         orderGoodsInfos: []
       },
@@ -89,7 +89,6 @@
       company: {},
       delivers: []
     };
-    data = {...this.def};
     async onLoad (options) {
       const orderId = options.orderId;
       this.order = await order.detail(orderId);
@@ -102,10 +101,6 @@
       this.$apply();
       Tips.loaded();
     };
-    // 卸载清理
-    onUnload() {
-      Object.assign(this, this.def);
-    }
     methods = {
       // 提交表单
       async submit() {
