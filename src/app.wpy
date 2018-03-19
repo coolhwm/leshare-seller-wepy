@@ -14,8 +14,8 @@
     globalData = {
       auth: {},
       shop: {},
-      appCode: null,
-      baseUrl: null,
+      appCode: 'XXX',
+      baseUrl: 'https://www.easy-mock.com/mock/5aa15ee0f6ed4a592fb5d6ec/leshare',
       version: 'v3.0.0'
     };
     constructor() {
