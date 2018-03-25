@@ -6,7 +6,7 @@
 - 目前后端数据是基于`easy-mock`的随机模拟数据；
 - 目前只对接了部分接口，如果接口报错404，说明该接口还尚未配置Mock数据，后续会继续完善。
 
-> 小程序买家端：https://github.com/coolhwm/leshare-food-wepy
+> 小程序商城买家端：https://github.com/coolhwm/leshare-shop-wepy
 
 ## 部分截图
 ![预览1](http://img.leshare.shop/github/seller/preview-1.jpg)
