@@ -213,11 +213,8 @@
         this.input.type = 'CASH';
         const myDate = new Date();
         this.input.beginTime = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}`;
-        if (myDate.getMonth() == 11) {
-          this.input.dueTime = `${myDate.getFullYear() + 1}-01-${myDate.getDate()}`;
-        } else {
-          this.input.dueTime = `${myDate.getFullYear()}-${myDate.getMonth() + 2}-${myDate.getDate()}`;
-        }
+        myDate.setTime((myDate.getTime() + 30 * 24 * 60 * 60 * 1000));
+        this.input.dueTime = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}`
       }
       this.loaded();
     }
