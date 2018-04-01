@@ -135,7 +135,9 @@
         'pages/manusl/select_address',
         'pages/manusl/user_management',
         'pages/manusl/member_list',
-        'pages/comment/comment'
+        'pages/comment/comment',
+        'pages/booking/list',
+        'pages/booking/booking_detail'
       ],
       window: {
         backgroundTextStyle: 'dark',

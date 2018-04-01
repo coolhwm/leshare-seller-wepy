@@ -156,7 +156,8 @@ export default class goods extends base {
       isRecommend: goods.isRecommend == 1,
       globalCid: goods.globalCid,
       innerCid: goods.innerCid,
-      goodsId: goods.id
+      goodsId: goods.id,
+      foodBoxFee: goods.extraParam ? goods.extraParam.foodBoxFee : ''
     };
     let skuList;
     const details = goods.goodsDetails ? goods.goodsDetails : [];
