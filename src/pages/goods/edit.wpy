@@ -22,6 +22,17 @@
       <view class="detail-box">
         <view class="weui-cells-form">
 
+          <view class="weui-cell weui-cell_input" >
+            <view class="weui-cell__hd" >
+              <view class="weui-label">餐盒费</view>
+            </view>
+            <view class="weui-cell__bd">
+              <input class="weui-input" id="foodBoxFee" type="number" @blur="input" value="{{input.foodBoxFee}}"  placeholder="请填写商品餐盒费"/>
+            </view>
+            <view class="weui-cell__ft">
+            </view>
+          </view>
+
           <view class="weui-cell" @tap="showInner">
             <view class="weui-cell__hd">
               <view class="weui-label">商品分类</view>
@@ -149,6 +160,10 @@
       this.loaded();
     };
     methods = {
+      input(e) {
+        this.input.foodBoxFee = e.detail.value;
+        console.info(this.input)
+      },
       // 删除商品
       async remove() {
         await Tips.confirm('是否确认删除该商品？');
@@ -186,6 +201,9 @@
         data.globalCid = 1; // 待完善
         data.status = this.input.status ? 0 : 1;
         data.innerCid = this.innerCategories.find(item => item.name == this.input.inner).id;
+        data.extraParam = {
+          foodBoxFee: this.input.foodBoxFee * 1
+        };
         // 详情信息
         data.goodsDetails = this.details;
         // 处理SKU信息

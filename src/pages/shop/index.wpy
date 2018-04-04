@@ -27,6 +27,8 @@
 
       <NavCategory title="分类管理" url="../goods/category"/>
 
+      <NavBooking title="预约管理" url="../booking/list"/>
+
       <NavComment title="商品评论" url="../comment/comment"/>
 
 
@@ -117,7 +119,8 @@
       NavLogout: Navigator,
       AvatarPanel: AvatarPanel,
       NavManusl: Navigator,
-      NavComment:Navigator
+      NavComment: Navigator,
+      NavBooking: Navigator
     };
     config = {
       navigationBarTitleText: '我的信息'

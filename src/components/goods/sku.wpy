@@ -58,6 +58,7 @@
         console.info(index, e);
         const fieldName = e.currentTarget.id;
         const fieldValue = e.detail.value;
+        console.info(index, fieldName, fieldValue)
         this.$emit('change', {index, fieldName, fieldValue});
       },
       remove(index) {
