@@ -6,7 +6,11 @@ const TYPE = {
   TAKEAWAY: 20,
   FORHERE: 30,
   PACK: 33,
-  OFFLINE: 40
+  OFFLINE: 40,
+  GROUP: 50,
+  BOOKING: 60,
+  BARGAIN: 70,
+  BALANCE: 80
 };
 /**
  * 支付方式

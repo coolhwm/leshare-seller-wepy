@@ -22,12 +22,6 @@
     <view class="row-between" style="width: 100%">
       <text class="xxl">{{numberText}}</text>
       <text class="sm">{{parsentText}}</text>
-      <!--<view class="row-between">-->
-        <!---->
-      <!--</view>-->
-      <!--<view class="card-title">-->
-        <!--<text>{{vipCard.title}}</text>-->
-      <!--</view>-->
     </view>
 
   </view>
