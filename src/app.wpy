@@ -137,7 +137,8 @@
         'pages/manusl/member_list',
         'pages/comment/comment',
         'pages/booking/list',
-        'pages/booking/booking_detail'
+        'pages/booking/booking_detail',
+        'pages/shop/income'
       ],
       window: {
         backgroundTextStyle: 'dark',

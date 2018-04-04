@@ -39,7 +39,6 @@ export default class count extends base {
     return this._processCount(data);
   }
 
-
   /**
    * 结果处理
    */

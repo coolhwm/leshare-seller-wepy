@@ -21,6 +21,30 @@ export default class booking extends base {
     return this.get(url).then(data => this._processBookingDetail(data));
   }
 
+  /***
+   * 更改预约商品订单状态为待服务
+   */
+  static bookingWaiting (id) {
+    const url = `${this.baseUrl}/booking/waiting/${id}`;
+    return this.put(url);
+  }
+
+  /***
+   * 更改预约商品订单状态为服务中
+   */
+  static bookingProcessing (id) {
+    const url = `${this.baseUrl}/booking/processing/${id}`;
+    return this.put(url);
+  }
+
+  /***
+   * 更改预约商品订单状态为已完成
+   */
+  static bookingFinish (id) {
+    const url = `${this.baseUrl}/booking/finish/${id}`;
+    return this.put(url);
+  }
+
   // 预定列表
   static _processBookingListItem (data) {
     // 处理预览图
