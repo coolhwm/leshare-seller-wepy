@@ -1,0 +1,77 @@
+<template>
+  <view class="column income-box">
+    <block wx:for="{{payment}}" wx:for-item="item" wx:key="index">
+      <view wx:if="{{item.orderType == 10}}" class="row-between item-box">
+        <text class="lg">普通订单</text>
+        <text class="lg">{{item.price}}</text>
+      </view>
+      <view wx:if="{{item.orderType == 20}}" class="row-between item-box">
+        <text class="lg">外卖订单</text>
+        <text class="lg">{{item.price}}</text>
+      </view>
+      <view wx:if="{{item.orderType == 30}}" class="row-between item-box">
+        <text class="lg">堂食订单</text>
+        <text class="lg">{{item.price}}</text>
+      </view>
+      <view wx:if="{{item.orderType == 33}}" class="row-between item-box">
+        <text class="lg">打包订单</text>
+        <text class="lg">{{item.price}}</text>
+      </view>
+      <view wx:if="{{item.orderType == 40}}" class="row-between item-box">
+        <text class="lg">线下支付</text>
+        <text class="lg">{{item.price}}</text>
+      </view>
+      <view wx:if="{{item.orderType == 50}}" class="row-between item-box">
+        <text class="lg">拼团订单</text>
+        <text class="lg">{{item.price}}</text>
+      </view>
+      <view wx:if="{{item.orderType == 60}}" class="row-between item-box">
+        <text class="lg">预约订单</text>
+        <text class="lg">{{item.price}}</text>
+      </view>
+      <view wx:if="{{item.orderType == 70}}" class="row-between item-box">
+        <text class="lg">砍价订单</text>
+        <text class="lg">{{item.price}}</text>
+      </view>
+      <view wx:if="{{item.orderType == 80}}" class="row-between item-box">
+        <text class="lg">余额支付</text>
+        <text class="lg">{{item.price}}</text>
+      </view>
+      <view wx:if="{{item.orderType == 90}}" class="row-between item-box">
+        <text class="lg">虚拟产品订单</text>
+        <text class="lg">{{item.price}}</text>
+      </view>
+    </block>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Income extends wepy.page {
+    data = {
+      payment: null
+    };
+    onLoad ({typesPayment}) {
+      this.payment = JSON.parse(typesPayment);
+    };
+    config = {
+      navigationBarTitleText: '成交额明细'
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+
+  .income-box{
+    background-color: white;
+    .item-box{
+      padding: 20rpx;
+    }
+    .item-box + .item-box{
+      border-top: $border;
+    }
+  }
+</style>

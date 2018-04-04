@@ -6,7 +6,7 @@
     </view>
     <!--今日统计区域-->
     <view class="today-box">
-      <view class="column-center">
+      <view class="column-center" @tap="typesPayment({{today}})">
         <text class="xl">今日付款金额(元)</text>
         <text class="today-price-text">{{today.income}}</text>
       </view>
@@ -59,7 +59,7 @@
           <text class="muted">本月订单数</text>
         </view>
         <view class="vr"/>
-        <view class="count-item column-center">
+        <view class="count-item column-center" @tap="typesPayment({{month}})">
           <text class="count-value">￥{{month.income}}</text>
           <text class="muted">本月成交额</text>
         </view>
@@ -104,6 +104,23 @@
           <text>用户管理</text>
         </navigator>
       </view>
+
+      <view class="hr"></view>
+
+      <view class="row-around">
+        <navigator class="operation-row column-center" url="../booking/list">
+          <image src="/images/home/booking.png"/>
+          <text>预约管理</text>
+        </navigator>
+        <navigator class="operation-row column-center"  url="../vip/vip_card">
+          <image src="/images/home/vip_card.png"/>
+          <text>会员卡管理</text>
+        </navigator>
+        <navigator class="operation-row column-center" url="../notice/list">
+          <image src="/images/home/notice.png"/>
+          <text>公告管理</text>
+        </navigator>
+      </view>
     </view>
   </view>
   <view class="tab-border" />
@@ -117,8 +134,8 @@
   import shop from '../../api/shop';
   import base from '../../mixins/base';
   import Event from '../../utils/Event';
-  import Tips from '../../utils/Tips';
   import WxUtils from '../../utils/WxUtils';
+  import Tips from '../../utils/Tips';
   let interval = null;
 
   export default class HomeIndex extends wepy.page {
@@ -244,6 +261,16 @@
           Tips.alert('未知二维码');
         } finally {
           Tips.loaded();
+        }
+      },
+      typesPayment (payment) {
+        if (payment.typesPayment) {
+          const param = {
+            typesPayment: JSON.stringify(payment.typesPayment)
+          };
+          this.$navigate('../shop/income', param)
+        } else {
+          Tips.alert('暂无数据');
         }
       }
     };

@@ -13,13 +13,9 @@
 
       <NavStatus title="营业状态" url="../shop/status" :describe.sync="statusText"/>
 
-      <NavNotice title="店铺公告" url="../notice/list"/>
-
       <NavManusl title="手工下单" url="../manusl/index" type="manusl"/>
 
       <NavDelivery title="运费模板" url="../delivery/list" type="delivery"/>
-
-      <NavVip title="会员卡管理" url="../vip/vip_card" type="vip"/>
 
       <NavDeliver title="配送员管理" url="../delivery/deliver_list" type="deliveryUser"/>
 
@@ -27,10 +23,7 @@
 
       <NavCategory title="分类管理" url="../goods/category"/>
 
-      <NavBooking title="预约管理" url="../booking/list"/>
-
       <NavComment title="商品评论" url="../comment/comment"/>
-
 
       <NavShops title="切换店铺" @tap.user="shops"/>
 
@@ -109,9 +102,7 @@
       Copyright: Copyright,
       Version: Navigator,
       NavStatus: Navigator,
-      NavNotice: Navigator,
       NavDelivery: Navigator,
-      NavVip: Navigator,
       NavDeliver: Navigator,
       NavReduce: Navigator,
       NavCategory: Navigator,
@@ -119,8 +110,7 @@
       NavLogout: Navigator,
       AvatarPanel: AvatarPanel,
       NavManusl: Navigator,
-      NavComment: Navigator,
-      NavBooking: Navigator
+      NavComment: Navigator
     };
     config = {
       navigationBarTitleText: '我的信息'
