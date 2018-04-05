@@ -62,7 +62,7 @@
       screen (showCondition, level) {
         const params = {
           type: this.type,
-          level: level
+          level: level,
         };
         if (showCondition == 0) {
           this.$root.$navigate('/pages/manusl/customer_list');

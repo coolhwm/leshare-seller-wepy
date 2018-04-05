@@ -23,12 +23,12 @@
                 <input class="weui-input" name="name" value="{{detail.name}}" disabled/>
               </view>
             </view>
-            <view class="weui-cell weui-cell_input">
+            <view class="weui-cell weui-cell_input" @tap="call">
               <view class="weui-cell__hd">
                 <view class="weui-label">手机</view>
               </view>
               <view class="weui-cell__bd">
-                <input class="weui-input" name="phone" value="{{detail.phone}}" disabled/>
+                <input  class="weui-input input-phone" name="phone" value="{{detail.phone}}" disabled/>
               </view>
             </view>
 
@@ -109,6 +109,9 @@
       this.loaded();
     };
     methods = {
+      call() {
+        wepy.makePhoneCall({phoneNumber: this.detail.phone});
+      }
     };
     computed = {
     };
@@ -150,5 +153,8 @@
   }
   .tips-box{
     padding: 10rpx;
+  }
+  .input-phone{
+    color: $color-primary;
   }
 </style>

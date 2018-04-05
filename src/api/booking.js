@@ -3,6 +3,14 @@ import api from '../api/goods'
 import Page from '../utils/Page';
 
 export default class booking extends base {
+  static BOOKING_STATUS = {
+    WAITING_PROCCESS: '待处理',
+    PROCESSING: '处理中',
+    TIMEOUT: '已过期',
+    CANCEL: '已取消',
+    FINISH: '已完成'
+  };
+
   /**
    * 返回预约列表
    */
@@ -47,6 +55,13 @@ export default class booking extends base {
 
   // 预定列表
   static _processBookingListItem (data) {
+    // 处理状态
+    data.statusText = this.BOOKING_STATUS[data.status]
+    // 增加订单支付状态
+    if (data.order && data.status == 'WAITING_PROCCESS') {
+      data.statusText += data.order.status == 1 ? ' (待支付)' : ' (已支付)'
+    }
+
     // 处理预览图
     if (data.goods) {
       api._processGoodsPreview(data.goods);
