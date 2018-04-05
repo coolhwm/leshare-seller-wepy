@@ -1,6 +1,9 @@
 <template>
   <view class="container" wx:if="{{init}}">
-      <!--客户列表-->
+    <!--搜索栏-->
+    <MemberSearchBar :inputVal="input" back="false" @back.user="back" :groupId.sync="groupId" :type.sync="type" :level.sync="level" @search.user="search" @clear.user="clear"/>
+
+    <!--客户列表-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
       <view>
         <CustomerItem :customerInfo.sync="item" :isMore.sync="isMore" @tap.user="select"/>
@@ -30,6 +33,7 @@
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
   import coupon from '../../api/coupon';
+  import MemberSearchBar from '../../components/manusl/member_search_bar';
 
   export default class CustomerIndex extends wepy.page {
     def = {
@@ -39,14 +43,29 @@
       },
       isMore: false,
       couponId: 0,
-      selectedId: 3
+      selectedId: 3,
+      type: null,
+      level: '',
+      groupId: '',
+      phone: '',
+      input: ''
     };
     data = {...this.def};
     async onLoad (couponId) {
       this.couponId = couponId;
+      this.getRequest();
+    };
+    async getRequest () {
       this.page = await mausl.membersList(this.selectedId);
       await this.next();
     };
+    params () {
+      return {
+        level: this.level,
+        group_id: this.groupId,
+        phone: this.phone
+      }
+    }
     methods = {
       async select(customer) {
         const param = {
@@ -62,6 +81,14 @@
         }
         Event.emit(Event.COUPON_USER_UPDATE);
         wepy.navigateBack();
+      },
+      search (phone) {
+        this.phone = phone;
+        this.getRequest(this.selectedId)
+      },
+      clear () {
+        this.phone = '';
+        this.getRequest(this.selectedId)
       }
     };
     events = {};
@@ -69,7 +96,8 @@
       ZanTab: ZanTab,
       Placeholder: Placeholder,
       CustomerItem: CustomerItem,
-      Loadmore: Loadmore
+      Loadmore: Loadmore,
+      MemberSearchBar: MemberSearchBar
     };
     mixins = [base, pagination];
     config = {
