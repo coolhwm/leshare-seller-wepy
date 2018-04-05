@@ -1,30 +1,51 @@
 <template>
   <view class="container" wx:if="{{init}}">
 
-    <text class="muted">用户类型：</text>
-    <view class="weui-cells weui-cells-form mb10">
-      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(0, null)">
-        <view class="weui-cell__bd">全部客户</view>
-        <view class="weui-cell__ft weui-cell__ft_in-access"/>
-      </view>
-      <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(1, 0)">
-        <view class="weui-cell__bd">全部会员</view>
-        <view class="weui-cell__ft weui-cell__ft_in-access"/>
-      </view>
-    </view>
-
-    <text class="muted">会员级别：</text>
-    <view class="weui-cells weui-cells-form" wx:if="{{card && card.supplyDiscount == 1}}">
-      <repeat for="{{discountRules}}" key="index" index="index" item="item">
-        <!-- 等级 -->
-        <view class="weui-cell weui-cell_access" @tap="screen(1,{{item.level}})">
-          <view class="weui-cell__bd">{{item.levelName}}</view>
-          <text class="weui-cell__ft weui-cell__ft_in-access"/>
+    <block>
+      <text class="muted title-box">用户类型：</text>
+      <view class="weui-cells weui-cells-form mb10">
+        <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(0, '', '')">
+          <view class="weui-cell__bd">全部客户</view>
+          <view class="weui-cell__ft weui-cell__ft_in-access"/>
         </view>
-      </repeat>
-    </view>
+        <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(1, 0, '')">
+          <view class="weui-cell__bd">全部会员</view>
+          <view class="weui-cell__ft weui-cell__ft_in-access"/>
+        </view>
+      </view>
+    </block>
 
-    <text class="muted">会员分组：</text>
+    <block wx:if="{{card && card.supplyDiscount == 1}}">
+      <text class="muted title-box">会员级别：</text>
+      <view class="weui-cells weui-cells-form">
+        <repeat for="{{discountRules}}" key="index" index="index" item="item">
+          <!-- 等级 -->
+          <view class="weui-cell weui-cell_access" @tap="screen(1, {{item.level}}, '')">
+            <view class="weui-cell__bd">{{item.levelName}}</view>
+            <text class="weui-cell__ft weui-cell__ft_in-access"/>
+          </view>
+        </repeat>
+      </view>
+    </block>
+
+    <block wx:if="{{memnberGroup != null && memnberGroup.length > 0}}">
+      <text class="muted title-box">会员分组：</text>
+      <view class="weui-cells weui-cells-form">
+        <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(1, '', -1)">
+          <view class="weui-cell__bd">默认分组</view>
+          <view class="weui-cell__ft weui-cell__ft_in-access"/>
+        </view>
+        <repeat for="{{memnberGroup}}" key="index" index="index" item="item">
+          <!-- 等级 -->
+          <view class="weui-cell weui-cell_access" @tap="screen(1, '', {{item.id}})">
+            <view class="weui-cell__bd">{{item.name}}</view>
+            <text class="weui-cell__ft weui-cell__ft_in-access"/>
+          </view>
+        </repeat>
+      </view>
+    </block>
+
+
   </view>
 </template>
 <script>
@@ -41,7 +62,8 @@
       card: {},
       discountRules: [],
       type: null,
-      limit: {}
+      limit: {},
+      memnberGroup: null
     };
     data = {...this.def};
 
@@ -49,6 +71,7 @@
       await this.loadLimit();
       this.type = option.type;
       this.card = await member.cardInfo();
+      this.memnberGroup = await member.memnberGroup();
       if (this.card) {
         this.discountRules = this.card.discountRules;
       }
@@ -59,16 +82,20 @@
       this.limit = await shop.limit();
     }
     methods = {
-      screen (showCondition, level) {
+      screen (showCondition, level, groupId) {
         const params = {
-          type: this.type,
-          level: level
+          type: this.type ? this.type : '',
+          level: level,
+          groupId: groupId * 1
         };
         if (showCondition == 0) {
           this.$root.$navigate('/pages/manusl/customer_list');
         } else {
           this.$root.$navigate('/pages/manusl/member_list?params=' + JSON.stringify(params));
         }
+      },
+      group () {
+
       }
     };
     mixins = [base];
@@ -85,5 +112,8 @@
   @import "../../styles/variable";
   .notice-box{
     margin: 5rpx 30rpx;
+  }
+  .title-box{
+    padding: 10rpx 0 10rpx 20rpx;
   }
 </style>

@@ -15,6 +15,7 @@
           <image class="icon mr10" src="{{customerInfo.bound}}"/>
         </view>
       </view>
+      <text class="muted">{{customerInfo.phone}}</text>
       <view class="row">
         <text class="muted">{{customerInfo.key}}</text>
         <text class="muted">{{customerInfo.countValue}}</text>
