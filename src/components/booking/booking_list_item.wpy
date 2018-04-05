@@ -6,7 +6,8 @@
         <view class="user-info-container">
           <text class="sm ml10">预约时间：{{detail.serviceTime}}</text>
         </view>
-        <text wx:if="{{detail.status === 'WAITING_PROCCESS'}}" class="sm primary">处理中</text>
+        <text wx:if="{{detail.status === 'WAITING_PROCCESS'}}" class="sm primary">待处理</text>
+        <text wx:elif="{{detail.status === 'PROCESSING'}}" class="sm primary">处理中</text>
         <text wx:elif="{{detail.status === 'TIMEOUT'}}" class="sm primary">已过期</text>
         <text wx:elif="{{detail.status === 'CANCEL'}}" class="sm primary">已取消</text>
         <text wx:elif="{{detail.status === 'FINISH'}}" class="sm primary">已结束</text>
@@ -20,6 +21,12 @@
         <text>{{detail.goods.name}}</text>
         <text class="muted mt20">￥{{detail.goods.sellPrice}}</text>
       </view>
+    </view>
+
+    <!--操作栏-->
+    <view class="booking-bottom-box row mb10 mt10">
+      <button class="eui-btn mini-btn mr10" size="mini" wx:if="{{detail.status === 'WAITING_PROCCESS'}}" @tap="process({{detail.id}})">确认预约</button>
+      <button class="eui-btn mini-btn mr10" size="mini" wx:if="{{detail.status === 'PROCESSING'}}" @tap="finish({{detail.id}})">完成预约</button>
     </view>
   </view>
 </template>
@@ -36,10 +43,16 @@
     data = {
     };
     methods = {
-      async cancel (id) {
-        await Tips.confirm('确定取消？');
-        await booking.cancel(id);
-        await Tips.success('取消成功');
+      async process (id) {
+        await Tips.confirm('确定开始处理该预约？');
+        await booking.bookingProcessing(id);
+        await Tips.success('已确认');
+        Event.emit(Event.BOOKING_LIST_UPDATE);
+      },
+      async finish (id) {
+        await Tips.confirm('确定已完成该预约？');
+        await booking.bookingFinish(id);
+        await Tips.success('已完成');
         Event.emit(Event.BOOKING_LIST_UPDATE);
       },
       booking (id) {

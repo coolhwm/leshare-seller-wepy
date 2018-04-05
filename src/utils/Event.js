@@ -1,6 +1,8 @@
 const WxNotificationCenter = require('./WxNotificationCenter.js');
 
 export default class Event {
+  // 预约列表更新事件
+  static BOOKING_LIST_UPDATE = 'BOOKING_LIST_UPDATE';
   // 订单列表更新事件
   static ORDER_LIST_UPDATE = 'ORDER_LIST_UPDATE';
   // 订单列表状态更新
