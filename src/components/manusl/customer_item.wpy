@@ -1,6 +1,6 @@
 <template>
   <!--客户基本信息-->
-  <view class="customer-info-box row-between">
+  <view class="customer-info-box row-between" @tap="tap({{customerInfo}})">
     <!--左侧头像-->
     <image class="customer-avatar" wx:if="{{customerInfo.avatarUrl}}"
            src="{{customerInfo.avatarUrl}}"/>
@@ -21,15 +21,23 @@
       </view>
     </view>
     <!--更多地址-->
-    <icon class="more" color="gray"/>
+    <icon wx:if="{{isMore}}" class="more" color="gray"/>
   </view>
 </template>
 <script>
   import wepy from 'wepy';
   export default class CustomerItem extends wepy.component {
     props = {
-      customerInfo: {}
+      customerInfo: {},
+      isMore: {
+        default: true
+      }
     };
+    methods = {
+      tap(customer) {
+        this.$emit('tap', customer);
+      }
+    }
   }
 </script>
 <style lang="scss">

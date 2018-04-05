@@ -1,20 +1,17 @@
 <template>
-    <view class="container" wx:if="{{init}}">
-        <!--TAB 页-->
-        <ZanTab :tab.sync="tab" @change.user="switchTab"/>
+  <view class="container" wx:if="{{init}}">
+      <!--客户列表-->
+    <repeat for="{{page.list}}" key="index" index="index" item="item">
+      <view>
+        <CustomerItem :customerInfo.sync="item" :isMore.sync="isMore" @tap.user="select"/>
+      </view>
+    </repeat>
+    <!-- 加载提示 -->
+    <Loadmore :page.sync="page"/>
 
-        <!--客户列表-->
-        <view>
-            <repeat for="{{page.list}}" key="index" index="index" item="item">
-                <CustomerItem :customer.sync="item" @tap.user="select" />
-            </repeat>
-        </view>
-        <!-- 加载提示 -->
-        <Loadmore :page.sync="page"/>
-
-        <!--占位符-->
-        <Placeholder :show.sync="isPageEmpty" message="您还没有相关客户信息"/>
-    </view>
+      <!--占位符-->
+    <Placeholder :show.sync="isPageEmpty" message="您还没有相关客户信息"/>
+  </view>
 </template>
 
 <style lang="scss">
@@ -25,10 +22,10 @@
   import wepy from 'wepy';
   import base from '../../mixins/base';
   import pagination from '../../mixins/pagination';
-  import customer from '../../api/customer';
+  import mausl from '../../api/mausl';
   import ZanTab from '../../components/zanui/tab';
   import Placeholder from '../../components/common/placeholder';
-  import CustomerItem from '../../components/customer/item';
+  import CustomerItem from '../../components/manusl/customer_item';
   import Loadmore from '../../components/weui/loadmore';
   import Tips from '../../utils/Tips';
   import Event from '../../utils/Event';
@@ -40,45 +37,27 @@
       page: {
         list: []
       },
-      tab: {
-        list: [
-          {id: 'PRICE', title: '总交易额'},
-          {id: 'TIME', title: '最近购买'},
-          {id: 'COUNT', title: '购买次数'}
-        ],
-        selectedId: 'PRICE',
-        order: true,
-        sord: 'desc',
-        scroll: false
-      },
-      couponId: 0
+      isMore: false,
+      couponId: 0,
+      selectedId: 3
     };
     data = {...this.def};
-
     async onLoad (couponId) {
       this.couponId = couponId;
-      this.page = customer.page(this.tab.selectedId);
+      this.page = await mausl.membersList(this.selectedId);
       await this.next();
     };
-
-    params () {
-      return {sort: this.tab.sord};
-    }
     methods = {
       async select(customer) {
         const param = {
           couponId: this.couponId.couponId,
-          customerId: customer.id
+          customerId: customer.customerId
         };
         await Tips.confirm('确定发放？');
         await coupon.send(param);
         await Tips.success('发放成功');
         Event.emit(Event.COUPON_USER_UPDATE);
         wepy.navigateBack();
-      },
-      async switchTab () {
-        this.page = customer.page(this.tab.selectedId);
-        await this.next();
       }
     };
     events = {};
