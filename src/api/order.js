@@ -304,6 +304,7 @@ export default class order extends base {
     order.couponPrice = this._fixedPrice(order.couponPrice);
     order.bonusPrice = this._fixedPrice(order.bonusPrice);
     order.foodBoxFee = this._fixedPrice(order.foodBoxFee);
+    order.reduceFee = this._fixedPrice(order.reduceFee);
   }
 
   /**
