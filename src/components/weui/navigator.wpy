@@ -18,7 +18,7 @@
     };
     methods = {
       tap (url) {
-        if (this.url != null && this.checkFunctionAuth(this.type)) {
+        if (this.url != null) {
           this.$root.$navigate(url);
         }
         this.$emit('tap');

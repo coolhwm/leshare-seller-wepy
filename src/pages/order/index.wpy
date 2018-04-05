@@ -1,7 +1,7 @@
 <!--订单列表页面-->
 <template>
   <view class="container" wx:if="{{init}}">
-    <view wx:if="{{version}}">
+    <view>
       <!--TAB 页-->
       <ZanTab :tab.sync="tab" @change.user="switchTap"/>
 
@@ -18,7 +18,6 @@
       <Placeholder :show.sync="isPageEmpty" message="您还没有相关订单"/>
     </view>
 
-    <VersionPlaceholder :show.sync="false" message="尚未开放" wx:if="{{!version}}"/>
   </view>
 </template>
 
@@ -65,13 +64,9 @@
         selectedId: '0',
         scroll: false
       },
-      status: '0',
-      version: true
+      status: '0'
     };
     async onLoad (options, {preload}) {
-      if (!this.checkFunctionAuth('order')) {
-        this.version = false;
-      }
       // 处理初始化的状态
       const status = preload ? preload.status : null;
       if (status) {
@@ -135,8 +130,7 @@
       ZanTab: ZanTab,
       OrderItem: OrderItem,
       Placeholder: Placeholder,
-      Loadmore: Loadmore,
-      VersionPlaceholder: Placeholder
+      Loadmore: Loadmore
     };
     mixins = [pagination, base];
   }
