@@ -70,4 +70,12 @@ export default class Member extends base {
     const url = `${this.baseUrl}/members`;
     return this.post(url, param);
   }
+
+  /**
+   * 获取会员分组
+   */
+  static async memnberGroup() {
+    const url = `${this.baseUrl}/member_groups/list`;
+    return this.get(url);
+  }
 }
