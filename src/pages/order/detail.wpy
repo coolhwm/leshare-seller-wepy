@@ -51,8 +51,12 @@
     <!--订单详情-->
     <view class="weui-cells weui-cells_after-title weui-cells-merge-top">
       <view class="weui-cell">
-        <view class="weui-cell__bd">支付方式</view>
+        <view class="weui-cell__bd">支付类型</view>
         <view class="weui-cell__ft">{{order.paymentText}}</view>
+      </view>
+      <view class="weui-cell">
+        <view class="weui-cell__bd">支付方法</view>
+        <view class="weui-cell__ft">{{order.onlinePayType == 'balance' ? '余额支付' : '微信支付'}}</view>
       </view>
       <view class="weui-cell" wx:if="{{order.orderType == '20'}}">
         <view class="weui-cell__bd">配送方式</view>
@@ -73,6 +77,10 @@
       <view class="price-box row-between">
         <text>运费</text>
         <text class="major">+￥{{order.postFee}}</text>
+      </view>
+      <view class="price-box row-between" wx:if="{{order.foodBoxFee > 0}}">
+        <text>餐盒费</text>
+        <text class="major">+￥{{order.foodBoxFee}}</text>
       </view>
       <view class="price-box row-between" wx:if="{{order.couponPrice > 0}}">
         <text>优惠券</text>

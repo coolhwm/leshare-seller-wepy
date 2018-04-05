@@ -39,8 +39,8 @@ export default class comment extends base {
       comment.starArr[i] = 1;
     }
     comment.star = data.star;
-    comment.avatar = data.customer.avatarUrl;
-    comment.nickName = data.customer.nickName;
+    comment.avatar = data.customer ? data.customer.avatarUrl : '/images/icons/customer_white.png';
+    comment.nickName = data.customer ? data.customer.nickName : '匿名';
     comment.comment = data.comment;
     comment.good_image = data.goods.images[0].url;
     comment.good_name = data.goods.name;
