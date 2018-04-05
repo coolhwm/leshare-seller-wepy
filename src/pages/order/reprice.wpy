@@ -73,11 +73,10 @@
   import ActionBar from '../../components/common/action_bar';
 
   export default class OrderReprice extends wepy.page {
-    def = {
+    data = {
       order: {},
       init: false
     };
-    data = {...this.def};
     async onLoad (options) {
       const orderId = options.orderId;
       const data = await order.detail(orderId);
@@ -89,10 +88,6 @@
       this.$apply();
       Tips.loaded();
     };
-    // 卸载清理
-    onUnload() {
-      Object.assign(this, this.def);
-    }
     computed = {
       modifyFinal() {
         const finalPrice = Lang.sum([this.input.modifyPrice, this.input.modifyPost, -this.input.modifyCoupon]);

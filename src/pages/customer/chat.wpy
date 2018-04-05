@@ -18,7 +18,7 @@
   import input from '../../mixins/input';
 
   export default class Chat extends wepy.page {
-    def = {
+    data = {
       init: false,
       webSocket: null,
       socketOpen: false,
@@ -29,8 +29,6 @@
       shopId: null,
       avatarUrl: ''
     };
-    data = {...this.def};
-
     async onLoad(option) {
       this.shopId = wepy.getStorageSync('shop_id');
       const param = JSON.parse(option.param);
