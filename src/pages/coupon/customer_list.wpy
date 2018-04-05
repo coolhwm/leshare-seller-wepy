@@ -54,8 +54,12 @@
           customerId: customer.customerId
         };
         await Tips.confirm('确定发放？');
-        await coupon.send(param);
-        await Tips.success('发放成功');
+        const { result } = await coupon.send(param);
+        if (result == 'SUCCESS') {
+          await Tips.success('发放成功');
+        } else {
+          await Tips.alert(result);
+        }
         Event.emit(Event.COUPON_USER_UPDATE);
         wepy.navigateBack();
       }

@@ -1,16 +1,19 @@
 <template>
   <view class="container" wx:if="{{init}}">
+
+    <text class="muted">用户类型：</text>
     <view class="weui-cells weui-cells-form mb10">
       <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(0, null)">
         <view class="weui-cell__bd">全部客户</view>
         <view class="weui-cell__ft weui-cell__ft_in-access"/>
       </view>
       <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(1, 0)">
-        <view class="weui-cell__bd">会员</view>
+        <view class="weui-cell__bd">全部会员</view>
         <view class="weui-cell__ft weui-cell__ft_in-access"/>
       </view>
     </view>
-    <text class="muted notice-box" wx:if="{{limit.memberLimit >= 0}}">提示：您当前的会员余量为<text class="{{limit.memberLimit < 10 ? 'danger' : 'muted'}}">{{limit.memberLimit}}</text>个</text>
+
+    <text class="muted">会员级别：</text>
     <view class="weui-cells weui-cells-form" wx:if="{{card && card.supplyDiscount == 1}}">
       <repeat for="{{discountRules}}" key="index" index="index" item="item">
         <!-- 等级 -->
@@ -20,6 +23,8 @@
         </view>
       </repeat>
     </view>
+
+    <text class="muted">会员分组：</text>
   </view>
 </template>
 <script>
