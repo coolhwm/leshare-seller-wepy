@@ -7,9 +7,12 @@
     <!--TAB 页-->
     <ZanTab :tab.sync="tab" :fixed.sync="fixed" @change.user="switchTap" />
     <!--订单列表-->
-    <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <OrderItem :order.sync="item" @tap.user="detail" action="0"/>
-    </repeat>
+    <block wx:if="{{customerId != 0}}">
+      <repeat for="{{page.list}}" key="index" index="index" item="item">
+        <OrderItem :order.sync="item" @tap.user="detail" action="0"/>
+      </repeat>
+    </block>
+
     <!-- 加载提示 -->
     <Loadmore :page.sync="page" emptyText="暂无订单"/>
   </view>
@@ -70,8 +73,11 @@
       this.memberId = this.customer.memberId;
       this.customerId = this.customer.customerId;
       this.member = await member.Info(this.customer.memberNumber);
-      this.page = order.hisPage();
-      await this.next();
+      if (this.customerId != 0) {
+        this.page = order.hisPage();
+        await this.next();
+      }
+      this.loaded();
       Event.listen(Event.SHOP_CUSTOMER_UPDATE, this.updateMemberInfo.bind(this), this);
     }
     async updateMemberInfo (params) {

@@ -117,6 +117,7 @@
         if (this.pictures.length < 1) {
           this.isPanelDisplay = false;
         }
+        this.$apply();
       }
     };
     watch = {

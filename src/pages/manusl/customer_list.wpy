@@ -3,7 +3,7 @@
     <!--TAB 页-->
     <ZanTab :tab.sync="tab" @change.user="switchTab"/>
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <view @tap.stop="toUserInfo({{item.customerId}})">
+      <view @tap.stop="toUserInfo({{item}})">
         <CustomerItem :customerInfo.sync="item"/>
       </view>
     </repeat>
@@ -24,6 +24,7 @@
   import ZanTab from '../../components/zanui/tab';
   import Loadmore from '../../components/weui/loadmore';
   import Placeholder from '../../components/common/placeholder';
+  import Tips from '../../utils/Tips';
 
   export default class Test extends wepy.page {
     def = {
@@ -60,8 +61,13 @@
       async switchTab () {
         await this.getRequest();
       },
-      toUserInfo (customerId) {
-        this.$root.$navigate('/pages/customer/info?customerId=' + customerId);
+      toUserInfo (item) {
+        const {customerId} = item;
+        if (customerId) {
+          this.$root.$navigate('/pages/customer/info?customerId=' + customerId);
+        } else {
+          Tips.alert('没有找到用户信息');
+        }
       }
     };
 

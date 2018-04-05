@@ -272,7 +272,12 @@
         this.loaded();
       },
       detail () {
-        this.$navigate(`/pages/customer/info?customerId=${this.customer.id}`);
+        if (this.customer.id) {
+          this.$navigate(`/pages/customer/info?customerId=${this.customer.id}`);
+        } else {
+          Tips.alert('没有找到用户信息');
+        }
+
       },
       minus (info) {
         this.details[info.index].ruleId = info.id;
