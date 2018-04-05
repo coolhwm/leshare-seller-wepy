@@ -264,7 +264,7 @@
         }
       },
       typesPayment (payment) {
-        if (payment.typesPayment.length > 0) {
+        if (payment.typesPayment && payment.typesPayment.length > 0) {
           const param = {
             typesPayment: JSON.stringify(payment.typesPayment)
           };
