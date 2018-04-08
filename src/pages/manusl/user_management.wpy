@@ -4,11 +4,11 @@
     <block>
       <text class="muted title-box">用户类型：</text>
       <view class="weui-cells weui-cells-form">
-        <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(0, '', '')">
+        <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(0, '', '', '全部客户')">
           <view class="weui-cell__bd">全部客户</view>
           <view class="weui-cell__ft weui-cell__ft_in-access"/>
         </view>
-        <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(1, 0, '')">
+        <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(1, 0, '', '全部会员')">
           <view class="weui-cell__bd">全部会员</view>
           <view class="weui-cell__ft weui-cell__ft_in-access"/>
         </view>
@@ -20,7 +20,7 @@
       <view class="weui-cells weui-cells-form">
         <repeat for="{{discountRules}}" key="index" index="index" item="item">
           <!-- 等级 -->
-          <view class="weui-cell weui-cell_access" @tap="screen(1, {{item.level}}, '')">
+          <view class="weui-cell weui-cell_access" @tap="screen(1, {{item.level}}, '', {{item.levelName}}会员)">
             <view class="weui-cell__bd">{{item.levelName}}</view>
             <text class="weui-cell__ft weui-cell__ft_in-access"/>
           </view>
@@ -31,13 +31,13 @@
     <block wx:if="{{memnberGroup != null && memnberGroup.length > 0}}">
       <text class="muted title-box">会员分组：</text>
       <view class="weui-cells weui-cells-form">
-        <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(1, '', -1)">
+        <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(1, '', -1, '默认分组会员')">
           <view class="weui-cell__bd">默认分组</view>
           <view class="weui-cell__ft weui-cell__ft_in-access"/>
         </view>
         <repeat for="{{memnberGroup}}" key="index" index="index" item="item">
           <!-- 等级 -->
-          <view class="weui-cell weui-cell_access" @tap="screen(1, '', {{item.id}})">
+          <view class="weui-cell weui-cell_access" @tap="screen(1, '', {{item.id}}, {{item.name}})">
             <view class="weui-cell__bd">{{item.name}}</view>
             <text class="weui-cell__ft weui-cell__ft_in-access"/>
           </view>
@@ -82,11 +82,12 @@
       this.limit = await shop.limit();
     }
     methods = {
-      screen (showCondition, level, groupId) {
+      screen (showCondition, level, groupId, name) {
         const params = {
           type: this.type ? this.type : '',
           level: level,
-          groupId: groupId * 1
+          groupId: groupId * 1,
+          title: name + '列表'
         };
         if (showCondition == 0) {
           this.$root.$navigate('/pages/manusl/customer_list');

@@ -53,8 +53,11 @@
     data = {
       payment: null
     };
-    onLoad ({typesPayment}) {
+    onLoad ({typesPayment, title}) {
       this.payment = JSON.parse(typesPayment);
+      wepy.setNavigationBarTitle({
+        title: title
+      });
     };
     config = {
       navigationBarTitleText: '成交额明细'

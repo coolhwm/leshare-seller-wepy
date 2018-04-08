@@ -6,7 +6,7 @@
     </view>
     <!--今日统计区域-->
     <view class="today-box">
-      <view class="column-center" @tap="typesPayment({{today}})">
+      <view class="column-center" @tap="typesPayment({{today}},'today')">
         <text class="xl">今日付款金额(元)</text>
         <text class="today-price-text">{{today.income}}</text>
       </view>
@@ -59,7 +59,7 @@
           <text class="muted">本月订单数</text>
         </view>
         <view class="vr"/>
-        <view class="count-item column-center" @tap="typesPayment({{month}})">
+        <view class="count-item column-center" @tap="typesPayment({{month}},'month')">
           <text class="count-value">￥{{month.income}}</text>
           <text class="muted">本月成交额</text>
         </view>
@@ -263,10 +263,11 @@
           Tips.loaded();
         }
       },
-      typesPayment (payment) {
+      typesPayment (payment, type) {
         if (payment.typesPayment && payment.typesPayment.length > 0) {
           const param = {
-            typesPayment: JSON.stringify(payment.typesPayment)
+            typesPayment: JSON.stringify(payment.typesPayment),
+            title: type == 'today' ? '今日成交额明细' : '本月成交额明细'
           };
           this.$navigate('../shop/income', param)
         } else {
