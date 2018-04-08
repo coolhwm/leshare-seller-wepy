@@ -160,10 +160,6 @@
       this.loaded();
     };
     methods = {
-      input(e) {
-        this.input.foodBoxFee = e.detail.value;
-        console.info(this.input)
-      },
       // 删除商品
       async remove() {
         await Tips.confirm('是否确认删除该商品？');
