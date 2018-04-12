@@ -253,9 +253,15 @@
             this.$navigate('/' + path);
             return;
           }
-          const isCoupon = path == null && result != null && result.indexOf('#') >= 0;
-          if (isCoupon) {
+          const isQrCoupon = path == null && result != null && result.indexOf('#') >= 0;
+          if (isQrCoupon) {
             this.$navigate(`/pages/coupon/scan?scan=${result}`);
+            return;
+          }
+          const wxCouponPathPrefix = 'pages/coupon/scan';
+          const isWxCoupon =path && path.indexOf(wxCouponPathPrefix) >= 0;
+          if (isWxCoupon) {
+            this.$navigate('/' + path);
             return;
           }
           Tips.alert('未知二维码');

@@ -27,7 +27,7 @@
               <view class="weui-label">餐盒费</view>
             </view>
             <view class="weui-cell__bd">
-              <input class="weui-input" id="foodBoxFee" type="number" @blur="input" value="{{input.foodBoxFee}}"  placeholder="请填写商品餐盒费"/>
+              <input class="weui-input" id="foodBoxFee" type="number" @input="input" value="{{input.foodBoxFee}}"  placeholder="请填写商品餐盒费"/>
             </view>
             <view class="weui-cell__ft">
             </view>
@@ -160,10 +160,10 @@
       this.loaded();
     };
     methods = {
-      input(e) {
-        this.input.foodBoxFee = e.detail.value;
-        console.info(this.input)
-      },
+      // input(e) {
+      //   this.input.foodBoxFee = e.detail.value;
+      //   console.info(this.input)
+      // },
       // 删除商品
       async remove() {
         await Tips.confirm('是否确认删除该商品？');

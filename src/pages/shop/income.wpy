@@ -18,7 +18,7 @@
         <text class="lg">{{item.price}}</text>
       </view>
       <view wx:if="{{item.orderType == 40}}" class="row-between item-box">
-        <text class="lg">线下支付</text>
+        <text class="lg">线下订单</text>
         <text class="lg">{{item.price}}</text>
       </view>
       <view wx:if="{{item.orderType == 50}}" class="row-between item-box">
@@ -34,7 +34,7 @@
         <text class="lg">{{item.price}}</text>
       </view>
       <view wx:if="{{item.orderType == 80}}" class="row-between item-box">
-        <text class="lg">余额支付</text>
+        <text class="lg">余额充值</text>
         <text class="lg">{{item.price}}</text>
       </view>
       <view wx:if="{{item.orderType == 90}}" class="row-between item-box">

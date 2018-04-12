@@ -8,7 +8,7 @@
 
       <!--提示信息-->
       <view class="tips-box">
-        <text class="muted">注意：请确认卡券信息，点击立即核销即可使用该卡券</text>
+        <text class="muted" style="text-align: center">注意：请确认卡券信息，点击立即核销即可使用该卡券</text>
       </view>
 
       <!--操作栏-->
@@ -24,6 +24,7 @@
 
 <script>
   import wepy from 'wepy';
+  import auth from '../../api/auth';
   import input from '../../mixins/input';
   import coupon from '../../api/coupon';
   import base from '../../mixins/base';
@@ -41,7 +42,46 @@
       id: null
     }
     data = {...this.def};
-    async onLoad ({scan}) {
+    async onLoad ({scene, scan}) {
+      if (!auth.isLogin()) {
+        await Tips.alert('尚未登录');
+        this.$redirect('/pages/home/index');
+        return;
+      }
+      // 根据小程序码进行扫描
+      if (scene != null && scene != '') {
+        await this.loadByWxCode(scene);
+      }
+      // 根据二维码进行扫描，后续要废弃
+      else if (scan != null && scan != '') {
+        await this.loadByQrCode(scan);
+      } else {
+        this.message = '扫描失败，没有检测到二维码';
+      }
+      this.loaded();
+    };
+    async loadByWxCode(scene) {
+      try {
+        const result = await coupon.sendInfo(scene);
+        this.id = result.id;
+        this.coupon = result.coupon;
+        if (this.coupon.supportType == 1) {
+          this.message = '该优惠券只能在线下单使用';
+          this.loaded();
+          return;
+        }
+        if (result.status == 'USED') {
+          this.message = `该优惠券已于${result.usedTime}被使用`;
+          this.loaded();
+          return;
+        }
+        this.success = true;
+      } catch (e) {
+        console.warn(e);
+        this.message = '该优惠券不存在或已删除，需帮助请联系客服';
+      }
+    }
+    async loadByQrCode(scan) {
       if (scan == null && scan == '') {
         this.message = '扫描失败，没有检测到二维码';
         this.loaded();
@@ -77,8 +117,7 @@
       } catch (error) {
         this.message = error.message;
       }
-      this.loaded();
-    };
+    }
     methods = {
       async submit () {
         try {
@@ -88,7 +127,11 @@
           this.loaded();
         } catch (e) {
           console.warn(e);
-          this.tips('核销失败:' + e.message);
+          if (e.message) {
+            this.tips('核销失败:' + e.message);
+          } else {
+            this.tips('核销失败, 请联系客服');
+          }
           Tips.loaded();
         }
       }

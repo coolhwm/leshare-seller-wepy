@@ -90,6 +90,18 @@ export default class coupon extends base {
       return data;
     });
   }
+  /**
+   * 查询已发放的卡券信息
+   */
+  static sendInfo (couponId) {
+    const url = `${this.baseUrl}/coupons/info/${couponId}`;
+    return this.get(url).then(data => {
+      if (data.coupon) {
+        this.processCouponItem(data.coupon);
+      }
+      return data;
+    });
+  }
 
   /**
    * 编辑卡券
