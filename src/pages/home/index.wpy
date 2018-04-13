@@ -5,7 +5,18 @@
       <image class="logo" src="/images/home/shop-logo.png"/>
       <text>乐享商家助手</text>
     </view>
-    <form @submit="confirm">
+
+    <!--一键登录-->
+    <view class="weui-btn-area" wx:if="{{mode == 'fast'}}">
+      <button class="weui-btn" open-type="getPhoneNumber" bindgetphonenumber="fastLogin" type="primary">一键登录</button>
+      <view class="mt20 column-center">
+        <text class="muted">提示：一键登录将登录将获取您本机号码，请允许授权</text>
+        <text class="mt20 primary" @tap="switchMode('sms')">[切换到验证码登录]</text>
+      </view>
+    </view>
+
+    <!--验证码登录-->
+    <form @submit="confirm" wx:else>
       <view class="page__bd form">
         <view class="weui-cells weui-cells_after-title">
           <view class="weui-cell weui-cell_input weui-cell_vcode">
@@ -31,9 +42,13 @@
 
         <view class="weui-btn-area">
           <button class="weui-btn" type="primary" form-type="submit">确定</button>
+          <view class="column-center">
+            <text class="mt20 primary" @tap="switchMode('fast')">[切换到一键登录]</text>
+          </view>
         </view>
       </view>
     </form>
+
   </view>
 
   <Copyright buttom="true" />
@@ -52,7 +67,8 @@
   export default class Login extends wepy.page {
     def = {
       init: false,
-      loginMassage: {}
+      loginMassage: {},
+      mode: 'fast'
     };
     data = {...this.def};
     async onLoad () {
@@ -81,6 +97,26 @@
       }
     }
     methods = {
+      switchMode(mode) {
+        this.mode = mode;
+      },
+      async fastLogin({detail}) {
+        console.info(detail)
+        if (detail.errMsg == 'getPhoneNumber:fail user deny') {
+          await Tips.alert('请允许授权');
+          return;
+        }
+        try {
+          await auth.wxLogin(detail);
+          this.$redirect('shops');
+        } catch (err) {
+          console.info('[login] error' + err)
+          this.loaded();
+          await Tips.modal('您尚未注册');
+        } finally {
+          this.loaded();
+        }
+      },
       async confirm({detail}) {
         // 覆盖对象
         Object.assign(this.loginMassage, detail.value);
