@@ -107,6 +107,14 @@ export default class coupon extends base {
     return await this.put(url);
   }
 
+  /***
+   * 平台优惠券列表
+   */
+  static subShop () {
+    const url = `${this.baseUrl}/coupons/sub_shop`;
+    return new Page(url, this.processCouponItem.bind(this));
+  }
+
   /**
    * 数据处理
    */
