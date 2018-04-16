@@ -56,7 +56,7 @@ export default class customerService extends base {
    * 客服发送消息
    * */
   static async sendMassge (param) {
-    const url = `${this.baseUrl}/seller/kefu/send_message`;
-    return this.put(url, param);
+    const url = `${this.baseUrl}/kefu/send_message`;
+    return await this.post(url, param);
   }
 }
