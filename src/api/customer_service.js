@@ -52,4 +52,11 @@ export default class customerService extends base {
     });
     return params;
   }
+  /**
+   * 客服发送消息
+   * */
+  static async sendMassge (param) {
+    const url = `${this.baseUrl}/seller/kefu/send_message`;
+    return this.put(url, param);
+  }
 }
