@@ -44,11 +44,14 @@
     };
     data = {...this.def};
     async onLoad (options) {
-      const {type, level, groupId, phone} = JSON.parse(options.params);
+      const {type, level, groupId, phone, title} = JSON.parse(options.params);
       this.type = type;
       this.level = level;
       this.groupId = groupId;
       this.phone = phone != null ? phone : '';
+      wepy.setNavigationBarTitle({
+        title: title
+      });
       await this.getRequest();
       Event.listen(Event.SHOP_CUSTOMER_UPDATE, this.update.bind(this), this);
     };

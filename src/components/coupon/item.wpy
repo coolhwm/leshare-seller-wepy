@@ -48,6 +48,9 @@
       coupon: {},
       action: {
         default: 'true'
+      },
+      listMode: {
+        default: 'list'
       }
     };
     data = {};
@@ -62,7 +65,7 @@
       pick(couponId) {
         const param = {
           couponId,
-          mode: 'pick_list'
+          mode: this.listMode
         };
         this.$root.$navigate('pick_list', param);
       }

@@ -38,6 +38,14 @@ export default class booking extends base {
   }
 
   /***
+   * 预约取消
+   */
+  static cancel (id) {
+    const url = `${this.baseUrl}/booking/status/cancel`;
+    return this.post(url, {id: id});
+  }
+
+  /***
    * 更改预约商品订单状态为服务中
    */
   static bookingProcessing (id) {

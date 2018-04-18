@@ -5,14 +5,11 @@
 
     <!--列表展现-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <CouponItem :coupon.sync="item" listMode="list"></CouponItem>
+      <CouponItem :coupon.sync="item" listMode="subShopList"></CouponItem>
     </repeat>
 
     <!-- 加载提示 -->
     <Loadmore :page.sync="page"/>
-
-    <!--操作栏-->
-    <ActionBar @tap.user="add" okText="新增优惠券" cancelText="返回" />
 
     <!--占位符-->
     <Placeholder :show.sync="isPageEmpty" message="您还没有相关卡券信息"/>
@@ -49,7 +46,7 @@
     };
     data = {...this.def};
     async onLoad () {
-      this.page = coupon.page();
+      this.page = coupon.subShop();
       await this.next();
       Event.listen(Event.COUPON_LIST_UPDATE, this.update.bind(this), this);
     };
@@ -59,9 +56,6 @@
     methods = {
       switchTab() {
         this.reload();
-      },
-      add() {
-        this.$navigate('edit?mode=create');
       }
     };
     components = {

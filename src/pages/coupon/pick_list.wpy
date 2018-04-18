@@ -11,7 +11,9 @@
         <Loadmore :page.sync="page"/>
 
         <!--操作栏-->
-        <ActionBar @tap.user="add" okText="发放优惠券" cancelText="返回"/>
+        <block wx:if="{{mode == 'list'}}">
+            <ActionBar @tap.user="add" okText="发放优惠券" cancelText="返回"/>
+        </block>
 
         <!--占位符-->
         <Placeholder :show.sync="isPageEmpty" message="暂无领取记录"/>
@@ -43,7 +45,8 @@
         selectedId: 'NEVER_USED',
         scroll: false
       },
-      couponId: 0
+      couponId: 0,
+      mode: ''
     };
     data = {...this.def};
     methods = {
@@ -62,6 +65,7 @@
 
     async onLoad ({couponId, mode}) {
       this.couponId = couponId;
+      this.mode = mode;
       this.page = coupon.pagePick(couponId, this.tab.selectedId);
       await this.next();
       Event.listen(Event.COUPON_USER_UPDATE, this.update.bind(this), this);

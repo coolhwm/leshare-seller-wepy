@@ -138,7 +138,8 @@
         'pages/comment/comment',
         'pages/booking/list',
         'pages/booking/booking_detail',
-        'pages/shop/income'
+        'pages/shop/income',
+        'pages/coupon/sub_shop_coupon_list'
       ],
       window: {
         backgroundTextStyle: 'dark',

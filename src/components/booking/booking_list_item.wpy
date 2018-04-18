@@ -21,7 +21,10 @@
 
     <!--操作栏-->
     <view class="booking-bottom-box row mb10 mt10">
-      <button class="eui-btn mini-btn mr10" size="mini" wx:if="{{detail.status === 'WAITING_PROCCESS'}}" @tap="process({{detail}})">确认预约</button>
+      <view wx:if="{{detail.status === 'WAITING_PROCCESS'}}">
+        <button class="eui-btn mini-btn mr10" size="mini" @tap="cancel({{detail.id}})">取消预约</button>
+        <button class="eui-btn mini-btn mr10" type="primary" size="mini" @tap="process({{detail}})">确认预约</button>
+      </view>
       <button class="eui-btn mini-btn mr10" size="mini" wx:if="{{detail.status === 'PROCESSING'}}" @tap="finish({{detail.id}})">完成预约</button>
     </view>
   </view>
@@ -39,9 +42,15 @@
     data = {
     };
     methods = {
+      async cancel (id) {
+        await Tips.confirm('确定取消？');
+        await booking.cancel(id);
+        await Tips.success('取消成功');
+        Event.emit(Event.BOOKING_LIST_UPDATE);
+      },
       async process (detail) {
         if (detail.order && detail.order.status == 1) {
-          Tips.alert('客户未付款')
+          Tips.alert('客户未付款');
           return;
         }
         const id = detail.id;
