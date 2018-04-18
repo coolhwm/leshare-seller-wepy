@@ -17,9 +17,9 @@
     <view wx:else class="error-tips column-center">
       <text style="font-size: 30px">核销失败</text>
       <text class="muted mt20">{{message}}</text>
+      <button class="weui-btn mt20" type="primary" @tap="home" form-type="submit">返回工作台</button>
     </view>
   </view>
-
 </template>
 
 <script>
@@ -45,6 +45,8 @@
     async onLoad ({scene, scan}) {
       if (!auth.isLogin()) {
         await Tips.alert('尚未登录');
+        console.info(this)
+        this.$preload('redirectUrl', `/${this.$wxpage.route}?scene=${scene}`);
         this.$redirect('/pages/home/index');
         return;
       }
@@ -119,6 +121,9 @@
       }
     }
     methods = {
+      home() {
+        this.$switch('/pages/home/home')
+      },
       async submit () {
         try {
           await coupon.use(this.id);

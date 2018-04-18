@@ -57,6 +57,7 @@
 <script>
   import wepy from 'wepy';
   import auth from '../../api/auth';
+  import shop from '../../api/shop';
   import base from '../../mixins/base';
   import input from '../../mixins/input';
   import FormTips from '../../components/weui/tips';
@@ -68,11 +69,16 @@
     def = {
       init: false,
       loginMassage: {},
-      mode: 'fast'
+      mode: 'fast',
+      redirectUrl: null
     };
     data = {...this.def};
-    async onLoad () {
+    async onLoad (param, {preload}) {
+      if (preload && preload.redirectUrl) {
+        this.redirectUrl = preload.redirectUrl;
+      }
       try {
+        await auth.session()
         const loginCode = auth.getConfig('login_code');
         console.debug(`login_code: ${loginCode}`);
         if (loginCode != null) {
@@ -101,18 +107,30 @@
         this.mode = mode;
       },
       async fastLogin({detail}) {
-        console.info(detail)
         if (detail.errMsg == 'getPhoneNumber:fail user deny') {
           await Tips.alert('请允许授权');
           return;
         }
         try {
           await auth.wxLogin(detail);
-          this.$redirect('shops');
+          const shops = await shop.list();
+          if (shops == null && shops.length == 0) {
+            await Tips.modal('您尚未注册店铺');
+          } else if (shops.length == 1) {
+            await Tips.success('登录成功')
+            await auth.setConfig('shop_id', shops[0].shopId);
+            if (this.redirectUrl) {
+              this.$redirect(this.redirectUrl);
+            } else {
+              this.$switch('home');
+            }
+          } else {
+            this.$redirect('shops');
+          }
         } catch (err) {
-          console.info('[login] error' + err)
+          console.info('[login] error' + err);
+          this.mode = 'sms';
           this.loaded();
-          await Tips.modal('您尚未注册');
         } finally {
           this.loaded();
         }

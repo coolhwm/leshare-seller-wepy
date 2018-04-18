@@ -58,22 +58,29 @@ export default class auth extends base {
     wepy.$instance.globalData.auth[key] = null;
     await wepy.removeStorage({key: key});
   }
+
+  /**
+   * 获取会话
+   */
+  static async session() {
+    const {code} = await wepy.login();
+    console.info(`[auth] js_code =${code}`);
+    const {third_session, login_code} = await this.getSession(code);
+    await this.setConfig('login_code', login_code);
+    await this.setConfig('third_session', third_session);
+  }
   /**
    * 执行登录操作
    */
   static async wxLogin(rawUser) {
-    const {code} = await wepy.login();
-    console.info(`[auth] js_code =${code}`);
-    const {third_session, login_code} = await this.session(code);
-    await this.setConfig('login_code', login_code);
-    await this.setConfig('third_session', third_session);
     // 请求登录
     const appCode = wepy.$instance.globalData.appCode;
+    const thirdSession = this.getConfig('third_session')
     const url = `${this.baseUrl}/auth/wx_login`;
     const param = {
       encryptedData: rawUser.encryptedData,
       iv: rawUser.iv,
-      thirdSession: third_session,
+      thirdSession: thirdSession,
       app_code: appCode
     };
     const result = await this.get(url, param);
@@ -85,7 +92,7 @@ export default class auth extends base {
   /**
    * 获取会话
    */
-  static async session(jsCode) {
+  static async getSession(jsCode) {
     const appCode = wepy.$instance.globalData.appCode;
     const url = `${this.baseUrl}/auth/session?code=${jsCode}&app_code=${appCode}`;
     return await this.get(url);
