@@ -25,6 +25,8 @@
 
       <NavComment title="商品评论" url="../comment/comment"/>
 
+      <NavSubShopCoupon title="平台优惠券" url="../coupon/sub_shop_coupon_list"/>
+
       <NavShops title="切换店铺" @tap.user="shops"/>
 
       <NavLogout title="切换账号" @tap.user="logout"/>
@@ -110,7 +112,8 @@
       NavLogout: Navigator,
       AvatarPanel: AvatarPanel,
       NavManusl: Navigator,
-      NavComment: Navigator
+      NavComment: Navigator,
+      NavSubShopCoupon: Navigator
     };
     config = {
       navigationBarTitleText: '我的信息'
