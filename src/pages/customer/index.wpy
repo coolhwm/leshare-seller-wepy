@@ -36,8 +36,6 @@
         }
       };
 
-      onLoad() {
-      }
       async updateCustomerService() {
         this.page = customerService.chatList();
         await this.next();

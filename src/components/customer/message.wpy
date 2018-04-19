@@ -51,7 +51,7 @@
   <view class="message">
     <view class="item" @tap="select({{chats.openId}},{{chats.avatarUrl}},{{chats.nickName}})">
       <view class="header">
-        <image class="img" src="{{chats.avatarUrl}}"></image>
+        <image class="img" src="{{chats.avatarUrl}}"/>
         <view class="red-dot" wx:if="{{departureTime < chats.time}}"/>
       </view>
       <view class="content">
@@ -86,6 +86,7 @@
           avatarUrl: avatarUrl,
           nickName: nickName
         };
+        this.departureTime = new Date().getTime();
         this.$root.$navigate('../../pages/customer/chat?param=' + JSON.stringify(params));
       }
     };
