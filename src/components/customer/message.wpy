@@ -1,4 +1,5 @@
 <style type="scss">
+  @import "../../styles/variable";
   $fontcolor: #7b7b7b;
   $activecolor: #13b113;
   .message {
@@ -18,6 +19,16 @@
         .img {
           width: 100rpx;
           height: 100rpx;
+        }
+        .red-dot{
+          position: absolute;
+          border: $border;
+          border-radius: 50%;
+          background-color: $color-danger;
+          width: 20rpx;
+          height: 20rpx;
+          right: 0;
+          top: 0;
         }
       }
       .content {
@@ -41,11 +52,12 @@
     <view class="item" @tap="select({{chats.openId}},{{chats.avatarUrl}},{{chats.nickName}})">
       <view class="header">
         <image class="img" src="{{chats.avatarUrl}}"></image>
+        <view class="red-dot" wx:if="{{departureTime < chats.time}}"/>
       </view>
       <view class="content">
         <view class="row-between">
           <view class="name">{{chats.nickName}}</view>
-          <!--<text class="msg-time muted xs">{{chats.msgTime ? chats.msgTime : ""}}</text>-->
+          <text class="msg-time muted xxs">{{chats.msgTime ? chats.msgTime : ""}}</text>
         </view>
         <view class="last-msg">{{chats.content ? chats.content: ""}}</view>
       </view>
@@ -59,6 +71,13 @@
     props = {
       chats: {}
     };
+    data = {
+      departureTime: ''
+    };
+
+    onLoad() {
+      this.departureTime = wepy.getStorageSync('departure_time');
+    }
 
     methods = {
       select(id, avatarUrl, nickName) {

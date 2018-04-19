@@ -1,5 +1,6 @@
 import base from './base';
 import Page from '../utils/Page';
+import ServiceTime from '../utils/ServiceDateUtil';
 
 export default class customerService extends base {
   /**
@@ -14,7 +15,7 @@ export default class customerService extends base {
   /**
    * 客服列表
    * */
-  static async chatList() {
+  static chatList() {
     const url = `${this.baseUrl}/kefu/chat_list`;
     return new Page(url, this.processChatInfoTransformation.bind(this));
   }
@@ -25,10 +26,11 @@ export default class customerService extends base {
   static processChatInfoTransformation(chatInfo) {
     const params = {};
     if (chatInfo.mpMsg.msgTime != null) {
-      params.msgTime = chatInfo.mpMsg.msgTime.substring(10, 16);
+      params.msgTime = ServiceTime.getDateDiff(chatInfo.mpMsg.msgTime);
     } else {
       params.msgTime = '';
     }
+    params.time = ServiceTime.getDateFormat(chatInfo.mpMsg.msgTime);
     params.content = chatInfo.mpMsg.content;
     params.nickName = chatInfo.nickName;
     params.avatarUrl = chatInfo.avatarUrl;
@@ -40,7 +42,7 @@ export default class customerService extends base {
    * 聊天历史记录
    * */
   static processChatHistoryTransformation (chatHistory) {
-    var params = [];
+    let params = [];
     params = chatHistory;
     chatHistory.forEach((item, index) => {
       params[index].content = item.content;
@@ -56,6 +58,7 @@ export default class customerService extends base {
    * 客服发送消息
    * */
   static async sendMassge (param) {
+    console.log(param);
     const url = `${this.baseUrl}/kefu/send_message`;
     return await this.post(url, param);
   }

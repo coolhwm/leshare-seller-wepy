@@ -15,6 +15,7 @@
   import base from '../../mixins/base';
   import customerService from '../../api/customer_service';
   import input from '../../mixins/input';
+  import Tips from '../../utils/Tips';
 
   export default class Chat extends wepy.page {
     data = {
@@ -51,8 +52,12 @@
           type: 'text',
           content: info
         };
-        await customerService.sendMassge(param);
+        const result = await customerService.sendMassge(param);
+        if (result == 'FAIL') {
+          Tips.error('消息发送失败！')
+        }
         this.input.readyToSend = '';
+        await this.initLoad();
       }
     };
     config = {
