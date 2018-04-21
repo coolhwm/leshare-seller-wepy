@@ -60,6 +60,7 @@
           <text class="msg-time muted xxs">{{chats.msgTime ? chats.msgTime : ""}}</text>
         </view>
         <view class="last-msg">{{chats.content ? chats.content: ""}}</view>
+        <!--<view class="last-msg" wx:if="{{chats.type == 'image'}}">[图片]</view>-->
       </view>
     </view>
   </view>

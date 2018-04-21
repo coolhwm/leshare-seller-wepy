@@ -24,6 +24,7 @@ export default class customerService extends base {
    * 聊天信息处理
    * */
   static processChatInfoTransformation(chatInfo) {
+    console.log(chatInfo.mpMsg);
     const params = {};
     if (chatInfo.mpMsg.msgTime != null) {
       params.msgTime = ServiceTime.getDateDiff(chatInfo.mpMsg.msgTime);
