@@ -45,6 +45,11 @@
                     margin-left: 10rpx;
                 }
             }
+            .msg-image {
+                width: 150rpx;
+                height: 200rpx;
+                border-radius: 10rpx;
+            }
         }
     }
 </style>
@@ -53,7 +58,8 @@
         <block wx:for="{{chatHistory}}" wx:key="index" wx:for-index="index" wx:for-item="item">
             <view class="msgarea{{item.from === 'me' ? ' fromme' : ' other'}}">
                 <image class="icon" src="{{item.from === 'me' ? shopImgeUrl : avatarUrl}}"></image>
-                <view class="msg">{{item.content}}</view>
+                <view class="msg" wx:if="{{item.type == 'text'}}">{{item.content}}</view>
+                <image class="msg-image ml20" src="{{item.content}}" @tap="priviewImage({{chatHistory}},{{item}})" wx:if="{{item.type == 'image'}}"></image>
                 <view class="clearfix"></view>
             </view>
         </block>
@@ -72,10 +78,24 @@
     };
     onLoad() {
       this.shopImgeUrl = wepy.getStorageSync('shop_image');
-    }
+    };
+    methods= {
+      priviewImage (info, item) {
+        const images = [];
+        info.forEach(item => {
+          if (item.type == 'image') {
+            images.push(item.content);
+          }
+        });
+        wepy.previewImage({
+          current: item.content, // 当前显示图片的http链接
+          urls: images // 需要预览的图片http链接列表
+        })
+      }
+    };
     fixPosition(focus) {
       this.focus = focus;
       this.$apply();
-    }
+    };
   }
 </script>

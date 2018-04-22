@@ -37,8 +37,14 @@
       };
 
       async updateCustomerService() {
-        this.page = await customerService.chatList();
+        this.page = customerService.chatList();
         await this.next();
+      }
+
+      onUnload() {
+        // 写入缓存
+        const departureTime = new Date().getTime();
+        wepy.setStorageSync('departure_time', departureTime);
       }
 
       async onShow() {

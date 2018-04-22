@@ -50,6 +50,9 @@
 
     onUnload() {
       wepy.closeSocket();
+      // 写入缓存
+      const departureTime = new Date().getTime();
+      wepy.setStorageSync('departure_time', departureTime);
     }
 
     initSocket() {

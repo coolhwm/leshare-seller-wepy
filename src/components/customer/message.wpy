@@ -1,4 +1,5 @@
 <style type="scss">
+  @import "../../styles/variable";
   $fontcolor: #7b7b7b;
   $activecolor: #13b113;
   .message {
@@ -19,6 +20,16 @@
           width: 100rpx;
           height: 100rpx;
         }
+        .red-dot{
+          position: absolute;
+          border: $border;
+          border-radius: 50%;
+          background-color: $color-danger;
+          width: 20rpx;
+          height: 20rpx;
+          right: 0;
+          top: 0;
+        }
       }
       .content {
         margin-left: 120rpx;
@@ -30,7 +41,7 @@
           overflow: hidden;
           height: 45rpx;
           color: $fontcolor;
-          font-size: 26rpx;
+          font-size: 25rpx;
         }
       }
     }
@@ -40,14 +51,16 @@
   <view class="message">
     <view class="item" @tap="select({{chats.openId}},{{chats.avatarUrl}},{{chats.nickName}})">
       <view class="header">
-        <image class="img" src="{{chats.avatarUrl}}"></image>
+        <image class="img" src="{{chats.avatarUrl}}"/>
+        <view class="red-dot" wx:if="{{departureTime < chats.time}}"/>
       </view>
       <view class="content">
         <view class="row-between">
           <view class="name">{{chats.nickName}}</view>
-          <!--<text class="msg-time muted xs">{{chats.msgTime ? chats.msgTime : ""}}</text>-->
+          <text class="msg-time muted xxs">{{chats.msgTime ? chats.msgTime : ""}}</text>
         </view>
         <view class="last-msg">{{chats.content ? chats.content: ""}}</view>
+        <!--<view class="last-msg" wx:if="{{chats.type == 'image'}}">[图片]</view>-->
       </view>
     </view>
   </view>
@@ -59,6 +72,13 @@
     props = {
       chats: {}
     };
+    data = {
+      departureTime: ''
+    };
+
+    onLoad() {
+      this.departureTime = wepy.getStorageSync('departure_time');
+    }
 
     methods = {
       select(id, avatarUrl, nickName) {
@@ -67,6 +87,7 @@
           avatarUrl: avatarUrl,
           nickName: nickName
         };
+        this.departureTime = new Date().getTime();
         this.$root.$navigate('../../pages/customer/chat?param=' + JSON.stringify(params));
       }
     };
