@@ -1,0 +1,144 @@
+<template>
+  <view class="container" wx:if="{{init}}">
+    <!--TAB 页-->
+    <ZanTab :tab.sync="tab" @change.user="switchTab" />
+
+    <!--列表展现-->
+    <repeat for="{{page.list}}" key="index" index="index" item="item">
+      <BargainItem :detail.sync="item"/>
+    </repeat>
+
+    <!-- 加载提示 -->
+    <Loadmore :page.sync="page"/>
+  </view>
+
+  <!--占位符-->
+  <Placeholder :show.sync="isPageEmpty" message="您还没有相关砍价订单"/>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import base from '../../mixins/base';
+  import bargain from '../../api/bargain';
+  import pagination from '../../mixins/pagination';
+  import Placeholder from '../../components/common/placeholder';
+  import ZanTab from '../../components/zanui/tab';
+  import BargainItem from '../../components/bargain/bargain_list_item';
+  import Loadmore from '../../components/weui/loadmore';
+
+  export default class BargainList extends wepy.page {
+    def = {
+      init: true,
+      page: {
+        list: [
+        ]
+      },
+      tab: {
+        list: [
+          {id: '0', title: '全部', status: '-1'},
+          {id: '1', title: '进行中', status: '0'},
+          {id: '2', title: '已至底', status: '1'},
+          {id: '3', title: '已过期', status: '2'},
+          {id: '4', title: '已下单', status: '3'}
+        ],
+        selectedId: '1'
+      }
+    };
+    data = {...this.def};
+    async onLoad ({status}) {
+      if (status != null && status !== '' && status !== 'null') {
+        this.tab.selectedId = status;
+      }
+      // 页面加载
+      this.page = bargain.list();
+      await this.next();
+    };
+    // 获取分页参数
+    params() {
+      const status = this.tab.list.find(item => item.id === this.tab.selectedId);
+      return {status: status.status};
+    }
+    methods = {
+      switchTab() {
+        this.reload();
+      }
+    };
+    events = {};
+    components = {
+      BargainItem: BargainItem,
+      Placeholder: Placeholder,
+      ZanTab: ZanTab,
+      Loadmore: Loadmore
+    };
+    mixins = [base, pagination];
+    config = {
+      navigationBarTitleText: '我的砍价',
+      enablePullDownRefresh: true
+    };
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+
+  .order-item-container {
+    border-top: $border;
+    border-bottom: $border;
+    background-color: #FFF;
+    margin-bottom: 10rpx;
+  }
+
+  /*顶栏*/
+  .order-header-container {
+    padding: 10rpx 25rpx 10rpx 20rpx;
+  }
+
+  /*底栏*/
+  .order-footer-container {
+    padding-left: 25rpx;
+    padding-right: 20rpx;
+    height: 70rpx;
+  }
+
+  /*顶栏订单信息*/
+  .order-info-container{
+    text{
+      font-size: $text-xs;
+      color:$color-muted;
+    }
+  }
+
+  /* 操作栏 */
+  .order-action-bar {
+    border-top: $border;
+    height: 90rpx;
+    padding-right: 10rpx;
+  }
+
+  .order-goods-fold{
+    display: none;
+  }
+
+  .goods-fold-btn{
+    background-color: $color-bg-item;
+    padding-top: 5rpx;
+    padding-bottom: 5rpx;
+  }
+
+  .bargain-goods-box{
+    padding: 10rpx 20rpx;
+    background-color: $color-bg-item;
+  }
+
+  .group-bottom-box{
+    flex-direction: row-reverse;
+    border-top: 1px solid #FAFAFA;
+    .group-btn-box{
+      color: white;
+      background-color: $color-primary;
+      padding: 6rpx 20rpx;
+      margin: 14rpx;
+      border-radius: 5rpx;
+    }
+  }
+</style>

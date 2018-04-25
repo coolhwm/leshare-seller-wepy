@@ -47,7 +47,7 @@
     <view class="order-action-bar row-between" wx:if="{{action != 0}}">
       <view>
         <view class="small label primary ml20" wx:if="{{order.orderType == 20}}">外卖</view>
-        <view class="small label primary ml20" wx:if="{{order.orderType == 30}}">堂食</view>
+        <view class="small label primary ml20" wx:if="{{order.orderType == 30}}">堂食 {{order.tableNum ? order.tableNum : ''}}</view>
         <view class="small label primary ml20" wx:if="{{order.orderType == 33}}">打包</view>
       </view>
       <view>

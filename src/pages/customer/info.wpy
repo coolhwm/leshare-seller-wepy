@@ -7,7 +7,7 @@
       <view class="customer-info-box row-between">
 
         <!--左侧头像-->
-        <image class="customer-avatar" wx:if="{{customer.customer.avatarUrl}}" src="{{customer.customer.avatarUrl}}"/>
+        <image class="customer-avatar" wx:if="{{customer.customer.avatarUrl}}" src="{{customer.customer.avatarUrl}}" @tap="vipInfo({{member.customerId}})"/>
         <icon class="customer" color="gray" style="font-size: 180rpx;line-height: 180rpx;" wx:else/>
         <!--右侧主区域-->
         <view class="column customer-main-box">
@@ -195,7 +195,7 @@
         }
       },
       addressList (customerId) {
-        if (!this.customer.addressList) {
+        if (!this.customer.addressList && this.member.extraParam == null) {
           Tips.alert('该用户没有地址');
           return;
         }
@@ -203,6 +203,9 @@
       },
       detail (orderId) {
         this.$navigate('../order/detail', {orderId});
+      },
+      vipInfo(customerId) {
+        this.$navigate('../vip/vip_info', {customerId});
       }
     };
     // 获取分页参数

@@ -3,7 +3,7 @@
     <view class="goods-box mr20">
       <image class="goods-image" src="{{comment.good_image}}" />
     </view>
-    <view class="comment-box">
+    <view class="comment-box" @tap="order">
       <view class="row-between comment-header">
         <view class="row">
           <image class="avatar-image" src="{{comment.avatar}}" />
@@ -30,7 +30,11 @@
       comment: {}
     };
     data = {};
-    methods = {};
+    methods = {
+      order() {
+        this.$root.$navigate(`/pages/order/detail?orderId=${this.comment.orderId}`)
+      }
+    };
     events = {};
 
     onLoad () {

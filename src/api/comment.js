@@ -44,6 +44,7 @@ export default class comment extends base {
     comment.comment = data.comment;
     comment.good_image = data.goods.images[0].url;
     comment.good_name = data.goods.name;
+    comment.orderId = data.orderId;
     return comment;
   }
 }
