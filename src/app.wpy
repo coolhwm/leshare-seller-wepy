@@ -140,7 +140,8 @@
         'pages/booking/booking_detail',
         'pages/shop/income',
         'pages/coupon/sub_shop_coupon_list',
-        'pages/vip/vip_info'
+        'pages/vip/vip_info',
+        'pages/bargain/list'
       ],
       window: {
         backgroundTextStyle: 'dark',
