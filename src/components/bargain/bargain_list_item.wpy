@@ -19,7 +19,11 @@
           <text class="muted mt20 sm">原价:￥{{detail.rule.skuDetail.price ? detail.rule.skuDetail.price : detail.rule.goodsPrice}}</text>
         </view>
       </view>
-      <text class="primary lg">现价:￥{{detail.balance}}</text>
+      <view class="column-center">
+        <text class="primary lg">现价:￥{{detail.balance}}</text>
+        <text class="muted xs">{{detail.spareTime}}</text>
+        <text class="muted xs">已有{{detail.details.length}}人砍</text>
+      </view>
     </view>
 
 
@@ -31,8 +35,12 @@
     </view>
 
     <!--操作栏-->
-    <view class="group-bottom-box row">
+    <view class="group-bottom-box row-between">
       <view class="group-btn-box" @tap="open({{detail.details}})">查看</view>
+      <view class="row ml20">
+        <image src="{{detail.details[0].customer.avatarUrl}}" class="img-box"/>
+        <text class="ml10">{{detail.details[0].customer.nickName}}</text>
+      </view>
     </view>
 
     <customerList />
@@ -131,8 +139,13 @@
   }
 
   .group-bottom-box{
-    flex-direction: row-reverse;
     border-top: 1px solid #FAFAFA;
+    .img-box{
+      width: 60rpx;
+      height: 60rpx;
+      border-radius: 30rpx;
+      border: $border;
+    }
     .group-btn-box{
       color: white;
       background-color: $color-primary;
