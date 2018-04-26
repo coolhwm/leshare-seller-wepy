@@ -6,7 +6,7 @@
         <text class="xxl white">{{title}}</text>
       </view>
       <view class="column notice-content-box">
-        <text class="lg content-box">{{content}}</text>
+        <text class="lg" style="text-align: {{align}}">{{content}}</text>
         <button @tap="close">{{btnText}}</button>
       </view>
     </view>
@@ -25,14 +25,16 @@
       content: '',
       display: false,
       title: '公告',
-      btnText: '我知道了'
+      btnText: '我知道了',
+      align: 'center'
     };
     methods = {
-      open({title, btnText, content}) {
+      open({title, btnText, content, align}) {
         this.display = true;
         this.title = title;
         this.btnText = btnText;
-        this.content = content
+        this.content = content;
+        this.align = align;
       },
       close() {
         this.display = false;

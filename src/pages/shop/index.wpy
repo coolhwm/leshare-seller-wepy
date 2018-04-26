@@ -27,6 +27,8 @@
 
       <NavComment title="商品评论" url="../comment/comment"/>
 
+      <NavNotice title="公告管理" url="../notice/list"/>
+
       <NavSubShopCoupon title="平台优惠券" url="../coupon/sub_shop_coupon_list"/>
 
       <NavShops title="切换店铺" @tap.user="shops"/>
@@ -115,6 +117,7 @@
       AvatarPanel: AvatarPanel,
       NavManusl: Navigator,
       NavComment: Navigator,
+      NavNotice: Navigator,
       NavSubShopCoupon: Navigator,
       NavBargain: Navigator
     };

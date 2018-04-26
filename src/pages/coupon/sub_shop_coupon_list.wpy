@@ -5,11 +5,13 @@
 
     <!--列表展现-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <CouponItem :coupon.sync="item" listMode="subShopList"></CouponItem>
+      <CouponItem :coupon.sync="item" listMode="subShopList" @open.user="open"></CouponItem>
     </repeat>
 
     <!-- 加载提示 -->
     <Loadmore :page.sync="page"/>
+
+    <Notice />
 
     <!--占位符-->
     <Placeholder :show.sync="isPageEmpty" message="您还没有相关卡券信息"/>
@@ -27,6 +29,7 @@
   import CouponItem from '../../components/coupon/item';
   import Event from '../../utils/Event';
   import Loadmore from '../../components/weui/loadmore';
+  import Notice from '../../components/shop/notice';
 
   export default class CouponIndex extends wepy.page {
     def = {
@@ -56,6 +59,10 @@
     methods = {
       switchTab() {
         this.reload();
+      },
+      open({name, desc}) {
+        console.info(name, desc)
+        this.$invoke('Notice', 'open', {title: name, content: desc, align: 'left'})
       }
     };
     components = {
@@ -63,7 +70,8 @@
       ZanTab: ZanTab,
       ActionBar: ActionBar,
       CouponItem: CouponItem,
-      Loadmore: Loadmore
+      Loadmore: Loadmore,
+      Notice: Notice
     };
     mixins = [base, pagination];
     config = {
