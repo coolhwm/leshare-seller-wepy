@@ -43,13 +43,11 @@
       </view>
     </view>
 
-    <customerList />
 
   </view>
 </template>
 <script>
   import wepy from 'wepy';
-  import customerList from '../../components/bargain/customer_list';
 
   export default class BargainItem extends wepy.component {
     props = {
@@ -72,11 +70,10 @@
         }
       },
       open(customers) {
-        this.$invoke('customerList', 'open', {content: customers})
+        this.$emit('open', customers)
       }
     };
     components = {
-      customerList: customerList
     };
     watch = {
     };
