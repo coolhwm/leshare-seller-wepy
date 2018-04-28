@@ -3,7 +3,7 @@
     <!--基本信息-->
     <view class="order-header-container colunm">
       <view class="row-between">
-        <view class="user-info-container">
+        <view class="user-info-container" @tap="customerDetail({{order.customer.id}})">
           <icon class="idcard" color="gray"></icon>
           <text class="sm ml10">{{order.customer.nickName ? order.customer.nickName : '微信用户'}}</text>
         </view>
@@ -130,6 +130,13 @@
       },
       detail(orderId) {
         this.$emit('tap', orderId);
+      },
+      customerDetail(customerId) {
+        if (customerId) {
+          this.$root.$navigate('/pages/customer/info?customerId=' + customerId);
+        } else {
+          Tips.alert('没有找到用户信息');
+        }
       }
     };
 
