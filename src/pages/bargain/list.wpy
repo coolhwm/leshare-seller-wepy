@@ -5,11 +5,14 @@
 
     <!--列表展现-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <BargainItem :detail.sync="item"/>
+      <BargainItem :detail.sync="item" @open.user="open"/>
     </repeat>
 
     <!-- 加载提示 -->
     <Loadmore :page.sync="page"/>
+
+    <customerList />
+
   </view>
 
   <!--占位符-->
@@ -25,6 +28,7 @@
   import ZanTab from '../../components/zanui/tab';
   import BargainItem from '../../components/bargain/bargain_list_item';
   import Loadmore from '../../components/weui/loadmore';
+  import customerList from '../../components/bargain/customer_list';
 
   export default class BargainList extends wepy.page {
     def = {
@@ -56,11 +60,17 @@
     // 获取分页参数
     params() {
       const status = this.tab.list.find(item => item.id === this.tab.selectedId);
-      return {status: status.status};
+      return {
+        status: status.status,
+        sort: 'asc'
+      };
     }
     methods = {
       switchTab() {
         this.reload();
+      },
+      open(customers) {
+        this.$invoke('customerList', 'open', {content: customers})
       }
     };
     events = {};
@@ -68,7 +78,8 @@
       BargainItem: BargainItem,
       Placeholder: Placeholder,
       ZanTab: ZanTab,
-      Loadmore: Loadmore
+      Loadmore: Loadmore,
+      customerList: customerList
     };
     mixins = [base, pagination];
     config = {

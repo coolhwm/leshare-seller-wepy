@@ -56,11 +56,15 @@
     data = {};
     methods = {
       edit(couponId) {
-        const param = {
-          couponId,
-          mode: 'edit'
-        };
-        this.$root.$navigate('edit', param);
+        if (this.listMode == 'subShopList') {
+          this.$emit('open', {name: this.coupon.name, desc: this.coupon.desc})
+        } else {
+          const param = {
+            couponId,
+            mode: 'edit'
+          };
+          this.$root.$navigate('edit', param);
+        }
       },
       pick(couponId) {
         const param = {

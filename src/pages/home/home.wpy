@@ -116,9 +116,9 @@
           <image src="/images/home/vip_card.png"/>
           <text>会员卡管理</text>
         </navigator>
-        <navigator class="operation-row column-center" url="../notice/list">
-          <image src="/images/home/notice.png"/>
-          <text>公告管理</text>
+        <navigator class="operation-row column-center" url="../coupon/sub_shop_coupon_list">
+          <image src="/images/home/sub_shop.png"/>
+          <text>平台推广</text>
         </navigator>
       </view>
     </view>

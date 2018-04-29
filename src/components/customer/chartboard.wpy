@@ -57,7 +57,7 @@
     <scroll-view scroll-y="1" style="height:1100rpx;" scroll-top="{{(chatHistory.length-1)*60}}" class="chartboard">
         <block wx:for="{{chatHistory}}" wx:key="index" wx:for-index="index" wx:for-item="item">
             <view class="msgarea{{item.from === 'me' ? ' fromme' : ' other'}}">
-                <image class="icon" src="{{item.from === 'me' ? shopImgeUrl : avatarUrl}}"></image>
+                <image class="icon" @tap.stop="detail({{item}})" src="{{item.from === 'me' ? shopImgeUrl : avatarUrl}}"></image>
                 <view class="msg" wx:if="{{item.type == 'text'}}">{{item.content}}</view>
                 <image class="msg-image ml20" src="{{item.content}}" @tap="priviewImage({{chatHistory}},{{item}})" wx:if="{{item.type == 'image'}}"></image>
                 <view class="clearfix"></view>
@@ -67,6 +67,8 @@
 </template>
 <script>
   import wepy from 'wepy';
+  import service from '../../api/customer_service';
+  import Tips from '../../utils/Tips';
 
   export default class Chartboard extends wepy.component {
     props = {
@@ -80,6 +82,16 @@
       this.shopImgeUrl = wepy.getStorageSync('shop_image');
     };
     methods= {
+      async detail(user) {
+        Tips.loading();
+        const {id} = await service.customerId(user.openId);
+        Tips.loaded();
+        if (id) {
+          this.$root.$navigate('/pages/customer/info?customerId=' + id);
+        } else {
+          Tips.alert('没有找到用户信息');
+        }
+      },
       priviewImage (info, item) {
         const images = [];
         info.forEach(item => {

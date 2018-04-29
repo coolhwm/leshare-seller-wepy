@@ -83,10 +83,15 @@
     }
 
     methods = {
-      detail(user) {
-        Tips.loading()
-        const id = service.customerId(user.openId);
-        console.info(id);
+      async detail(user) {
+        Tips.loading();
+        const {id} = await service.customerId(user.openId);
+        Tips.loaded();
+        if (id) {
+          this.$root.$navigate('/pages/customer/info?customerId=' + id);
+        } else {
+          Tips.alert('没有找到用户信息');
+        }
       },
       select(id, avatarUrl, nickName) {
         const params = {
