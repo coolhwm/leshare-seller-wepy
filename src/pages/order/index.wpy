@@ -5,17 +5,41 @@
       <!--TAB 页-->
       <ZanTab :tab.sync="tab" @change.user="switchTap"/>
 
+      <!--分页器-->
+      <view class="page-bar row-between">
+        <view>
+          <view class="zan-btn zan-btn--small {{page.num == 1 ? 'zan-btn--disabled' : ''}}" ><text class="xs" @tap="firstPage">首页</text></view>
+          <view class="zan-btn zan-btn--small {{page.num == 1 ? 'zan-btn--disabled' : ''}}" @tap="prevPage">上一页</view>
+        </view>
+
+        <text>第{{page.num}}页</text>
+        <view>
+          <view class="zan-btn zan-btn--small {{isPageReachBottom ? 'zan-btn--disabled' : ''}}" @tap="nextPage">下一页</view>
+          <view class="zan-btn zan-btn--small {{isPageReachBottom ? 'zan-btn--disabled' : ''}}"> <text class="xs" @tap="gotoPage">{{'>>'}}</text></view>
+        </view>
+
+      </view>
+
       <!--订单列表-->
       <repeat for="{{page.list}}" key="index" index="index" item="item">
         <OrderItem :order.sync="item" @tap.user="detail" @receive.user="receive"></OrderItem>
       </repeat>
 
+      <view class="page-bar row-center" wx:if="{{!isPageEmpty}}">
+        <view class="zan-btn zan-btn--small {{page.num == 1 ? 'zan-btn--disabled' : ''}}" @tap="prevPage">上一页</view>
+        <view class="zan-btn zan-btn--small"><text @tap="goTop">回到顶部</text></view>
+        <view class="zan-btn zan-btn--small {{isPageReachBottom ? 'zan-btn--disabled' : ''}}" @tap="nextPage">下一页</view>
+      </view>
+
       <!-- 加载提示 -->
       <Loadmore :page.sync="page"/>
+
 
       <view class="tab-border"/>
       <!--占位符-->
       <Placeholder :show.sync="isPageEmpty" message="您还没有相关订单"/>
+
+
     </view>
 
   </view>
@@ -75,6 +99,8 @@
       }
       // 页面加载
       this.page = order.page();
+      this.page.loadOnReachBottom = false;
+      this.page.mode = 'replace';
       this.orders = this.page.list;
       await this.next();
       // 事件监听
@@ -83,10 +109,10 @@
       Event.listen(Event.USER_LOGOUT, this.clear.bind(this), this);
     };
     async onShow () {
-      if (!this.init) {
-        this.page.reset();
-        await this.next();
-      }
+      // if (!this.init) {
+      //   this.page.reset();
+      //   await this.next();
+      // }
     }
     // 获取分页参数
     params() {
@@ -102,8 +128,55 @@
       this.page.clear();
       this.init = false;
     }
+    onReachBottom () {
+      return;
+    };
+
     methods = {
+      goTop() {
+        wx.pageScrollTo({
+          scrollTop: 0,
+          duration: 0
+        });
+      },
+      async gotoPage() {
+        if (this.isPageReachBottom) {
+          return;
+        }
+        Tips.loading();
+        await this.goto(this.page.num + 10);
+      },
+      async firstPage() {
+        if (this.page.num == 1) {
+          return;
+        }
+        Tips.loading();
+        await this.reload();
+      },
+      async prevPage() {
+        if (this.page.num == 1) {
+          return;
+        }
+        wx.pageScrollTo({
+          scrollTop: 0,
+          duration: 0
+        });
+        Tips.loading();
+        await this.prev();
+      },
+      async nextPage() {
+        if (this.isPageReachBottom) {
+          return;
+        }
+        Tips.loading();
+        wx.pageScrollTo({
+          scrollTop: 0,
+          duration: 0
+        });
+        await this.next();
+      },
       switchTap({selectedId}) {
+        Tips.loading();
         this.status = selectedId;
         this.reload();
       },
@@ -135,3 +208,10 @@
     mixins = [pagination, base];
   }
 </script>
+<style lang="scss">
+  @import "../../styles/variable";
+  .page-bar {
+    padding: 10rpx;
+  }
+</style>
+

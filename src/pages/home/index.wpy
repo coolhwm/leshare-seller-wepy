@@ -78,7 +78,6 @@
         this.redirectUrl = preload.redirectUrl;
       }
       try {
-        await auth.session()
         const loginCode = auth.getConfig('login_code');
         console.debug(`login_code: ${loginCode}`);
         if (loginCode != null) {
@@ -91,13 +90,17 @@
             } else {
               this.$redirect('shops');
             }
+          } else {
+            await auth.session();
           }
         } else {
+          await auth.session();
           WxUtils.checkSDK();
         }
         console.debug(`login_fail: ${loginCode}`);
       } catch (e) {
         await auth.removeConfig('login_code');
+        await auth.session();
       } finally {
         this.loaded();
       }

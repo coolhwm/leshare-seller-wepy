@@ -41,12 +41,56 @@
         Tips.loaded();
       }
     }
+    async prev () {
+      try {
+        if (this.page.start != 0) {
+          Tips.setLoading();
+        }
+        this.isPageLoading = true;
+        const param = this.params ? this.params() : {};
+        await this.page.prev(param);
+        this.isPageReachBottom = this.page.reachBottom;
+        this.isPageEmpty = this.page.list.length == 0;
+        if (this.onPageLoad) {
+          this.onPageLoad();
+        }
+      } finally {
+        this.isPageLoading = false;
+        this.init = true;
+        this.$apply();
+        Tips.loaded();
+      }
+    }
+    async goto (num) {
+      try {
+        if (this.page.start != 0) {
+          Tips.setLoading();
+        }
+        this.isPageLoading = true;
+        const param = this.params ? this.params() : {};
+        await this.page.goto(num, param);
+        this.isPageReachBottom = this.page.reachBottom;
+        this.isPageEmpty = this.page.list.length == 0;
+        if (this.onPageLoad) {
+          this.onPageLoad();
+        }
+      } finally {
+        this.isPageLoading = false;
+        this.init = true;
+        this.$apply();
+        Tips.loaded();
+      }
+    }
 
     /**
      * 到达底部
      */
     async onReachBottom () {
-      await this.next();
+      if (this.page.loadOnReachBottom === false) {
+        return;
+      } else {
+        await this.next();
+      }
     };
 
     /**

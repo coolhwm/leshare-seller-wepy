@@ -3,6 +3,12 @@ import Page from '../utils/Page';
 import ServiceTime from '../utils/ServiceDateUtil';
 
 export default class customerService extends base {
+
+  static async customerId(opneId) {
+    const url = `${this.baseUrl}/customers?open_id=${opneId}`;
+    return this.get(url);
+  }
+
   /**
    * 聊天记录
    * */

@@ -22,12 +22,36 @@ export default class Pagination {
     this.empty = true;
     // 是否需要清除
     this.toClear = false;
+    // 分页模式
+    this.mode = 'concat'
+    // 页码
+    this.num = 0;
   }
-
+  async goto(num, args) {
+    this.num = num;
+    // 参数处理
+    this.start = this.count * (this.num - 1);
+    await this.load(args);
+  }
   /**
    * 加载下一页数据
    */
   async next (args) {
+    this.num += 1;
+    // 参数处理
+    this.start = this.count * (this.num - 1);
+    await this.load(args);
+  }
+  async prev (args) {
+    if (this.num <= 1) {
+      return;
+    }
+    this.num -= 1;
+    // 参数处理
+    this.start = this.count * (this.num - 1);
+    await this.load(args);
+  }
+  async load(args) {
     const param = {
       from: this.start,
       limit: this.count
@@ -48,6 +72,9 @@ export default class Pagination {
         } else {
           this.reachBottom = true;
         }
+        if (this.mode == 'replace') {
+          this.list = []
+        }
         return this;
       }
       this.empty = false;
@@ -58,12 +85,13 @@ export default class Pagination {
         this.list = data;
         this.toClear = false;
       } else {
-        this.list = this.list.concat(data);
+        if (this.mode == 'replace') {
+          this.list = data;
+        } else {
+          this.list = this.list.concat(data);
+        }
       }
-      this.start += this.count;
-      if (data.length < this.count) {
-        this.reachBottom = true;
-      }
+      this.reachBottom = data.length < this.count;
       return this;
     } finally {
       this.loading = false;
@@ -75,6 +103,7 @@ export default class Pagination {
    */
   reset () {
     this.empty = true;
+    this.num = 0;
     this.toClear = true;
     this.start = 0;
     this.reachBottom = false;
@@ -82,6 +111,7 @@ export default class Pagination {
   clear () {
     this.toClear = false;
     this.start = 0;
+    this.num = 0;
     this.list = [];
   }
 

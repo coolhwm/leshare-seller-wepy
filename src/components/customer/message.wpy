@@ -51,7 +51,7 @@
   <view class="message">
     <view class="item" @tap="select({{chats.openId}},{{chats.avatarUrl}},{{chats.nickName}})">
       <view class="header">
-        <image class="img" src="{{chats.avatarUrl}}"/>
+        <image @tap.stop="detail({{chats}})" class="img" src="{{chats.avatarUrl}}"/>
         <view class="red-dot" wx:if="{{departureTime < chats.time}}"/>
       </view>
       <view class="content">
@@ -67,6 +67,8 @@
 </template>
 <script>
   import wepy from 'wepy';
+  import service from '../../api/customer_service';
+  import Tips from '../../utils/Tips';
 
   export default class Message extends wepy.component {
     props = {
@@ -81,6 +83,11 @@
     }
 
     methods = {
+      detail(user) {
+        Tips.loading()
+        const id = service.customerId(user.openId);
+        console.info(id);
+      },
       select(id, avatarUrl, nickName) {
         const params = {
           id: id,

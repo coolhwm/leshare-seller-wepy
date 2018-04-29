@@ -3,19 +3,19 @@
     <!--基本信息-->
     <view class="order-header-container colunm">
       <view class="row-between">
-        <view class="user-info-container">
+        <view class="user-info-container" style="min-width: 150px;">
           <icon class="idcard" color="gray"></icon>
           <text class="sm ml10">{{order.customer.nickName ? order.customer.nickName : '微信用户'}}</text>
         </view>
-        <view>
+        <view style="min-width: 150px;text-align: right;">
           <text class="sm primary">{{order.statusText}}</text>
-          <text class="muted danger"> {{order.paymentType == 0 ? '(线下支付)' : ''}}</text>
+          <text class="muted danger" > {{order.paymentType == 0 ? '(线下支付)' : ''}}</text>
         </view>
       </view>
 
       <view class="order-info-container row-between">
-        <text>{{order.orderTime}}</text>
-        <text>{{order.uuid}}</text>
+        <text style="min-width: 120px">{{order.orderTime}}</text>
+        <text >{{order.uuid}}</text>
       </view>
     </view>
 
