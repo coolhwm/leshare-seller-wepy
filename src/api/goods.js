@@ -157,8 +157,24 @@ export default class goods extends base {
       globalCid: goods.globalCid,
       innerCid: goods.innerCid,
       goodsId: goods.id,
-      foodBoxFee: goods.extraParam ? goods.extraParam.foodBoxFee : ''
+      foodBoxFee: goods.extraParam ? goods.extraParam.foodBoxFee : '',
+      type: goods.type,
+      subhead: goods.subhead,
+      tagText: [],
+      tags: goods.tags,
+      propText: [],
+      skuProperties: goods.skuProperties
     };
+    if (goods.tags != null) {
+      goods.tags.map(item => {
+        input.tagText.push(item.tag)
+      });
+    }
+    if (goods.skuProperties != null) {
+      goods.skuProperties.map(item => {
+        input.propText.push(item.propertyKey)
+      });
+    }
     let skuList;
     const details = goods.goodsDetails ? goods.goodsDetails : [];
     if (goods.goodsSkuInfo == null || goods.goodsSkuInfo.goodsSkuDetails == null) {
@@ -174,6 +190,13 @@ export default class goods extends base {
         const stock = goods.goodsStocks.find(item => item.sku == sku).stock;
         return {price, sku, stock};
       });
+      for (let i = 2; i < 4; i++) {
+        input.isMoreSku = goods.goodsSkuInfo[`prop${i}`] != null;
+        if (input.isMoreSku) {
+          input.goodsSkuInfo = goods.goodsSkuInfo;
+          i = 4;
+        }
+      }
     }
     return {pictures, input, details, skuList};
   }

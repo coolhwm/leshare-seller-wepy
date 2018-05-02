@@ -1,13 +1,14 @@
 <template>
   <!--SKU区域// 组件化-->
   <repeat for="{{skuList}}" key="sku" index="index" item="item">
-    <Sku :info.sync="item" :index.sync="index" :skuEditable.sync="skuEditable" @remove.user="remove" @change.user="change" />
+    <Sku :info.sync="item" :index.sync="index" :skuEditable.sync="skuEditable" @remove.user="remove" @change.user="change" :input.sync="input"/>
   </repeat>
 
   <!--添加商品型号-->
-  <view class="sku-add-btn row-end" @tap="add">
+  <view class="sku-add-btn row-end" @tap="add" wx:if="{{!input.isMoreSku}}">
     <icon class="plus"/><text class="ml10">添加商品型号</text>
   </view>
+  <view class="sku-add-empty" wx:else></view>
 </template>
 
 <script>
@@ -17,7 +18,8 @@
     props = {
       skuList: {
         twoWay: true
-      }
+      },
+      input: {}
     };
     data = {
       skuEditable: true
@@ -56,6 +58,9 @@
   @import "../../styles/variable";
   .sku-add-btn{
     padding: 10px 20px;
+  }
+  .sku-add-empty{
+    padding-top: 10px;
   }
 
 </style>

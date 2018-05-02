@@ -7,7 +7,8 @@
             <view class="weui-label">型号</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" id="sku" @blur="input({{index}})" value="{{info.sku}}" placeholder="请填写商品型号"/>
+            <input class="weui-input" id="sku" @blur="input({{index}})" value="{{info.sku}}" placeholder="请填写商品型号" disabled wx:if="{{input.isMoreSku}}"/>
+            <input class="weui-input" id="sku" @blur="input({{index}})" value="{{info.sku}}" placeholder="请填写商品型号" wx:else/>
           </view>
           <view class="weui-cell__ft">
           </view>
@@ -17,7 +18,8 @@
             <view class="weui-label">价格</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" id="price" type="digit" @blur="input({{index}})" value="{{info.price}}" placeholder="请填写商品价格"/>
+            <input class="weui-input" id="price" type="digit" @blur="input({{index}})" value="{{info.price}}" placeholder="请填写商品价格" disabled wx:if="{{input.isMoreSku}}"/>
+            <input class="weui-input" id="price" type="digit" @blur="input({{index}})" value="{{info.price}}" placeholder="请填写商品价格" wx:else/>
           </view>
           <view class="weui-cell__ft">
           </view>
@@ -27,7 +29,8 @@
             <view class="weui-label">库存</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" id="stock" type="number" @blur="input({{index}})" value="{{info.stock}}"  placeholder="请填写商品库存"/>
+            <input class="weui-input" id="stock" type="number" @blur="input({{index}})" value="{{info.stock}}"  placeholder="请填写商品库存" disabled wx:if="{{input.isMoreSku}}"/>
+            <input class="weui-input" id="stock" type="number" @blur="input({{index}})" value="{{info.stock}}"  placeholder="请填写商品库存" wx:else/>
           </view>
           <view class="weui-cell__ft">
           </view>
@@ -35,7 +38,7 @@
       </view>
     </view>
 
-    <view class="op-box column-center" wx:if="{{skuEditable}}" @tap="remove({{index}})">
+    <view class="op-box column-center" wx:if="{{skuEditable && !input.isMoreSku}}" @tap="remove({{index}})">
       <icon class="minus" style="color: red;" wx:if="{{index != 0}}"/>
     </view>
   </view>
@@ -50,15 +53,14 @@
       },
       skuEditable: {
         default: false
-      }
+      },
+      input: {}
     };
     data = {};
     methods = {
       input(index, e) {
-        console.info(index, e);
         const fieldName = e.currentTarget.id;
         const fieldValue = e.detail.value;
-        console.info(index, fieldName, fieldValue)
         this.$emit('change', {index, fieldName, fieldValue});
       },
       remove(index) {
