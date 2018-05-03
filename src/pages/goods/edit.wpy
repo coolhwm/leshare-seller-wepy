@@ -16,12 +16,38 @@
       </view>
 
       <!-- SKU 列表 -->
-      <SkuList :skuList.sync="skuList"/>
+      <SkuList :skuList.sync="skuList" :input.sync="input"/>
 
       <!-- 其他详细信息 -->
       <view class="detail-box">
         <view class="weui-cells-form">
-
+          <view class="weui-cell">
+            <view class="weui-cell__hd" >
+              <view class="weui-label">副标题</view>
+            </view>
+            <view class="weui-cell__bd">
+              <input class="weui-textarea" id="subhead" @blur="input" value="{{input.subhead}}"
+                     placeholder="请输入商品副标题" style="height: 2.3em" maxlength="30"/>
+            </view>
+          </view>
+          <view class="weui-cell" wx:if="{{input.tagText}}">
+            <view class="weui-cell__hd" >
+              <view class="weui-label">标签</view>
+            </view>
+            <view class="weui-cell__bd">
+              <input class="weui-textarea" id="tags" @blur="input" value="{{input.tagText}}"
+                     placeholder="暂无标签" style="height: 2.3em" maxlength="30" disabled/>
+            </view>
+          </view>
+          <view class="weui-cell" wx:if="{{input.tagText}}">
+            <view class="weui-cell__hd" >
+              <view class="weui-label">多属性</view>
+            </view>
+            <view class="weui-cell__bd">
+              <input class="weui-textarea" id="skuProperties" @blur="input" value="{{input.propText}}"
+                     placeholder="暂无多规格" style="height: 2.3em" maxlength="30" disabled/>
+            </view>
+          </view>
           <view class="weui-cell weui-cell_input" >
             <view class="weui-cell__hd" >
               <view class="weui-label">餐盒费</view>
@@ -204,6 +230,10 @@
         data.extraParam = {
           foodBoxFee: this.input.foodBoxFee * 1
         };
+        data.type = this.input.type;
+        data.subhead = this.input.subhead;
+        data.tags = this.input.tags;
+        data.skuProperties = this.input.skuProperties;
         // 详情信息
         data.goodsDetails = this.details;
         // 处理SKU信息
@@ -222,27 +252,31 @@
           data.originalPrice = sku.price;
         } else {
           // 多个SKU模式
-          data.goodsSkuInfo.goodsSkuDetails = skuList.map(item => {
-            const detail = {};
-            detail.sku = item.sku;
-            const base = {};
-            base.imageUrl = data.images[0].url; // 第一张图
-            base.price = item.price;
-            detail.goodsSkuDetailBase = base;
-            return detail;
-          });
-          data.goodsSkuInfo.prop1 = '规格';
-          data.goodsSkuInfo.value1 = skuList.map(item => item.sku).join(',');
-          data.goodsStocks = skuList.map(item => {
-            return {
-              sku: item.sku,
-              stock: item.stock
-            }
-          });
-          // 库存求和
-          data.stock = skuList.map(item => item.stock).reduce((pre, cur) => parseInt(pre) + parseInt(cur));
-          // 售价求最低值
-          data.sellPrice = Math.min(...skuList.map(item => item.price));
+          if (!this.input.isMoreSku) {
+            data.goodsSkuInfo.goodsSkuDetails = skuList.map(item => {
+              const detail = {};
+              detail.sku = item.sku;
+              const base = {};
+              base.imageUrl = data.images[0].url; // 第一张图
+              base.price = item.price;
+              detail.goodsSkuDetailBase = base;
+              return detail;
+            });
+            data.goodsSkuInfo.prop1 = '规格';
+            data.goodsSkuInfo.value1 = skuList.map(item => item.sku).join(',');
+            data.goodsStocks = skuList.map(item => {
+              return {
+                sku: item.sku,
+                stock: item.stock
+              }
+            });
+            // 库存求和
+            data.stock = skuList.map(item => item.stock).reduce((pre, cur) => parseInt(pre) + parseInt(cur));
+            // 售价求最低值
+            data.sellPrice = Math.min(...skuList.map(item => item.price));
+          } else {
+            data.goodsSkuInfo = this.input.goodsSkuInfo
+          }
         }
         if (this.mode == 'create') {
           await goods.create(data);
