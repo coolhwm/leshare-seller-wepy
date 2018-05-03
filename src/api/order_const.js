@@ -10,7 +10,8 @@ const TYPE = {
   GROUP: 50,
   BOOKING: 60,
   BARGAIN: 70,
-  BALANCE: 80
+  BALANCE: 80,
+  DIGIT: 90
 };
 /**
  * 支付方式
@@ -197,7 +198,9 @@ const STATUS_ACTIONS = {
   '40-1-1': [ACTION.CLOSE],
   // 拼团
   '50-1-2': [ACTION.SEND],
-  '50-1-3': [ACTION.RECEIVE]
+  '50-1-3': [ACTION.RECEIVE],
+  // 虚拟商品（线上）
+  '90-1-1': [ACTION.REPRICE, ACTION.CLOSE]
 };
 
 /**  内部方法 **/
