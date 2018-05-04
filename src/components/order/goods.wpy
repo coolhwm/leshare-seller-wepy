@@ -1,18 +1,20 @@
 <template>
   <view class="order-goods-container row-between">
     <!--商品图片-->
-    <image class="order-goods-image" mode="aspectFill" src="{{goods.imageUrl}}"/>
+    <!--<image class="order-goods-image" mode="aspectFill" src="{{goods.imageUrl}}"/>-->
 
     <!--商品说明-->
     <view class="order-goods-title-container column">
-      <text>{{goods.goodsName}}</text>
+      <view class="row">
+        <text class="mr20">{{goods.goodsName}}</text>
+        <text class="muted">x{{goods.count}}</text>
+      </view>
       <text class="muted">{{goods.skuText}}</text>
     </view>
-
     <!--商品购买信息-->
-    <view class="order-goods-buy-container column">
+    <view class="order-goods-buy-container row">
+
       <text>￥{{goods.goodsPrice}}</text>
-      <text class="muted">x{{goods.count}}</text>
     </view>
   </view>
 </template>
@@ -31,7 +33,7 @@
 
   .order-goods-container{
     background-color: $color-bg-item;
-    padding: 10rpx 20rpx 15rpx 25rpx;
+    padding: 5rpx 30rpx 5rpx 30rpx;
   }
 
   /*商品图图片*/

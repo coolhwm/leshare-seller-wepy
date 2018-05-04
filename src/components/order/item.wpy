@@ -3,9 +3,9 @@
     <!--基本信息-->
     <view class="order-header-container colunm">
       <view class="row-between">
-        <view class="user-info-container" @tap="customerDetail({{order.customer.id}})">
+        <view class="user-info-container" @tap="customerDetail({{order.customerId}})">
           <icon class="idcard" color="gray"></icon>
-          <text class="sm ml10">{{order.customer.nickName ? order.customer.nickName : '微信用户'}}</text>
+          <text class="sm ml10">{{order.customerNickName ? order.customerNickName : '微信用户'}}</text>
         </view>
         <view style="min-width: 150px;text-align: right;">
           <text class="sm primary">{{order.statusText}}</text>
@@ -23,15 +23,19 @@
 
     <view class="order-goods-list-container" @tap="detail({{order.orderId}})">
       <repeat for="{{order.orderGoodsInfos}}" key="goodsId" index="index" item="item">
-        <view class="{{!order.orderId || index == 0 || expand[order.orderId] ? '' : 'order-goods-fold'}}">
+        <!--<view class="{{!order.orderId || index == 0 || expand[order.orderId] ? '' : 'order-goods-fold'}}">-->
+          <!--<OrderGoods :goods="item"></OrderGoods>-->
+          <!--<view class="hr" />-->
+        <!--</view>-->
+        <view>
           <OrderGoods :goods="item"></OrderGoods>
-          <view class="hr" />
+        <view class="hr" />
         </view>
       </repeat>
-      <view wx:if="{{order.orderId && order.orderGoodsInfos.length > 1}}" class="goods-fold-btn row-center" @tap.stop="expand({{order.orderId}})">
-        <text class="muted" wx:if="{{!expand[order.orderId]}}">查看全部 {{order.orderGoodsInfos.length}} 件商品</text>
-        <text class="muted" wx:else>收起商品</text>
-      </view>
+      <!--<view wx:if="{{order.orderId && order.orderGoodsInfos.length > 1}}" class="goods-fold-btn row-center" @tap.stop="expand({{order.orderId}})">-->
+        <!--<text class="muted" wx:if="{{!expand[order.orderId]}}">查看全部 {{order.orderGoodsInfos.length}} 件商品</text>-->
+        <!--<text class="muted" wx:else>收起商品</text>-->
+      <!--</view>-->
     </view>
 
 

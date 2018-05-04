@@ -15,10 +15,18 @@ export default class order extends base {
   }
 
   /**
+   * 订单类型
+   */
+  static orderType() {
+    const url = `${this.baseUrl}/orders/order_type`;
+    return this.get(url);
+  }
+
+  /**
    * 分页方法
    */
   static page() {
-    const url = `${this.baseUrl}/orders`;
+    const url = `${this.baseUrl}/orders/list`;
     return new Page(url, this._processOrderListItem.bind(this));
   }
 
@@ -358,6 +366,7 @@ export default class order extends base {
     goods.forEach(item => {
       // 处理SKU描述
       const sku = item.goodsSku;
+      item.goodsPrice = item.goodsPrice.toFixed(2);
       item.skuText = this._processOrderSku(sku);
       item.imageUrl += '/small';
     });

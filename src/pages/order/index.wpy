@@ -8,16 +8,20 @@
       <!--分页器-->
       <view class="page-bar row-between">
         <view>
-          <view class="zan-btn zan-btn--small {{page.num == 1 ? 'zan-btn--disabled' : ''}}" ><text class="xs" @tap="firstPage">首页</text></view>
+          <view class="zan-btn zan-btn--small {{page.num == 1 ? 'zan-btn--disabled' : ''}}" @tap="firstPage">首页</view>
           <view class="zan-btn zan-btn--small {{page.num == 1 ? 'zan-btn--disabled' : ''}}" @tap="prevPage">上一页</view>
         </view>
 
         <text>第{{page.num}}页</text>
         <view>
           <view class="zan-btn zan-btn--small {{isPageReachBottom ? 'zan-btn--disabled' : ''}}" @tap="nextPage">下一页</view>
-          <view class="zan-btn zan-btn--small {{isPageReachBottom ? 'zan-btn--disabled' : ''}}"> <text class="xs" @tap="open">搜索</text></view>
+          <view class="zan-btn zan-btn--small {{isPageReachBottom ? 'zan-btn--disabled' : ''}}" @tap="open">搜索</view>
         </view>
-
+      </view>
+      <view class="search-tips" wx:if="{{orderType || content}}">
+        <text wx:if="{{orderType}}">订单类型：{{orderTypeText}}</text>
+        <text wx:if="{{content}}">检索条件：{{content}}</text>
+        <text @tap="clean">[取消]</text>
       </view>
 
       <!--订单列表-->
@@ -42,7 +46,6 @@
       <Search @gotoPage.user="gotoPage" @gobackPage.user="gobackPage" @search.user="search" @clean.user="clean"/>
 
     </view>
-
   </view>
 </template>
 
@@ -91,10 +94,9 @@
         scroll: false
       },
       status: '0',
-      searchText: {
-        orderType: '',
-        content: ''
-      }
+      orderTypeText: null,
+      orderType: null,
+      content: null
     };
     async onLoad (options, {preload}) {
       // 处理初始化的状态
@@ -115,18 +117,19 @@
       Event.listen(Event.USER_LOGOUT, this.clear.bind(this), this);
     };
     async onShow () {
-      // if (!this.init) {
-      //   this.page.reset();
-      //   await this.next();
-      // }
     }
     // 获取分页参数
     params() {
-      return {
-        status: this.status,
-        orderType: this.searchText.orderType ? this.searchText.orderType : '',
-        content: this.searchText.content ? this.searchText.content : ''
+      const params = {
+        status: this.status
       };
+      if (this.orderType) {
+        params.orderType = this.orderType;
+      }
+      if (this.content) {
+        params.content = this.content;
+      }
+      return params;
     }
     // 切换状态
     updateStatus(status) {
@@ -215,14 +218,16 @@
         this.$invoke('Search', 'open');
       },
       search(input) {
-        this.searchText = input;
-        this.page = order.page();
-        this.next();
+        this.orderType = input.orderType;
+        this.content = input.content;
+        this.orderTypeText = input.orderTypeText;
+        this.reload();
       },
-      clean(input) {
-        this.searchText = input;
-        this.page = order.page();
-        this.next();
+      clean() {
+        this.orderTypeText = null;
+        this.orderType = null;
+        this.content = null;
+        this.reload();
       }
     };
     config = {
@@ -243,6 +248,14 @@
   @import "../../styles/variable";
   .page-bar {
     padding: 10rpx;
+  }
+  .search-tips{
+    padding: 0 10rpx;
+    text{
+      margin-right: 20rpx;
+      font-size: $text-sm;
+      color: $color-muted;
+    }
   }
 </style>
 

@@ -9,8 +9,8 @@
         <view class="weui-cells weui-cells_after-title input-box">
           <view class="weui-cell weui-cell_input ">
             <view class="weui-cell__bd picker-box">
-              <picker @change="typeChange" value="{{index}}" range="{{type}}">
-                订单类型<text style="margin-left: 10px;">{{type[index]}}</text>
+              <picker @change="typeChange" value="{{index}}" range="{{typeList}}" rangeKey="desc" rangeValue="order_type">
+                订单类型<text style="margin-left: 10px;">{{typeList[index].desc}}</text>
               </picker>
             </view>
           </view>
@@ -24,10 +24,10 @@
           </view>
         </view>
         <view class="row-center">
-          <button size="mini" @tap="gobackPage">向前十页</button>
+          <button size="mini" @tap="gobackPage">向前10页</button>
           <button size="mini" class="ml10" @tap="search">搜索</button>
           <button size="mini" class="ml10 mr10" @tap="clean">清空</button>
-          <button size="mini" @tap="gotoPage">向后十页</button>
+          <button size="mini" @tap="gotoPage">向后10页</button>
         </view>
       </view>
     </view>
@@ -39,6 +39,7 @@
 
 <script>
   import wepy from 'wepy';
+  import order from '../../api/order';
   import CoverPanel from '../common/cover_panel';
   import input from '../../mixins/input';
 
@@ -48,50 +49,56 @@
       display: false,
       agentId: 0,
       costFee: 0,
-      type: [ '普通订单', '外卖订单', '堂食订单', '打包订单', '线下订单', '拼团订单', '预约订单', '砍价订单', '余额充值', '虚拟产品订单' ],
       typeList: [
         {
-          id: 10,
-          name: '普通订单'
+          order_type: 10,
+          desc: '普通订单'
         },
         {
-          id: 20,
-          name: '外卖订单'
+          order_type: 20,
+          desc: '外卖订单'
         },
         {
-          id: 30,
-          name: '堂食订单'
+          order_type: 30,
+          desc: '堂食订单'
         },
         {
-          id: 33,
-          name: '打包订单'
+          order_type: 33,
+          desc: '打包订单'
         },
         {
-          id: 40,
-          name: '线下订单'
+          order_type: 40,
+          desc: '线下订单'
         },
         {
-          id: 50,
-          name: '拼团订单'
+          order_type: 50,
+          desc: '拼团订单'
         },
         {
-          id: 60,
-          name: '预约订单'
+          order_type: 60,
+          desc: '预约订单'
         },
         {
-          id: 70,
-          name: '砍价订单'
+          order_type: 70,
+          desc: '砍价订单'
         },
         {
-          id: 80,
-          name: '余额充值'
+          order_type: 80,
+          desc: '余额充值'
         }, {
-          id: 90,
-          name: '虚拟产品订单'
+          order_type: 90,
+          desc: '虚拟产品订单'
         }
       ],
       index: ''
     };
+    async onLoad() {
+      const types = await order.orderType();
+      if (types != null && types.length > 0) {
+        this.typeList = types;
+      }
+      this.$appky();
+    }
     methods = {
       open() {
         this.display = true;
@@ -129,7 +136,8 @@
       },
       typeChange(e) {
         this.index = e.detail.value;
-        this.input.orderType = this.typeList[this.index].id
+        this.input.orderTypeText = this.typeList[this.index].desc;
+        this.input.orderType = this.typeList[this.index].order_type
       }
     };
     mixins = [input];
