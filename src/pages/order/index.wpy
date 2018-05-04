@@ -39,7 +39,7 @@
       <!--占位符-->
       <Placeholder :show.sync="isPageEmpty" message="您还没有相关订单"/>
 
-      <Search @gotoPage.user="gotoPage" @gobackPage.user="gobackPage" @search.user="search"/>
+      <Search @gotoPage.user="gotoPage" @gobackPage.user="gobackPage" @search.user="search" @clean.user="clean"/>
 
     </view>
 
@@ -218,10 +218,11 @@
         this.searchText = input;
         this.page = order.page();
         this.next();
-        this.searchText = {
-          orderType: '',
-          content: ''
-        }
+      },
+      clean(input) {
+        this.searchText = input;
+        this.page = order.page();
+        this.next();
       }
     };
     config = {

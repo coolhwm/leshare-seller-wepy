@@ -7,12 +7,11 @@
       </view>
       <view class="column notice-content-box">
         <view class="weui-cells weui-cells_after-title input-box">
-          <view class="weui-cell weui-cell_input">
-            <view class="weui-cell__hd">
-              <view class="weui-label">订单类型</view>
-            </view>
-            <view class="weui-cell__bd">
-              <input class="weui-input" id="orderType" @input="input" />
+          <view class="weui-cell weui-cell_input ">
+            <view class="weui-cell__bd picker-box">
+              <picker @change="typeChange" value="{{index}}" range="{{type}}">
+                订单类型<text style="margin-left: 16rpx;">{{type[index]}}</text>
+              </picker>
             </view>
           </view>
           <view class="weui-cell weui-cell_input">
@@ -20,13 +19,14 @@
               <view class="weui-label">搜索条件</view>
             </view>
             <view class="weui-cell__bd">
-              <input class="weui-input" id="content" @input="input" />
+              <input class="weui-input" id="content" @input="input" value="{{input.content}}" />
             </view>
           </view>
         </view>
         <view class="row-center">
           <button size="mini" @tap="gobackPage">向前十页</button>
-          <button size="mini" class="search-box" @tap="search">搜索</button>
+          <button size="mini" class="ml10" @tap="search">搜索</button>
+          <button size="mini" class="ml10 mr10" @tap="clean">清空</button>
           <button size="mini" @tap="gotoPage">向后十页</button>
         </view>
       </view>
@@ -47,11 +47,61 @@
       content: '',
       display: false,
       agentId: 0,
-      costFee: 0
+      costFee: 0,
+      type: [ '普通订单', '外卖订单', '堂食订单', '打包订单', '线下订单', '拼团订单', '预约订单', '砍价订单', '余额充值', '虚拟产品订单' ],
+      typeList: [
+        {
+          id: 10,
+          name: '普通订单'
+        },
+        {
+          id: 20,
+          name: '外卖订单'
+        },
+        {
+          id: 30,
+          name: '堂食订单'
+        },
+        {
+          id: 33,
+          name: '打包订单'
+        },
+        {
+          id: 40,
+          name: '线下订单'
+        },
+        {
+          id: 50,
+          name: '拼团订单'
+        },
+        {
+          id: 60,
+          name: '预约订单'
+        },
+        {
+          id: 70,
+          name: '砍价订单'
+        },
+        {
+          id: 80,
+          name: '余额充值'
+        }, {
+          id: 90,
+          name: '虚拟产品订单'
+        }
+      ],
+      index: ''
     };
     methods = {
       open() {
         this.display = true;
+        if (this.input.orderType != null) {
+          this.index = this.typeList.map((item, index) => {
+            if (item.id == this.input.orderType) {
+              return index
+            }
+          }).find(item => item != null);
+        }
       },
       close() {
         this.display = false;
@@ -59,7 +109,6 @@
       async search() {
         this.$emit('search', this.input);
         this.display = false;
-        this.input = {}
       },
       gotoPage() {
         this.$emit('gotoPage');
@@ -68,6 +117,19 @@
       gobackPage() {
         this.$emit('gobackPage');
         this.display = false;
+      },
+      clean() {
+        this.input = {
+          orderType: '',
+          content: ''
+        };
+        this.index = '';
+        this.$emit('search', this.input);
+        this.display = false;
+      },
+      typeChange(e) {
+        this.index = e.detail.value;
+        this.input.orderType = this.typeList[this.index].id
       }
     };
     mixins = [input];
@@ -109,6 +171,9 @@
         top: 24rpx;
       }
     }
+    .picker-box{
+      padding: 14rpx 0;
+    }
     .notice-content-box{
       padding: 40rpx;
       .input-box{
@@ -122,13 +187,11 @@
       button{
         background-color: $color-primary;
         color: white;
+        padding: 0 20rpx;
       }
       .content-box{
         text-align: center;
       }
-    }
-    .search-box{
-      margin: 0 20rpx;
     }
   }
 </style>
