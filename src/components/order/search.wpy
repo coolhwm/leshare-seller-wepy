@@ -10,7 +10,7 @@
           <view class="weui-cell weui-cell_input ">
             <view class="weui-cell__bd picker-box">
               <picker @change="typeChange" value="{{index}}" range="{{type}}">
-                订单类型<text style="margin-left: 16rpx;">{{type[index]}}</text>
+                订单类型<text style="margin-left: 10px;">{{type[index]}}</text>
               </picker>
             </view>
           </view>
@@ -188,6 +188,7 @@
         background-color: $color-primary;
         color: white;
         padding: 0 20rpx;
+        font-size: 26rpx;
       }
       .content-box{
         text-align: center;
