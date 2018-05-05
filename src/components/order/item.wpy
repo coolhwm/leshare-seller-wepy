@@ -6,6 +6,7 @@
         <view class="user-info-container" @tap="customerDetail({{order.customerId}})">
           <icon class="idcard" color="gray"></icon>
           <text class="sm ml10">{{order.customerNickName ? order.customerNickName : '微信用户'}}</text>
+          <text class="xs ml10 muted" wx:if="{{order.receiveName}}">({{order.receiveName}})</text>
         </view>
         <view style="min-width: 150px;text-align: right;">
           <text class="sm primary">{{order.statusText}}</text>

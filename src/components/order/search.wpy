@@ -97,7 +97,7 @@
       if (types != null && types.length > 0) {
         this.typeList = types;
       }
-      this.$appky();
+      this.$apply();
     }
     methods = {
       open() {
