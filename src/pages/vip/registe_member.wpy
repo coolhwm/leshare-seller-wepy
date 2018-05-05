@@ -140,18 +140,6 @@
           value: this.registeInfo.phone,
           method: 'tel',
           message: '请输入正确的手机格式'
-        }, {
-          value: this.input.sex,
-          method: 'required',
-          message: '请选择您的性别'
-        }, {
-          value: this.input.sex,
-          method: 'required',
-          message: '请选择您的性别'
-        }, {
-          value: this.input.birthday,
-          method: 'required',
-          message: '请选择您的生日'
         }
       ];
       return this.check(rules);
