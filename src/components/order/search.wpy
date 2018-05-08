@@ -6,7 +6,7 @@
         <icon class="close icon-box" color="white" @tap="close"/>
       </view>
       <view class="column notice-content-box">
-        <view class="weui-cells weui-cells_after-title input-box">
+        <view class="weui-cells-form weui-cells_after-title input-box">
           <view class="weui-cell weui-cell_input ">
             <view class="weui-cell__bd picker-box">
               <picker @change="typeChange" value="{{index}}" range="{{typeList}}" rangeKey="desc" rangeValue="order_type">
@@ -183,13 +183,13 @@
       padding: 14rpx 0;
     }
     .notice-content-box{
-      padding: 40rpx;
+      padding: 20rpx;
       .input-box{
-        margin-bottom: 40rpx;
+        margin-bottom: 20rpx;
         border-left: $border;
         border-right: $border;
         .weui-label{
-          width: 130rpx;
+          width: 150rpx;
         }
       }
       button{

@@ -195,6 +195,11 @@ view.bg-white{background-color: white}
     background: $color-primary;
     border: 1rpx solid $color-primary;
   }
+  &.major {
+    color: #fff;
+    background: $color-major;
+    border: 1rpx solid $color-major;
+  }
   &.disabled {
     color: #cacaca;
     background: #eee;
