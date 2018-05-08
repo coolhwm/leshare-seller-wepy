@@ -9,6 +9,14 @@ export default class auth extends base {
     const loginCode = this.getConfig('login_code');
     return loginCode != null;
   }
+
+  /**
+   * 测试账号
+   */
+  static auditAccount () {
+    const url = `${this.baseUrl}/auth/audit_account`;
+    return this.get(url);
+  }
   /**
    * 登录
    */

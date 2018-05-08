@@ -70,7 +70,7 @@
       init: false,
       loginMassage: {},
       mode: 'fast',
-      redirectUrl: null
+      redirectUrl: null,
     };
     data = {...this.def};
     async onLoad (param, {preload}) {
@@ -105,67 +105,104 @@
         this.loaded();
       }
     }
+    /**
+     * 游客登录
+     */
+    async guestLogin() {
+      const account = await auth.auditAccount();
+      Tips.loaded();
+      if (account != null) {
+        await Tips.confirm('即将使用演示账号登录，所有数据皆为模拟数据\n商务合作请联系13559122901咨询');
+        await this.smsLogin(account.user, account.pwd);
+      } else {
+        await Tips.confirm('尚未配置演示账号\n商务合作请联系13559122901咨询');
+        wepy.makePhoneCall({phoneNumber: '13559122901'});
+      }
+    };
+    /**
+     * 处理登录异常
+     */
+    async handleLoginException(error) {
+      Tips.loaded();
+      console.info('[login] error', error);
+      if (error.serverCode == 10007) {
+        await Tips.confirm('该手机尚未注册，是否使用演示账号登录？');
+        await this.guestLogin();
+      } else if (error.serverCode == 10008) {
+        await Tips.modal('验证码错误，请重新输入');
+        this.input.code = '';
+      } else if (error.serverCode == 10005) {
+        this.$invoke('VCode', 'cd', 60);
+        this.tips('验证码请求太频繁，请稍后');
+      } else {
+        await Tips.modal('认证异常，请联系管理员咨询');
+        wepy.makePhoneCall({phoneNumber: '17759196220'});
+      }
+    }
+    /**
+     * 处理登录成功
+     */
+    async handleLoginSuccess() {
+      // 店铺跳转
+      const shops = await shop.list();
+      if (shops == null && shops.length == 0) {
+        await Tips.modal('您尚未注册店铺');
+      } else if (shops.length == 1) {
+        await Tips.success('登录成功')
+        await auth.setConfig('shop_id', shops[0].shopId);
+        if (this.redirectUrl) {
+          this.$redirect(this.redirectUrl);
+        } else {
+          this.$switch('home');
+        }
+      } else {
+        this.$redirect('shops');
+      }
+    }
+    async smsLogin(phone, code) {
+      // 验证码登录
+      try {
+        const loginCode = await auth.login(phone, code);
+        await auth.setConfig('login_code', loginCode);
+        await this.handleLoginSuccess();
+      } catch (err) {
+        await this.handleLoginException(err);
+      } finally {
+        this.loaded();
+      }
+    }
     methods = {
       switchMode(mode) {
         this.mode = mode;
       },
+      /**
+       * 一键登录
+       */
       async fastLogin({detail}) {
+        // 授权检查
         if (detail.errMsg == 'getPhoneNumber:fail user deny') {
           await Tips.alert('请允许授权');
           return;
         }
+        // 一键登录
         try {
           await auth.wxLogin(detail);
-          const shops = await shop.list();
-          if (shops == null && shops.length == 0) {
-            await Tips.modal('您尚未注册店铺');
-          } else if (shops.length == 1) {
-            await Tips.success('登录成功')
-            await auth.setConfig('shop_id', shops[0].shopId);
-            if (this.redirectUrl) {
-              this.$redirect(this.redirectUrl);
-            } else {
-              this.$switch('home');
-            }
-          } else {
-            this.$redirect('shops');
-          }
+          await this.handleLoginSuccess();
         } catch (err) {
-          console.info('[login] error' + err);
+          await this.handleLoginException(err);
           this.mode = 'sms';
-          this.loaded();
         } finally {
           this.loaded();
         }
       },
       async confirm({detail}) {
-        // 覆盖对象
+        // 覆盖表单对象
         Object.assign(this.loginMassage, detail.value);
         if (!this.isValid(this.input.phone)) {
           return;
         }
-        try {
-          let loginCode;
-          try {
-            loginCode = await auth.login(this.input.phone, this.loginMassage.code);
-          } catch (err) {
-            if (err.serverCode == 10501) {
-              loginCode = err.serverData.login_code;
-              Tips.loaded();
-              await Tips.modal('您尚未注册，将进入示例店铺');
-            } else {
-              this.tips(err.message);
-              return;
-            }
-          }
-          await auth.setConfig('login_code', loginCode);
-          await auth.removeConfig('shop_id');
-          this.$redirect('shops');
-        } catch (e) {
-          this.tips(e.message);
-        } finally {
-          this.loaded();
-        }
+        // 验证码登录
+        await this.smsLogin(this.input.phone, this.loginMassage.code);
       },
       async code() {
         if (!this.isPhoneValid(this.input.phone)) {
@@ -177,11 +214,7 @@
           this.$invoke('VCode', 'cd', 60);
           Tips.success('验证码已发送');
         } catch (err) {
-          if (err.serverCode == 10005) {
-            console.debug('请求验证码太频繁');
-            this.$invoke('VCode', 'cd', 60);
-          }
-          this.tips(err.message);
+          await this.handleLoginException(err);
         } finally {
           this.loaded();
         }

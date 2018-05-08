@@ -1,14 +1,15 @@
 <template>
-  <view class="weui-footer {{buttom == 'true' ? 'weui-footer_fixed-bottom' : 'mt20'}} ">
+  <view @tap="more" class="weui-footer {{buttom == 'true' ? 'weui-footer_fixed-bottom' : 'mt20'}} ">
     <view class="weui-footer__links">
-      <navigator url="/pages/shop/contact" class="weui-footer__link">乐享启创提供技术支持</navigator>
+      <view  class="weui-footer__link">乐享启创提供技术支持</view>
     </view>
     <view class="weui-footer__text">Copyright © 2018 leshare.shop {{version}}</view>
   </view>
 </template>
 
 <script>
-  import wepy from 'wepy'
+  import wepy from 'wepy';
+  import Tips from '../../utils/Tips';
   export default class Copyright extends wepy.component {
     props ={
       buttom: {
@@ -20,6 +21,12 @@
     };
     onLoad () {
       this.version = wepy.$instance.globalData.version;
+    }
+    methods = {
+      async more() {
+        await Tips.confirm('商务合作请联系李先生 13559122901咨询');
+        wepy.makePhoneCall({phoneNumber: '13559122901'});
+      }
     }
   }
 </script>
