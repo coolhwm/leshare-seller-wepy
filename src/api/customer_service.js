@@ -24,7 +24,6 @@ export default class customerService extends base {
    * 聊天信息处理
    * */
   static processChatInfoTransformation(chatInfo) {
-    console.log(chatInfo.mpMsg);
     const params = {};
     if (chatInfo.mpMsg.msgTime != null) {
       params.msgTime = ServiceTime.getDateDiff(chatInfo.mpMsg.msgTime);
@@ -33,7 +32,7 @@ export default class customerService extends base {
     }
     params.time = ServiceTime.getDateFormat(chatInfo.mpMsg.msgTime);
     params.content = chatInfo.mpMsg.content;
-    params.nickName = chatInfo.nickName;
+    params.nickName = chatInfo.nickName.substring(0, 18);
     params.avatarUrl = chatInfo.avatarUrl;
     params.openId = chatInfo.openId;
     return params;
@@ -59,7 +58,6 @@ export default class customerService extends base {
    * 客服发送消息
    * */
   static async sendMassge (param) {
-    console.log(param);
     const url = `${this.baseUrl}/kefu/send_message`;
     return await this.post(url, param);
   }

@@ -87,7 +87,6 @@
           avatarUrl: avatarUrl,
           nickName: nickName
         };
-        this.departureTime = new Date().getTime();
         this.$root.$navigate('../../pages/customer/chat?param=' + JSON.stringify(params));
       }
     };

@@ -57,7 +57,7 @@
     <scroll-view scroll-y="1" style="height:1100rpx;" scroll-top="{{(chatHistory.length-1)*60}}" class="chartboard">
         <block wx:for="{{chatHistory}}" wx:key="index" wx:for-index="index" wx:for-item="item">
             <view class="msgarea{{item.from === 'me' ? ' fromme' : ' other'}}">
-                <image class="icon" src="{{item.from === 'me' ? shopImgeUrl : avatarUrl}}"></image>
+                <image class="icon" src="{{item.from === 'me' ? shopImgeUrl : avatarUrl}}"  @tap="toCustomerInfo({{item}})"></image>
                 <view class="msg" wx:if="{{item.type == 'text'}}">{{item.content}}</view>
                 <image class="msg-image ml20" src="{{item.content}}" @tap="priviewImage({{chatHistory}},{{item}})" wx:if="{{item.type == 'image'}}"></image>
                 <view class="clearfix"></view>
@@ -80,6 +80,7 @@
       this.shopImgeUrl = wepy.getStorageSync('shop_image');
     };
     methods= {
+      toCustomerInfo(openId) {},
       priviewImage (info, item) {
         const images = [];
         info.forEach(item => {
