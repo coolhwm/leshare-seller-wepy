@@ -9,6 +9,7 @@
     <!--一键登录-->
     <view class="weui-btn-area" wx:if="{{mode == 'fast'}}">
       <button class="weui-btn" open-type="getPhoneNumber" bindgetphonenumber="fastLogin" type="primary">一键登录</button>
+      <button class="weui-btn"  @tap="guestLogin" >访客登录</button>
       <view class="mt20 column-center">
         <text class="muted">提示：一键登录将登录将获取您本机号码，请允许授权</text>
         <text class="mt20 primary" @tap="switchMode('sms')">[切换到验证码登录]</text>
@@ -70,7 +71,7 @@
       init: false,
       loginMassage: {},
       mode: 'fast',
-      redirectUrl: null,
+      redirectUrl: null
     };
     data = {...this.def};
     async onLoad (param, {preload}) {
@@ -174,6 +175,9 @@
     methods = {
       switchMode(mode) {
         this.mode = mode;
+      },
+      async guestLogin() {
+        await this.guestLogin();
       },
       /**
        * 一键登录

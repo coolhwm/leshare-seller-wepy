@@ -21,7 +21,7 @@
           <view class="row-between" @tap.stop="addressList({{customerId}})">
             <!--地址/电话-->
             <view class="column address-box">
-              <text>电话：{{customer.address ? customer.address.phone : '暂无电话'}}</text>
+              <text>电话：{{member ? member.phone : '暂无电话'}}</text>
               <text>地址：{{customer.address ? customer.address.fullAddress : '暂无地址'}}</text>
             </view>
             <!--更多地址-->
@@ -188,8 +188,8 @@
         this.$navigate('./coupon_send', {customerId});
       },
       phone () {
-        if (this.customer.address) {
-          wepy.makePhoneCall({phoneNumber: this.customer.address.phone});
+        if (this.member && this.member.phone) {
+          wepy.makePhoneCall({phoneNumber: this.member.phone});
         } else {
           Tips.alert('该用户没有电话');
         }
