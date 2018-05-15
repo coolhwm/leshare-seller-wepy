@@ -1,6 +1,10 @@
 <template>
   <!--客户基本信息-->
   <view class="customer-info-box row-between" @tap="tap({{customerInfo}})">
+    <view class="label-box mr20" @tap.stop="select({{customerInfo.customerId}})" wx:if="{{isMoreSelect}}">
+      <!-- 改成template的勾选标识符-->
+      <icon class="weui-icon-checkbox_{{!customerInfo.check ? 'circle':'success'}}circle" type="{{!customerInfo.check ? 'circle':'success'}}" size="23"></icon>
+    </view>
     <!--左侧头像-->
     <image class="customer-avatar" wx:if="{{customerInfo.avatarUrl}}"
            src="{{customerInfo.avatarUrl}}"/>
@@ -32,11 +36,18 @@
       customerInfo: {},
       isMore: {
         default: true
+      },
+      isMoreSelect: {
+        default: false
       }
     };
     methods = {
       tap(customer) {
         this.$emit('tap', customer);
+      },
+      async select(id) {
+        // 通知父页面，把template_id传递给父页面
+        this.$emit('select', id);
       }
     }
   }

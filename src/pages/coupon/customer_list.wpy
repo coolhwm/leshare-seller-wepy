@@ -6,11 +6,21 @@
     <!--客户列表-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
       <view>
-        <CustomerItem :customerInfo.sync="item" :isMore.sync="isMore" @tap.user="select"/>
+        <CustomerItem :customerInfo.sync="item" :isMore.sync="isMore" @select.user="select" :isMoreSelect.sync="isMoreSelect"/>
       </view>
     </repeat>
     <!-- 加载提示 -->
     <Loadmore :page.sync="page"/>
+
+    <view class="row-between edit-box">
+      <view class="select-box row" @tap.stop="checkAll">
+        <icon class="weui-icon-checkbox_{{!checked ? 'circle':'success'}}" type="{{!checked ? 'circle':'success'}}" size="23"></icon>
+        <text class="ml20">全选</text>
+      </view>
+      <view>
+        <button @tap="send">发放</button>
+      </view>
+    </view>
 
       <!--占位符-->
     <Placeholder :show.sync="isPageEmpty" message="您还没有相关客户信息"/>
@@ -18,7 +28,24 @@
 </template>
 
 <style lang="scss">
-    @import "../../styles/variable";
+  @import "../../styles/variable";
+
+  .edit-box{
+    height: rpx(50);
+    position: fixed;
+    bottom: 0;
+    padding: rpx(20) 0;
+    background-color: white;
+    border-top: $border;
+    border-bottom: $border;
+    width: 100%;
+  }
+  .select-box{
+    margin-left: rpx(20);
+  }
+  .delete-box{
+    margin-right: rpx(20);
+  }
 </style>
 
 <script>
@@ -48,7 +75,8 @@
       level: '',
       groupId: '',
       phone: '',
-      input: ''
+      input: '',
+      isMoreSelect: true
     };
     data = {...this.def};
     async onLoad (couponId) {
@@ -67,13 +95,26 @@
       }
     }
     methods = {
-      async select(customer) {
+      select(id) {
+        // 使用find方法找到templates对应的那个项目
+        const template = this.page.list.find(item => item.customerId == id);
+        // 把标志位取反
+        template.check = !template.check
+      },
+      checkAll() {
+        const checked = !this.checked;
+        this.page.list.forEach(item => {
+          item.check = checked;
+        })
+      },
+      async send () {
         const param = {
           couponId: this.couponId.couponId,
-          customerId: customer.customerId
+          customerId: this.page.list.filter(item => item.check).map(item => item.customerId)
         };
-        await Tips.confirm('确定发放？');
-        const { result } = await coupon.send(param);
+        await Tips.confirm(`确定发放${param.customerId.length}张优惠券？`);
+        const {result} = await
+        coupon.send(param);
         if (result == 'SUCCESS') {
           await Tips.success('发放成功');
         } else {
@@ -89,6 +130,12 @@
       clear () {
         this.phone = '';
         this.getRequest(this.selectedId)
+      }
+    };
+    computed = {
+      checked() {
+        if (this.page.list == null) return;
+        return this.page.list.every(item => item.check);
       }
     };
     events = {};

@@ -183,7 +183,7 @@ export default class coupon extends base {
    * 卖家发放优惠券给买家数据处理
    */
   static async send (coupon) {
-    const url = `${this.baseUrl}/coupons/send`;
-    return await this.post(url, coupon);
+    const url = `${this.baseUrl}/coupons/send/customers?coupon_id=${coupon.couponId}`;
+    return await this.post(url, coupon.customerId);
   }
 }
