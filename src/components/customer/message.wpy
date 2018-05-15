@@ -59,8 +59,8 @@
           <view class="name">{{chats.nickName}}</view>
           <text class="msg-time muted xxs">{{chats.msgTime ? chats.msgTime : ""}}</text>
         </view>
-        <view class="last-msg">{{chats.content ? chats.content: ""}}</view>
-        <!--<view class="last-msg" wx:if="{{chats.type == 'image'}}">[图片]</view>-->
+        <view class="last-msg" wx:if="{{chats.type == 'text'}}">{{chats.content ? chats.content: ""}}</view>
+        <view class="last-msg" wx:if="{{chats.type == 'image'}}">[图片]</view>
       </view>
     </view>
   </view>
@@ -82,12 +82,13 @@
 
     methods = {
       select(id, avatarUrl, nickName) {
-        const params = {
+        const param = {
           id: id,
           avatarUrl: avatarUrl,
           nickName: nickName
         };
-        this.$root.$navigate('../../pages/customer/chat?param=' + JSON.stringify(params));
+        this.$root.$preload('data', param);
+        this.$root.$navigate('../../pages/customer/chat');
       }
     };
   }

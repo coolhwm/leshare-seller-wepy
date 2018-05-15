@@ -29,12 +29,13 @@
       shopId: null,
       avatarUrl: ''
     };
-    async onLoad(option) {
+    async onLoad(option, {preload}) {
       this.shopId = wepy.getStorageSync('shop_id');
-      const param = JSON.parse(option.param);
-      this.openId = param.id;
-      this.nickName = param.nickName;
-      this.avatarUrl = param.avatarUrl;
+      if (preload) {
+        this.openId = preload.data.id;
+        this.nickName = preload.data.nickName;
+        this.avatarUrl = preload.data.avatarUrl;
+      }
       this.initSocket();
       await this.initLoad();
     }

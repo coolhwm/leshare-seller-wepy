@@ -25,16 +25,17 @@ export default class customerService extends base {
    * */
   static processChatInfoTransformation(chatInfo) {
     const params = {};
-    if (chatInfo.mpMsg.msgTime != null) {
-      params.msgTime = ServiceTime.getDateDiff(chatInfo.mpMsg.msgTime);
+    if (chatInfo.msgTime != null) {
+      params.msgTime = ServiceTime.getDateDiff(chatInfo.msgTime);
     } else {
       params.msgTime = '';
     }
-    params.time = ServiceTime.getDateFormat(chatInfo.mpMsg.msgTime);
-    params.content = chatInfo.mpMsg.content;
-    params.nickName = chatInfo.nickName.substring(0, 18);
-    params.avatarUrl = chatInfo.avatarUrl;
+    params.time = ServiceTime.getDateFormat(chatInfo.msgTime);
+    params.content = chatInfo.content;
+    params.nickName = chatInfo.customer.nickName.substring(0, 18);
+    params.avatarUrl = chatInfo.customer.avatarUrl;
     params.openId = chatInfo.openId;
+    params.type = chatInfo.type;
     return params;
   }
 
