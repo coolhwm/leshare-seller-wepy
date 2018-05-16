@@ -18,7 +18,7 @@
         <text class="ml20">全选</text>
       </view>
       <view>
-        <button @tap="send">发放</button>
+        <view class="zan-btn zan-btn--small zan-btn--primary" @tap="send">发放</view>
       </view>
     </view>
 
