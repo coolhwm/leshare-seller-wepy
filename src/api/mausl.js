@@ -362,6 +362,7 @@ export default class mausl extends base {
    */
   static _processUserInfo (item, selectedId) {
     const data = {};
+    data.value = item.countValue;
     data.countValue = item.countValue;
     switch (selectedId) {
       case 1 : data.key = '最近购买：';
@@ -395,6 +396,9 @@ export default class mausl extends base {
         data.nickName = item.customer.nickName;
       }
       data.phone = item.member.phone;
+      data.balance = item.member.balance;
+      data.bonus = item.member.bonus;
+      data.isMember = true;
     } else if (item.customer && !item.member) {
       data.bound = null;
       data.level = null;

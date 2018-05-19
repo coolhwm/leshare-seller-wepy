@@ -3,6 +3,7 @@
  * */
 export default class ServiceDateUtil {
   static getDateDiff(dateTimeStamp) {
+    const mydata = dateTimeStamp.replace(/-/g, '/');
     let minute = 1000 * 60;
     let hour = minute * 60;
     let day = hour * 24;
@@ -10,18 +11,13 @@ export default class ServiceDateUtil {
     let result = '';
 
     const now = new Date().getTime();
-    const diffValue = now - new Date(dateTimeStamp).getTime();
-    if (diffValue < 0) {
-    }
+    const diffValue = now - new Date(mydata).getTime();
+    if (diffValue < 0) {}
 
     const monthC = diffValue / month;
-
     const weekC = diffValue / (7 * day);
-
     const dayC = diffValue / day;
-
     const hourC = diffValue / hour;
-
     const minC = diffValue / minute;
 
     if (monthC >= 1) {
@@ -39,7 +35,6 @@ export default class ServiceDateUtil {
     }
     return result;
   }
-
   static getDateFormat(timeStr) {
     return new Date(timeStr).getTime()
   }

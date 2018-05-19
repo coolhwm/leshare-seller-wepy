@@ -29,12 +29,13 @@
       shopId: null,
       avatarUrl: ''
     };
-    async onLoad(option) {
+    async onLoad(option, {preload}) {
       this.shopId = wepy.getStorageSync('shop_id');
-      const param = JSON.parse(option.param);
-      this.openId = param.id;
-      this.nickName = param.nickName;
-      this.avatarUrl = param.avatarUrl;
+      if (preload) {
+        this.openId = preload.data.id;
+        this.nickName = preload.data.nickName;
+        this.avatarUrl = preload.data.avatarUrl;
+      }
       this.initSocket();
       await this.initLoad();
     }
@@ -50,9 +51,6 @@
 
     onUnload() {
       wepy.closeSocket();
-      // 写入缓存
-      const departureTime = new Date().getTime();
-      wepy.setStorageSync('departure_time', departureTime);
     }
 
     initSocket() {
@@ -77,7 +75,7 @@
       // 接受信息
       wepy.onSocketMessage(res => {
         console.log('收到服务器内容：' + res.data);
-        this.chatHistory.push({content: res.data, avaterUrl: this.chatHistory.avatarUrl, from: 'orther'});
+        this.chatHistory.push({content: res.data, avaterUrl: this.chatHistory.avatarUrl, from: 'orther', type: 'text'});
         this.$apply();
       });
     }
@@ -95,7 +93,7 @@
 
     methods = {
       async send(info) {
-        this.chatHistory.push({content: info, avaterUrl: '', from: 'me'});
+        this.chatHistory.push({content: info, avaterUrl: '', from: 'me', type: 'text'});
         this.sendSocketMessage(info);
         this.input.readyToSend = '';
       }
