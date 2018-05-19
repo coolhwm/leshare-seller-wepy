@@ -96,11 +96,19 @@
             <view class="weui-label">使用场景</view>
           </view>
           <view class="weui-cell__bd">
-            <view @tap="action" id="supportType">
+            <view @tap="actionSupport" id="supportType">
               <view class="weui-input {{supplyStyle ? 'muted' : ''}}">
                 {{support}}
               </view>
             </view>
+          </view>
+        </view>
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__hd">
+            <view class="weui-label">备注</view>
+          </view>
+          <view class="weui-cell__bd">
+            <input class="weui-input" name="desc" value="{{coupon.desc}}" placeholder="请输入备注信息"/>
           </view>
         </view>
         <view class="weui-cell weui-cell_switch">
@@ -184,14 +192,16 @@
   import Event from '../../utils/Event';
 
   export default class CouponEdit extends wepy.page {
-    def = {
+    data = {
+      input: {
+        couponType: 1
+      },
       mode: 'create',
       init: false,
       couponId: 0,
       coupon: {},
       limit: {}
     };
-    data = {...this.def};
 
     async onLoad ({couponId, mode}) {
       this.limit = await shop.limit();
@@ -220,7 +230,8 @@
     }
 
     methods = {
-      async action () {
+      async actionSupport () {
+        console.info(123);
         if (this.mode == 'create' && this.input.couponType == 1) {
           const result = await Tips.action('通用', '线上', '线下');
           this.input.supportType = result.index;
@@ -266,7 +277,8 @@
             isShowHome: this.input.isShowHome ? 1 : 0,
             sendNow: this.input.sendNow ? 1 : 0,
             supportType: this.input.supportType,
-            type: this.input.type
+            type: this.input.type,
+            desc: this.input.desc
           };
           await coupon.create(param);
           await Tips.success('创建成功！');
@@ -278,7 +290,8 @@
             isSelfUse: this.input.isSelfUse ? 1 : 0,
             isPresent: this.input.isPresent ? 1 : 0,
             isShow: this.input.isShow ? 1 : 0,
-            isShowHome: this.input.isShowHome ? 1 : 0
+            isShowHome: this.input.isShowHome ? 1 : 0,
+            desc: this.input.desc
           };
           await coupon.update(this.couponId, param);
           await Tips.success('编辑成功！');

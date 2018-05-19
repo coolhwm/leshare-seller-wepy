@@ -47,7 +47,7 @@ export default class coupon extends base {
    * 分页方法
    */
   static page () {
-    const url = `${this.baseUrl}/coupons`;
+    const url = `${this.baseUrl}/coupons?sort=desc`;
     return new Page(url, this.processCouponItem.bind(this));
   }
 
