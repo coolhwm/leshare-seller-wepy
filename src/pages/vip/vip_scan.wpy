@@ -77,6 +77,54 @@
       </view>
     </view>
 
+    <!--修改余额-->
+    <view wx:if="{{tab.selectedId == 'BALANCE'}}">
+
+      <!--开启余额-->
+      <block wx:if="{{card.supplyBalance == 1}}">
+        <!--操作前-->
+
+        <view class="weui-cells weui-cells-form"   wx:if="{{result == null}}">
+          <view class="weui-cell weui-cell_input" style="height: 88rpx;">
+            <view class="weui-cell__hd">
+              <view class="weui-label">操作</view>
+            </view>
+            <view class="weui-cell__bd">
+              <radio-group class="radio-group" @change="actionChange">
+                <label class="radio" wx:for="{{actionList}}" wx:key="index" wx:for-item="item">
+                  <radio value="{{item.name}}" checked="{{item.checked}}"/>{{item.value}}
+                </label>
+              </radio-group>
+            </view>
+          </view>
+          <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__hd">
+              <view class="weui-label">余额变动</view>
+            </view>
+            <view class="weui-cell__bd">
+              <input class="weui-input" id="balance" @input="input" value="{{input.balance}}"
+                     type="number" maxlength="6" placeholder="请输入变动余额"/>
+            </view>
+          </view>
+        </view>
+        <!--操作后-->
+        <view class="weui-cells weui-cells-form"  wx:else>
+          <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__hd">
+              <view class="weui-label">保存成功</view>
+            </view>
+            <view class="weui-cell__bd">
+              <input class="weui-input"  value="{{result}}" disabled/>
+            </view>
+          </view>
+        </view>
+      </block>
+      <view class="row-center" style="min-height: 100px" wx:else>
+        <text class="ml20 muted" >尚未开启积分功能</text>
+      </view>
+
+    </view>
+
     <!--修改积分-->
     <view wx:if="{{tab.selectedId == 'BONUS'}}">
 
@@ -84,6 +132,18 @@
       <block wx:if="{{card.supplyBonus == 1}}">
         <!--操作前-->
         <view class="weui-cells weui-cells-form"   wx:if="{{result == null}}">
+          <view class="weui-cell weui-cell_input" style="height: 88rpx;">
+          <view class="weui-cell__hd">
+            <view class="weui-label">操作</view>
+          </view>
+          <view class="weui-cell__bd">
+            <radio-group class="radio-group" @change="actionChange">
+              <label class="radio" wx:for="{{actionList}}" wx:key="index" wx:for-item="item">
+                <radio value="{{item.name}}" checked="{{item.checked}}"/>{{item.value}}
+              </label>
+            </radio-group>
+          </view>
+        </view>
           <view class="weui-cell weui-cell_input">
             <view class="weui-cell__hd">
               <view class="weui-label">积分变动</view>
@@ -158,7 +218,7 @@
   import ZanTab from '../../components/zanui/tab';
   import Stepper from '../../components/zanui/stepper';
   export default class VipScan extends wepy.page {
-    def = {
+    data = {
       init: false,
       customer: {},
       member: {},
@@ -169,16 +229,20 @@
       tab: {
         list: [
           {id: 'COST', title: '消费'},
+          {id: 'BALANCE', title: '余额'},
           {id: 'BONUS', title: '积分'},
           {id: 'MEMBER', title: '会员'}
         ],
         selectedId: 'COST'
       },
       presentRules: [],
-      details: []
+      details: [],
+      actionList: [
+        {name: 'add', value: '充值', checked: 'true'},
+        {name: 'reduce', value: '扣减'}
+      ],
+      actionType: 'add'
     };
-    data = {...this.def};
-
     async onLoad (options, {preload}) {
       if (!auth.isLogin()) {
         this.$redirect('/pages/home/index');
@@ -220,6 +284,9 @@
       }
     };
     methods = {
+      actionChange (e) {
+        this.actionType = e.detail.value
+      },
       async add () {
         if (this.result) {
           await this.scan();
@@ -239,6 +306,24 @@
           await member.memberAdd(costParam);
           await Tips.success('消费已完成');
           this.result = `消费${this.input.price}元` + (this.bonus > 0 ? `，累计积分${this.bonus}` : '');
+        } else if (this.tab.selectedId == 'BALANCE') {
+          if (this.card.supplyBalance != 1) {
+            await Tips.alert('尚未开启余额');
+            return;
+          }
+          if (!this.balanceValidate()) {
+            return;
+          }
+          const balance = this.actionType === 'add' ? this.input.balance : -this.input.balance;
+          const balanceList = [{
+            memberId: this.member.memberId,
+            costMoney: balance
+          }];
+          await member.changeBalance(balanceList);
+          await Tips.success('余额已保存');
+          this.result = `已${balance > 0 ? '增加' : '扣除'}${balance > 0 ? balance : -balance}余额`;
+          this.input.balance = null;
+          this.actionType = 'add';
         } else if (this.tab.selectedId == 'BONUS') {
           if (this.card.supplyBonus != 1) {
             await Tips.alert('尚未开启积分');
@@ -247,17 +332,18 @@
           if (!this.bonusValidate()) {
             return;
           }
-          const bouns = this.input.bonus;
-          const bounsParam = {
-            addBonus: bouns,
+          const bonus = this.actionType === 'add' ? this.input.bonus : -this.input.bonus;
+          const bonusParam = {
+            addBonus: bonus,
             cardNumber: this.member.memberNumber,
             costMoney: 0,
             type: 'OFFLINE_ORDER_ADD'
           };
-          await member.memberAdd(bounsParam);
+          await member.memberAdd(bonusParam);
           await Tips.success('积分已保存');
-          this.result = `已${bouns > 0 ? '增加' : '扣除'}${bouns > 0 ? bouns : -bouns}积分`;
+          this.result = `已${bonus > 0 ? '增加' : '扣除'}${bonus > 0 ? bonus : -bonus}积分`;
           this.input.bonus = null;
+          this.actionType = 'add';
         } else if (this.tab.selectedId == 'MEMBER') {
           const memberParam = {
             memberId: this.member.memberId,
@@ -350,6 +436,17 @@
           method: 'required',
           param: 0,
           message: '变动积分不能为空'
+        }
+      ];
+      return this.check(rules);
+    }
+    balanceValidate () {
+      const rules = [
+        {
+          value: this.input.balance,
+          method: 'required',
+          param: 0,
+          message: '变动余额不能为空'
         }
       ];
       return this.check(rules);

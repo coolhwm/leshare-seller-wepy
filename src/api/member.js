@@ -11,6 +11,14 @@ export default class Member extends base {
   }
 
   /**
+   * 余额增减
+   */
+  static async changeBalance (list) {
+    const url = `${this.baseUrl}/members/balance_detail`;
+    return this.post(url, list);
+  }
+
+  /**
    * 增加积分信息
    */
   static async memberAdd (bonusDetail) {
