@@ -123,6 +123,10 @@
         <text class="ml20 muted" >尚未开启积分功能</text>
       </view>
 
+      <!--弹窗-->
+      <modal wx:if="{{shop.securityCode != null}}" hidden="{{hiddenSecurity}}" title="充值密码" confirm-text="提交" cancel-text="取消" @cancel="cancelSecurity" @confirm="confirmSecurity">
+        <input @input="input" id="security" value="{{input.security}}" type='password' placeholder="请输入充值密码" auto-focus/>
+      </modal>
     </view>
 
     <!--修改积分-->
@@ -213,16 +217,19 @@
   import FormTips from '../../components/weui/tips';
   import member from '../../api/member';
   import userInfo from '../../api/customer_info';
+  import shop from '../../api/shop';
   import Event from '../../utils/Event';
   import Tips from '../../utils/Tips';
   import ZanTab from '../../components/zanui/tab';
   import Stepper from '../../components/zanui/stepper';
+
   export default class VipScan extends wepy.page {
     data = {
       init: false,
       customer: {},
       member: {},
       card: {},
+      shop: {},
       scene: null,
       message: null,
       result: null,
@@ -241,7 +248,8 @@
         {name: 'add', value: '充值', checked: 'true'},
         {name: 'reduce', value: '扣减'}
       ],
-      actionType: 'add'
+      actionType: 'add',
+      hiddenSecurity: true
     };
     async onLoad (options, {preload}) {
       if (!auth.isLogin()) {
@@ -249,6 +257,7 @@
         return;
       }
       try {
+        this.shop = await shop.info();
         this.card = await member.cardInfo();
         this.presentRules = this.card.memberPresentRules;
         this.presentRules.forEach((item, index) => {
@@ -283,6 +292,20 @@
         Tips.error(e.message);
       }
     };
+    async balance () {
+      const balance = this.actionType === 'add' ? this.input.balance : -this.input.balance;
+      const balanceList = [{
+        memberId: this.member.memberId,
+        costMoney: balance
+      }];
+      await member.changeBalance(balanceList);
+      await Tips.success('余额已保存');
+      this.result = `已${balance > 0 ? '增加' : '扣除'}${balance > 0 ? balance : -balance}余额`;
+      this.input.balance = null;
+      this.actionType = 'add';
+      Event.emit(Event.SHOP_CUSTOMER_UPDATE);
+      this.$apply();
+    }
     methods = {
       actionChange (e) {
         this.actionType = e.detail.value
@@ -314,16 +337,10 @@
           if (!this.balanceValidate()) {
             return;
           }
-          const balance = this.actionType === 'add' ? this.input.balance : -this.input.balance;
-          const balanceList = [{
-            memberId: this.member.memberId,
-            costMoney: balance
-          }];
-          await member.changeBalance(balanceList);
-          await Tips.success('余额已保存');
-          this.result = `已${balance > 0 ? '增加' : '扣除'}${balance > 0 ? balance : -balance}余额`;
-          this.input.balance = null;
-          this.actionType = 'add';
+          this.hiddenSecurity = false;
+          if (this.shop.securityCode == null) {
+            this.balance()
+          }
         } else if (this.tab.selectedId == 'BONUS') {
           if (this.card.supplyBonus != 1) {
             await Tips.alert('尚未开启积分');
@@ -363,7 +380,6 @@
         } else {
           Tips.alert('没有找到用户信息');
         }
-
       },
       minus (info) {
         this.details[info.index].ruleId = info.id;
@@ -372,6 +388,21 @@
       plus (info) {
         this.details[info.index].ruleId = info.id;
         this.details[info.index].currentCount = info.stepper;
+      },
+      cancelSecurity() {
+        console.info('cancelSecurity');
+        this.hiddenSecurity = true
+      },
+      async confirmSecurity() {
+        if (this.shop.securityCode == this.input.security) {
+          this.hiddenSecurity = true;
+          await this.balance();
+          this.input.security = null;
+        } else {
+          this.hiddenSecurity = true;
+          await Tips.alert('密码错误');
+          this.input.security = null;
+        }
       }
     };
     async scan() {
