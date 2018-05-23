@@ -185,7 +185,8 @@
       chooseUser() {
         const params = {
           type: 'manusl',
-          level: 0
+          level: 0,
+          groupId: 0
         };
         this.$root.$navigate('/pages/manusl/member_list?params=' + JSON.stringify(params));
       },

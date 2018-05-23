@@ -13,13 +13,14 @@
         <image class="icon mr10" src="{{userInfo.bound}}"/>
       </view>
       <!--地址信息-->
-      <view class="row-between">
+      <view class="column">
         <!--地址/电话-->
         <view class="row address-box">
           <text class="lg">联系电话：</text>
           <text class="lg">{{userInfo.phone ? userInfo.phone : '暂无电话'}}</text>
           <!--<text class="address-text">地址：{{userInfo.address.fullAddress ? userInfo.address.fullAddress : '暂无地址'}}</text>-->
         </view>
+        <text class="muted" wx:if="{{userInfo.isMember}}">余额:￥{{userInfo.balance}} | 积分:{{userInfo.bonus}}</text>
       </view>
     </view>
     <!--更多地址-->

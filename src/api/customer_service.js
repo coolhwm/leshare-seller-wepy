@@ -38,8 +38,10 @@ export default class customerService extends base {
     }
     params.time = ServiceTime.getDateFormat(chatInfo.msgTime);
     params.content = chatInfo.content;
-    params.nickName = chatInfo.customer.nickName.substring(0, 18);
-    params.avatarUrl = chatInfo.customer.avatarUrl;
+    if (chatInfo.customer) {
+      params.nickName = chatInfo.customer.nickName.substring(0, 18);
+      params.avatarUrl = chatInfo.customer.avatarUrl;
+    }
     params.openId = chatInfo.openId;
     params.type = chatInfo.type;
     return params;

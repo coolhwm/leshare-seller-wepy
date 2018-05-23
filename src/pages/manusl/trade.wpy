@@ -37,9 +37,20 @@
       </view>
       <!--外卖才能在线支付-->
       <view class="weui-cell weui-cell_access" @tap="paymentType">
-        <view class="weui-cell__bd">支付方式</view>
+        <view class="weui-cell__bd">支付类型</view>
         <view class="weui-cell__ft weui-cell__ft_in-access">{{trade.paymentText}}</view>
       </view>
+      <view class="weui-cell weui-cell_access"  wx:if="{{trade.paymentType == 1}}" @tap="onlinePayType">
+        <view class="weui-cell__bd">支付方式</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access">{{trade.onlinePayText}}</view>
+      </view>
+      <!--显示余额-->
+      <block wx:if="{{trade.onlinePayType == 'balance'}}">
+        <view class="weui-cell weui-cell_access">
+          <view class="weui-cell__bd">用户余额</view>
+          <view class="weui-cell__ft">{{customer == null ? '0' : customer.balance}}元</view>
+        </view>
+      </block>
 
       <!--外卖才有配送方式-->
       <view class="weui-cell weui-cell_access" @tap="delivery">
@@ -213,11 +224,33 @@
           () => {
             trade.paymentText = '在线支付';
             trade.paymentType = 1;
+            trade.onlinePayType = 'wxpay';
+            trade.onlinePayText = '微信支付';
             this.$apply();
           },
           () => {
             trade.paymentText = '线下支付';
             trade.paymentType = 0;
+            trade.onlinePayType = null;
+            trade.onlinePayText = null;
+            this.$apply();
+          }
+        );
+      },
+      /**
+       * 选择付款方式
+       */
+      async onlinePayType () {
+        const trade = this.trade;
+        Tips.actionWithFunc(['微信支付', '余额支付'],
+          () => {
+            trade.onlinePayText = '微信支付';
+            trade.onlinePayType = 'wxpay';
+            this.$apply();
+          },
+          () => {
+            trade.onlinePayText = '余额支付';
+            trade.onlinePayType = 'balance';
             this.$apply();
           });
       },
