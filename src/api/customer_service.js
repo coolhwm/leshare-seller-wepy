@@ -3,7 +3,6 @@ import Page from '../utils/Page';
 import ServiceTime from '../utils/ServiceDateUtil';
 
 export default class customerService extends base {
-
   static async customerId(opneId) {
     const url = `${this.baseUrl}/customers?open_id=${opneId}`;
     return this.get(url);
@@ -38,10 +37,8 @@ export default class customerService extends base {
     }
     params.time = ServiceTime.getDateFormat(chatInfo.msgTime);
     params.content = chatInfo.content;
-    if (chatInfo.customer) {
-      params.nickName = chatInfo.customer.nickName.substring(0, 18);
-      params.avatarUrl = chatInfo.customer.avatarUrl;
-    }
+    params.nickName = chatInfo.nickName.substring(0, 18);
+    params.avatarUrl = chatInfo.avatarUrl;
     params.openId = chatInfo.openId;
     params.type = chatInfo.type;
     return params;

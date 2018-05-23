@@ -83,7 +83,7 @@
     }
 
     methods = {
-      async detail(user) {
+      async detail(user){
         Tips.loading();
         const {id} = await service.customerId(user.openId);
         Tips.loaded();
