@@ -52,7 +52,7 @@
     <view class="item" @tap="select({{chats.openId}},{{chats.avatarUrl}},{{chats.nickName}})">
       <view class="header">
         <image @tap.stop="detail({{chats}})" class="img" src="{{chats.avatarUrl}}"/>
-        <view class="red-dot" wx:if="{{departureTime < chats.time}}"/>
+        <!--<view class="red-dot" wx:if="{{departureTime < chats.time}}"/>-->
       </view>
       <view class="content">
         <view class="row-between">

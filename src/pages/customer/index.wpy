@@ -43,10 +43,6 @@
         this.page = customerService.chatList();
         await this.next();
       }
-      async onPullDownRefresh () {
-        await this.reload();
-        wepy.stopPullDownRefresh();
-      }
 
       onUnload() {
         // 写入缓存
