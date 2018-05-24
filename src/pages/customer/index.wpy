@@ -36,9 +36,16 @@
         }
       };
 
+      async onLoad() {
+        await this.updateCustomerService();
+      }
       async updateCustomerService() {
         this.page = customerService.chatList();
         await this.next();
+      }
+      async onPullDownRefresh () {
+        await this.reload();
+        wepy.stopPullDownRefresh();
       }
 
       onUnload() {
@@ -47,12 +54,9 @@
         wepy.setStorageSync('departure_time', departureTime);
       }
 
-      async onShow() {
-        await this.updateCustomerService();
-      }
-
       mixins = [base, pagination];
       config = {
+        enablePullDownRefresh: true,
         'navigationBarTitleText': '乐享客服',
         'navigationBarTextStyle': 'white',
         'navigationBarBackgroundColor': '#3b3a40'

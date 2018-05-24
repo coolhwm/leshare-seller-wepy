@@ -259,7 +259,7 @@
             return;
           }
           const wxCouponPathPrefix = 'pages/coupon/scan';
-          const isWxCoupon =path && path.indexOf(wxCouponPathPrefix) >= 0;
+          const isWxCoupon = path && path.indexOf(wxCouponPathPrefix) >= 0;
           if (isWxCoupon) {
             this.$navigate('/' + path);
             return;
