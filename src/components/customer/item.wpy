@@ -5,10 +5,10 @@
     <view class="info-box column">
       <view class="title-box row">
         <text class="xl">{{customer.name ? customer.name : '微信用户'}}</text>
-        <text class="ml10 xxs muted">{{customer.describe}}</text>
+        <text class="ml10 xxs muted" wx:if="{{customer.describe}}">{{customer.describe}}</text>
       </view>
 
-      <view class="count-box row">
+      <view class="count-box row" wx:if="{{customer.value}}">
         <text class="muted">{{customer.key}}</text>
         <text class="major ml10"> {{customer.value}}</text>
       </view>
