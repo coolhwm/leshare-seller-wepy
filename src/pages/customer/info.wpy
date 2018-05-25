@@ -35,7 +35,7 @@
       <view class="row-between vip-column" @tap="moreVip" wx:if="{{member != null}}">
         <icon class="vip-card card-image" color="gray"/>
         <view class="row-between">
-          <text class="muted">当前余额 : {{member.balance}}</text>
+          <text class="muted">当前余额 : {{member.balance}}元</text>
           <view class="vertical-line"/>
           <text class="muted">当前积分 : {{member.bonus}}</text>
           <icon class="more" color="gray"/>

@@ -99,11 +99,11 @@
           </view>
           <view class="weui-cell weui-cell_input">
             <view class="weui-cell__hd">
-              <view class="weui-label">余额变动</view>
+              <view class="weui-label">操作金额</view>
             </view>
             <view class="weui-cell__bd">
               <input class="weui-input" id="balance" @input="input" value="{{input.balance}}"
-                     type="number" maxlength="6" placeholder="请输入变动余额"/>
+                     type="number" maxlength="6" placeholder="请输入操作金额"/>
             </view>
           </view>
         </view>
@@ -120,7 +120,7 @@
         </view>
       </block>
       <view class="row-center" style="min-height: 100px" wx:else>
-        <text class="ml20 muted" >尚未开启积分功能</text>
+        <text class="ml20 muted" >尚未开余额功能</text>
       </view>
 
       <!--弹窗-->
@@ -150,11 +150,11 @@
         </view>
           <view class="weui-cell weui-cell_input">
             <view class="weui-cell__hd">
-              <view class="weui-label">积分变动</view>
+              <view class="weui-label">操作积分</view>
             </view>
             <view class="weui-cell__bd">
               <input class="weui-input" id="bonus" @input="input" value="{{input.bonus}}"
-                     type="number" maxlength="6" placeholder="请输入变动积分"/>
+                     type="number" maxlength="6" placeholder="请输入操作积分"/>
             </view>
           </view>
         </view>
@@ -238,7 +238,7 @@
           {id: 'COST', title: '消费'},
           {id: 'BALANCE', title: '余额'},
           {id: 'BONUS', title: '积分'},
-          {id: 'MEMBER', title: '会员'}
+          {id: 'MEMBER', title: '折扣'}
         ],
         selectedId: 'COST'
       },

@@ -77,6 +77,24 @@
           <view class="weui-cell__ft weui-cell__ft_in-access">{{presentText}}</view>
         </view>
       </view>
+
+
+      <view class="mt10"></view>
+      <view class="weui-cells weui-cells-form">
+        <view class="weui-cell weui-cell_switch">
+          <view class="weui-cell__bd">储值余额</view>
+          <view class="weui-cell__ft">
+            <switch checked="{{input.supplyBalance}}" id="supplyBalance" @change="input"/>
+          </view>
+        </view>
+
+        <view class="weui-cell weui-cell_switch" wx:if="{{input.supplyBalance}}">
+          <view class="weui-cell__bd">自定义金额</view>
+          <view class="weui-cell__ft">
+            <switch checked="{{input.customTopup}}" id="customTopup" @change="input"/>
+          </view>
+        </view>
+      </view>
       <ActionPanel/>
     </form>
   </view>
@@ -143,12 +161,16 @@
           param.supplyBonus = this.input.supplyBonus ? 1 : 0;
           param.supplyDiscount = this.input.supplyDiscount ? 1 : 0;
           param.supplyPresent = this.input.supplyPresent ? 1 : 0;
+          param.supplyBalance = this.input.supplyBalance ? 1 : 0;
+          param.customTopup = this.input.customTopup ? 1 : 0;
           await vip.create(param);
         } else {
           const param = this.card;
           param.supplyBonus = this.input.supplyBonus ? 1 : 0;
           param.supplyDiscount = this.input.supplyDiscount ? 1 : 0;
           param.supplyPresent = this.input.supplyPresent ? 1 : 0;
+          param.supplyBalance = this.input.supplyBalance ? 1 : 0;
+          param.customTopup = this.input.customTopup ? 1 : 0;
           param.bonusRule = this.card.bonusRule;
           param.discountRules = this.card.discountRules;
           param.memberPresentRules = this.card.memberPresentRules;
@@ -180,6 +202,8 @@
         this.input.supplyBonus = this.input.supplyBonus == 1;
         this.input.supplyDiscount = this.input.supplyDiscount == 1;
         this.input.supplyPresent = this.input.supplyPresent == 1;
+        this.input.customTopup = this.input.customTopup == 1;
+        this.input.supplyPresent = this.input.supplyBalance == 1;
       }
       this.loaded();
       Event.listen(Event.SHOP_BONUS_UPDATE, this.bonusUpdate.bind(this), this);
