@@ -90,8 +90,6 @@
       cart() {
         if (!this.status.open) {
           Tips.modal(this.status.closeTips);
-        } else if (this.totalCount < 1) {
-          Tips.alert('请选择商品');
         } else {
           this.isCartDisplay = 'true';
         }
@@ -102,8 +100,6 @@
       buy({detail}) {
         if (!this.status.open) {
           Tips.modal(this.status.closeTips);
-        } else if (this.totalCount < 1) {
-          Tips.alert('请选择商品');
         } else {
           const param = {};
           param.formId = detail.formId;
@@ -137,9 +133,6 @@
         if (!this.status.open) {
           this.buyStatus = 0;
           return '休息中';
-        } else if (this.totalCount < 1) {
-          this.buyStatus = 2;
-          return '请选择';
         } else {
           this.buyStatus = 1;
           return '去结算';

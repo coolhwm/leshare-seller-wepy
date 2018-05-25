@@ -100,6 +100,11 @@
     // 更新用户信息
     async updateUserInfo(item) {
       await this.doClearCart();
+      if (item == null) {
+        this.customer = {};
+        this.customerId = null;
+        return;
+      }
       this.customerId = item.customerId;
       const params = {
         customerId: item.customerId,

@@ -8,11 +8,19 @@
     <view class="mt10"/>
 
     <!--订单项目-->
-    <OrderItem :order.sync="trade" :shop.sync="shop" action="0"/>
+    <block wx:if="{{trade.orderGoodsInfos && trade.orderGoodsInfos.length > 0}}">
+      <OrderItem :order.sync="trade" :shop.sync="shop" action="0"/>
+    </block>
+
 
     <!--订单详情-->
     <view class="weui-cells weui-cells_after-title weui-cells-merge-top">
 
+      <!--订单类型-->
+      <view class="weui-cell weui-cell_access" @tap="orderType">
+        <view class="weui-cell__bd">订单类型</view>
+        <text class="weui-cell__ft weui-cell__ft_in-access">{{trade.orderTypeText}} </text>
+      </view>
       <!--堂食才有预约时间-->
       <view class="weui-cell weui-cell_access">
         <view class="weui-cell__bd">订单日期</view>
@@ -169,10 +177,23 @@
       this.input.placeDate = Lang.dateFormate(now, 'yyyy-MM-dd');
       this.input.placeTime = Lang.dateFormate(now, 'hh:mm');
       this.trade.couponPrice = '0.00';
-      this.trade.orderStutas = '待付款';
+      this.trade.orderStutas = '已完成';
       this.trade.deliveryText = '同城配送';
       this.trade.deliveryType = 'CITY';
-      this.trade.status = 1;
+      this.trade.status = 6;
+      this.trade.orderType = 20;
+      this.trade.orderTypeText = '外卖订单';
+      if (this.trade.orderGoodsInfos.length == 0) {
+        // 余额在线支付，线下订单
+        this.trade.paymentText = '在线支付';
+        this.trade.paymentType = 1;
+        this.trade.onlinePayType = 'wxpay';
+        this.trade.onlinePayText = '微信支付';
+        this.trade.onlinePayText = '余额支付';
+        this.trade.onlinePayType = 'balance';
+        this.trade.orderType = 40;
+        this.trade.orderTypeText = '线下订单';
+      }
       // 查看店铺状态
       const isOpen = await this.checkShopStatus();
       // 用户信息
@@ -236,6 +257,28 @@
             this.$apply();
           }
         );
+      },
+      /**
+       * 选择订单类型
+       */
+      async orderType () {
+        const trade = this.trade;
+        Tips.actionWithFunc(['外卖订单', '线下订单', '普通订单'],
+          () => {
+            trade.orderType = 20;
+            trade.orderTypeText = '外卖订单';
+            this.$apply();
+          },
+          () => {
+            trade.orderType = 40;
+            trade.orderTypeText = '线下订单';
+            this.$apply();
+          },
+          () => {
+            trade.orderType = 10;
+            trade.orderTypeText = '普通订单';
+            this.$apply();
+          });
       },
       /**
        * 选择付款方式
@@ -306,6 +349,7 @@
         await Tips.success('下单成功！');
         // 清空购物车
         Event.emit(Event.CART_LIST_CLEAR);
+        Event.emit(Event.MEMBER_INFO_UPDATE);
         WxUtils.backOrRedirect('/pages/manusl/index');
       }
     };
