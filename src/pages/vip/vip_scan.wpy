@@ -106,6 +106,14 @@
                      type="number" maxlength="6" placeholder="请输入操作金额"/>
             </view>
           </view>
+          <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__hd">
+              <view class="weui-label">当前余额</view>
+            </view>
+            <view class="weui-cell__bd">
+              <input class="weui-input"  value="{{member.balance}}元" disabled/>
+            </view>
+          </view>
         </view>
         <!--操作后-->
         <view class="weui-cells weui-cells-form"  wx:else>
@@ -137,17 +145,17 @@
         <!--操作前-->
         <view class="weui-cells weui-cells-form"   wx:if="{{result == null}}">
           <view class="weui-cell weui-cell_input" style="height: 88rpx;">
-          <view class="weui-cell__hd">
-            <view class="weui-label">操作</view>
+            <view class="weui-cell__hd">
+              <view class="weui-label">操作</view>
+            </view>
+            <view class="weui-cell__bd">
+              <radio-group class="radio-group" @change="actionChange">
+                <label class="radio" wx:for="{{actionList}}" wx:key="index" wx:for-item="item">
+                  <radio value="{{item.name}}" checked="{{item.checked}}"/>{{item.value}}
+                </label>
+              </radio-group>
+            </view>
           </view>
-          <view class="weui-cell__bd">
-            <radio-group class="radio-group" @change="actionChange">
-              <label class="radio" wx:for="{{actionList}}" wx:key="index" wx:for-item="item">
-                <radio value="{{item.name}}" checked="{{item.checked}}"/>{{item.value}}
-              </label>
-            </radio-group>
-          </view>
-        </view>
           <view class="weui-cell weui-cell_input">
             <view class="weui-cell__hd">
               <view class="weui-label">操作积分</view>
@@ -178,9 +186,37 @@
 
     <!--修改折扣率-->
     <view wx:if="{{tab.selectedId == 'MEMBER'}}">
+
       <!--操作前-->
       <view class="weui-cells weui-cells-form" >
-        <view class="weui-cell weui-cell_input">
+        <view class="weui-cell weui-cell_input" style="height: 88rpx;">
+          <view class="weui-cell__hd">
+            <view class="weui-label">操作</view>
+          </view>
+          <view class="weui-cell__bd">
+            <radio-group class="radio-group" @change="discountActionChange">
+              <label class="radio">
+                <radio value="1" checked/>修改级别
+              </label>
+              <label class="radio">
+                <radio value="2" />修改折扣
+              </label>
+            </radio-group>
+          </view>
+        </view>
+
+        <view class="weui-cell weui-cell_select" wx:if="{{discountAction == 1}}">
+          <view class="weui-cell__hd weui-cell__hd_in-select-after">
+            <view class="weui-label">会员等级</view>
+          </view>
+          <view class="weui-cell__bd">
+            <picker @change="input" id="levelIndex" value="{{member.level}}" range="{{levels}}" range-key="levelName" range-value="level" >
+              <view class="weui-select weui-select_in-select-after">{{selectedLevel}}</view>
+            </picker>
+          </view>
+        </view>
+
+        <view class="weui-cell weui-cell_input" wx:if="{{discountAction == 2}}">
           <view class="weui-cell__hd">
             <view class="weui-label">会员折扣</view>
           </view>
@@ -193,7 +229,7 @@
           </view>
         </view>
       </view>
-      <view class="tips-box">
+      <view class="tips-box" wx:if="{{discountAction == 2}}">
         <text>提示：输入90表示9则，输入85表示8.5折</text>
       </view>
     </view>
@@ -248,6 +284,8 @@
         {name: 'add', value: '充值', checked: 'true'},
         {name: 'reduce', value: '扣减'}
       ],
+      levels: [],
+      discountAction: 1,
       actionType: 'add',
       hiddenSecurity: true
     };
@@ -259,6 +297,15 @@
       try {
         this.shop = await shop.info();
         this.card = await member.cardInfo();
+        // 生成的等级
+        if (this.card && this.card.discountRules && this.card.discountRules.length > 0) {
+          this.levels = this.card.discountRules.map(item => {
+            return {
+              level: item.level,
+              levelName: item.levelName
+            }
+          });
+        }
         this.presentRules = this.card.memberPresentRules;
         this.presentRules.forEach((item, index) => {
           this.details.push({
@@ -284,6 +331,7 @@
           this.member = preload.data.member;
           this.scene = this.member.memberNumber;
         }
+        this.input.levelIndex = this.member.level - 1;
         this.loaded();
       } catch (e) {
         this.message = e.message;
@@ -307,6 +355,9 @@
       this.$apply();
     }
     methods = {
+      discountActionChange(e) {
+        this.discountAction = e.detail.value
+      },
       actionChange (e) {
         this.actionType = e.detail.value
       },
@@ -362,13 +413,26 @@
           this.input.bonus = null;
           this.actionType = 'add';
         } else if (this.tab.selectedId == 'MEMBER') {
-          const memberParam = {
-            memberId: this.member.memberId,
-            customDiscount: this.input.customDiscount
-          };
-          this.result = true;
-          member.customDiscount(memberParam);
-          await Tips.success('已保存');
+          // 处理修改会员的情况
+          if (this.discountAction == 2) {
+            const memberParam = {
+              memberId: this.member.memberId,
+              customDiscount: this.input.customDiscount
+            };
+            this.result = true;
+            member.customDiscount(memberParam);
+            await Tips.success('已保存');
+          }
+          if (this.discountAction == 1) {
+            const level = this.levels[this.input.levelIndex].level;
+            const levelParam = {
+              memberId: this.member.memberId,
+              level: level
+            };
+            this.result = true;
+            member.customLevel(levelParam);
+            await Tips.success('已保存');
+          }
         }
         this.member = await member.Info(this.scene);
         Event.emit(Event.SHOP_CUSTOMER_UPDATE);
@@ -483,6 +547,14 @@
       return this.check(rules);
     }
     computed = {
+      selectedLevel() {
+        if (this.input.levelIndex != null && this.levels) {
+          const level = this.levels[this.input.levelIndex];
+          if (level) {
+            return level.levelName;
+          }
+        }
+      },
       bonus () {
         if (this.card == null) return;
         const {bonusRule, supplyBonus} = this.card;

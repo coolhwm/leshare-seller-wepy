@@ -49,6 +49,13 @@ export default class Member extends base {
     const url = `${this.baseUrl}/members/custom_discount`;
     return this.post(url, member);
   }
+  /**
+   * 编辑会员等级
+   */
+  static customLevel (member) {
+    const url = `${this.baseUrl}/members/custom_level`;
+    return this.post(url, member);
+  }
 
   /**
    * 历史积分信息
