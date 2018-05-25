@@ -155,12 +155,13 @@
       this.limit = await shop.limit();
       // 写入缓存
       wepy.setStorageSync('limit', this.limit);
-      this.shop = await shop.info();
+      // this.shop = await shop.info();
       // 写入缓存
       wepy.setStorageSync('shop_image', this.shop.avatar);
       this.show = true;
       await this.reload();
       Event.listen(Event.USER_LOGOUT, this.clear.bind(this), this);
+      Event.listen(Event.SHOP_HOME_UPDATE, this.reload.bind(this), this);
     };
     async onShow() {
       // 定时刷新
@@ -169,11 +170,9 @@
         await this.reload();
       }, 60 * 1000);
       // 切换店铺刷新信息
-      if (!this.init) {
-        this.shop = await shop.info();
+      if (this.init) {
+        await this.reload();
       }
-      // 立即刷新
-      await this.reload();
     }
     clear() {
       this.init = false;
@@ -188,6 +187,8 @@
     }
     async reload() {
       Tips.setLoading();
+      // 立即刷新
+      this.shop = await shop.info();
       // 数据展现
       const [today, month, order] = await Promise.all([count.today(), count.month(), count.order()]);
       this.today = today;

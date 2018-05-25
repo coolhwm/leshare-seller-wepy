@@ -34,6 +34,7 @@
   import ShopItem from '../../components/shop/item';
   import Placeholder from '../../components/common/placeholder';
   import ActionBar from '../../components/common/action_bar';
+  import Event from '../../utils/Event';
 
   export default class ShopList extends wepy.page {
     def = {
@@ -49,6 +50,7 @@
       // 进入店铺
       async enter(shopId) {
         await auth.setConfig('shop_id', shopId)
+        Event.emit(Event.SHOP_HOME_UPDATE);
         this.$switch('home');
       },
       // 重新登录

@@ -33,6 +33,8 @@ export default class Event {
   static SHOP_PRESENT_UPDATE = 'SHOP_PRESENT_UPDATE';
   // 客户管理更新
   static SHOP_CUSTOMER_UPDATE = 'SHOP_CUSTOMER_UPDATE';
+  // 客户管理更新
+  static SHOP_HOME_UPDATE = 'SHOP_HOME_UPDATE';
   // 优惠类别保存成功
   static VIP_CATEGORY_UPDATA = 'VIP_CATEGORY_UPDATA';
   // 输入内容
