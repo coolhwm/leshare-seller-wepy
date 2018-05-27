@@ -8,7 +8,7 @@ export default class order extends base {
    * 分页方法
    */
   static list () {
-    const url = `${this.baseUrl}/goods_bargain/bargains`;
+    const url = `${this.baseUrl}/goods_bargain/bargain_list`;
     return new Page(url, this._processBargainListItem.bind(this));
   }
 
@@ -16,41 +16,10 @@ export default class order extends base {
    * 处理方法
    */
   static _processBargainListItem(item) {
-    api._processGoodsListItem(item.rule.goods);
-    this._processPrice(item);
-    this._processStatus(item);
     this._processTime(item);
     return item
   }
 
-  /***
-   * 价格处理
-   */
-  static _processPrice(data) {
-    // 一共砍了多少钱
-    data.allPrice = (data.details.reduce((prev, current) => prev + current.reducePrice, 0)).toFixed(2);
-    let goodsPrice = '';
-    if (data.rule.skuDetail != null) {
-      goodsPrice = data.rule.skuDetail.price;
-    } else {
-      goodsPrice = data.rule.goodsPrice;
-    }
-    // 剩余多少钱
-    data.balance = (goodsPrice * 1 - data.allPrice * 1).toFixed(2);
-  }
-
-  /***
-   * 状态处理
-   */
-  static _processStatus(item) {
-    const BARGAIN_STATUS = {
-      PROCESSING: '进行中',
-      BARGAINED: '已至底',
-      TIMEOUT: '已过期',
-      ORDERED: '已下单'
-    };
-    item.statusText = BARGAIN_STATUS[item.status]
-  }
   static _processTime(item) {
     const time = new Date(item.createTime) - new Date() + 1000 * 60 * 60 * 24;
     if (time > 0) {

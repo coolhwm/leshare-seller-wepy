@@ -83,7 +83,7 @@
     };
     mixins = [base, pagination];
     config = {
-      navigationBarTitleText: '我的砍价',
+      navigationBarTitleText: '砍价订单',
       enablePullDownRefresh: true
     };
   }

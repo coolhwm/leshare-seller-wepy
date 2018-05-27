@@ -13,22 +13,22 @@
     <!--商品区域-->
     <view class="row-between bargain-goods-box" @tap="orderDetail({{detail}})">
       <view class="row">
-        <image src="{{detail.rule.goods.imageUrl}}" style="width: 150rpx;height: 150rpx;"/>
+        <image src="{{detail.goodsImageUrl}}" style="width: 150rpx;height: 150rpx;"/>
         <view class="column ml20 info-box">
-          <text class="sm">{{detail.rule.goods.name}}</text>
-          <text class="muted mt20 sm">原价:￥{{detail.rule.skuDetail.price ? detail.rule.skuDetail.price : detail.rule.goodsPrice}}</text>
+          <text class="sm">{{detail.goodsName}}</text>
+          <text class="muted mt20 sm">原价:￥{{detail.ruleGoodsPrice}}</text>
         </view>
       </view>
       <view class="column-center">
-        <text class="primary lg">现价:￥{{detail.balance}}</text>
+        <text class="primary lg">现价:￥{{detail.currentPrice}}</text>
         <text class="muted xs">{{detail.spareTime}}</text>
-        <text class="muted xs">已有{{detail.details.length}}人砍</text>
+        <text class="muted xs">已有{{detail.currentHelpCount}}人砍</text>
       </view>
     </view>
 
 
     <!--汇总信息-->
-    <view wx:if="{{detail.status === 'ORDERED' && detail.order.status == 2}}" class="order.order-footer-container row-end">
+    <view wx:if="{{detail.status === 'ORDERED' && detail.orderStatus == 2}}" class="order.order-footer-container row-end">
       <text>合计:</text>
       <text class="major xl mr20">￥{{detail.order.finalPrice}}</text>
       <text>(含运费￥{{detail.order.postFee}})</text>
@@ -38,8 +38,8 @@
     <view class="group-bottom-box row-between">
       <view class="group-btn-box" @tap="open({{detail.details}})">查看</view>
       <view class="row ml20">
-        <image src="{{detail.details[0].customer.avatarUrl}}" class="img-box"/>
-        <text class="ml10">{{detail.details[0].customer.nickName}}</text>
+        <image src="{{detail.customerAvatarUrl}}" class="img-box"/>
+        <text class="ml10">{{detail.customerNickName}}</text>
       </view>
     </view>
 
