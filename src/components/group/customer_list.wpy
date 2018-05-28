@@ -23,7 +23,7 @@
               <image class="img-box" src="{{item.customer.avatarUrl}}"/>
               <text class="ml10">{{item.customer.nickName}}</text>
             </view>
-            <text>￥{{item.createTime}}</text>
+            <text>{{item.createTime}}</text>
           </view>
         </block>
       </view>
