@@ -26,24 +26,14 @@
       </view>
     </view>
 
-
-    <!--汇总信息-->
-    <view wx:if="{{detail.status === 'ORDERED' && detail.orderStatus == 2}}" class="order.order-footer-container row-end">
-      <text>合计:</text>
-      <text class="major xl mr20">￥{{detail.order.finalPrice}}</text>
-      <text>(含运费￥{{detail.order.postFee}})</text>
-    </view>
-
     <!--操作栏-->
-    <view class="group-bottom-box row-between">
-      <view class="group-btn-box" @tap="open({{detail.details}})">查看</view>
+    <view class="bargain-bottom-box row-between">
       <view class="row ml20">
         <image src="{{detail.customerAvatarUrl}}" class="img-box"/>
         <text class="ml10">{{detail.customerNickName}}</text>
       </view>
+      <view class="bargain-btn-box" @tap="open({{detail.bargainId}})">查看</view>
     </view>
-
-
   </view>
 </template>
 <script>
@@ -69,8 +59,8 @@
           this.$root.$navigate(`/pages/order/detail?orderId=${detail.order.orderId}`)
         }
       },
-      open(customers) {
-        this.$emit('open', customers)
+      open(id) {
+        this.$emit('open', id)
       }
     };
     components = {
@@ -135,7 +125,7 @@
     }
   }
 
-  .group-bottom-box{
+  .bargain-bottom-box{
     border-top: 1px solid #FAFAFA;
     .img-box{
       width: 60rpx;
@@ -143,7 +133,7 @@
       border-radius: 30rpx;
       border: $border;
     }
-    .group-btn-box{
+    .bargain-btn-box{
       color: white;
       background-color: $color-primary;
       padding: 6rpx 20rpx;

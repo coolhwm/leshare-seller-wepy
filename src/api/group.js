@@ -7,22 +7,22 @@ export default class order extends base {
    * 分页方法
    */
   static list () {
-    const url = `${this.baseUrl}/goods_bargain/bargain_list`;
-    return new Page(url, this._processBargainListItem.bind(this));
+    const url = `${this.baseUrl}/goods_group/group_list`;
+    return new Page(url, this._processGroupListItem.bind(this));
   }
 
   /**
-   * 砍价详情
+   * 拼团详情
    */
   static detail(id) {
-    const url = `${this.baseUrl}/goods_bargain/${id}`;
+    const url = `${this.baseUrl}/goods_group/${id}`;
     return this.get(url);
   }
 
   /**
    * 处理方法
    */
-  static _processBargainListItem(item) {
+  static _processGroupListItem(item) {
     this._processTime(item);
     return item
   }

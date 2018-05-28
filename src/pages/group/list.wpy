@@ -5,7 +5,7 @@
 
     <!--列表展现-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <BargainItem :detail.sync="item" @open.user="open"/>
+      <GroupItem :group.sync="item" @open.user="open"/>
     </repeat>
 
     <!-- 加载提示 -->
@@ -16,21 +16,21 @@
   </view>
 
   <!--占位符-->
-  <Placeholder :show.sync="isPageEmpty" message="您还没有相关砍价订单"/>
+  <Placeholder :show.sync="isPageEmpty" message="您还没有相关拼团订单"/>
 </template>
 
 <script>
   import wepy from 'wepy';
   import base from '../../mixins/base';
-  import bargain from '../../api/bargain';
+  import group from '../../api/group';
   import pagination from '../../mixins/pagination';
   import Placeholder from '../../components/common/placeholder';
   import ZanTab from '../../components/zanui/tab';
-  import BargainItem from '../../components/bargain/bargain_list_item';
+  import GroupItem from '../../components/group/group_list_item';
   import Loadmore from '../../components/weui/loadmore';
-  import customerList from '../../components/bargain/customer_list';
+  import customerList from '../../components/group/customer_list';
 
-  export default class BargainList extends wepy.page {
+  export default class groupList extends wepy.page {
     def = {
       init: true,
       page: {
@@ -39,11 +39,10 @@
       },
       tab: {
         list: [
-          {id: '0', title: '全部', status: '-1'},
-          {id: '1', title: '进行中', status: '0'},
-          {id: '2', title: '已至底', status: '1'},
-          {id: '3', title: '已过期', status: '2'},
-          {id: '4', title: '已下单', status: '3'}
+          {id: '0', title: '全部', status: ''},
+          {id: '1', title: '正在拼团', status: 'PROCESSING'},
+          {id: '2', title: '拼团成功', status: 'SUCCESS'},
+          {id: '3', title: '拼团失败', status: 'FAILURE'}
         ],
         selectedId: '1'
       }
@@ -54,7 +53,7 @@
         this.tab.selectedId = status;
       }
       // 页面加载
-      this.page = bargain.list();
+      this.page = group.list();
       await this.next();
     };
     // 获取分页参数
@@ -62,7 +61,7 @@
       const status = this.tab.list.find(item => item.id === this.tab.selectedId);
       return {
         status: status.status,
-        sort: 'desc'
+        sort: 'asc'
       };
     }
     methods = {
@@ -70,14 +69,14 @@
         this.reload();
       },
       async open(id) {
-        const detail = await bargain.detail(id);
-        const customers = detail.details;
+        const detail = await group.detail(id);
+        const customers = detail.list;
         this.$invoke('customerList', 'open', {content: customers})
       }
     };
     events = {};
     components = {
-      BargainItem: BargainItem,
+      GroupItem: GroupItem,
       Placeholder: Placeholder,
       ZanTab: ZanTab,
       Loadmore: Loadmore,
@@ -85,7 +84,7 @@
     };
     mixins = [base, pagination];
     config = {
-      navigationBarTitleText: '砍价订单',
+      navigationBarTitleText: '拼团订单',
       enablePullDownRefresh: true
     };
   }

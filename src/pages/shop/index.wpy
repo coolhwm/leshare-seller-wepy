@@ -15,6 +15,8 @@
 
       <NavBargain title="砍价订单" url="../bargain/list"/>
 
+      <NavGroup title="拼团订单" url="../group/list"/>
+
       <NavManusl title="手工下单" url="../manusl/index" type="manusl"/>
 
       <NavDelivery title="运费模板" url="../delivery/list" type="delivery"/>
@@ -119,7 +121,8 @@
       NavComment: Navigator,
       NavNotice: Navigator,
       NavSubShopCoupon: Navigator,
-      NavBargain: Navigator
+      NavBargain: Navigator,
+      NavGroup: Navigator
     };
     config = {
       navigationBarTitleText: '我的信息'

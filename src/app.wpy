@@ -141,7 +141,8 @@
         'pages/shop/income',
         'pages/coupon/sub_shop_coupon_list',
         'pages/vip/vip_info',
-        'pages/bargain/list'
+        'pages/bargain/list',
+        'pages/group/list'
       ],
       window: {
         backgroundTextStyle: 'dark',
