@@ -28,7 +28,7 @@
 
     <!--操作栏-->
     <view class="bargain-bottom-box row-between">
-      <view class="row">
+      <view class="row" @tap="customerDetail({{detail.customerId}})">
         <image src="{{detail.customerAvatarUrl}}" class="img-box"/>
         <text class="ml10">{{detail.customerNickName}}</text>
       </view>
@@ -64,6 +64,9 @@
       },
       open(id) {
         this.$emit('open', id)
+      },
+      customerDetail(customerId) {
+        this.$emit('customerDetail', customerId)
       }
     };
     components = {

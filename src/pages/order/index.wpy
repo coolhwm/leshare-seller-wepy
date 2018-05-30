@@ -141,10 +141,6 @@
       this.page.clear();
       this.init = false;
     }
-    onReachBottom () {
-      return;
-    };
-
     methods = {
       goTop() {
         wx.pageScrollTo({

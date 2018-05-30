@@ -5,13 +5,13 @@
 
     <!--列表展现-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <BargainItem :detail.sync="item" @open.user="open"/>
+      <BargainItem :detail.sync="item" @open.user="open" @customerDetail.user="customerDetail"/>
     </repeat>
 
     <!-- 加载提示 -->
     <Loadmore :page.sync="page"/>
 
-    <customerList />
+    <customerList @customerDetail.user="customerDetail"/>
 
   </view>
 
@@ -29,6 +29,7 @@
   import BargainItem from '../../components/bargain/bargain_list_item';
   import Loadmore from '../../components/weui/loadmore';
   import customerList from '../../components/bargain/customer_list';
+  import Tips from '../../utils/Tips';
 
   export default class BargainList extends wepy.page {
     def = {
@@ -73,6 +74,13 @@
         const detail = await bargain.detail(id);
         const customers = detail.details;
         this.$invoke('customerList', 'open', {content: customers})
+      },
+      customerDetail(customerId) {
+        if (customerId) {
+          this.$root.$navigate('/pages/customer/info?customerId=' + customerId);
+        } else {
+          Tips.alert('没有找到用户信息');
+        }
       }
     };
     events = {};

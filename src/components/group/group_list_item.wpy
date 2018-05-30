@@ -29,7 +29,7 @@
 
     <!--操作栏-->
     <view class="group-bottom-box row-between">
-      <view class="row ml20">
+      <view class="row ml20" @tap="customerDetail({{group.customerId}})">
         <image src="{{group.customerAvatarUrl}}" class="img-box"/>
         <text class="ml10">{{group.customerNickName}}</text>
       </view>
@@ -56,6 +56,9 @@
     methods = {
       open(id) {
         this.$emit('open', id)
+      },
+      customerDetail(customerId) {
+        this.$emit('customerDetail', customerId)
       }
     };
     components = {};
