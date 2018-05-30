@@ -89,7 +89,7 @@ export default class Member extends base {
   /**
    * 获取会员分组
    */
-  static async memnberGroup() {
+  static async memberGroup() {
     const url = `${this.baseUrl}/member_groups/list`;
     return this.get(url);
   }

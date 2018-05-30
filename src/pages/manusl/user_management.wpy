@@ -28,14 +28,14 @@
       </view>
     </block>
 
-    <block wx:if="{{memnberGroup != null && memnberGroup.length > 0}}">
+    <block wx:if="{{memberGroup != null && memberGroup.length > 0}}">
       <text class="muted title-box">会员分组：</text>
       <view class="weui-cells weui-cells-form">
         <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" @tap="screen(1, '', -1, '默认分组会员')">
           <view class="weui-cell__bd">默认分组</view>
           <view class="weui-cell__ft weui-cell__ft_in-access"/>
         </view>
-        <repeat for="{{memnberGroup}}" key="index" index="index" item="item">
+        <repeat for="{{memberGroup}}" key="index" index="index" item="item">
           <!-- 等级 -->
           <view class="weui-cell weui-cell_access" @tap="screen(1, '', {{item.id}}, {{item.name}})">
             <view class="weui-cell__bd">{{item.name}}</view>
@@ -63,7 +63,7 @@
       discountRules: [],
       type: null,
       limit: {},
-      memnberGroup: null
+      memberGroup: null
     };
     data = {...this.def};
 
@@ -71,7 +71,7 @@
       await this.loadLimit();
       this.type = option.type;
       this.card = await member.cardInfo();
-      this.memnberGroup = await member.memnberGroup();
+      this.memberGroup = await member.memberGroup();
       if (this.card) {
         this.discountRules = this.card.discountRules;
       }
