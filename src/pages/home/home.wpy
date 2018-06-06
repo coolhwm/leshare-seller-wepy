@@ -152,7 +152,7 @@
     data = {...this.def};
     async onLoad (option) {
       WxUtils.checkSDK();
-      this.limit = await shop.limit();
+      // this.limit = await shop.limit();
       // 写入缓存
       wepy.setStorageSync('limit', this.limit);
       this.show = true;
@@ -185,10 +185,9 @@
     }
     async reload() {
       Tips.setLoading();
-      // 立即刷新
-      this.shop = await shop.info();
       // 数据展现
-      const [today, month, order] = await Promise.all([count.today(), count.month(), count.order()]);
+      const [info, today, month, order] = await Promise.all([shop.info(), count.today(), count.month(), count.order()]);
+      this.shop = info;
       this.today = today;
       this.month = month;
       this.order = order;

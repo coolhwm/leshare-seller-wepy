@@ -1,7 +1,7 @@
 import base from './base';
 import wepy from 'wepy';
 
-export default class shop extends base {
+export default class infoshop extends base {
   static autoVersion = {
     '1': '推广普及版',
     '2': '会员普及版',
