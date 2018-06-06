@@ -13,7 +13,7 @@
     <!--商品区域-->
     <view class="row-between bargain-goods-box" @tap="orderDetail({{detail}})">
       <view class="row">
-        <image src="{{detail.goodsImageUrl}}" style="width: 150rpx;height: 150rpx;"/>
+        <image src="{{detail.goodsImageUrl}}/small" style="width: 150rpx;height: 150rpx;"/>
         <view class="column ml20 info-box">
           <text class="sm">{{detail.goodsName}}</text>
           <text class="muted mt20 sm">原价:￥{{detail.ruleGoodsPrice}}</text>
@@ -28,11 +28,14 @@
 
     <!--操作栏-->
     <view class="bargain-bottom-box row-between">
-      <view class="row ml20">
+      <view class="row" @tap="customerDetail({{detail.customerId}})">
         <image src="{{detail.customerAvatarUrl}}" class="img-box"/>
         <text class="ml10">{{detail.customerNickName}}</text>
       </view>
-      <view class="bargain-btn-box" @tap="open({{detail.bargainId}})">查看</view>
+      <view class="row">
+        <view wx:if="{{detail.orderId > 0}}" class="bargain-btn-box" @tap="orderDetail({{detail}})">订单</view>
+        <view class="bargain-btn-box ml10" @tap="open({{detail.bargainId}})">明细</view>
+      </view>
     </view>
   </view>
 </template>
@@ -56,11 +59,14 @@
     methods = {
       orderDetail(detail) {
         if (detail.status === 'ORDERED') {
-          this.$root.$navigate(`/pages/order/detail?orderId=${detail.order.orderId}`)
+          this.$root.$navigate(`/pages/order/detail?orderId=${detail.orderId}`)
         }
       },
       open(id) {
         this.$emit('open', id)
+      },
+      customerDetail(customerId) {
+        this.$emit('customerDetail', customerId)
       }
     };
     components = {
@@ -127,6 +133,7 @@
 
   .bargain-bottom-box{
     border-top: 1px solid #FAFAFA;
+    padding: 14rpx;
     .img-box{
       width: 60rpx;
       height: 60rpx;
@@ -137,7 +144,6 @@
       color: white;
       background-color: $color-primary;
       padding: 6rpx 20rpx;
-      margin: 14rpx;
       border-radius: 5rpx;
     }
   }

@@ -8,7 +8,7 @@
       <scroll-view scroll-y style="height: 500rpx" wx:if="{{content.length > 4}}">
         <block wx:for="{{content}}" wx:key="index" wx:for-item="item">
           <view class="row-between item-box">
-            <view class="row">
+            <view class="row" @tap="customerDetail({{item.customerId}})">
               <image class="img-box" src="{{item.customer.avatarUrl}}"/>
               <text class="ml10">{{item.customer.nickName}}</text>
             </view>
@@ -19,7 +19,7 @@
       <view wx:else style="min-height: 150rpx;">
         <block wx:for="{{content}}" wx:key="index" wx:for-item="item">
           <view class="row-between item-box">
-            <view class="row">
+            <view class="row" @tap="customerDetail({{item.customerId}})">
               <image class="img-box" src="{{item.customer.avatarUrl}}"/>
               <text class="ml10">{{item.customer.nickName}}</text>
             </view>
@@ -58,6 +58,10 @@
       },
       close() {
         this.display = false;
+      },
+      customerDetail(customerId) {
+        this.display = false;
+        this.$emit('customerDetail', customerId)
       }
     };
     components = {

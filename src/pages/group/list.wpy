@@ -5,13 +5,13 @@
 
     <!--列表展现-->
     <repeat for="{{page.list}}" key="index" index="index" item="item">
-      <GroupItem :group.sync="item" @open.user="open"/>
+      <GroupItem :group.sync="item" @open.user="open" @customerDetail.user="customerDetail"/>
     </repeat>
 
     <!-- 加载提示 -->
     <Loadmore :page.sync="page"/>
 
-    <customerList />
+    <customerList @customerDetail.user="customerDetail"/>
 
   </view>
 
@@ -29,6 +29,7 @@
   import GroupItem from '../../components/group/group_list_item';
   import Loadmore from '../../components/weui/loadmore';
   import customerList from '../../components/group/customer_list';
+  import Tips from '../../utils/Tips';
 
   export default class groupList extends wepy.page {
     def = {
@@ -72,6 +73,13 @@
         const detail = await group.detail(id);
         const customers = detail.list;
         this.$invoke('customerList', 'open', {content: customers})
+      },
+      customerDetail(customerId) {
+        if (customerId) {
+          this.$root.$navigate('/pages/customer/info?customerId=' + customerId);
+        } else {
+          Tips.alert('没有找到用户信息');
+        }
       }
     };
     events = {};
