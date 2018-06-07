@@ -1,0 +1,55 @@
+<template>
+  <view class="cusomer-box row">
+    <view class="column-center user-box">
+      <image class="avatar icon-xl icon-round" wx:if="{{detail.customer.avatarUrl}}" src="{{detail.customer.avatarUrl}}"></image>
+      <text class="xs inline">{{detail.customer.nickName ? detail.customer.nickName : '微信用户'}}</text>
+    </view>
+    <view class="info-box column">
+      <text class="nm inline">{{detail.coupon.name}}</text>
+      <text class="muted sm">领取时间：{{detail.acceptTime}}</text>
+      <text class="muted sm" wx:if="{{detail.usedTime}}">使用时间：{{detail.usedTime}}</text>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class UsageItem extends wepy.component {
+    props = {
+      detail: {}
+    };
+    data = {};
+    methods = {};
+    events = {};
+    onLoad() {
+    }
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variable";
+  .cusomer-box{
+    background-color: white;
+    padding:30rpx;
+    border-bottom: $border;
+
+    .user-box{
+      width: 160rpx;
+      text-align: center;
+      text{
+        width: 160rpx;
+      }
+    }
+    .info-box{
+      margin-left: 30rpx;
+
+      text{
+        width: 500rpx;
+      }
+
+      .count-box{
+        margin-top: 15rpx;
+      }
+    }
+  }
+</style>
