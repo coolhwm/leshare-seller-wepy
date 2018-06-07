@@ -243,7 +243,7 @@ export default class order extends base {
     };
     if (orderType === TYPE.BALANCE) {
       goods.goodsName = `余额充值 ${order.finalPrice}元`;
-    } else if (orderType === TYPE.OFFLINE && order.onlinePayType === 'balance') {
+    } else if (order.onlinePayType === 'balance') {
       goods.goodsName = `余额支付 ${order.finalPrice}元`;
       goods.imageUrl = 'http://img.leshare.shop/shop/other/topup.png';
     } else {
@@ -263,7 +263,7 @@ export default class order extends base {
     const {orderType, paymentType, status} = order;
     const actions = utils.statusActions(orderType, paymentType, status);
     if (actions) {
-      const display = inner ? actions.filter(v => v.inner != true) : actions;
+      const display = inner ? actions : actions.filter(v => v.inner != true);
       order.actions = basic.concat(display);
     } else {
       order.actions = basic;

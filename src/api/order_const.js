@@ -112,6 +112,12 @@ const ACTION = {
     name: '关闭',
     func: 'close'
   },
+  CLOSE_FORCE: {
+    primary: false,
+    inner: true,
+    name: '强制退款',
+    func: 'close'
+  },
   REPRICE: {
     primary: false,
     name: '改价',
@@ -167,14 +173,18 @@ const STATUS_ACTIONS = {
   // 外卖（线下）
   '20-0-2': [ACTION.CLOSE, ACTION.TAKE],
   '20-0-9': [ACTION.CLOSE, ACTION.SEND],
-  '20-0-3': [ACTION.RECEIVE],
+  '20-0-3': [ACTION.RECEIVE, ACTION.CLOSE_FORCE],
+  '20-0-4': [ACTION.CLOSE_FORCE],
   '20-0-5': [ACTION.DEAL_REFUND],
+  '20-0-6': [ACTION.CLOSE_FORCE],
   // 外卖（线上）
   '20-1-1': [ACTION.REPRICE, ACTION.CLOSE],
   '20-1-2': [ACTION.CLOSE, ACTION.TAKE],
   '20-1-9': [ACTION.CLOSE, ACTION.SEND],
   '20-1-3': [ACTION.CLOSE, ACTION.RECEIVE],
+  '20-1-4': [ACTION.CLOSE_FORCE],
   '20-1-5': [ACTION.DEAL_REFUND],
+  '20-1-6': [ACTION.CLOSE_FORCE],
   // 堂食（线上）
   '30-1-1': [ACTION.REPRICE, ACTION.CLOSE],
   '30-1-2': [ACTION.CLOSE, ACTION.TAKE],
@@ -196,6 +206,7 @@ const STATUS_ACTIONS = {
   '10-1-5': [ACTION.DEAL_REFUND],
   // 离线支付
   '40-1-1': [ACTION.CLOSE],
+  '40-1-6': [ACTION.CLOSE_FORCE],
   // 拼团
   '50-1-2': [ACTION.SEND],
   '50-1-3': [ACTION.RECEIVE],

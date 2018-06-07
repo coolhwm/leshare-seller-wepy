@@ -30,8 +30,8 @@ export default class visitor extends base {
    * 处理浏览数列表数据
    */
   static _processShopsVisitor (data) {
-    console.info(data);
     const visitor = {};
+    visitor.id = data.customerId;
     visitor.name = data.nickName;
     visitor.key = '访问时间';
     if (data.loginTime) {

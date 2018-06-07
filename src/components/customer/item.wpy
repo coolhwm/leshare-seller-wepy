@@ -1,6 +1,6 @@
 <template>
   <view class="cusomer-box row" @tap="tap({{customer}})">
-    <image class="avatar icon-xl icon-round" wx:if="{{customer.avatar}}" src="{{customer.avatar}}"></image>
+    <image class="avatar icon-xl icon-round" @tap="detail({{customer}})" wx:if="{{customer.avatar}}" src="{{customer.avatar}}"></image>
     <icon wx:else class="customer xxlarge" color="gray"/>
     <view class="info-box column">
       <view class="title-box row">
@@ -17,7 +17,8 @@
 </template>
 
 <script>
-  import wepy from 'wepy'
+  import wepy from 'wepy';
+  import Tips from '../../utils/Tips';
   export default class CustomerItem extends wepy.component {
     props = {
       customer: {}
@@ -26,7 +27,14 @@
     methods = {
       tap(customer) {
         this.$emit('tap', customer);
-      }
+      },
+      async detail({id}) {
+        if (id) {
+          this.$root.$navigate('/pages/customer/info?customerId=' + id);
+        } else {
+          Tips.alert('没有找到用户信息');
+        }
+      },
     };
     events = {};
     onLoad() {

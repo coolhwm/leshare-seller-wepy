@@ -344,7 +344,7 @@
           this.trade.receivePhone = this.selectedAddress.phone;
         }
         this.trade.customerId = this.customer.customerId;
-        this.trade.orderType = 20;
+        // this.trade.orderType = 20;
         await mausl.createOrder(this.trade);
         await Tips.success('下单成功！');
         // 清空购物车
