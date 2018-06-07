@@ -142,7 +142,8 @@
         'pages/coupon/sub_shop_coupon_list',
         'pages/vip/vip_info',
         'pages/bargain/list',
-        'pages/group/list'
+        'pages/group/list',
+        'pages/coupon/usage'
       ],
       window: {
         backgroundTextStyle: 'dark',

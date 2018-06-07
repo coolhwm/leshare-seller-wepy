@@ -25,6 +25,8 @@
 
       <NavReduce title="优惠管理" url="../shop/reduce_list" type="discount"/>
 
+      <NavUsage title="优惠劵使用情况" url="../coupon/usage" type="discount"/>
+
       <NavCategory title="分类管理" url="../goods/category"/>
 
       <NavComment title="商品评论" url="../comment/comment"/>
@@ -122,6 +124,7 @@
       NavNotice: Navigator,
       NavSubShopCoupon: Navigator,
       NavBargain: Navigator,
+      NavUsage: Navigator,
       NavGroup: Navigator
     };
     config = {

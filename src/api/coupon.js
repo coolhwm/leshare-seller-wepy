@@ -50,6 +50,13 @@ export default class coupon extends base {
     const url = `${this.baseUrl}/coupons?sort=desc`;
     return new Page(url, this.processCouponItem.bind(this));
   }
+  /**
+   * 分页方法
+   */
+  static usageList () {
+    const url = `${this.baseUrl}/coupons/info/list`;
+    return new Page(url);
+  }
 
   /**
    * 优惠券使用情况分页方法
