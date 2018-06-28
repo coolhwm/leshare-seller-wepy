@@ -19,7 +19,8 @@
     </view>
     <!--商品购买信息-->
     <view class="order-goods-buy-container row">
-      <text>￥{{goods.goodsPrice}}</text>
+      <text wx:if="{{goods.paymentType === 'bonus'}}">{{goods.goodsPrice}}积分</text>
+      <text wx:else>￥{{goods.goodsPrice}}</text>
     </view>
   </view>
 </template>

@@ -50,17 +50,21 @@
 
     <!--订单详情-->
     <view class="weui-cells weui-cells_after-title weui-cells-merge-top">
+      <view wx:if="{{order.onlinePayType === 'bonus'}}">
       <view class="weui-cell">
-        <view class="weui-cell__bd">支付类型</view>
-        <view class="weui-cell__ft">{{order.paymentText}}</view>
+          <view class="weui-cell__bd">支付方式</view>
+          <view class="weui-cell__ft">积分支付</view>
+        </view>
       </view>
+      <view wx:else>
       <view class="weui-cell">
-        <view class="weui-cell__bd">支付方法</view>
-        <view class="weui-cell__ft">{{order.onlinePayType == 'balance' ? '余额支付' : '微信支付'}}</view>
+          <view class="weui-cell__bd">支付方式</view>
+          <view class="weui-cell__ft">{{order.paymentText}}</view>
       </view>
-      <view class="weui-cell" wx:if="{{order.orderType == '20' || order.orderType == '10'}}">
+        <view class="weui-cell" wx:if="{{order.orderType == '20'}}">
         <view class="weui-cell__bd">配送方式</view>
         <view class="weui-cell__ft">{{order.deliveryText}}</view>
+        </view>
       </view>
       <view class="weui-cell">
         <view class="weui-cell__bd">买家留言</view>
@@ -69,7 +73,17 @@
     </view>
 
     <!--信息汇总-->
-    <view class="panel summary-box mb20">
+    <view class="panel summary-box mb20" wx:if="{{order.onlinePayType === 'bonus'}}">
+      <view class="price-box row-between">
+        <text>商品金额</text>
+        <text class="major">{{order.bonus}}积分</text>
+      </view>
+      <view class="final-box">
+        <text class="lg">实付款：</text>
+        <text class="lg major">{{order.bonus}}积分</text>
+      </view>
+    </view>
+    <view class="panel summary-box mb20" wx:else>
       <view class="price-box row-between">
         <text>商品金额</text>
         <text class="major">￥{{order.dealPrice}}</text>
@@ -77,10 +91,6 @@
       <view class="price-box row-between">
         <text>运费</text>
         <text class="major">+￥{{order.postFee}}</text>
-      </view>
-      <view class="price-box row-between" wx:if="{{order.foodBoxFee > 0}}">
-        <text>餐盒费</text>
-        <text class="major">+￥{{order.foodBoxFee}}</text>
       </view>
       <view class="price-box row-between" wx:if="{{order.couponPrice > 0}}">
         <text>优惠券</text>
@@ -90,14 +100,6 @@
         <text>积分抵扣</text>
         <text class="major">-￥{{order.bonusPrice}}</text>
       </view>
-      <view class="price-box row-between" wx:if="{{order.reduceFee > 0}}">
-        <view class="row">
-          <icon class="reduce" style="color: #d81e06;"/>
-          <text>优惠满减</text>
-        </view>
-        <text class="major">-￥{{order.reduceFee}}</text>
-      </view>
-
       <view class="price-hr"></view>
       <view class="final-box origin-box" wx:if="{{order.orderPriceHistory.length > 0}}">
         <text class="lg muted">原价：</text>
