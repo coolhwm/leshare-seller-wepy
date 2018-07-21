@@ -53,7 +53,7 @@
               <view class="weui-label">餐盒费</view>
             </view>
             <view class="weui-cell__bd">
-              <input class="weui-input" id="foodBoxFee" type="number" @input="input" value="{{input.foodBoxFee}}"  placeholder="请填写商品餐盒费"/>
+              <input class="weui-input" id="foodBoxFee" type="digit" @input="input" value="{{input.foodBoxFee}}"  placeholder="请填写商品餐盒费"/>
             </view>
             <view class="weui-cell__ft">
             </view>
@@ -364,8 +364,8 @@
         {
           value: prices,
           method: 'min',
-          param: 0.01,
-          message: '商品价格不能为0或负数'
+          param: 0,
+          message: '商品价格不能为负数'
         },
         {
           value: prices,
