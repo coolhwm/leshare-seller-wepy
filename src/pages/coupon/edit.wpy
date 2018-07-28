@@ -66,31 +66,78 @@
 
         <view class="weui-cell weui-cell_input">
           <view class="weui-cell__hd">
-            <view class="weui-label">生效时间</view>
+            <view class="weui-label">有效期类型</view>
           </view>
           <view class="weui-cell__bd">
-            <picker mode="date" id="beginTime" @change="input" value="{{input.beginTime}}"
-                    disabled="{{mode == 'edit'}}">
-              <view class="weui-input {{mode == 'edit' ? 'muted' : ''}}">
-                {{input.beginTime ? input.beginTime : '请选择卡券生效时间'}}
+            <view @tap="actionExpired" id="supportType">
+              <view class="weui-input {{expiredStyle ? 'muted' : ''}}">
+                {{expired}}
               </view>
-            </picker>
+            </view>
           </view>
         </view>
 
-        <view class="weui-cell weui-cell_input">
-          <view class="weui-cell__hd">
-            <view class="weui-label">过期时间</view>
+        <block wx:if="{{input.expiredType === 'FIX_TIME_RANGE'}}">
+          <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__hd">
+              <view class="weui-label">生效时间</view>
+            </view>
+            <view class="weui-cell__bd">
+              <picker mode="date" id="beginTime" @change="input" value="{{input.beginTime}}"
+                      disabled="{{mode == 'edit'}}">
+                <view class="weui-input {{mode == 'edit' ? 'muted' : ''}}">
+                  {{input.beginTime ? input.beginTime : '请选择卡券生效时间'}}
+                </view>
+              </picker>
+            </view>
           </view>
-          <view class="weui-cell__bd">
-            <picker mode="date" id="dueTime" @change="input" value="{{input.dueTime}}"
-                    disabled="{{mode == 'edit'}}">
-              <view class="weui-input {{mode == 'edit' ? 'muted' : ''}}">
-                {{input.dueTime ? input.dueTime : '请选择卡券过期时间'}}
-              </view>
-            </picker>
+
+          <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__hd">
+              <view class="weui-label">过期时间</view>
+            </view>
+            <view class="weui-cell__bd">
+              <picker mode="date" id="dueTime" @change="input" value="{{input.dueTime}}"
+                      disabled="{{mode == 'edit'}}">
+                <view class="weui-input {{mode == 'edit' ? 'muted' : ''}}">
+                  {{input.dueTime ? input.dueTime : '请选择卡券过期时间'}}
+                </view>
+              </picker>
+            </view>
           </view>
-        </view>
+        </block>
+
+        <block wx:elif="{{input.expiredType === 'FIX_TERM'}}">
+          <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__hd">
+              <view class="weui-label">开始时间</view>
+            </view>
+            <view class="weui-cell__bd">
+              <picker mode="selector" id="fixedBeginTerm" @change="fixedBeginTermChange" value="{{input.fixedBeginTerm}}"  range="{{fixedBeginTerms}}"
+                      disabled="{{mode == 'edit'}}">
+                <view class="weui-input {{mode == 'edit' ? 'muted' : ''}}">
+                  {{input.fixedBeginTerm || mode== 'edit' ? input.fixedBeginTerm + '天后' : '请选择卡券开始时间'}}
+                </view>
+              </picker>
+            </view>
+          </view>
+
+          <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__hd">
+              <view class="weui-label">有效天数</view>
+            </view>
+            <view class="weui-cell__bd">
+              <picker mode="selector" id="fixedTerm" @change="fixedTermChange" value="{{input.fixedTerm}}"  range="{{fixedTerms}}"
+                      disabled="{{mode == 'edit'}}">
+                <view class="weui-input {{mode == 'edit' ? 'muted' : ''}}">
+                  {{input.fixedTerm ? input.fixedTerm + '天' : '请选择卡券有效天数'}}
+                </view>
+              </picker>
+            </view>
+          </view>
+        </block>
+
+
         <view class="weui-cell weui-cell_input">
           <view class="weui-cell__hd">
             <view class="weui-label">使用场景</view>
@@ -103,6 +150,7 @@
             </view>
           </view>
         </view>
+
         <view class="weui-cell weui-cell_input">
           <view class="weui-cell__hd">
             <view class="weui-label">备注</view>
@@ -194,19 +242,28 @@
   export default class CouponEdit extends wepy.page {
     data = {
       input: {
-        couponType: 1
+        couponType: 1,
+        expiredType: 'FIX_TIME_RANGE'
       },
       mode: 'create',
       init: false,
       couponId: 0,
       coupon: {},
-      limit: {}
+      limit: {},
+      fixedBeginTerms: [],
+      fixedTerms: []
     };
 
     async onLoad ({couponId, mode}) {
       this.limit = await shop.limit();
       this.couponId = couponId;
       this.mode = mode;
+      for (let i = 0; i < 30; i++) {
+        this.fixedBeginTerms.push(i)
+      }
+      for (let i = 1; i < 90; i++) {
+        this.fixedTerms.push(i)
+      }
       if (mode == 'edit') {
         this.coupon = await coupon.info(couponId);
         this.input = this.coupon;
@@ -230,11 +287,23 @@
     }
 
     methods = {
+      fixedBeginTermChange(e) {
+        this.input.fixedBeginTerm = e.detail.value
+      },
+      fixedTermChange(e) {
+        this.input.fixedTerm = e.detail.value * 1 + 1
+      },
       async actionSupport () {
-        console.info(123);
         if (this.mode == 'create' && this.input.couponType == 1) {
           const result = await Tips.action('通用', '线上', '线下');
           this.input.supportType = result.index;
+          this.$apply();
+        }
+      },
+      async actionExpired () {
+        if (this.mode == 'create') {
+          const result = await Tips.action('固定时间', '固定时长');
+          this.input.expiredType = result.index === 0 ? 'FIX_TIME_RANGE' : 'FIX_TERM';
           this.$apply();
         }
       },
@@ -261,13 +330,11 @@
           return;
         }
         if (this.mode == 'create') {
-          const param = {
+          let param = {
             name: this.coupon.name,
             price: this.coupon.price,
             perLimit: this.coupon.perLimit,
             stock: this.coupon.stock,
-            beginTime: this.input.beginTime,
-            dueTime: this.input.dueTime,
             limitPrice: this.coupon.limitPrice,
             presentFee: this.coupon.presentFee,
             suitLimit: 0,
@@ -278,12 +345,20 @@
             sendNow: this.input.sendNow ? 1 : 0,
             supportType: this.input.supportType,
             type: this.input.type,
-            desc: this.input.desc
+            desc: this.input.desc,
+            expiredType: this.input.expiredType
           };
+          if (this.input.expiredType === 'FIX_TIME_RANGE') {
+            param.beginTime = this.input.beginTime;
+            param.dueTime = this.input.dueTime
+          } else {
+            param.fixedBeginTerm = this.input.fixedBeginTerm;
+            param.fixedTerm = this.input.fixedTerm;
+          }
           await coupon.create(param);
           await Tips.success('创建成功！');
         } else if (this.mode == 'edit') {
-          const param = {
+          let param = {
             name: this.coupon.name,
             stock: this.coupon.stock,
             presentFee: this.coupon.presentFee,
@@ -333,6 +408,15 @@
           return '线下';
         }
       },
+      expired() {
+        if (this.input.expiredType == null) {
+          return '请选择有效期类型';
+        } else if (this.input.expiredType == 'FIX_TIME_RANGE') {
+          return '固定时间';
+        } else if (this.input.expiredType == 'FIX_TERM') {
+          return '固定时长';
+        }
+      },
       notice () {
         if (this.limit != null && this.limit.couponLimit != -1) {
           return `1.\t已创建的卡券只能编辑名称及投放总量\n2.\t您的会员卡余量为${this.limit.couponLimit}张`;
@@ -342,11 +426,14 @@
       },
       supplyStyle() {
         return this.mode == 'edit' || this.input.couponType == 0;
+      },
+      expiredStyle() {
+        return this.mode == 'edit';
       }
     };
 
     validate () {
-      const rules = [
+      let rules = [
         {
           value: this.coupon.name,
           method: 'required',
@@ -459,22 +546,6 @@
           message: '发放总量过高'
         },
         {
-          value: this.input.beginTime,
-          method: 'required',
-          message: '生效时间不能为空'
-        },
-        {
-          value: this.input.dueTime,
-          method: 'required',
-          message: '过期时间不能为空'
-        },
-        {
-          value: this.input.beginTime,
-          method: 'before',
-          param: this.input.dueTime,
-          message: '生效时间不能晚于过期时间'
-        },
-        {
           value: this.input.dueTime,
           method: 'after',
           param: new Date().toISOString().substring(0, 10),
@@ -486,6 +557,41 @@
           message: '赠送条件必须为整数'
         }
       ];
+      if (this.input.expiredType === 'FIX_TIME_RANGE') {
+        const arr = [
+          {
+            value: this.input.beginTime,
+            method: 'required',
+            message: '生效时间不能为空'
+          },
+          {
+            value: this.input.dueTime,
+            method: 'required',
+            message: '过期时间不能为空'
+          },
+          {
+            value: this.input.beginTime,
+            method: 'before',
+            param: this.input.dueTime,
+            message: '生效时间不能晚于过期时间'
+          }
+        ]
+        rules = rules.concat(arr)
+      } else {
+        const arr = [
+          {
+            value: this.input.fixedBeginTerm,
+            method: 'required',
+            message: '开始时间不能为空'
+          },
+          {
+            value: this.input.fixedTerm,
+            method: 'required',
+            message: '有效天数不能为空'
+          }
+        ]
+        rules = rules.concat(arr)
+      }
       if (this.input.isPresent == 1 && this.coupon.presentFee == null) {
         this.tips('赠送条件必须填写');
         return false;
