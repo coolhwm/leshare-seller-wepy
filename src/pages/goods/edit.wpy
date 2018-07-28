@@ -364,7 +364,7 @@
         {
           value: prices,
           method: 'min',
-          param: 0.01,
+          param: 0,
           message: '商品价格不能为0或负数'
         },
         {
