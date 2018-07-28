@@ -36,7 +36,7 @@
       init: false,
       list: [],
       isPageEmpty: false,
-      check: true,
+      check: true
       // size: null
     };
     data = {...this.def};
