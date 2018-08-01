@@ -53,9 +53,8 @@
       // 根据小程序码进行扫描
       if (scene != null && scene != '') {
         await this.loadByWxCode(scene);
-      }
-      // 根据二维码进行扫描，后续要废弃
-      else if (scan != null && scan != '') {
+      } else if (scan != null && scan != '') {
+        // 根据二维码进行扫描，后续要废弃
         await this.loadByQrCode(scan);
       } else {
         this.message = '扫描失败，没有检测到二维码';

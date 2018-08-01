@@ -34,7 +34,7 @@
         } else {
           Tips.alert('没有找到用户信息');
         }
-      },
+      }
     };
     events = {};
     onLoad() {

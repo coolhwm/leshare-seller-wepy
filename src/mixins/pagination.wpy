@@ -87,7 +87,6 @@
      */
     async onReachBottom () {
       if (this.page.loadOnReachBottom === false) {
-        return;
       } else {
         await this.next();
       }
