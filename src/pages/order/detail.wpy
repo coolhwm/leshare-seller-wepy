@@ -2,7 +2,7 @@
   <view class="container" wx:if="{{init}}">
     <!--状态栏-->
     <view class="order-status-bar row">
-      <icon class="status-{{order.status}} large" wx:if="{{order.status}}" />
+      <icon class="status-{{order.status}} large" wx:if="{{order.status}}"/>
       <view class="status-box column">
         <text class="xxl">{{order.statusText}}</text>
         <!-- 订单文本描述/需要抽取到Service中 -->
@@ -18,19 +18,19 @@
           <text class="inline">{{express.text}}</text>
           <text class="muted sm mt10" wx:if="{{express.timestape}}">{{express.timestape}}</text>
         </view>
-        <icon class="more" color="gray" wx:if="{{express.timestape}}" />
+        <icon class="more" color="gray" wx:if="{{express.timestape}}"/>
       </view>
     </block>
 
     <!--物流栏（外卖）-->
     <block wx:if="{{order.isExpress && order.orderType == 20}}">
-      <view class="order-trace-bar row-between" >
+      <view class="order-trace-bar row-between">
         <view class="row">
           <icon class="sender"/>
           <text class="ml20">{{order.orderExpress.note}}（{{order.orderExpress.telPhone}}）</text>
         </view>
-        <view  class="row" @tap="sender">
-          <icon class="call" />
+        <view class="row" @tap="sender">
+          <icon class="call"/>
           <text class="ml10 primary">电话联系</text>
         </view>
       </view>
@@ -51,19 +51,31 @@
     <!--订单详情-->
     <view class="weui-cells weui-cells_after-title weui-cells-merge-top">
       <view wx:if="{{order.onlinePayType === 'bonus'}}">
-      <view class="weui-cell">
+        <view wx:if="{{order.subShop != null}}">
+          <view class="weui-cell">
+            <view class="weui-cell__bd">子商户名称</view>
+            <view class="weui-cell__ft">{{order.subShop.name}}</view>
+          </view>
+        </view>
+        <view class="weui-cell">
           <view class="weui-cell__bd">支付方式</view>
           <view class="weui-cell__ft">积分支付</view>
         </view>
       </view>
       <view wx:else>
-      <view class="weui-cell">
+        <view wx:if="{{order.subShop != null}}">
+          <view class="weui-cell">
+            <view class="weui-cell__bd">商户名称</view>
+            <view class="weui-cell__ft">{{order.subShop.name}}</view>
+          </view>
+        </view>
+        <view class="weui-cell">
           <view class="weui-cell__bd">支付方式</view>
           <view class="weui-cell__ft">{{order.paymentText}}</view>
-      </view>
+        </view>
         <view class="weui-cell" wx:if="{{order.orderType == '20'}}">
-        <view class="weui-cell__bd">配送方式</view>
-        <view class="weui-cell__ft">{{order.deliveryText}}</view>
+          <view class="weui-cell__bd">配送方式</view>
+          <view class="weui-cell__ft">{{order.deliveryText}}</view>
         </view>
       </view>
       <view class="weui-cell">
@@ -114,7 +126,9 @@
     <!--操作栏-->
     <view class="order-action-bar row-end">
       <block wx:for="{{order.actions}}" wx:for-item="action" wx:key="index">
-        <view class="zan-btn zan-btn--small {{action.primary ? 'zan-btn--primary' : ''}}" @tap="action({{action.func}}, {{order}})">{{action.name}}</view>
+        <view class="zan-btn zan-btn--small {{action.primary ? 'zan-btn--primary' : ''}}"
+              @tap="action({{action.func}}, {{order}})">{{action.name}}
+        </view>
       </block>
     </view>
   </view>

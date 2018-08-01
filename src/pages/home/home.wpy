@@ -192,6 +192,8 @@
       this.month = month;
       this.order = order;
       this.loaded();
+      // 全局变量
+      wepy.$instance.globalData.shop = this.shop
       // 差异比对
       if (this.show) {
         this.compareOrderStatus(order);

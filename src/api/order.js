@@ -1,4 +1,5 @@
 import base from './base';
+import wepy from 'wepy';
 import Page from '../utils/Page';
 import {TYPE, ACTION, orderUtils as utils} from './order_const';
 
@@ -190,6 +191,8 @@ export default class order extends base {
    * 处理订单列表数据
    */
   static _processOrderListItem(order) {
+    // 处理商户名称
+    this._processOrderShopName(order)
     // 处理动作
     this._processOrderAction(order);
     this._processOrderStatusDesc(order);
@@ -387,5 +390,18 @@ export default class order extends base {
       return null;
     }
     return price.toFixed(2);
+  }
+
+  /**
+   * 处理商户名称
+   */
+  static _processOrderShopName(order) {
+    if (order.subShopName == null) {
+      if (wepy.$instance.globalData.shop != null) {
+        order.subShopName = wepy.$instance.globalData.shop.name
+      } else {
+        order.subShopName = ''
+      }
+    }
   }
 }

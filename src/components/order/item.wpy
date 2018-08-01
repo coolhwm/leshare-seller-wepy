@@ -3,10 +3,9 @@
     <!--基本信息-->
     <view class="order-header-container colunm">
       <view class="row-between">
-        <view class="user-info-container" @tap="customerDetail({{order.customerId}})">
-          <icon class="idcard" color="gray"></icon>
-          <text class="sm ml10">{{order.customerNickName ? order.customerNickName : '微信用户'}}</text>
-          <text class="xs ml10 muted" wx:if="{{order.receiveName}}">({{order.receiveName}})</text>
+        <view class="user-info-container">
+          <icon class="shop" color="gray"></icon>
+          <text class="sm ml10">{{order.subShopName}}</text>
         </view>
         <view style="min-width: 150px;text-align: right;">
           <text class="sm primary">{{order.statusText}}</text>
@@ -53,9 +52,19 @@
       <text>(含运费￥{{order.postFee}})</text>
     </view>
 
+    <!--用戶信息-->
+    <view class="order-customer-bar row-between" wx:if="{{action != 0}}">
+      <view class="user-info-container" @tap="customerDetail({{order.customerId}})">
+        <icon class="idcard" color="gray"></icon>
+        <text class="sm ml10">{{order.customerNickName ? order.customerNickName : '微信用户'}}</text>
+        <text class="xs ml10 muted" wx:if="{{order.receiveName}}">({{order.receiveName}}</text>
+        <text class="xs ml10 muted" wx:if="{{order.phone}}" @tap.stop="phone">, {{order.phone}}</text>
+        <text class="xs ml10 muted" wx:if="{{order.receiveName}}">)</text>
+      </view>
+    </view>
     <!--操作栏/可以抽取为组件-->
     <view class="order-action-bar row-between" wx:if="{{action != 0}}">
-      <view>
+      <view class="row">
         <view class="small label primary ml20" wx:if="{{order.orderType == 20}}">外卖</view>
         <view class="small label primary ml20" wx:if="{{order.orderType == 30}}">堂食 {{order.tableNum ? order.tableNum : ''}}</view>
         <view class="small label primary ml20" wx:if="{{order.orderType == 33}}">打包</view>
@@ -64,6 +73,7 @@
         <view class="small label primary ml20" wx:if="{{order.orderType == 70}}">砍价</view>
         <view class="small label primary ml20" wx:if="{{order.orderType == 50}}">拼团</view>
         <view class="small label major" wx:if="{{order.onlinePayType == 'balance'}}">余额</view>
+        <text class="xs" wx:if="{{order.subShopName != null}}"></text>
       </view>
       <view>
         <block wx:for="{{order.actions}}" wx:for-item="action" wx:key="index">
@@ -152,6 +162,13 @@
         } else {
           Tips.alert('没有找到用户信息');
         }
+      },
+      phone() {
+        if (this.customer.phone) {
+          wepy.makePhoneCall({phoneNumber: this.customer.phone});
+        } else {
+          Tips.alert('该用户没有电话');
+        }
       }
     };
 
@@ -197,6 +214,10 @@
     border-top: $border;
     height: 90rpx;
     padding-right: 10rpx;
+  }
+  .order-customer-bar{
+    border-top: $border;
+    padding: 10rpx 20rpx;
   }
   .order-goods-fold{
     display: none;
